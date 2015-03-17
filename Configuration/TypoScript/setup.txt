@@ -1,0 +1,23 @@
+
+plugin.tx_pbsocial {
+	view {
+		templateRootPath = {$plugin.tx_pbsocial.view.templateRootPath}
+		partialRootPath = {$plugin.tx_pbsocial.view.partialRootPath}
+		layoutRootPath = {$plugin.tx_pbsocial.view.layoutRootPath}
+	}
+	persistence {
+		storagePid = {$plugin.tx_pbsocial.persistence.storagePid}
+	}
+	features {
+		# uncomment the following line to enable the new Property Mapper.
+		# rewrittenPropertyMapper = 1
+	}
+}
+
+[globalVar = LIT:1 = {$plugin.tx_pbsocial.settings.load-jquery}]
+    #page.includeJS.pbjquery = EXT:pb_social/Resources/Public/Js/jquery-2.1.1.min.js
+[END]
+
+
+page.includeCSS.pbsocialcss = EXT:pb_social/Resources/Public/Css/style.css
+page.includeJSFooter.pbsocialjs = EXT:pb_social/Resources/Public/Js/main.js

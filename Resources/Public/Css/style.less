@@ -1,0 +1,131 @@
+.tx-pb-social{
+  .pb-list{
+    position: relative;
+    width: 100%;
+    margin: 10px 0 0 -10px;
+
+    .col{
+      float: left;
+      width: 250px;
+    }
+
+    .pb-hidden{
+//      display: none;
+    }
+  }
+
+  .pb-list-item {
+    position: relative;
+    box-sizing: border-box;
+    float: left;
+    width: 250px;
+    height: 250px;
+    margin: 10px 0 0 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+
+    .image{
+      position: absolute;
+      height: 250px;
+      top: 0;
+      background-size: cover;
+      background-position: center;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .icon{
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      height: 32px;
+      width: 32px;
+      border-radius: 5px;
+      cursor: pointer;
+      background-size: 32px 32px;
+    }
+
+    .text{
+//      display: none;
+      position: absolute;
+      color: #FFFFFF;
+      background-color: rgba(0, 0, 0, 0.35);
+      padding: 10px 10px 25px 10px;
+      height: 80px;
+      right: 0px;
+      bottom: 0px;
+      left: 0px;
+      overflow: hidden;
+      font-size: 12px;
+      line-height: 15px;
+      cursor: pointer;
+      &:hover{
+        text-decoration: underline;
+      }
+    }
+
+    .additional-info{
+      box-sizing: border-box;
+      position: absolute;
+      color: #ffffff;
+      width: 30px;
+      height: 20px;
+      bottom: 2px;
+      text-align: right;
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: bold;
+      text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+
+      &.info-1{
+        right: 65px;
+      }
+      &.info-2{
+        right: 20px;
+      }
+    }
+
+    .video-overlay{
+      position: absolute;
+      bottom: 95px;
+      left: 95px;
+      width: 64px;
+      height: 64px;
+      opacity: 0.90;
+      cursor: pointer;
+    }
+
+    &[data-type="video"]{
+      .image{
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-color: black;
+      }
+      .video-overlay{
+        top: 95px;
+        bottom: auto;
+      }
+    }
+  }
+
+
+  .pb-list-item-facebook .icon {
+    background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/facebook.png");
+  }
+
+  .pb-list-item-googleplus .icon {
+    background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/google+.png");
+  }
+
+  .pb-list-item-instagram .icon {
+    background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/instagram.png");
+  }
+
+  .pb-list-item-tumblr .icon {
+    background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/tumblr.png");
+  }
+
+  .pb-list-item-twitter .icon {
+    background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/twitter.png");
+  }
+}
+

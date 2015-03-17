@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2014-11-28T16:13:07Z" product-name="pb_social">
+		<header/>
+		<body>
+			<trans-unit id="tx_pbsocial_domain_model_item">
+				<source>Item</source>
+			</trans-unit>
+			<trans-unit id="tx_pbsocial_domain_model_item.type">
+				<source>Type</source>
+			</trans-unit>
+			<trans-unit id="tx_pbsocial_domain_model_item.cacheidentifier">
+				<source>Cacheidentifier</source>
+			</trans-unit>
+			<trans-unit id="tx_pbsocial_domain_model_item.date">
+				<source>Date</source>
+			</trans-unit>
+			<trans-unit id="tx_pbsocial_domain_model_item.result">
+				<source>Result</source>
+			</trans-unit>
+            <trans-unit id="socialfeed_wizard.title">
+                <source>Social Media Streams</source>
+            </trans-unit>
+            <trans-unit id="socialfeed_wizard.description">
+                <source>Displays feeds from social media platforms</source>
+            </trans-unit>
+		</body>
+	</file>
+</xliff>

@@ -1,0 +1,48 @@
+## Custom categories
+# customsubcategory=0general=General options
+# customsubcategory=1facebook=Facebook --- https://developers.facebook.com/apps
+# customsubcategory=2googleplus=Google+ --- https://code.google.com/apis/console/
+# customsubcategory=3instagram=Instagram --- http://instagram.com/developer/clients/manage/
+# customsubcategory=4twitter=Twitter --- https://dev.twitter.com/apps/
+# customsubcategory=5tumblr=Tumblr --- http://www.tumblr.com/oauth/apps
+# customsubcategory=6website=Our Website
+
+socialfeed{
+    # cat=socialfeed/0general/0010; type=boolean; label=enable devmod : database cache will refresh every pageload. Additional log messages active
+    devmod=0
+
+    # cat=socialfeed/1facebook/0010; type=string; label=api id
+    facebook.api.id=
+    # cat=socialfeed/1facebook/0020; type=string; label=api secret
+    facebook.api.secret=
+
+    # cat=socialfeed/2googleplus/0010; type=string; label=app key
+    googleplus.app.key=
+
+    # cat=socialfeed/3instagram/0010; type=string; label=client id
+    instagram.client.id=
+
+    # cat=socialfeed/4twitter/0010; type=string; label=consumer key
+    twitter.consumer.key=
+    # cat=socialfeed/4twitter/0020; type=string; label=consumer secret
+    twitter.consumer.secret=
+    # cat=socialfeed/4twitter/0030; type=string; label=oauth access token
+    twitter.oauth.access.token=
+    # cat=socialfeed/4twitter/0040; type=string; label=oauth access token secret
+    twitter.oauth.access.token_secret=
+
+    # cat=socialfeed/5tumblr/0010; type=string; label=consumer key
+    tumblr.consumer.key=
+    # cat=socialfeed/5tumblr/0020; type=string; label=consumer secret
+    tumblr.consumer.secret=
+    # cat=socialfeed/5tumblr/0030; type=string; label=token
+    tumblr.token=
+    # cat=socialfeed/5tumblr/0040; type=string; label=token secret
+    tumblr.token_secret=
+
+    # cat=socialfeed/6website/0001;     type=user[EXT:pb_social/lib/class.pb_social_extmanager.php:pb_social_extmanager->getLogoAndLink]; label=For further information about us please visit our website
+    external_link=0
+}
+
+
+

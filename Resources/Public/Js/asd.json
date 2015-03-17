@@ -1,0 +1,1940 @@
+{"statuses": [
+    {
+        "metadata": {
+            "iso_language_code": "de",
+            "result_type": "recent"
+        },
+        "created_at": "Fri Dec 05 16:27:25 +0000 2014",
+        "id": 540905288736731136,
+        "id_str": "540905288736731136",
+        "text": "RT @golem: Hochgeschwindigkeitsfotografie: Spezialkamera verfolgt Laserpuls #DigitalImaging http:\/\/t.co\/avctoi2J0Q",
+        "source": "\u003ca href=\"http:\/\/twitter.com\" rel=\"nofollow\"\u003eTwitter Web Client\u003c\/a\u003e",
+        "truncated": false,
+        "in_reply_to_status_id": null,
+        "in_reply_to_status_id_str": null,
+        "in_reply_to_user_id": null,
+        "in_reply_to_user_id_str": null,
+        "in_reply_to_screen_name": null,
+        "user": {
+            "id": 2669248980,
+            "id_str": "2669248980",
+            "name": "Lisa Pfisterer",
+            "screen_name": "lisapfi",
+            "location": "Berlin, Germany",
+            "profile_location": null,
+            "description": "IT student and travelling adventurer.",
+            "url": null,
+            "entities": {
+                "description": {
+                    "urls": []
+                }
+            },
+            "protected": false,
+            "followers_count": 51,
+            "friends_count": 154,
+            "listed_count": 1,
+            "created_at": "Tue Jul 22 12:06:05 +0000 2014",
+            "favourites_count": 88,
+            "utc_offset": null,
+            "time_zone": null,
+            "geo_enabled": true,
+            "verified": false,
+            "statuses_count": 95,
+            "lang": "de",
+            "contributors_enabled": false,
+            "is_translator": false,
+            "is_translation_enabled": false,
+            "profile_background_color": "C0DEED",
+            "profile_background_image_url": "http:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png",
+            "profile_background_image_url_https": "https:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png",
+            "profile_background_tile": false,
+            "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/491568629264027648\/NWNRLvP2_normal.jpeg",
+            "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/491568629264027648\/NWNRLvP2_normal.jpeg",
+            "profile_banner_url": "https:\/\/pbs.twimg.com\/profile_banners\/2669248980\/1406034177",
+            "profile_link_color": "0084B4",
+            "profile_sidebar_border_color": "C0DEED",
+            "profile_sidebar_fill_color": "DDEEF6",
+            "profile_text_color": "333333",
+            "profile_use_background_image": true,
+            "default_profile": true,
+            "default_profile_image": false,
+            "following": false,
+            "follow_request_sent": false,
+            "notifications": false
+        },
+        "geo": null,
+        "coordinates": null,
+        "place": null,
+        "contributors": null,
+        "retweeted_status": {
+            "metadata": {
+                "iso_language_code": "de",
+                "result_type": "recent"
+            },
+            "created_at": "Fri Dec 05 16:24:12 +0000 2014",
+            "id": 540904480498515968,
+            "id_str": "540904480498515968",
+            "text": "Hochgeschwindigkeitsfotografie: Spezialkamera verfolgt Laserpuls #DigitalImaging http:\/\/t.co\/avctoi2J0Q",
+            "source": "\u003ca href=\"http:\/\/www.golem.de\" rel=\"nofollow\"\u003eGolem.de\u003c\/a\u003e",
+            "truncated": false,
+            "in_reply_to_status_id": null,
+            "in_reply_to_status_id_str": null,
+            "in_reply_to_user_id": null,
+            "in_reply_to_user_id_str": null,
+            "in_reply_to_screen_name": null,
+            "user": {
+                "id": 8724992,
+                "id_str": "8724992",
+                "name": "Golem.de",
+                "screen_name": "golem",
+                "location": "Berlin, Germany",
+                "profile_location": null,
+                "description": "Aktuelle IT-News von Golem.de. Die Redaktion twittert unter  http:\/\/t.co\/iWnphPBy79 .",
+                "url": "http:\/\/t.co\/M2P6p3UcQ6",
+                "entities": {
+                    "url": {
+                        "urls": [
+                            {
+                                "url": "http:\/\/t.co\/M2P6p3UcQ6",
+                                "expanded_url": "http:\/\/www.golem.de",
+                                "display_url": "golem.de",
+                                "indices": [0, 22]
+                            }
+                        ]
+                    },
+                    "description": {
+                        "urls": [
+                            {
+                                "url": "http:\/\/t.co\/iWnphPBy79",
+                                "expanded_url": "http:\/\/twitter.com\/GolemRedaktion",
+                                "display_url": "twitter.com\/GolemRedaktion",
+                                "indices": [61, 83]
+                            }
+                        ]
+                    }
+                },
+                "protected": false,
+                "followers_count": 35765,
+                "friends_count": 0,
+                "listed_count": 1306,
+                "created_at": "Fri Sep 07 14:27:36 +0000 2007",
+                "favourites_count": 1,
+                "utc_offset": 3600,
+                "time_zone": "Berlin",
+                "geo_enabled": false,
+                "verified": true,
+                "statuses_count": 55536,
+                "lang": "de",
+                "contributors_enabled": false,
+                "is_translator": false,
+                "is_translation_enabled": false,
+                "profile_background_color": "F8F8F8",
+                "profile_background_image_url": "http:\/\/pbs.twimg.com\/profile_background_images\/436692\/golem48x48.png",
+                "profile_background_image_url_https": "https:\/\/pbs.twimg.com\/profile_background_images\/436692\/golem48x48.png",
+                "profile_background_tile": false,
+                "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/1345097225\/golem-twitter-q_normal.png",
+                "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/1345097225\/golem-twitter-q_normal.png",
+                "profile_link_color": "0B0199",
+                "profile_sidebar_border_color": "4A5A74",
+                "profile_sidebar_fill_color": "E8E8E8",
+                "profile_text_color": "000000",
+                "profile_use_background_image": true,
+                "default_profile": false,
+                "default_profile_image": false,
+                "following": true,
+                "follow_request_sent": false,
+                "notifications": false
+            },
+            "geo": null,
+            "coordinates": null,
+            "place": null,
+            "contributors": null,
+            "retweet_count": 1,
+            "favorite_count": 2,
+            "entities": {
+                "hashtags": [
+                    {
+                        "text": "DigitalImaging",
+                        "indices": [65, 80]
+                    }
+                ],
+                "symbols": [],
+                "user_mentions": [],
+                "urls": [
+                    {
+                        "url": "http:\/\/t.co\/avctoi2J0Q",
+                        "expanded_url": "http:\/\/www.golem.de\/news\/hochgeschwindigkeitsfotografie-spezialkamera-verfolgt-laserpuls-1412-110998.html",
+                        "display_url": "golem.de\/news\/hochgesch\u2026",
+                        "indices": [81, 103]
+                    }
+                ]
+            },
+            "favorited": false,
+            "retweeted": false,
+            "possibly_sensitive": false,
+            "lang": "de"
+        },
+        "retweet_count": 1,
+        "favorite_count": 0,
+        "entities": {
+            "hashtags": [
+                {
+                    "text": "DigitalImaging",
+                    "indices": [76, 91]
+                }
+            ],
+            "symbols": [],
+            "user_mentions": [
+                {
+                    "screen_name": "golem",
+                    "name": "Golem.de",
+                    "id": 8724992,
+                    "id_str": "8724992",
+                    "indices": [3, 9]
+                }
+            ],
+            "urls": [
+                {
+                    "url": "http:\/\/t.co\/avctoi2J0Q",
+                    "expanded_url": "http:\/\/www.golem.de\/news\/hochgeschwindigkeitsfotografie-spezialkamera-verfolgt-laserpuls-1412-110998.html",
+                    "display_url": "golem.de\/news\/hochgesch\u2026",
+                    "indices": [92, 114]
+                }
+            ]
+        },
+        "favorited": false,
+        "retweeted": false,
+        "possibly_sensitive": false,
+        "lang": "de"
+    },
+    {
+        "metadata": {
+            "iso_language_code": "de",
+            "result_type": "recent"
+        },
+        "created_at": "Fri Dec 05 16:06:19 +0000 2014",
+        "id": 540899980744343552,
+        "id_str": "540899980744343552",
+        "text": "Das Gesetz selbst ist ja schon komisch aber die Kommentare dazu noch viel mehr http:\/\/t.co\/ojEDgE3SvQ @golem #pornogesetz #uk #WTFWhyNot",
+        "source": "\u003ca href=\"http:\/\/twitter.com\/#!\/download\/ipad\" rel=\"nofollow\"\u003eTwitter for iPad\u003c\/a\u003e",
+        "truncated": false,
+        "in_reply_to_status_id": null,
+        "in_reply_to_status_id_str": null,
+        "in_reply_to_user_id": null,
+        "in_reply_to_user_id_str": null,
+        "in_reply_to_screen_name": null,
+        "user": {
+            "id": 929913186,
+            "id_str": "929913186",
+            "name": "Matthias F. Dannhorn",
+            "screen_name": "ohmygoditsatrap",
+            "location": "Bayern",
+            "profile_location": null,
+            "description": "Matthias F. Dannhorn ist 24\/7 im Internet und tr\u00e4umt von guter Musik, HBO Serien und japanischen M\u00e4dchen. #proud #Bavarian",
+            "url": "http:\/\/t.co\/nVzETrv7e6",
+            "entities": {
+                "url": {
+                    "urls": [
+                        {
+                            "url": "http:\/\/t.co\/nVzETrv7e6",
+                            "expanded_url": "http:\/\/shadowbehindme.com\/",
+                            "display_url": "shadowbehindme.com",
+                            "indices": [0, 22]
+                        }
+                    ]
+                },
+                "description": {
+                    "urls": []
+                }
+            },
+            "protected": false,
+            "followers_count": 12,
+            "friends_count": 113,
+            "listed_count": 1,
+            "created_at": "Tue Nov 06 15:09:44 +0000 2012",
+            "favourites_count": 10,
+            "utc_offset": 3600,
+            "time_zone": "Amsterdam",
+            "geo_enabled": false,
+            "verified": false,
+            "statuses_count": 106,
+            "lang": "de",
+            "contributors_enabled": false,
+            "is_translator": false,
+            "is_translation_enabled": true,
+            "profile_background_color": "FFFFFF",
+            "profile_background_image_url": "http:\/\/abs.twimg.com\/images\/themes\/theme6\/bg.gif",
+            "profile_background_image_url_https": "https:\/\/abs.twimg.com\/images\/themes\/theme6\/bg.gif",
+            "profile_background_tile": false,
+            "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/501371962070163456\/d42QxAlp_normal.jpeg",
+            "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/501371962070163456\/d42QxAlp_normal.jpeg",
+            "profile_banner_url": "https:\/\/pbs.twimg.com\/profile_banners\/929913186\/1363275125",
+            "profile_link_color": "F62459",
+            "profile_sidebar_border_color": "000000",
+            "profile_sidebar_fill_color": "252429",
+            "profile_text_color": "666666",
+            "profile_use_background_image": false,
+            "default_profile": false,
+            "default_profile_image": false,
+            "following": false,
+            "follow_request_sent": false,
+            "notifications": false
+        },
+        "geo": null,
+        "coordinates": null,
+        "place": null,
+        "contributors": null,
+        "retweet_count": 0,
+        "favorite_count": 0,
+        "entities": {
+            "hashtags": [
+                {
+                    "text": "pornogesetz",
+                    "indices": [109, 121]
+                },
+                {
+                    "text": "uk",
+                    "indices": [122, 125]
+                },
+                {
+                    "text": "WTFWhyNot",
+                    "indices": [126, 136]
+                }
+            ],
+            "symbols": [],
+            "user_mentions": [
+                {
+                    "screen_name": "golem",
+                    "name": "Golem.de",
+                    "id": 8724992,
+                    "id_str": "8724992",
+                    "indices": [102, 108]
+                }
+            ],
+            "urls": [
+                {
+                    "url": "http:\/\/t.co\/ojEDgE3SvQ",
+                    "expanded_url": "http:\/\/tinyurl.com\/n3oz26q",
+                    "display_url": "tinyurl.com\/n3oz26q",
+                    "indices": [79, 101]
+                }
+            ]
+        },
+        "favorited": false,
+        "retweeted": false,
+        "possibly_sensitive": false,
+        "lang": "de"
+    },
+    {
+        "metadata": {
+            "iso_language_code": "de",
+            "result_type": "recent"
+        },
+        "created_at": "Fri Dec 05 15:57:45 +0000 2014",
+        "id": 540897826927284224,
+        "id_str": "540897826927284224",
+        "text": "RT @golem: Schwachstelle: Yosemite schreibt Firefox-Eingaben mit #Firefox http:\/\/t.co\/9kUpncOOe5",
+        "source": "\u003ca href=\"http:\/\/twitter.com\" rel=\"nofollow\"\u003eTwitter Web Client\u003c\/a\u003e",
+        "truncated": false,
+        "in_reply_to_status_id": null,
+        "in_reply_to_status_id_str": null,
+        "in_reply_to_user_id": null,
+        "in_reply_to_user_id_str": null,
+        "in_reply_to_screen_name": null,
+        "user": {
+            "id": 43681208,
+            "id_str": "43681208",
+            "name": "EUCA Short Seller",
+            "screen_name": "ChefSchock",
+            "location": "frankfurt",
+            "profile_location": null,
+            "description": "zu Euromicron und schnell wieder weg",
+            "url": "http:\/\/t.co\/H0MGa8RwK6",
+            "entities": {
+                "url": {
+                    "urls": [
+                        {
+                            "url": "http:\/\/t.co\/H0MGa8RwK6",
+                            "expanded_url": "http:\/\/www.kununu.com\/",
+                            "display_url": "kununu.com",
+                            "indices": [0, 22]
+                        }
+                    ]
+                },
+                "description": {
+                    "urls": []
+                }
+            },
+            "protected": false,
+            "followers_count": 22,
+            "friends_count": 23,
+            "listed_count": 0,
+            "created_at": "Sun May 31 12:28:54 +0000 2009",
+            "favourites_count": 286,
+            "utc_offset": 3600,
+            "time_zone": "Berlin",
+            "geo_enabled": false,
+            "verified": false,
+            "statuses_count": 530,
+            "lang": "de",
+            "contributors_enabled": false,
+            "is_translator": false,
+            "is_translation_enabled": false,
+            "profile_background_color": "131516",
+            "profile_background_image_url": "http:\/\/abs.twimg.com\/images\/themes\/theme14\/bg.gif",
+            "profile_background_image_url_https": "https:\/\/abs.twimg.com\/images\/themes\/theme14\/bg.gif",
+            "profile_background_tile": true,
+            "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/535085199432757249\/jLnty74r_normal.jpeg",
+            "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/535085199432757249\/jLnty74r_normal.jpeg",
+            "profile_banner_url": "https:\/\/pbs.twimg.com\/profile_banners\/43681208\/1416409763",
+            "profile_link_color": "009999",
+            "profile_sidebar_border_color": "EEEEEE",
+            "profile_sidebar_fill_color": "EFEFEF",
+            "profile_text_color": "333333",
+            "profile_use_background_image": true,
+            "default_profile": false,
+            "default_profile_image": false,
+            "following": false,
+            "follow_request_sent": false,
+            "notifications": false
+        },
+        "geo": null,
+        "coordinates": null,
+        "place": null,
+        "contributors": null,
+        "retweeted_status": {
+            "metadata": {
+                "iso_language_code": "de",
+                "result_type": "recent"
+            },
+            "created_at": "Fri Dec 05 15:25:11 +0000 2014",
+            "id": 540889630842032128,
+            "id_str": "540889630842032128",
+            "text": "Schwachstelle: Yosemite schreibt Firefox-Eingaben mit #Firefox http:\/\/t.co\/9kUpncOOe5",
+            "source": "\u003ca href=\"http:\/\/www.golem.de\" rel=\"nofollow\"\u003eGolem.de\u003c\/a\u003e",
+            "truncated": false,
+            "in_reply_to_status_id": null,
+            "in_reply_to_status_id_str": null,
+            "in_reply_to_user_id": null,
+            "in_reply_to_user_id_str": null,
+            "in_reply_to_screen_name": null,
+            "user": {
+                "id": 8724992,
+                "id_str": "8724992",
+                "name": "Golem.de",
+                "screen_name": "golem",
+                "location": "Berlin, Germany",
+                "profile_location": null,
+                "description": "Aktuelle IT-News von Golem.de. Die Redaktion twittert unter  http:\/\/t.co\/iWnphPBy79 .",
+                "url": "http:\/\/t.co\/M2P6p3UcQ6",
+                "entities": {
+                    "url": {
+                        "urls": [
+                            {
+                                "url": "http:\/\/t.co\/M2P6p3UcQ6",
+                                "expanded_url": "http:\/\/www.golem.de",
+                                "display_url": "golem.de",
+                                "indices": [0, 22]
+                            }
+                        ]
+                    },
+                    "description": {
+                        "urls": [
+                            {
+                                "url": "http:\/\/t.co\/iWnphPBy79",
+                                "expanded_url": "http:\/\/twitter.com\/GolemRedaktion",
+                                "display_url": "twitter.com\/GolemRedaktion",
+                                "indices": [61, 83]
+                            }
+                        ]
+                    }
+                },
+                "protected": false,
+                "followers_count": 35765,
+                "friends_count": 0,
+                "listed_count": 1306,
+                "created_at": "Fri Sep 07 14:27:36 +0000 2007",
+                "favourites_count": 1,
+                "utc_offset": 3600,
+                "time_zone": "Berlin",
+                "geo_enabled": false,
+                "verified": true,
+                "statuses_count": 55536,
+                "lang": "de",
+                "contributors_enabled": false,
+                "is_translator": false,
+                "is_translation_enabled": false,
+                "profile_background_color": "F8F8F8",
+                "profile_background_image_url": "http:\/\/pbs.twimg.com\/profile_background_images\/436692\/golem48x48.png",
+                "profile_background_image_url_https": "https:\/\/pbs.twimg.com\/profile_background_images\/436692\/golem48x48.png",
+                "profile_background_tile": false,
+                "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/1345097225\/golem-twitter-q_normal.png",
+                "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/1345097225\/golem-twitter-q_normal.png",
+                "profile_link_color": "0B0199",
+                "profile_sidebar_border_color": "4A5A74",
+                "profile_sidebar_fill_color": "E8E8E8",
+                "profile_text_color": "000000",
+                "profile_use_background_image": true,
+                "default_profile": false,
+                "default_profile_image": false,
+                "following": true,
+                "follow_request_sent": false,
+                "notifications": false
+            },
+            "geo": null,
+            "coordinates": null,
+            "place": null,
+            "contributors": null,
+            "retweet_count": 6,
+            "favorite_count": 2,
+            "entities": {
+                "hashtags": [
+                    {
+                        "text": "Firefox",
+                        "indices": [54, 62]
+                    }
+                ],
+                "symbols": [],
+                "user_mentions": [],
+                "urls": [
+                    {
+                        "url": "http:\/\/t.co\/9kUpncOOe5",
+                        "expanded_url": "http:\/\/www.golem.de\/news\/schwachstelle-yosemite-schreibt-firefox-eingaben-mit-1412-110995.html",
+                        "display_url": "golem.de\/news\/schwachst\u2026",
+                        "indices": [63, 85]
+                    }
+                ]
+            },
+            "favorited": false,
+            "retweeted": false,
+            "possibly_sensitive": false,
+            "lang": "de"
+        },
+        "retweet_count": 6,
+        "favorite_count": 0,
+        "entities": {
+            "hashtags": [
+                {
+                    "text": "Firefox",
+                    "indices": [65, 73]
+                }
+            ],
+            "symbols": [],
+            "user_mentions": [
+                {
+                    "screen_name": "golem",
+                    "name": "Golem.de",
+                    "id": 8724992,
+                    "id_str": "8724992",
+                    "indices": [3, 9]
+                }
+            ],
+            "urls": [
+                {
+                    "url": "http:\/\/t.co\/9kUpncOOe5",
+                    "expanded_url": "http:\/\/www.golem.de\/news\/schwachstelle-yosemite-schreibt-firefox-eingaben-mit-1412-110995.html",
+                    "display_url": "golem.de\/news\/schwachst\u2026",
+                    "indices": [74, 96]
+                }
+            ]
+        },
+        "favorited": false,
+        "retweeted": false,
+        "possibly_sensitive": false,
+        "lang": "de"
+    },
+    {
+        "metadata": {
+            "iso_language_code": "de",
+            "result_type": "recent"
+        },
+        "created_at": "Fri Dec 05 15:53:02 +0000 2014",
+        "id": 540896638500634624,
+        "id_str": "540896638500634624",
+        "text": "RT @golem: Schwachstelle: Yosemite schreibt Firefox-Eingaben mit #Firefox http:\/\/t.co\/9kUpncOOe5",
+        "source": "\u003ca href=\"http:\/\/twitter.com\/download\/iphone\" rel=\"nofollow\"\u003eTwitter for iPhone\u003c\/a\u003e",
+        "truncated": false,
+        "in_reply_to_status_id": null,
+        "in_reply_to_status_id_str": null,
+        "in_reply_to_user_id": null,
+        "in_reply_to_user_id_str": null,
+        "in_reply_to_screen_name": null,
+        "user": {
+            "id": 2183594045,
+            "id_str": "2183594045",
+            "name": "Matthias Ga",
+            "screen_name": "MGSailing",
+            "location": "Germany",
+            "profile_location": null,
+            "description": "Sailor, Bayer-M\u00fcnchen-Fan",
+            "url": null,
+            "entities": {
+                "description": {
+                    "urls": []
+                }
+            },
+            "protected": false,
+            "followers_count": 2,
+            "friends_count": 88,
+            "listed_count": 1,
+            "created_at": "Sat Nov 16 19:15:06 +0000 2013",
+            "favourites_count": 552,
+            "utc_offset": 3600,
+            "time_zone": "Berlin",
+            "geo_enabled": false,
+            "verified": false,
+            "statuses_count": 100,
+            "lang": "de",
+            "contributors_enabled": false,
+            "is_translator": false,
+            "is_translation_enabled": false,
+            "profile_background_color": "C0DEED",
+            "profile_background_image_url": "http:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png",
+            "profile_background_image_url_https": "https:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png",
+            "profile_background_tile": false,
+            "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/419881345314074624\/IU6pT91-_normal.jpeg",
+            "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/419881345314074624\/IU6pT91-_normal.jpeg",
+            "profile_banner_url": "https:\/\/pbs.twimg.com\/profile_banners\/2183594045\/1393363226",
+            "profile_link_color": "0084B4",
+            "profile_sidebar_border_color": "C0DEED",
+            "profile_sidebar_fill_color": "DDEEF6",
+            "profile_text_color": "333333",
+            "profile_use_background_image": true,
+            "default_profile": true,
+            "default_profile_image": false,
+            "following": false,
+            "follow_request_sent": false,
+            "notifications": false
+        },
+        "geo": null,
+        "coordinates": null,
+        "place": null,
+        "contributors": null,
+        "retweeted_status": {
+            "metadata": {
+                "iso_language_code": "de",
+                "result_type": "recent"
+            },
+            "created_at": "Fri Dec 05 15:25:11 +0000 2014",
+            "id": 540889630842032128,
+            "id_str": "540889630842032128",
+            "text": "Schwachstelle: Yosemite schreibt Firefox-Eingaben mit #Firefox http:\/\/t.co\/9kUpncOOe5",
+            "source": "\u003ca href=\"http:\/\/www.golem.de\" rel=\"nofollow\"\u003eGolem.de\u003c\/a\u003e",
+            "truncated": false,
+            "in_reply_to_status_id": null,
+            "in_reply_to_status_id_str": null,
+            "in_reply_to_user_id": null,
+            "in_reply_to_user_id_str": null,
+            "in_reply_to_screen_name": null,
+            "user": {
+                "id": 8724992,
+                "id_str": "8724992",
+                "name": "Golem.de",
+                "screen_name": "golem",
+                "location": "Berlin, Germany",
+                "profile_location": null,
+                "description": "Aktuelle IT-News von Golem.de. Die Redaktion twittert unter  http:\/\/t.co\/iWnphPBy79 .",
+                "url": "http:\/\/t.co\/M2P6p3UcQ6",
+                "entities": {
+                    "url": {
+                        "urls": [
+                            {
+                                "url": "http:\/\/t.co\/M2P6p3UcQ6",
+                                "expanded_url": "http:\/\/www.golem.de",
+                                "display_url": "golem.de",
+                                "indices": [0, 22]
+                            }
+                        ]
+                    },
+                    "description": {
+                        "urls": [
+                            {
+                                "url": "http:\/\/t.co\/iWnphPBy79",
+                                "expanded_url": "http:\/\/twitter.com\/GolemRedaktion",
+                                "display_url": "twitter.com\/GolemRedaktion",
+                                "indices": [61, 83]
+                            }
+                        ]
+                    }
+                },
+                "protected": false,
+                "followers_count": 35765,
+                "friends_count": 0,
+                "listed_count": 1306,
+                "created_at": "Fri Sep 07 14:27:36 +0000 2007",
+                "favourites_count": 1,
+                "utc_offset": 3600,
+                "time_zone": "Berlin",
+                "geo_enabled": false,
+                "verified": true,
+                "statuses_count": 55536,
+                "lang": "de",
+                "contributors_enabled": false,
+                "is_translator": false,
+                "is_translation_enabled": false,
+                "profile_background_color": "F8F8F8",
+                "profile_background_image_url": "http:\/\/pbs.twimg.com\/profile_background_images\/436692\/golem48x48.png",
+                "profile_background_image_url_https": "https:\/\/pbs.twimg.com\/profile_background_images\/436692\/golem48x48.png",
+                "profile_background_tile": false,
+                "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/1345097225\/golem-twitter-q_normal.png",
+                "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/1345097225\/golem-twitter-q_normal.png",
+                "profile_link_color": "0B0199",
+                "profile_sidebar_border_color": "4A5A74",
+                "profile_sidebar_fill_color": "E8E8E8",
+                "profile_text_color": "000000",
+                "profile_use_background_image": true,
+                "default_profile": false,
+                "default_profile_image": false,
+                "following": true,
+                "follow_request_sent": false,
+                "notifications": false
+            },
+            "geo": null,
+            "coordinates": null,
+            "place": null,
+            "contributors": null,
+            "retweet_count": 6,
+            "favorite_count": 2,
+            "entities": {
+                "hashtags": [
+                    {
+                        "text": "Firefox",
+                        "indices": [54, 62]
+                    }
+                ],
+                "symbols": [],
+                "user_mentions": [],
+                "urls": [
+                    {
+                        "url": "http:\/\/t.co\/9kUpncOOe5",
+                        "expanded_url": "http:\/\/www.golem.de\/news\/schwachstelle-yosemite-schreibt-firefox-eingaben-mit-1412-110995.html",
+                        "display_url": "golem.de\/news\/schwachst\u2026",
+                        "indices": [63, 85]
+                    }
+                ]
+            },
+            "favorited": false,
+            "retweeted": false,
+            "possibly_sensitive": false,
+            "lang": "de"
+        },
+        "retweet_count": 6,
+        "favorite_count": 0,
+        "entities": {
+            "hashtags": [
+                {
+                    "text": "Firefox",
+                    "indices": [65, 73]
+                }
+            ],
+            "symbols": [],
+            "user_mentions": [
+                {
+                    "screen_name": "golem",
+                    "name": "Golem.de",
+                    "id": 8724992,
+                    "id_str": "8724992",
+                    "indices": [3, 9]
+                }
+            ],
+            "urls": [
+                {
+                    "url": "http:\/\/t.co\/9kUpncOOe5",
+                    "expanded_url": "http:\/\/www.golem.de\/news\/schwachstelle-yosemite-schreibt-firefox-eingaben-mit-1412-110995.html",
+                    "display_url": "golem.de\/news\/schwachst\u2026",
+                    "indices": [74, 96]
+                }
+            ]
+        },
+        "favorited": false,
+        "retweeted": false,
+        "possibly_sensitive": false,
+        "lang": "de"
+    },
+    {
+        "metadata": {
+            "iso_language_code": "de",
+            "result_type": "recent"
+        },
+        "created_at": "Fri Dec 05 15:43:26 +0000 2014",
+        "id": 540894221214183424,
+        "id_str": "540894221214183424",
+        "text": "RT @golem: Schwachstelle: Yosemite schreibt Firefox-Eingaben mit #Firefox http:\/\/t.co\/9kUpncOOe5",
+        "source": "\u003ca href=\"http:\/\/www.twitter.com\" rel=\"nofollow\"\u003eTwitter for Windows Phone\u003c\/a\u003e",
+        "truncated": false,
+        "in_reply_to_status_id": null,
+        "in_reply_to_status_id_str": null,
+        "in_reply_to_user_id": null,
+        "in_reply_to_user_id_str": null,
+        "in_reply_to_screen_name": null,
+        "user": {
+            "id": 574075335,
+            "id_str": "574075335",
+            "name": "errezz",
+            "screen_name": "errezz1",
+            "location": "",
+            "profile_location": null,
+            "description": "Raketenwissenschaftler, Kulturfreund, Chiller...",
+            "url": null,
+            "entities": {
+                "description": {
+                    "urls": []
+                }
+            },
+            "protected": false,
+            "followers_count": 85,
+            "friends_count": 295,
+            "listed_count": 8,
+            "created_at": "Mon May 07 21:55:27 +0000 2012",
+            "favourites_count": 5320,
+            "utc_offset": null,
+            "time_zone": null,
+            "geo_enabled": false,
+            "verified": false,
+            "statuses_count": 5557,
+            "lang": "de",
+            "contributors_enabled": false,
+            "is_translator": false,
+            "is_translation_enabled": false,
+            "profile_background_color": "C0DEED",
+            "profile_background_image_url": "http:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png",
+            "profile_background_image_url_https": "https:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png",
+            "profile_background_tile": false,
+            "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/2199971224\/upload_placeholder_normal.png",
+            "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/2199971224\/upload_placeholder_normal.png",
+            "profile_link_color": "0084B4",
+            "profile_sidebar_border_color": "C0DEED",
+            "profile_sidebar_fill_color": "DDEEF6",
+            "profile_text_color": "333333",
+            "profile_use_background_image": true,
+            "default_profile": true,
+            "default_profile_image": false,
+            "following": false,
+            "follow_request_sent": false,
+            "notifications": false
+        },
+        "geo": null,
+        "coordinates": null,
+        "place": null,
+        "contributors": null,
+        "retweeted_status": {
+            "metadata": {
+                "iso_language_code": "de",
+                "result_type": "recent"
+            },
+            "created_at": "Fri Dec 05 15:25:11 +0000 2014",
+            "id": 540889630842032128,
+            "id_str": "540889630842032128",
+            "text": "Schwachstelle: Yosemite schreibt Firefox-Eingaben mit #Firefox http:\/\/t.co\/9kUpncOOe5",
+            "source": "\u003ca href=\"http:\/\/www.golem.de\" rel=\"nofollow\"\u003eGolem.de\u003c\/a\u003e",
+            "truncated": false,
+            "in_reply_to_status_id": null,
+            "in_reply_to_status_id_str": null,
+            "in_reply_to_user_id": null,
+            "in_reply_to_user_id_str": null,
+            "in_reply_to_screen_name": null,
+            "user": {
+                "id": 8724992,
+                "id_str": "8724992",
+                "name": "Golem.de",
+                "screen_name": "golem",
+                "location": "Berlin, Germany",
+                "profile_location": null,
+                "description": "Aktuelle IT-News von Golem.de. Die Redaktion twittert unter  http:\/\/t.co\/iWnphPBy79 .",
+                "url": "http:\/\/t.co\/M2P6p3UcQ6",
+                "entities": {
+                    "url": {
+                        "urls": [
+                            {
+                                "url": "http:\/\/t.co\/M2P6p3UcQ6",
+                                "expanded_url": "http:\/\/www.golem.de",
+                                "display_url": "golem.de",
+                                "indices": [0, 22]
+                            }
+                        ]
+                    },
+                    "description": {
+                        "urls": [
+                            {
+                                "url": "http:\/\/t.co\/iWnphPBy79",
+                                "expanded_url": "http:\/\/twitter.com\/GolemRedaktion",
+                                "display_url": "twitter.com\/GolemRedaktion",
+                                "indices": [61, 83]
+                            }
+                        ]
+                    }
+                },
+                "protected": false,
+                "followers_count": 35765,
+                "friends_count": 0,
+                "listed_count": 1306,
+                "created_at": "Fri Sep 07 14:27:36 +0000 2007",
+                "favourites_count": 1,
+                "utc_offset": 3600,
+                "time_zone": "Berlin",
+                "geo_enabled": false,
+                "verified": true,
+                "statuses_count": 55536,
+                "lang": "de",
+                "contributors_enabled": false,
+                "is_translator": false,
+                "is_translation_enabled": false,
+                "profile_background_color": "F8F8F8",
+                "profile_background_image_url": "http:\/\/pbs.twimg.com\/profile_background_images\/436692\/golem48x48.png",
+                "profile_background_image_url_https": "https:\/\/pbs.twimg.com\/profile_background_images\/436692\/golem48x48.png",
+                "profile_background_tile": false,
+                "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/1345097225\/golem-twitter-q_normal.png",
+                "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/1345097225\/golem-twitter-q_normal.png",
+                "profile_link_color": "0B0199",
+                "profile_sidebar_border_color": "4A5A74",
+                "profile_sidebar_fill_color": "E8E8E8",
+                "profile_text_color": "000000",
+                "profile_use_background_image": true,
+                "default_profile": false,
+                "default_profile_image": false,
+                "following": true,
+                "follow_request_sent": false,
+                "notifications": false
+            },
+            "geo": null,
+            "coordinates": null,
+            "place": null,
+            "contributors": null,
+            "retweet_count": 6,
+            "favorite_count": 2,
+            "entities": {
+                "hashtags": [
+                    {
+                        "text": "Firefox",
+                        "indices": [54, 62]
+                    }
+                ],
+                "symbols": [],
+                "user_mentions": [],
+                "urls": [
+                    {
+                        "url": "http:\/\/t.co\/9kUpncOOe5",
+                        "expanded_url": "http:\/\/www.golem.de\/news\/schwachstelle-yosemite-schreibt-firefox-eingaben-mit-1412-110995.html",
+                        "display_url": "golem.de\/news\/schwachst\u2026",
+                        "indices": [63, 85]
+                    }
+                ]
+            },
+            "favorited": false,
+            "retweeted": false,
+            "possibly_sensitive": false,
+            "lang": "de"
+        },
+        "retweet_count": 6,
+        "favorite_count": 0,
+        "entities": {
+            "hashtags": [
+                {
+                    "text": "Firefox",
+                    "indices": [65, 73]
+                }
+            ],
+            "symbols": [],
+            "user_mentions": [
+                {
+                    "screen_name": "golem",
+                    "name": "Golem.de",
+                    "id": 8724992,
+                    "id_str": "8724992",
+                    "indices": [3, 9]
+                }
+            ],
+            "urls": [
+                {
+                    "url": "http:\/\/t.co\/9kUpncOOe5",
+                    "expanded_url": "http:\/\/www.golem.de\/news\/schwachstelle-yosemite-schreibt-firefox-eingaben-mit-1412-110995.html",
+                    "display_url": "golem.de\/news\/schwachst\u2026",
+                    "indices": [74, 96]
+                }
+            ]
+        },
+        "favorited": false,
+        "retweeted": false,
+        "possibly_sensitive": false,
+        "lang": "de"
+    },
+    {
+        "metadata": {
+            "iso_language_code": "de",
+            "result_type": "recent"
+        },
+        "created_at": "Fri Dec 05 15:38:32 +0000 2014",
+        "id": 540892989053493248,
+        "id_str": "540892989053493248",
+        "text": "RT @golem: Routerzwang abschaffen: Ministerium legt Gesetzentwurf noch im Dezember vor #Routerzwang http:\/\/t.co\/gELx32BNG5",
+        "source": "\u003ca href=\"http:\/\/twitter.com\/download\/iphone\" rel=\"nofollow\"\u003eTwitter for iPhone\u003c\/a\u003e",
+        "truncated": false,
+        "in_reply_to_status_id": null,
+        "in_reply_to_status_id_str": null,
+        "in_reply_to_user_id": null,
+        "in_reply_to_user_id_str": null,
+        "in_reply_to_screen_name": null,
+        "user": {
+            "id": 231527410,
+            "id_str": "231527410",
+            "name": "tsc_de",
+            "screen_name": "tsc_de",
+            "location": "",
+            "profile_location": null,
+            "description": "Fr\u00fcher war auch die Zukunft besser.",
+            "url": null,
+            "entities": {
+                "description": {
+                    "urls": []
+                }
+            },
+            "protected": false,
+            "followers_count": 37,
+            "friends_count": 81,
+            "listed_count": 1,
+            "created_at": "Tue Dec 28 19:40:52 +0000 2010",
+            "favourites_count": 290,
+            "utc_offset": null,
+            "time_zone": null,
+            "geo_enabled": false,
+            "verified": false,
+            "statuses_count": 793,
+            "lang": "de",
+            "contributors_enabled": false,
+            "is_translator": false,
+            "is_translation_enabled": false,
+            "profile_background_color": "1A1B1F",
+            "profile_background_image_url": "http:\/\/pbs.twimg.com\/profile_background_images\/405873777\/DSC03037_1.JPG",
+            "profile_background_image_url_https": "https:\/\/pbs.twimg.com\/profile_background_images\/405873777\/DSC03037_1.JPG",
+            "profile_background_tile": false,
+            "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/417973642123694080\/9RHYgBNH_normal.jpeg",
+            "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/417973642123694080\/9RHYgBNH_normal.jpeg",
+            "profile_banner_url": "https:\/\/pbs.twimg.com\/profile_banners\/231527410\/1401922051",
+            "profile_link_color": "003899",
+            "profile_sidebar_border_color": "181A1E",
+            "profile_sidebar_fill_color": "660A0A",
+            "profile_text_color": "8C90FF",
+            "profile_use_background_image": true,
+            "default_profile": false,
+            "default_profile_image": false,
+            "following": false,
+            "follow_request_sent": false,
+            "notifications": false
+        },
+        "geo": null,
+        "coordinates": null,
+        "place": null,
+        "contributors": null,
+        "retweeted_status": {
+            "metadata": {
+                "iso_language_code": "de",
+                "result_type": "recent"
+            },
+            "created_at": "Fri Dec 05 14:19:10 +0000 2014",
+            "id": 540873016365027329,
+            "id_str": "540873016365027329",
+            "text": "Routerzwang abschaffen: Ministerium legt Gesetzentwurf noch im Dezember vor #Routerzwang http:\/\/t.co\/gELx32BNG5",
+            "source": "\u003ca href=\"http:\/\/www.golem.de\" rel=\"nofollow\"\u003eGolem.de\u003c\/a\u003e",
+            "truncated": false,
+            "in_reply_to_status_id": null,
+            "in_reply_to_status_id_str": null,
+            "in_reply_to_user_id": null,
+            "in_reply_to_user_id_str": null,
+            "in_reply_to_screen_name": null,
+            "user": {
+                "id": 8724992,
+                "id_str": "8724992",
+                "name": "Golem.de",
+                "screen_name": "golem",
+                "location": "Berlin, Germany",
+                "profile_location": null,
+                "description": "Aktuelle IT-News von Golem.de. Die Redaktion twittert unter  http:\/\/t.co\/iWnphPBy79 .",
+                "url": "http:\/\/t.co\/M2P6p3UcQ6",
+                "entities": {
+                    "url": {
+                        "urls": [
+                            {
+                                "url": "http:\/\/t.co\/M2P6p3UcQ6",
+                                "expanded_url": "http:\/\/www.golem.de",
+                                "display_url": "golem.de",
+                                "indices": [0, 22]
+                            }
+                        ]
+                    },
+                    "description": {
+                        "urls": [
+                            {
+                                "url": "http:\/\/t.co\/iWnphPBy79",
+                                "expanded_url": "http:\/\/twitter.com\/GolemRedaktion",
+                                "display_url": "twitter.com\/GolemRedaktion",
+                                "indices": [61, 83]
+                            }
+                        ]
+                    }
+                },
+                "protected": false,
+                "followers_count": 35765,
+                "friends_count": 0,
+                "listed_count": 1306,
+                "created_at": "Fri Sep 07 14:27:36 +0000 2007",
+                "favourites_count": 1,
+                "utc_offset": 3600,
+                "time_zone": "Berlin",
+                "geo_enabled": false,
+                "verified": true,
+                "statuses_count": 55536,
+                "lang": "de",
+                "contributors_enabled": false,
+                "is_translator": false,
+                "is_translation_enabled": false,
+                "profile_background_color": "F8F8F8",
+                "profile_background_image_url": "http:\/\/pbs.twimg.com\/profile_background_images\/436692\/golem48x48.png",
+                "profile_background_image_url_https": "https:\/\/pbs.twimg.com\/profile_background_images\/436692\/golem48x48.png",
+                "profile_background_tile": false,
+                "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/1345097225\/golem-twitter-q_normal.png",
+                "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/1345097225\/golem-twitter-q_normal.png",
+                "profile_link_color": "0B0199",
+                "profile_sidebar_border_color": "4A5A74",
+                "profile_sidebar_fill_color": "E8E8E8",
+                "profile_text_color": "000000",
+                "profile_use_background_image": true,
+                "default_profile": false,
+                "default_profile_image": false,
+                "following": true,
+                "follow_request_sent": false,
+                "notifications": false
+            },
+            "geo": null,
+            "coordinates": null,
+            "place": null,
+            "contributors": null,
+            "retweet_count": 5,
+            "favorite_count": 3,
+            "entities": {
+                "hashtags": [
+                    {
+                        "text": "Routerzwang",
+                        "indices": [76, 88]
+                    }
+                ],
+                "symbols": [],
+                "user_mentions": [],
+                "urls": [
+                    {
+                        "url": "http:\/\/t.co\/gELx32BNG5",
+                        "expanded_url": "http:\/\/www.golem.de\/news\/routerzwang-abschaffen-ministerium-legt-gesetzentwurf-noch-im-dezember-vor-1412-110992.html",
+                        "display_url": "golem.de\/news\/routerzwa\u2026",
+                        "indices": [89, 111]
+                    }
+                ]
+            },
+            "favorited": false,
+            "retweeted": false,
+            "possibly_sensitive": false,
+            "lang": "de"
+        },
+        "retweet_count": 5,
+        "favorite_count": 0,
+        "entities": {
+            "hashtags": [
+                {
+                    "text": "Routerzwang",
+                    "indices": [87, 99]
+                }
+            ],
+            "symbols": [],
+            "user_mentions": [
+                {
+                    "screen_name": "golem",
+                    "name": "Golem.de",
+                    "id": 8724992,
+                    "id_str": "8724992",
+                    "indices": [3, 9]
+                }
+            ],
+            "urls": [
+                {
+                    "url": "http:\/\/t.co\/gELx32BNG5",
+                    "expanded_url": "http:\/\/www.golem.de\/news\/routerzwang-abschaffen-ministerium-legt-gesetzentwurf-noch-im-dezember-vor-1412-110992.html",
+                    "display_url": "golem.de\/news\/routerzwa\u2026",
+                    "indices": [100, 122]
+                }
+            ]
+        },
+        "favorited": false,
+        "retweeted": false,
+        "possibly_sensitive": false,
+        "lang": "de"
+    },
+    {
+        "metadata": {
+            "iso_language_code": "de",
+            "result_type": "recent"
+        },
+        "created_at": "Fri Dec 05 15:37:38 +0000 2014",
+        "id": 540892764058439680,
+        "id_str": "540892764058439680",
+        "text": "RT @golem: Schwachstelle: Yosemite schreibt Firefox-Eingaben mit #Firefox http:\/\/t.co\/9kUpncOOe5",
+        "source": "\u003ca href=\"http:\/\/twitter.com\/#!\/download\/ipad\" rel=\"nofollow\"\u003eTwitter for iPad\u003c\/a\u003e",
+        "truncated": false,
+        "in_reply_to_status_id": null,
+        "in_reply_to_status_id_str": null,
+        "in_reply_to_user_id": null,
+        "in_reply_to_user_id_str": null,
+        "in_reply_to_screen_name": null,
+        "user": {
+            "id": 14866652,
+            "id_str": "14866652",
+            "name": "Boris Borchert",
+            "screen_name": "Weltenweiser",
+            "location": "Berlin",
+            "profile_location": null,
+            "description": "Internet addicted, Tweets in english and german. Social Marketing Manager @Immobilienscout. This is my private profile.",
+            "url": "http:\/\/t.co\/DvJR3Et2Ez",
+            "entities": {
+                "url": {
+                    "urls": [
+                        {
+                            "url": "http:\/\/t.co\/DvJR3Et2Ez",
+                            "expanded_url": "http:\/\/www.weltenweiser.de",
+                            "display_url": "weltenweiser.de",
+                            "indices": [0, 22]
+                        }
+                    ]
+                },
+                "description": {
+                    "urls": []
+                }
+            },
+            "protected": false,
+            "followers_count": 520,
+            "friends_count": 526,
+            "listed_count": 46,
+            "created_at": "Thu May 22 09:58:36 +0000 2008",
+            "favourites_count": 1762,
+            "utc_offset": -10800,
+            "time_zone": "Greenland",
+            "geo_enabled": false,
+            "verified": false,
+            "statuses_count": 6824,
+            "lang": "en",
+            "contributors_enabled": false,
+            "is_translator": false,
+            "is_translation_enabled": false,
+            "profile_background_color": "D4D8B7",
+            "profile_background_image_url": "http:\/\/pbs.twimg.com\/profile_background_images\/157128099\/xe55c3dd1d568e71eaec36a64a4401cf.jpg",
+            "profile_background_image_url_https": "https:\/\/pbs.twimg.com\/profile_background_images\/157128099\/xe55c3dd1d568e71eaec36a64a4401cf.jpg",
+            "profile_background_tile": false,
+            "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/2223120140\/image_normal.jpg",
+            "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/2223120140\/image_normal.jpg",
+            "profile_banner_url": "https:\/\/pbs.twimg.com\/profile_banners\/14866652\/1397034207",
+            "profile_link_color": "B3B184",
+            "profile_sidebar_border_color": "545769",
+            "profile_sidebar_fill_color": "514E49",
+            "profile_text_color": "B0AD9A",
+            "profile_use_background_image": true,
+            "default_profile": false,
+            "default_profile_image": false,
+            "following": false,
+            "follow_request_sent": false,
+            "notifications": false
+        },
+        "geo": null,
+        "coordinates": null,
+        "place": null,
+        "contributors": null,
+        "retweeted_status": {
+            "metadata": {
+                "iso_language_code": "de",
+                "result_type": "recent"
+            },
+            "created_at": "Fri Dec 05 15:25:11 +0000 2014",
+            "id": 540889630842032128,
+            "id_str": "540889630842032128",
+            "text": "Schwachstelle: Yosemite schreibt Firefox-Eingaben mit #Firefox http:\/\/t.co\/9kUpncOOe5",
+            "source": "\u003ca href=\"http:\/\/www.golem.de\" rel=\"nofollow\"\u003eGolem.de\u003c\/a\u003e",
+            "truncated": false,
+            "in_reply_to_status_id": null,
+            "in_reply_to_status_id_str": null,
+            "in_reply_to_user_id": null,
+            "in_reply_to_user_id_str": null,
+            "in_reply_to_screen_name": null,
+            "user": {
+                "id": 8724992,
+                "id_str": "8724992",
+                "name": "Golem.de",
+                "screen_name": "golem",
+                "location": "Berlin, Germany",
+                "profile_location": null,
+                "description": "Aktuelle IT-News von Golem.de. Die Redaktion twittert unter  http:\/\/t.co\/iWnphPBy79 .",
+                "url": "http:\/\/t.co\/M2P6p3UcQ6",
+                "entities": {
+                    "url": {
+                        "urls": [
+                            {
+                                "url": "http:\/\/t.co\/M2P6p3UcQ6",
+                                "expanded_url": "http:\/\/www.golem.de",
+                                "display_url": "golem.de",
+                                "indices": [0, 22]
+                            }
+                        ]
+                    },
+                    "description": {
+                        "urls": [
+                            {
+                                "url": "http:\/\/t.co\/iWnphPBy79",
+                                "expanded_url": "http:\/\/twitter.com\/GolemRedaktion",
+                                "display_url": "twitter.com\/GolemRedaktion",
+                                "indices": [61, 83]
+                            }
+                        ]
+                    }
+                },
+                "protected": false,
+                "followers_count": 35765,
+                "friends_count": 0,
+                "listed_count": 1306,
+                "created_at": "Fri Sep 07 14:27:36 +0000 2007",
+                "favourites_count": 1,
+                "utc_offset": 3600,
+                "time_zone": "Berlin",
+                "geo_enabled": false,
+                "verified": true,
+                "statuses_count": 55536,
+                "lang": "de",
+                "contributors_enabled": false,
+                "is_translator": false,
+                "is_translation_enabled": false,
+                "profile_background_color": "F8F8F8",
+                "profile_background_image_url": "http:\/\/pbs.twimg.com\/profile_background_images\/436692\/golem48x48.png",
+                "profile_background_image_url_https": "https:\/\/pbs.twimg.com\/profile_background_images\/436692\/golem48x48.png",
+                "profile_background_tile": false,
+                "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/1345097225\/golem-twitter-q_normal.png",
+                "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/1345097225\/golem-twitter-q_normal.png",
+                "profile_link_color": "0B0199",
+                "profile_sidebar_border_color": "4A5A74",
+                "profile_sidebar_fill_color": "E8E8E8",
+                "profile_text_color": "000000",
+                "profile_use_background_image": true,
+                "default_profile": false,
+                "default_profile_image": false,
+                "following": true,
+                "follow_request_sent": false,
+                "notifications": false
+            },
+            "geo": null,
+            "coordinates": null,
+            "place": null,
+            "contributors": null,
+            "retweet_count": 6,
+            "favorite_count": 2,
+            "entities": {
+                "hashtags": [
+                    {
+                        "text": "Firefox",
+                        "indices": [54, 62]
+                    }
+                ],
+                "symbols": [],
+                "user_mentions": [],
+                "urls": [
+                    {
+                        "url": "http:\/\/t.co\/9kUpncOOe5",
+                        "expanded_url": "http:\/\/www.golem.de\/news\/schwachstelle-yosemite-schreibt-firefox-eingaben-mit-1412-110995.html",
+                        "display_url": "golem.de\/news\/schwachst\u2026",
+                        "indices": [63, 85]
+                    }
+                ]
+            },
+            "favorited": false,
+            "retweeted": false,
+            "possibly_sensitive": false,
+            "lang": "de"
+        },
+        "retweet_count": 6,
+        "favorite_count": 0,
+        "entities": {
+            "hashtags": [
+                {
+                    "text": "Firefox",
+                    "indices": [65, 73]
+                }
+            ],
+            "symbols": [],
+            "user_mentions": [
+                {
+                    "screen_name": "golem",
+                    "name": "Golem.de",
+                    "id": 8724992,
+                    "id_str": "8724992",
+                    "indices": [3, 9]
+                }
+            ],
+            "urls": [
+                {
+                    "url": "http:\/\/t.co\/9kUpncOOe5",
+                    "expanded_url": "http:\/\/www.golem.de\/news\/schwachstelle-yosemite-schreibt-firefox-eingaben-mit-1412-110995.html",
+                    "display_url": "golem.de\/news\/schwachst\u2026",
+                    "indices": [74, 96]
+                }
+            ]
+        },
+        "favorited": false,
+        "retweeted": false,
+        "possibly_sensitive": false,
+        "lang": "de"
+    },
+    {
+        "metadata": {
+            "iso_language_code": "de",
+            "result_type": "recent"
+        },
+        "created_at": "Fri Dec 05 15:33:58 +0000 2014",
+        "id": 540891838165831680,
+        "id_str": "540891838165831680",
+        "text": "RT @golem: Schwachstelle: Yosemite schreibt Firefox-Eingaben mit #Firefox http:\/\/t.co\/9kUpncOOe5",
+        "source": "\u003ca href=\"http:\/\/twitter.com\" rel=\"nofollow\"\u003eTwitter Web Client\u003c\/a\u003e",
+        "truncated": false,
+        "in_reply_to_status_id": null,
+        "in_reply_to_status_id_str": null,
+        "in_reply_to_user_id": null,
+        "in_reply_to_user_id_str": null,
+        "in_reply_to_screen_name": null,
+        "user": {
+            "id": 79498539,
+            "id_str": "79498539",
+            "name": "Steph Le Bref",
+            "screen_name": "Steph80335",
+            "location": "Munich",
+            "profile_location": null,
+            "description": "50% GER, 50% FRA: 100% multikulti",
+            "url": null,
+            "entities": {
+                "description": {
+                    "urls": []
+                }
+            },
+            "protected": false,
+            "followers_count": 212,
+            "friends_count": 1916,
+            "listed_count": 3,
+            "created_at": "Sat Oct 03 16:11:55 +0000 2009",
+            "favourites_count": 34,
+            "utc_offset": 3600,
+            "time_zone": "Berlin",
+            "geo_enabled": false,
+            "verified": false,
+            "statuses_count": 57103,
+            "lang": "de",
+            "contributors_enabled": false,
+            "is_translator": false,
+            "is_translation_enabled": false,
+            "profile_background_color": "C0DEED",
+            "profile_background_image_url": "http:\/\/pbs.twimg.com\/profile_background_images\/99906436\/cdu-fernsehen.jpg",
+            "profile_background_image_url_https": "https:\/\/pbs.twimg.com\/profile_background_images\/99906436\/cdu-fernsehen.jpg",
+            "profile_background_tile": true,
+            "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/526672913\/21158-QShyhRU_normal.jpg",
+            "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/526672913\/21158-QShyhRU_normal.jpg",
+            "profile_banner_url": "https:\/\/pbs.twimg.com\/profile_banners\/79498539\/1355458268",
+            "profile_link_color": "0084B4",
+            "profile_sidebar_border_color": "FFFFFF",
+            "profile_sidebar_fill_color": "DDEEF6",
+            "profile_text_color": "333333",
+            "profile_use_background_image": true,
+            "default_profile": false,
+            "default_profile_image": false,
+            "following": false,
+            "follow_request_sent": false,
+            "notifications": false
+        },
+        "geo": null,
+        "coordinates": null,
+        "place": null,
+        "contributors": null,
+        "retweeted_status": {
+            "metadata": {
+                "iso_language_code": "de",
+                "result_type": "recent"
+            },
+            "created_at": "Fri Dec 05 15:25:11 +0000 2014",
+            "id": 540889630842032128,
+            "id_str": "540889630842032128",
+            "text": "Schwachstelle: Yosemite schreibt Firefox-Eingaben mit #Firefox http:\/\/t.co\/9kUpncOOe5",
+            "source": "\u003ca href=\"http:\/\/www.golem.de\" rel=\"nofollow\"\u003eGolem.de\u003c\/a\u003e",
+            "truncated": false,
+            "in_reply_to_status_id": null,
+            "in_reply_to_status_id_str": null,
+            "in_reply_to_user_id": null,
+            "in_reply_to_user_id_str": null,
+            "in_reply_to_screen_name": null,
+            "user": {
+                "id": 8724992,
+                "id_str": "8724992",
+                "name": "Golem.de",
+                "screen_name": "golem",
+                "location": "Berlin, Germany",
+                "profile_location": null,
+                "description": "Aktuelle IT-News von Golem.de. Die Redaktion twittert unter  http:\/\/t.co\/iWnphPBy79 .",
+                "url": "http:\/\/t.co\/M2P6p3UcQ6",
+                "entities": {
+                    "url": {
+                        "urls": [
+                            {
+                                "url": "http:\/\/t.co\/M2P6p3UcQ6",
+                                "expanded_url": "http:\/\/www.golem.de",
+                                "display_url": "golem.de",
+                                "indices": [0, 22]
+                            }
+                        ]
+                    },
+                    "description": {
+                        "urls": [
+                            {
+                                "url": "http:\/\/t.co\/iWnphPBy79",
+                                "expanded_url": "http:\/\/twitter.com\/GolemRedaktion",
+                                "display_url": "twitter.com\/GolemRedaktion",
+                                "indices": [61, 83]
+                            }
+                        ]
+                    }
+                },
+                "protected": false,
+                "followers_count": 35765,
+                "friends_count": 0,
+                "listed_count": 1306,
+                "created_at": "Fri Sep 07 14:27:36 +0000 2007",
+                "favourites_count": 1,
+                "utc_offset": 3600,
+                "time_zone": "Berlin",
+                "geo_enabled": false,
+                "verified": true,
+                "statuses_count": 55536,
+                "lang": "de",
+                "contributors_enabled": false,
+                "is_translator": false,
+                "is_translation_enabled": false,
+                "profile_background_color": "F8F8F8",
+                "profile_background_image_url": "http:\/\/pbs.twimg.com\/profile_background_images\/436692\/golem48x48.png",
+                "profile_background_image_url_https": "https:\/\/pbs.twimg.com\/profile_background_images\/436692\/golem48x48.png",
+                "profile_background_tile": false,
+                "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/1345097225\/golem-twitter-q_normal.png",
+                "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/1345097225\/golem-twitter-q_normal.png",
+                "profile_link_color": "0B0199",
+                "profile_sidebar_border_color": "4A5A74",
+                "profile_sidebar_fill_color": "E8E8E8",
+                "profile_text_color": "000000",
+                "profile_use_background_image": true,
+                "default_profile": false,
+                "default_profile_image": false,
+                "following": true,
+                "follow_request_sent": false,
+                "notifications": false
+            },
+            "geo": null,
+            "coordinates": null,
+            "place": null,
+            "contributors": null,
+            "retweet_count": 6,
+            "favorite_count": 2,
+            "entities": {
+                "hashtags": [
+                    {
+                        "text": "Firefox",
+                        "indices": [54, 62]
+                    }
+                ],
+                "symbols": [],
+                "user_mentions": [],
+                "urls": [
+                    {
+                        "url": "http:\/\/t.co\/9kUpncOOe5",
+                        "expanded_url": "http:\/\/www.golem.de\/news\/schwachstelle-yosemite-schreibt-firefox-eingaben-mit-1412-110995.html",
+                        "display_url": "golem.de\/news\/schwachst\u2026",
+                        "indices": [63, 85]
+                    }
+                ]
+            },
+            "favorited": false,
+            "retweeted": false,
+            "possibly_sensitive": false,
+            "lang": "de"
+        },
+        "retweet_count": 6,
+        "favorite_count": 0,
+        "entities": {
+            "hashtags": [
+                {
+                    "text": "Firefox",
+                    "indices": [65, 73]
+                }
+            ],
+            "symbols": [],
+            "user_mentions": [
+                {
+                    "screen_name": "golem",
+                    "name": "Golem.de",
+                    "id": 8724992,
+                    "id_str": "8724992",
+                    "indices": [3, 9]
+                }
+            ],
+            "urls": [
+                {
+                    "url": "http:\/\/t.co\/9kUpncOOe5",
+                    "expanded_url": "http:\/\/www.golem.de\/news\/schwachstelle-yosemite-schreibt-firefox-eingaben-mit-1412-110995.html",
+                    "display_url": "golem.de\/news\/schwachst\u2026",
+                    "indices": [74, 96]
+                }
+            ]
+        },
+        "favorited": false,
+        "retweeted": false,
+        "possibly_sensitive": false,
+        "lang": "de"
+    },
+    {
+        "metadata": {
+            "iso_language_code": "de",
+            "result_type": "recent"
+        },
+        "created_at": "Fri Dec 05 14:51:55 +0000 2014",
+        "id": 540881255831986176,
+        "id_str": "540881255831986176",
+        "text": "\"@golem: #Routerzwang abschaffen: Ministerium legt Gesetzentwurf noch im Dezember vor http:\/\/t.co\/DpSEJ9bIV3\"\n\nL\u00e4ngst \u00fcberf\u00e4llige Aktion.",
+        "source": "\u003ca href=\"http:\/\/twitter.com\/download\/android\" rel=\"nofollow\"\u003eTwitter for Android\u003c\/a\u003e",
+        "truncated": false,
+        "in_reply_to_status_id": null,
+        "in_reply_to_status_id_str": null,
+        "in_reply_to_user_id": null,
+        "in_reply_to_user_id_str": null,
+        "in_reply_to_screen_name": null,
+        "user": {
+            "id": 2815862477,
+            "id_str": "2815862477",
+            "name": "Marcus Schuster",
+            "screen_name": "Wcn_itDe",
+            "location": "55262 Heidesheim, Germany",
+            "profile_location": null,
+            "description": "Impressum \/ Disclaimer: http:\/\/t.co\/hXbHhoShig",
+            "url": "http:\/\/t.co\/j5zJPhv1DV",
+            "entities": {
+                "url": {
+                    "urls": [
+                        {
+                            "url": "http:\/\/t.co\/j5zJPhv1DV",
+                            "expanded_url": "http:\/\/www.wcn-it.de",
+                            "display_url": "wcn-it.de",
+                            "indices": [0, 22]
+                        }
+                    ]
+                },
+                "description": {
+                    "urls": [
+                        {
+                            "url": "http:\/\/t.co\/hXbHhoShig",
+                            "expanded_url": "http:\/\/www.wcn-it.de\/impressum.html",
+                            "display_url": "wcn-it.de\/impressum.html",
+                            "indices": [24, 46]
+                        }
+                    ]
+                }
+            },
+            "protected": false,
+            "followers_count": 12,
+            "friends_count": 62,
+            "listed_count": 1,
+            "created_at": "Wed Oct 08 16:34:32 +0000 2014",
+            "favourites_count": 264,
+            "utc_offset": 3600,
+            "time_zone": "Brussels",
+            "geo_enabled": false,
+            "verified": false,
+            "statuses_count": 178,
+            "lang": "de",
+            "contributors_enabled": false,
+            "is_translator": false,
+            "is_translation_enabled": false,
+            "profile_background_color": "000000",
+            "profile_background_image_url": "http:\/\/abs.twimg.com\/images\/themes\/theme9\/bg.gif",
+            "profile_background_image_url_https": "https:\/\/abs.twimg.com\/images\/themes\/theme9\/bg.gif",
+            "profile_background_tile": false,
+            "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/526691043211624448\/qTyM8O_9_normal.png",
+            "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/526691043211624448\/qTyM8O_9_normal.png",
+            "profile_banner_url": "https:\/\/pbs.twimg.com\/profile_banners\/2815862477\/1414409180",
+            "profile_link_color": "89C9FA",
+            "profile_sidebar_border_color": "000000",
+            "profile_sidebar_fill_color": "000000",
+            "profile_text_color": "000000",
+            "profile_use_background_image": false,
+            "default_profile": false,
+            "default_profile_image": false,
+            "following": false,
+            "follow_request_sent": false,
+            "notifications": false
+        },
+        "geo": null,
+        "coordinates": null,
+        "place": null,
+        "contributors": null,
+        "retweet_count": 0,
+        "favorite_count": 1,
+        "entities": {
+            "hashtags": [
+                {
+                    "text": "Routerzwang",
+                    "indices": [9, 21]
+                }
+            ],
+            "symbols": [],
+            "user_mentions": [
+                {
+                    "screen_name": "golem",
+                    "name": "Golem.de",
+                    "id": 8724992,
+                    "id_str": "8724992",
+                    "indices": [1, 7]
+                }
+            ],
+            "urls": [
+                {
+                    "url": "http:\/\/t.co\/DpSEJ9bIV3",
+                    "expanded_url": "http:\/\/www.golem.de\/news\/routerzwang-abschaffen-ministerium-legt-gesetzentwurf-noch-im-dezember-vor-1412-110992.html",
+                    "display_url": "golem.de\/news\/routerzwa\u2026",
+                    "indices": [86, 108]
+                }
+            ]
+        },
+        "favorited": false,
+        "retweeted": false,
+        "possibly_sensitive": false,
+        "lang": "de"
+    },
+    {
+        "metadata": {
+            "iso_language_code": "de",
+            "result_type": "recent"
+        },
+        "created_at": "Fri Dec 05 14:44:03 +0000 2014",
+        "id": 540879278217637888,
+        "id_str": "540879278217637888",
+        "text": "RT @golem: Limux: Kopf einziehen und \u00fcber Verschw\u00f6rung tuscheln #Limux http:\/\/t.co\/5x7tqQikB1",
+        "source": "\u003ca href=\"http:\/\/twitter.com\" rel=\"nofollow\"\u003eTwitter Web Client\u003c\/a\u003e",
+        "truncated": false,
+        "in_reply_to_status_id": null,
+        "in_reply_to_status_id_str": null,
+        "in_reply_to_user_id": null,
+        "in_reply_to_user_id_str": null,
+        "in_reply_to_screen_name": null,
+        "user": {
+            "id": 73232700,
+            "id_str": "73232700",
+            "name": "Christian Paffhausen",
+            "screen_name": "thepaffy",
+            "location": "Rhineland-Palatinate\/Germany",
+            "profile_location": null,
+            "description": "Bit, Byte & Elektronen Schubser - Nerd - Fr\u00fcher mal Handwerker - Berlin ist nicht Deutschland - Europ\u00e4er - Immer der Zukunft entgegen",
+            "url": "https:\/\/t.co\/zwhz0vJhCI",
+            "entities": {
+                "url": {
+                    "urls": [
+                        {
+                            "url": "https:\/\/t.co\/zwhz0vJhCI",
+                            "expanded_url": "https:\/\/thepaffy.de",
+                            "display_url": "thepaffy.de",
+                            "indices": [0, 23]
+                        }
+                    ]
+                },
+                "description": {
+                    "urls": []
+                }
+            },
+            "protected": false,
+            "followers_count": 191,
+            "friends_count": 787,
+            "listed_count": 13,
+            "created_at": "Thu Sep 10 22:01:14 +0000 2009",
+            "favourites_count": 4657,
+            "utc_offset": 3600,
+            "time_zone": "Brussels",
+            "geo_enabled": true,
+            "verified": false,
+            "statuses_count": 7566,
+            "lang": "de",
+            "contributors_enabled": false,
+            "is_translator": false,
+            "is_translation_enabled": false,
+            "profile_background_color": "000000",
+            "profile_background_image_url": "http:\/\/pbs.twimg.com\/profile_background_images\/434670587043016704\/6ljhISAw.png",
+            "profile_background_image_url_https": "https:\/\/pbs.twimg.com\/profile_background_images\/434670587043016704\/6ljhISAw.png",
+            "profile_background_tile": false,
+            "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/378800000456116536\/d4102b2b220ef4a8f69bd14eedad273f_normal.jpeg",
+            "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/378800000456116536\/d4102b2b220ef4a8f69bd14eedad273f_normal.jpeg",
+            "profile_banner_url": "https:\/\/pbs.twimg.com\/profile_banners\/73232700\/1415824729",
+            "profile_link_color": "1BD121",
+            "profile_sidebar_border_color": "000000",
+            "profile_sidebar_fill_color": "C0DFEC",
+            "profile_text_color": "333333",
+            "profile_use_background_image": true,
+            "default_profile": false,
+            "default_profile_image": false,
+            "following": false,
+            "follow_request_sent": false,
+            "notifications": false
+        },
+        "geo": null,
+        "coordinates": null,
+        "place": null,
+        "contributors": null,
+        "retweeted_status": {
+            "metadata": {
+                "iso_language_code": "de",
+                "result_type": "recent"
+            },
+            "created_at": "Fri Dec 05 11:06:16 +0000 2014",
+            "id": 540824470014160898,
+            "id_str": "540824470014160898",
+            "text": "Limux: Kopf einziehen und \u00fcber Verschw\u00f6rung tuscheln #Limux http:\/\/t.co\/5x7tqQikB1",
+            "source": "\u003ca href=\"http:\/\/www.golem.de\" rel=\"nofollow\"\u003eGolem.de\u003c\/a\u003e",
+            "truncated": false,
+            "in_reply_to_status_id": null,
+            "in_reply_to_status_id_str": null,
+            "in_reply_to_user_id": null,
+            "in_reply_to_user_id_str": null,
+            "in_reply_to_screen_name": null,
+            "user": {
+                "id": 8724992,
+                "id_str": "8724992",
+                "name": "Golem.de",
+                "screen_name": "golem",
+                "location": "Berlin, Germany",
+                "profile_location": null,
+                "description": "Aktuelle IT-News von Golem.de. Die Redaktion twittert unter  http:\/\/t.co\/iWnphPBy79 .",
+                "url": "http:\/\/t.co\/M2P6p3UcQ6",
+                "entities": {
+                    "url": {
+                        "urls": [
+                            {
+                                "url": "http:\/\/t.co\/M2P6p3UcQ6",
+                                "expanded_url": "http:\/\/www.golem.de",
+                                "display_url": "golem.de",
+                                "indices": [0, 22]
+                            }
+                        ]
+                    },
+                    "description": {
+                        "urls": [
+                            {
+                                "url": "http:\/\/t.co\/iWnphPBy79",
+                                "expanded_url": "http:\/\/twitter.com\/GolemRedaktion",
+                                "display_url": "twitter.com\/GolemRedaktion",
+                                "indices": [61, 83]
+                            }
+                        ]
+                    }
+                },
+                "protected": false,
+                "followers_count": 35765,
+                "friends_count": 0,
+                "listed_count": 1306,
+                "created_at": "Fri Sep 07 14:27:36 +0000 2007",
+                "favourites_count": 1,
+                "utc_offset": 3600,
+                "time_zone": "Berlin",
+                "geo_enabled": false,
+                "verified": true,
+                "statuses_count": 55536,
+                "lang": "de",
+                "contributors_enabled": false,
+                "is_translator": false,
+                "is_translation_enabled": false,
+                "profile_background_color": "F8F8F8",
+                "profile_background_image_url": "http:\/\/pbs.twimg.com\/profile_background_images\/436692\/golem48x48.png",
+                "profile_background_image_url_https": "https:\/\/pbs.twimg.com\/profile_background_images\/436692\/golem48x48.png",
+                "profile_background_tile": false,
+                "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/1345097225\/golem-twitter-q_normal.png",
+                "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/1345097225\/golem-twitter-q_normal.png",
+                "profile_link_color": "0B0199",
+                "profile_sidebar_border_color": "4A5A74",
+                "profile_sidebar_fill_color": "E8E8E8",
+                "profile_text_color": "000000",
+                "profile_use_background_image": true,
+                "default_profile": false,
+                "default_profile_image": false,
+                "following": true,
+                "follow_request_sent": false,
+                "notifications": false
+            },
+            "geo": null,
+            "coordinates": null,
+            "place": null,
+            "contributors": null,
+            "retweet_count": 8,
+            "favorite_count": 1,
+            "entities": {
+                "hashtags": [
+                    {
+                        "text": "Limux",
+                        "indices": [53, 59]
+                    }
+                ],
+                "symbols": [],
+                "user_mentions": [],
+                "urls": [
+                    {
+                        "url": "http:\/\/t.co\/5x7tqQikB1",
+                        "expanded_url": "http:\/\/www.golem.de\/news\/limux-kopf-einziehen-und-ueber-verschwoerung-tuscheln-1412-110908.html",
+                        "display_url": "golem.de\/news\/limux-kop\u2026",
+                        "indices": [60, 82]
+                    }
+                ]
+            },
+            "favorited": false,
+            "retweeted": false,
+            "possibly_sensitive": false,
+            "lang": "de"
+        },
+        "retweet_count": 8,
+        "favorite_count": 0,
+        "entities": {
+            "hashtags": [
+                {
+                    "text": "Limux",
+                    "indices": [64, 70]
+                }
+            ],
+            "symbols": [],
+            "user_mentions": [
+                {
+                    "screen_name": "golem",
+                    "name": "Golem.de",
+                    "id": 8724992,
+                    "id_str": "8724992",
+                    "indices": [3, 9]
+                }
+            ],
+            "urls": [
+                {
+                    "url": "http:\/\/t.co\/5x7tqQikB1",
+                    "expanded_url": "http:\/\/www.golem.de\/news\/limux-kopf-einziehen-und-ueber-verschwoerung-tuscheln-1412-110908.html",
+                    "display_url": "golem.de\/news\/limux-kop\u2026",
+                    "indices": [71, 93]
+                }
+            ]
+        },
+        "favorited": false,
+        "retweeted": false,
+        "possibly_sensitive": false,
+        "lang": "de"
+    }
+], "search_metadata": {
+    "completed_in": 0.023,
+    "max_id": 540905288736731136,
+    "max_id_str": "540905288736731136",
+    "next_results": "?max_id=540879278217637887&q=%40golem&count=10&include_entities=1",
+    "query": "%40golem",
+    "refresh_url": "?since_id=540905288736731136&q=%40golem&include_entities=1",
+    "count": 10,
+    "since_id": 0,
+    "since_id_str": "0"
+}}

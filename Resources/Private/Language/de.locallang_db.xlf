@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2014-11-28T16:13:07Z" product-name="pb_social">
+		<header/>
+		<body>
+			<trans-unit id="flexform.tab.general.caption">
+                <source>General Settings</source>
+                <target state="translated">Grundlegende Einstellungen</target>
+            </trans-unit>
+
+            <trans-unit id="flexform.tab.facebook.caption">
+                <source>Facebook Settings</source>
+                <target state="translated">Facebook Einstellungen</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.facebook.asd">
+                <target>TEST2</target>
+            </trans-unit>
+
+            <trans-unit id="flexform.tab.google.caption">
+                <source>Google Settings</source>
+                <target state="translated">Google Einstellungen</target>
+            </trans-unit>
+
+            <trans-unit id="flexform.tab.instagram.caption">
+                <source>Instagram Settings</source>
+                <target state="translated">Instagram Einstellungen</target>
+            </trans-unit>
+
+            <trans-unit id="flexform.tab.twitter.caption">
+                <source>Twitter Settings</source>
+                <target state="translated">Twitter Einstellungen</target>
+            </trans-unit>
+
+            <trans-unit id="flexform.tab.tumblr.caption">
+                <source>Tumblr Settings</source>
+                <target state="translated">Tumblr Einstellungen</target>
+            </trans-unit>
+		</body>
+	</file>
+</xliff>
