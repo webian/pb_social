@@ -102,7 +102,7 @@
             "version": "0.0.1"
         },
         "extensionKey": "pb_social",
-        "name": "Social Media Connector",
+        "name": "Social Media Stream",
         "originalExtensionKey": "pb_social",
         "persons": [
             {

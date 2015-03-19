@@ -46,6 +46,7 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
         $logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
         $extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pb_social']); //TODO => search for a better way of accessing extconf
         $devMod = $extConf['socialfeed.']['devmod'] == "1" ? true : false;
+        $twitterHideRetweets = empty($settings['twitterHideRetweets']) ? false : ($settings['twitterHideRetweets'] == "1" ? true : false);
         $feedRequestLimit = intval(empty($settings['feedRequestLimit']) ? "10" : $settings['feedRequestLimit']);
         $refreshTimeInMin = intval(empty($settings['refreshTimeInMin']) ? "10" : $settings['refreshTimeInMin']);
         if($refreshTimeInMin == 0){ $refreshTimeInMin = 10; } //reset to 10 if intval() cant convert
@@ -273,10 +274,15 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                 foreach( explode(",", $twitterSearchFieldValues) as $searchValue){
                     $feeds = $this->findByTypeAndCacheIdentifier($type, $searchValue);
 
-                    // because og the amount of data twitter is sending, the database can only carry 10 tweets ^^
-                    // 10 Tweets = ~43000 Character
-                    if($feedRequestLimit > 10){ $feedRequestLimit = 10; }
+                    // because og the amount of data twitter is sending, the database can only carry 20 tweets ^^
+                    // 20 Tweets = ~86000 Character
+                    if($feedRequestLimit > 20){ $feedRequestLimit = 20; }
+
                     //https://dev.twitter.com/rest/reference/get/search/tweets
+                    //include_entities=false => The entities node will be disincluded when set to false.
+                    if($twitterHideRetweets){
+                        $searchValue = $searchValue."-filter:retweets";
+                    }
                     $getfield = '?q='.$searchValue.'&count='.$feedRequestLimit;
 
                     if($feeds && $feeds->count() > 0){

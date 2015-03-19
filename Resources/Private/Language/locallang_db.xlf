@@ -34,6 +34,9 @@
             <trans-unit id="flexform.tab.twitter.active">
                 <source>Active</source>
             </trans-unit>
+            <trans-unit id="flexform.tab.twitter.HideRetweets">
+                <source>Hide Retweets</source>
+            </trans-unit>
 
             <trans-unit id="flexform.tab.tumblr.caption">
                 <source>Tumblr Settings</source>

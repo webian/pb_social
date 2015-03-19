@@ -9,7 +9,7 @@
 ---
 conf.py:
   copyright: 2014
-  project: Social Media Connector
+  project: Social Media Stream
   version: 0.0.1
   release: 0.0.1
   intersphinx_mapping:
@@ -19,7 +19,7 @@ conf.py:
   latex_documents:
   - - Index
     - pb_social.tex
-    - Social Media Connector
+    - Social Media Stream
     - Mikolaj Jedrzejewski
     - manual
   latex_elements:

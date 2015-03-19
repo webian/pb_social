@@ -212,6 +212,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
                     if(empty($twt_feed->getResult()->statuses)){ break; }
                     $this->view->assign(self::TYPE_TWITTER.'_'.$twt_feed->getCacheIdentifier().'_raw', $twt_feed->getResult());
                     foreach($twt_feed->getResult()->statuses as $rawFeed){
+                        DebuggerUtility::var_dump($rawFeed);
     //                    if($onlyWithPicture && empty($rawFeed->images->)){ continue; }
                         $feed = new Feed($twt_feed->getType(), $rawFeed);
                         $feed->setId($rawFeed->id);

@@ -145,6 +145,15 @@
                             </config>
                         </TCEforms>
                     </settings.twitterEnabled>
+                    <settings.twitterHideRetweets>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.twitter.HideRetweets</label>
+                            <!--<onChange>reload</onChange>-->
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.twitterHideRetweets>
                     <settings.twitterSearchFieldValues>
                         <TCEforms>
                             <label>twitter search field values (e.g. #plusB,@plusB,...)</label>
