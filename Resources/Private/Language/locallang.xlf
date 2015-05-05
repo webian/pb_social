@@ -18,12 +18,7 @@
 			<trans-unit id="tx_pbsocial_domain_model_item.result">
 				<source>Result</source>
 			</trans-unit>
-            <trans-unit id="socialfeed_wizard.title">
-                <source>Social Media Streams</source>
-            </trans-unit>
-            <trans-unit id="socialfeed_wizard.description">
-                <source>Displays feeds from social media platforms</source>
-            </trans-unit>
+
 		</body>
 	</file>
 </xliff>

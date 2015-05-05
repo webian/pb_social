@@ -8,7 +8,7 @@
 # customsubcategory=6website=Our Website
 
 socialfeed{
-    # cat=socialfeed/0general/0010; type=boolean; label=enable devmod : database cache will refresh every pageload. Additional log messages active
+    # cat=socialfeed/0general/0010; type=boolean; label=enable devmode : database cache will refresh every pageload. Additional log messages active
     devmod=0
 
     # cat=socialfeed/1facebook/0010; type=string; label=api id

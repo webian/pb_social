@@ -5,17 +5,5 @@
 		<description>Language labels for the pb_social extension in the BACKEND</description>
 	</meta>
 	<data type="array">
-		<languageKey index="default" type="array">
-
-            <label index="socialfeed_wizard_title">Newsslider</label>
-            <label index="socialfeed_wizard_description">Plugin für die Ausgabe des Newssliders</label>
-
-		</languageKey>
-		<languageKey index="de" type="array">
-
-            <label index="socialfeed_wizard_title">Newsslider</label>
-            <label index="socialfeed_wizard_description">Plugin für die Ausgabe des Newssliders</label>
-
-		</languageKey>
 	</data>
 </T3locallang>

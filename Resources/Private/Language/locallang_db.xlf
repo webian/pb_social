@@ -10,9 +10,6 @@
             <trans-unit id="flexform.tab.facebook.caption">
                 <source>Facebook Settings</source>
             </trans-unit>
-            <trans-unit id="flexform.tab.facebook.active">
-                <source>Active</source>
-            </trans-unit>
 
             <trans-unit id="flexform.tab.google.caption">
                 <source>Google Settings</source>

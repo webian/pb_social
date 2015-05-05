@@ -54,8 +54,8 @@ class pbsocial_socialfeed_wizicon {
 	public function proc($wizardItems) {
 		$wizardItems['plugins_tx_' . $this->extKey] = array(
 			'icon' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($this->extKey) . 'Resources/Public/Icons/pb_logo.gif',
-            'title' => $GLOBALS['LANG']->sL('LLL:EXT:pb_social/Resources/Private/Language/locallang.xlf:socialfeed_wizard.title'),
-            'description' => $GLOBALS['LANG']->sL('LLL:EXT:pb_social/Resources/Private/Language/locallang.xlf:socialfeed_wizard.description'),
+            'title' => $GLOBALS['LANG']->sL('LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:socialfeed_wizard.title'),
+            'description' => $GLOBALS['LANG']->sL('LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:socialfeed_wizard.description'),
 			'params' => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=' . $this->pluginSignature
 		);
 		return $wizardItems;

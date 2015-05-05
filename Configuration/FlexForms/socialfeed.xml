@@ -12,7 +12,7 @@
                 <el>
                     <settings.refreshTimeInMin>
                         <TCEforms>
-                            <label>how often does the feeds have to be updated ? (in min)</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.general.updatingFeeds</label>
                             <config>
                                 <type>input</type>
                             </config>
@@ -20,7 +20,7 @@
                     </settings.refreshTimeInMin>
                     <settings.feedRequestLimit>
                         <TCEforms>
-                            <label>request limit for posts (small amount => fast response ^^)</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.general.requestLimit</label>
                             <config>
                                 <type>input</type>
                             </config>
@@ -28,7 +28,7 @@
                     </settings.feedRequestLimit>
                     <settings.onlyWithPicture>
                         <TCEforms>
-                            <label>show only posts with pictures</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.general.showOnlyImages</label>
                             <config>
                                 <type>check</type>
                             </config>
@@ -36,9 +36,10 @@
                     </settings.onlyWithPicture>
                     <settings.textTrimLength>
                         <TCEforms>
-                            <label>trim text after reaching this letter limit (if empty => default 130)</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.general.trimText</label>
                             <config>
                                 <type>input</type>
+                                <default>130</default>
                             </config>
                         </TCEforms>
                     </settings.textTrimLength>
@@ -48,13 +49,13 @@
         <display_facebook>
             <ROOT>
                 <TCEforms>
-                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.facebook.caption</sheetTitle>
+                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.facebook.caption</sheetTitle>
                 </TCEforms>
                 <type>array</type>
                 <el>
                     <settings.facebookEnabled>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.facebook.active</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.facebook.active</label>
                             <!--<onChange>reload</onChange>-->
                             <config>
                                 <type>check</type>
@@ -63,7 +64,7 @@
                     </settings.facebookEnabled>
                     <settings.facebookSearchIds>
                         <TCEforms>
-                            <label>facebook search ID's</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.facebook.searchID</label>
                             <!--<displayCond>FIELD:settings.facebookEnabled:=:1</displayCond>-->
                             <config>
                                 <type>input</type>
@@ -76,13 +77,13 @@
         <display_google>
             <ROOT>
                 <TCEforms>
-                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.google.caption</sheetTitle>
+                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.google.caption</sheetTitle>
                 </TCEforms>
                 <type>array</type>
                 <el>
                     <settings.googleEnabled>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.google.active</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.google.active</label>
                             <!--<onChange>reload</onChange>-->
                             <config>
                                 <type>check</type>
@@ -91,7 +92,7 @@
                     </settings.googleEnabled>
                     <settings.googleSearchIds>
                         <TCEforms>
-                            <label>google search ID's</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.google.searchID</label>
                             <!--<displayCond>FIELD:settings.googleEnabled:=:1</displayCond>-->
                             <config>
                                 <type>input</type>
@@ -104,13 +105,13 @@
         <display_instagram>
             <ROOT>
                 <TCEforms>
-                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.instagram.caption</sheetTitle>
+                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.instagram.caption</sheetTitle>
                 </TCEforms>
                 <type>array</type>
                 <el>
                     <settings.instagramEnabled>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.instagram.active</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.instagram.active</label>
                             <!--<onChange>reload</onChange>-->
                             <config>
                                 <type>check</type>
@@ -119,7 +120,7 @@
                     </settings.instagramEnabled>
                     <settings.instagramSearchIds>
                         <TCEforms>
-                            <label>instagram search ID's</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.instagram.searchID</label>
                             <!--<displayCond>FIELD:settings.instagramEnabled:=:1</displayCond>-->
                             <config>
                                 <type>input</type>
@@ -132,13 +133,13 @@
         <display_twitter>
             <ROOT>
                 <TCEforms>
-                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.twitter.caption</sheetTitle>
+                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.caption</sheetTitle>
                 </TCEforms>
                 <type>array</type>
                 <el>
                     <settings.twitterEnabled>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.twitter.active</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.active</label>
                             <!--<onChange>reload</onChange>-->
                             <config>
                                 <type>check</type>
@@ -147,7 +148,7 @@
                     </settings.twitterEnabled>
                     <settings.twitterHideRetweets>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.twitter.HideRetweets</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.hideRetweets</label>
                             <!--<onChange>reload</onChange>-->
                             <config>
                                 <type>check</type>
@@ -156,7 +157,7 @@
                     </settings.twitterHideRetweets>
                     <settings.twitterSearchFieldValues>
                         <TCEforms>
-                            <label>twitter search field values (e.g. #plusB,@plusB,...)</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.searchID</label>
                             <!--<displayCond>FIELD:settings.twitterEnabled:=:1</displayCond>-->
                             <config>
                                 <type>input</type>
@@ -169,13 +170,13 @@
         <display_tumblr>
             <ROOT>
                 <TCEforms>
-                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.tumblr.caption</sheetTitle>
+                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.tumblr.caption</sheetTitle>
                 </TCEforms>
                 <type>array</type>
                 <el>
                     <settings.tumblrEnabled>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.tumblr.active</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.tumblr.active</label>
                             <!--<onChange>reload</onChange>-->
                             <config>
                                 <type>check</type>
@@ -184,7 +185,7 @@
                     </settings.tumblrEnabled>
                     <settings.tumblrBlogNames>
                         <TCEforms>
-                            <label>tumblr blog names ... for own Dashboard use "MYDASHBOARD" as value</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.tumblr.searchID</label>
                             <!--<displayCond>FIELD:settings.tumblrEnabled:=:1</displayCond>-->
                             <config>
                                 <type>input</type>
