@@ -21,7 +21,7 @@
             </trans-unit>
             <trans-unit id="flexform.tab.general.trimText">
                 <source>Trim text after reaching this letter limit</source>
-                <target state="translated">Den Text nach bestimmter Anzahl von Zeichen abschneiden</target>
+                <target state="translated">Den Text nach einer bestimmten Anzahl von Zeichen abschneiden</target>
             </trans-unit>
 
             <trans-unit id="flexform.tab.facebook.caption">
@@ -74,6 +74,10 @@
             <trans-unit id="flexform.tab.twitter.hideRetweets">
                 <source>Hide Retweets</source>
                 <target state="translated">Retweets verstecken?</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.twitter.showOnlyImages">
+                <source>Show only tweets with images</source>
+                <target state="translated">Nur Tweets anzeigen, die Bilder beinhalten</target>
             </trans-unit>
             <trans-unit id="flexform.tab.twitter.searchID">
                 <source>Twitter search field values (e.g. #plusB,@plusB,...). Use commas to show more than one</source>

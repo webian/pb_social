@@ -40,7 +40,7 @@ socialfeed{
     # cat=socialfeed/5tumblr/0040; type=string; label=token secret
     tumblr.token_secret=
 
-    # cat=socialfeed/6website/0001;     type=user[EXT:pb_social/lib/class.pb_social_extmanager.php:pb_social_extmanager->getLogoAndLink]; label=For further information about us please visit our website
+    # cat=socialfeed/6website/0001; type=user[EXT:pb_social/lib/class.pb_social_extmanager.php:pb_social_extmanager->getLogoAndLink]; label=For further information about us please visit our website
     external_link=0
 }
 

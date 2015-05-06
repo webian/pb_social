@@ -47,6 +47,7 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
         $extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pb_social']); //TODO => search for a better way of accessing extconf
         $devMod = $extConf['socialfeed.']['devmod'] == "1" ? true : false;
         $twitterHideRetweets = empty($settings['twitterHideRetweets']) ? false : ($settings['twitterHideRetweets'] == "1" ? true : false);
+        $twitterShowOnlyImages = empty($settings['twitterShowOnlyImages']) ? false : ($settings['twitterShowOnlyImages'] == "1" ? true : false);
         $feedRequestLimit = intval(empty($settings['feedRequestLimit']) ? "10" : $settings['feedRequestLimit']);
         $refreshTimeInMin = intval(empty($settings['refreshTimeInMin']) ? "10" : $settings['refreshTimeInMin']);
         if($refreshTimeInMin == 0){ $refreshTimeInMin = 10; } //reset to 10 if intval() cant convert
@@ -88,7 +89,7 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                                 $this->update($feed);
                             }
                             catch (\FacebookApiException $e){
-                                $logger->warning($type.' feeds cant be updated', array( "data" => $e->getMessage() )); //TODO => handle FacebookApiException
+                                $logger->warning($type.' feeds can\'t be updated', array( "data" => $e->getMessage() )); //TODO => handle FacebookApiException
                             }
                         }
                         $result[] = $feed;
@@ -214,13 +215,13 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
                     if($feeds && $feeds->count() > 0){
                         $feed = $feeds->getFirst();
-                        if($devMod || ($feed->getDate()->getTimestamp() + $refreshTimeInMin*60) < time()){
+                        if($devMod || ($feed->getDate()->getTimestamp() + $refreshTimeInMin*60) < time()) {
                             try{
                                 $feed->setDate(new \DateTime('now'));
                                 $feed->setResult(json_encode($instagram->getUserMedia($searchId, $feedRequestLimit)));
                                 $this->update($feed);
                             }
-                            catch (\Exception $e){
+                            catch (\Exception $e) {
                                 $logger->error($type.' feeds cant be updated', array( "data" => $e->getMessage() ));
                             }
                         }
@@ -274,15 +275,20 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                 foreach( explode(",", $twitterSearchFieldValues) as $searchValue){
                     $feeds = $this->findByTypeAndCacheIdentifier($type, $searchValue);
 
-                    // because og the amount of data twitter is sending, the database can only carry 20 tweets ^^
+                    // because of the amount of data twitter is sending, the database can only carry 20 tweets ^^
                     // 20 Tweets = ~86000 Character
                     if($feedRequestLimit > 20){ $feedRequestLimit = 20; }
 
                     //https://dev.twitter.com/rest/reference/get/search/tweets
                     //include_entities=false => The entities node will be disincluded when set to false.
-                    if($twitterHideRetweets){
-                        $searchValue = $searchValue."-filter:retweets";
+
+                    if($twitterHideRetweets) {
+                        $searchValue .= "+exclude%3Aretweets";
                     }
+                    if($twitterShowOnlyImages) {
+                        $searchValue .= "+filter%3Aimages";
+                    }
+
                     $getfield = '?q='.$searchValue.'&count='.$feedRequestLimit;
 
                     if($feeds && $feeds->count() > 0){
@@ -292,9 +298,10 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                                 $feed->setDate(new \DateTime('now'));
                                 $feed->setResult($twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest());
                                 $this->update($feed);
+
                             }
                             catch (\Exception $e){
-                                $logger->error($type.' feeds cant be updated', array( "data" => $e->getMessage() ));
+                                $logger->error($type.' feeds can\'t be updated', array( "data" => $e->getMessage() ));
                             }
                         }
                         $result[] = $feed;
@@ -455,11 +462,10 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
     }
 
     /**
-     * @param ItemRepository $this
      * @param $feed
      */
     function saveFeed($feed){
         $this->add($feed);
-        $this->persistenceManager->persistAll(); // TODO => check if nessesary
+        $this->persistenceManager->persistAll(); // TODO => check if necessary
     }
 }

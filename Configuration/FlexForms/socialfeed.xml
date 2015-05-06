@@ -130,43 +130,6 @@
                 </el>
             </ROOT>
         </display_instagram>
-        <display_twitter>
-            <ROOT>
-                <TCEforms>
-                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.caption</sheetTitle>
-                </TCEforms>
-                <type>array</type>
-                <el>
-                    <settings.twitterEnabled>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.active</label>
-                            <!--<onChange>reload</onChange>-->
-                            <config>
-                                <type>check</type>
-                            </config>
-                        </TCEforms>
-                    </settings.twitterEnabled>
-                    <settings.twitterHideRetweets>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.hideRetweets</label>
-                            <!--<onChange>reload</onChange>-->
-                            <config>
-                                <type>check</type>
-                            </config>
-                        </TCEforms>
-                    </settings.twitterHideRetweets>
-                    <settings.twitterSearchFieldValues>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.searchID</label>
-                            <!--<displayCond>FIELD:settings.twitterEnabled:=:1</displayCond>-->
-                            <config>
-                                <type>input</type>
-                            </config>
-                        </TCEforms>
-                    </settings.twitterSearchFieldValues>
-                </el>
-            </ROOT>
-        </display_twitter>
         <display_tumblr>
             <ROOT>
                 <TCEforms>
@@ -195,5 +158,51 @@
                 </el>
             </ROOT>
         </display_tumblr>
+        <display_twitter>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.caption</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <settings.twitterEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.active</label>
+                            <!--<onChange>reload</onChange>-->
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.twitterEnabled>
+                    <settings.twitterHideRetweets>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.hideRetweets</label>
+                            <!--<onChange>reload</onChange>-->
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.twitterHideRetweets>
+                    <settings.twitterShowOnlyImages>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.showOnlyImages</label>
+                            <!--<onChange>reload</onChange>-->
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.twitterShowOnlyImages>
+                    <settings.twitterSearchFieldValues>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.searchID</label>
+                            <!--<displayCond>FIELD:settings.twitterEnabled:=:1</displayCond>-->
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.twitterSearchFieldValues>
+                </el>
+            </ROOT>
+        </display_twitter>
     </sheets>
 </T3DataStructure>
