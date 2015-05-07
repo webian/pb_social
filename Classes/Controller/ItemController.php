@@ -208,42 +208,6 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             }
         }
 
-        if (intval($this->settings["twitterEnabled"]) != 0) {
-            $feeds_twitter = $this->itemRepository->findFeedsByType(self::TYPE_TWITTER, $this->settings);
-            if ($feeds_twitter !== NULL) {
-                foreach ($feeds_twitter as $twt_feed) {
-                    if (empty($twt_feed->getResult()->statuses)) {
-                        break;
-                    }
-                    $this->view->assign(self::TYPE_TWITTER . '_' . $twt_feed->getCacheIdentifier() . '_raw', $twt_feed->getResult());
-                    foreach ($twt_feed->getResult()->statuses as $rawFeed) {
-//                        DebuggerUtility::var_dump($rawFeed);
-                        if ($onlyWithPicture && empty($rawFeed->entities->media)) {
-                            continue;
-                        }
-                        $feed = new Feed($twt_feed->getType(), $rawFeed);
-                        $feed->setId($rawFeed->id);
-                        $feed->setText(trim_text($rawFeed->text, $textTrimLength, true));
-                        if ($rawFeed->entities->media[0]->type == 'photo') {
-                            $feed->setImage($rawFeed->entities->media[0]->media_url);
-                        }
-                        if ($rawFeed->entities->media[0]->url) {
-                            $feed->setLink($rawFeed->entities->media[0]->url);
-                        }
-                        else if ($rawFeed->entities->urls[0]->expanded_url) {
-                            $feed->setLink($rawFeed->entities->urls[0]->expanded_url);
-                        }
-                        else {
-                            $feed->setLink('https://twitter.com/'.$rawFeed->user->screen_name.'/status/'.$rawFeed->id_str);
-                        }
-                        $dateTime = new \DateTime($rawFeed->created_at);
-                        $feed->setTimeStampTicks($dateTime->getTimestamp());
-                        $feeds[] = $feed;
-                    }
-                }
-            }
-        }
-
         if (intval($this->settings["tumblrEnabled"]) != 0) {
             $feeds_tumblr = $this->itemRepository->findFeedsByType(self::TYPE_TUMBLR, $this->settings);
 
@@ -256,10 +220,52 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
                         }
                         $feed = new Feed($tblr_feed->getType(), $rawFeed);
                         $feed->setId($rawFeed->id);
-                        $feed->setText(trim_text(strip_tags($rawFeed->caption), $textTrimLength, true));
-                        $feed->setImage($rawFeed->photos[0]->original_size->url);
+                        if ($rawFeed->caption) {
+                            $feed->setText(trim_text(strip_tags($rawFeed->caption), $textTrimLength, true));
+                        } else if ($rawFeed->body) {
+                            $feed->setText(trim_text(strip_tags($rawFeed->body), $textTrimLength, true));
+                        }
+                        if ($rawFeed->photos[0]->original_size->url) {
+                            $feed->setImage($rawFeed->photos[0]->original_size->url);
+                        } else if ($rawFeed->thumbnail_url) {
+                            $feed->setImage($rawFeed->thumbnail_url);
+                        }
+
                         $feed->setLink($rawFeed->post_url);
                         $feed->setTimeStampTicks($rawFeed->timestamp);
+                        $feeds[] = $feed;
+                    }
+                }
+            }
+        }
+
+        if (intval($this->settings["twitterEnabled"]) != 0) {
+            $feeds_twitter = $this->itemRepository->findFeedsByType(self::TYPE_TWITTER, $this->settings);
+            if ($feeds_twitter !== NULL) {
+                foreach ($feeds_twitter as $twt_feed) {
+                    if (empty($twt_feed->getResult()->statuses)) {
+                        break;
+                    }
+                    $this->view->assign(self::TYPE_TWITTER . '_' . $twt_feed->getCacheIdentifier() . '_raw', $twt_feed->getResult());
+                    foreach ($twt_feed->getResult()->statuses as $rawFeed) {
+                        if ($onlyWithPicture && empty($rawFeed->entities->media)) {
+                            continue;
+                        }
+                        $feed = new Feed($twt_feed->getType(), $rawFeed);
+                        $feed->setId($rawFeed->id);
+                        $feed->setText(trim_text($rawFeed->text, $textTrimLength, true));
+                        if ($rawFeed->entities->media[0]->type == 'photo') {
+                            $feed->setImage($rawFeed->entities->media[0]->media_url);
+                        }
+                        if ($rawFeed->entities->media[0]->url) {
+                            $feed->setLink($rawFeed->entities->media[0]->url);
+                        } else if ($rawFeed->entities->urls[0]->expanded_url) {
+                            $feed->setLink($rawFeed->entities->urls[0]->expanded_url);
+                        } else {
+                            $feed->setLink('https://twitter.com/' . $rawFeed->user->screen_name . '/status/' . $rawFeed->id_str);
+                        }
+                        $dateTime = new \DateTime($rawFeed->created_at);
+                        $feed->setTimeStampTicks($dateTime->getTimestamp());
                         $feeds[] = $feed;
                     }
                 }

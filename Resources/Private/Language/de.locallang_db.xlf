@@ -96,6 +96,10 @@
                 <source>Tumblr blog names. For your own Dashboard use "MYDASHBOARD" as value. Use commas to show more than one blog</source>
                 <target state="translated">Tumblr Blognamen, die angezeigt werden sollen. Für das eigene Dashboard "MYDASHBOARD" eingeben. Verwende Kommas, um mehrere Blogs anzuzeigen</target>
             </trans-unit>
+            <trans-unit id="flexform.tab.tumblr.showOnlyImages">
+                <source>Show only posts with images</source>
+                <target state="translated">Nur Posts anzeigen, die Bilder beinhalten</target>
+            </trans-unit>
 
             <trans-unit id="socialfeed_wizard.title">
                 <source>Social Media Streams</source>

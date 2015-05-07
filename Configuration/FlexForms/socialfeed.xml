@@ -1,5 +1,6 @@
 <T3DataStructure>
     <meta>
+        <langChildren>0</langChildren>
         <langDisable>1</langDisable>
     </meta>
     <sheets>
@@ -146,6 +147,15 @@
                             </config>
                         </TCEforms>
                     </settings.tumblrEnabled>
+                    <settings.tumblrShowOnlyImages>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.tumblr.showOnlyImages</label>
+                            <!--<onChange>reload</onChange>-->
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.tumblrShowOnlyImages>
                     <settings.tumblrBlogNames>
                         <TCEforms>
                             <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.tumblr.searchID</label>

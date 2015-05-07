@@ -1,29 +1,39 @@
-<f:layout name="Default" />
+<f:layout name="Default"/>
 <f:section name="main">
     <div class="pb-list">
         <f:for each="{feeds}" as="feed">
+
             <f:if condition="{0:feed.provider}=={0:'googleplus'}">
                 <div class="pb-list-item pb-list-item-googleplus pb-hidden" data-type="{feed.raw.object.attachments.0.objectType}" data-url="{feed.link}">
-                    <div class="image" style="background-image: url({feed.image})"></div>
+                    <f:if condition="{feed.image}">
+                        <f:then>
+                            <div class="image" style="background-image: url({feed.image})"></div>
+                        </f:then>
+                        <f:else>
+                            <div class="image" style="background-image: url(/typo3conf/ext/pb_social/Resources/Public/Icons/google+_big.png);background-repeat:no-repeat;background-size: 128px;background-color:white;"></div>
+                        </f:else>
+                    </f:if>
                     <f:if condition="{feed.text}">
                         <span class="text">{feed.text}</span>
                     </f:if>
                     <div class="icon"></div>
-                    <a class="additional-info info-1" href="{feed.link}" >{feed.raw.object.replies.totalItems}</a>
-                    <a class="additional-info info-2" href="{feed.link}" >{feed.raw.object.plusoners.totalItems}</a>
+                    <a class="additional-info info-1" href="{feed.link}">{feed.raw.object.replies.totalItems}</a>
+                    <a class="additional-info info-2" href="{feed.link}">{feed.raw.object.plusoners.totalItems}</a>
                     <f:if condition="{0:feed.raw.object.attachments.0.objectType}=={0:'video'}">
-                        <img class="video-overlay" src="/typo3conf/ext/pb_social/Resources/Public/Icons/play_icon.png" />
+                        <img class="video-overlay" src="/typo3conf/ext/pb_social/Resources/Public/Icons/play_icon.png"/>
                     </f:if>
                 </div>
             </f:if>
+
             <f:if condition="{0:feed.provider}=={0:'instagram'}">
                 <div class="pb-list-item pb-list-item-instagram pb-hidden" data-type="" data-url="{feed.link}">
                     <div class="image" style="background-image: url({feed.image})"></div>
                     <div class="icon"></div>
-                    <a class="additional-info info-1" href="{feed.link}" >{feed.raw.likes.count}</a>
-                    <a class="additional-info info-2" href="{feed.link}" >{feed.raw.comments.count}</a>
+                    <a class="additional-info info-1" href="{feed.link}">{feed.raw.likes.count}</a>
+                    <a class="additional-info info-2" href="{feed.link}">{feed.raw.comments.count}</a>
                 </div>
             </f:if>
+
             <f:if condition="{0:feed.provider}=={0:'facebook'}">
                 <f:if condition="{0:feed.raw.type}!={0:'status'}">
                     <div class="pb-list-item pb-list-item-facebook pb-hidden" data-type="{feed.raw.type}" data-id="{feed.id}" data-url="{feed.link}">
@@ -39,33 +49,58 @@
                             <span class="text">{feed.text}</span>
                         </f:if>
                         <div class="icon"></div>
-                        <a class="additional-info info-1" href="{feed.link}" ><f:count>{feed.raw.likes.data}</f:count></a>
-                        <a class="additional-info info-2" href="{feed.link}" ><f:count>{feed.raw.comments.data}</f:count></a>
+                        <a class="additional-info info-1" href="{feed.link}">
+                            <f:count>{feed.raw.likes.data}</f:count>
+                        </a>
+                        <a class="additional-info info-2" href="{feed.link}">
+                            <f:count>{feed.raw.comments.data}</f:count>
+                        </a>
                         <f:if condition="{0:feed.raw.type}=={0:'video'}">
-                            <img class="video-overlay" src="/typo3conf/ext/pb_social/Resources/Public/Icons/play_icon.png" />
+                            <img class="video-overlay" src="/typo3conf/ext/pb_social/Resources/Public/Icons/play_icon.png"/>
                         </f:if>
                     </div>
                 </f:if>
             </f:if>
+
             <f:if condition="{0:feed.provider}=={0:'tumblr'}">
                 <div class="pb-list-item pb-list-item-tumblr pb-hidden" data-type="{feed.raw.type}" data-url="{feed.link}">
-                    <div class="image" style="background-image: url({feed.image})"></div>
+                    <f:if condition="{feed.image}">
+                        <f:then>
+                            <div class="image" style="background-image: url({feed.image})"></div>
+                        </f:then>
+                        <f:else>
+                            <div class="image" style="background-image: url(/typo3conf/ext/pb_social/Resources/Public/Icons/tumblr_big.png);background-repeat:no-repeat;background-size: 230px;background-color:white;"></div>
+                        </f:else>
+                    </f:if>
                     <div class="icon"></div>
                     <span class="text">{feed.text}</span>
-                    <a class="additional-info info-2" href="{feed.link}" >{feed.raw.note_count}</a>
+                    <a class="additional-info info-2" href="{feed.link}">{feed.raw.note_count}</a>
                 </div>
             </f:if>
+
             <f:if condition="{0:feed.provider}=={0:'twitter'}">
                 <div class="pb-list-item pb-list-item-twitter pb-hidden" data-type="" data-id="{feed.id}" data-url="{feed.link}">
-                    <div class="image" data-image-id="{feed.raw.object_id}" style="background-image: url({feed.image})"></div>
+                    <f:if condition="{feed.image}">
+                        <f:then>
+                            <div class="image" data-image-id="{feed.raw.object_id}" style="background-image: url({feed.image})"></div>
+                        </f:then>
+                        <f:else>
+                            <div class="image" data-image-id="{feed.raw.object_id}" style="background-image: url(/typo3conf/ext/pb_social/Resources/Public/Icons/twitter_big.png);background-repeat:no-repeat;background-size: 200px;background-color:white;"></div>
+                        </f:else>
+                    </f:if>
                     <f:if condition="{feed.text}">
                         <span class="text">{feed.text}</span>
                     </f:if>
                     <div class="icon"></div>
-                    <a class="additional-info info-1" href="{feed.link}"><f:count>{feed.raw.retweet_count}</f:count></a>
-                    <a class="additional-info info-2" href="{feed.link}"><f:count>{feed.raw.favorite_count}</f:count></a>
+                    <a class="additional-info info-1" href="{feed.link}">
+                        <f:count>{feed.raw.retweet_count}</f:count>
+                    </a>
+                    <a class="additional-info info-2" href="{feed.link}">
+                        <f:count>{feed.raw.favorite_count}</f:count>
+                    </a>
                 </div>
             </f:if>
+
         </f:for>
     </div>
 </f:section>
