@@ -81,7 +81,19 @@
             </trans-unit>
             <trans-unit id="flexform.tab.twitter.searchID">
                 <source>Twitter search field values (e.g. #plusB,@plusB,...). Use commas to show more than one</source>
-                <target state="translated">Twitter Suchkriterien (z.B. #plusB,@plusB,...). Verwende Kommas, um mehrere Seiten anzuzeigen</target>
+                <target state="translated">Tweets anzeigen, die bestimmte Wörter beinhalten (z.b. plusB). Verwende Kommas, um mehrere Seiten anzuzeigen</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.twitter.profilePosts">
+                <source>Show tweets of specific profiles. Use commas to show more than one</source>
+                <target state="translated">Zeige Tweets von bestimmten Twitter-Profilen. Verwende Kommas, um Tweets mehrerer Profile anzuzeigen</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.twitter.language">
+                <source>(Optional) Show tweets in a specific language (for example: use "de" for german language). For a list look at the ISO 639-1 codes on http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes</source>
+                <target state="translated">(Optional) Zeige Tweets nur in der entsprechenden Sprache an (z.B. "de" für Tweets, die in Deutsch sind). Für eine Liste, schaue auf die ISO 639-1 Codes auf http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.twitter.geocode">
+                <source>(Optional) Returns tweets by users located within a given radius of the given latitude/longitude. Example value: "37.781157,-122.398720,1mi". the last parameter is the radius ("1mi" stands for one mile, use "km" for kilometers). Use http://mygeoposition.com/ to find your preferred geolocation</source>
+                <target state="translated">(Optional) Zeige Tweets nach der Geolocation innerhalb eines bestimmten Radius an. Z.B.: "37.781157,-122.398720,1mi". Der letzte Parameter ist der Radius ("1mi" steht für 1 Meile. Benutze "km" für Kilometer). Um eine Geolocation herauszufinden, nutze z.B. http://mygeoposition.com/</target>
             </trans-unit>
 
             <trans-unit id="flexform.tab.tumblr.caption">

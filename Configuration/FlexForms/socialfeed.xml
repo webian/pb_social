@@ -205,12 +205,35 @@
                     <settings.twitterSearchFieldValues>
                         <TCEforms>
                             <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.searchID</label>
-                            <!--<displayCond>FIELD:settings.twitterEnabled:=:1</displayCond>-->
                             <config>
                                 <type>input</type>
                             </config>
                         </TCEforms>
                     </settings.twitterSearchFieldValues>
+                    <settings.twitterProfilePosts>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.profilePosts</label>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.twitterProfilePosts>
+                    <settings.twitterLanguage>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.language</label>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.twitterLanguage>
+                    <settings.twitterGeoCode>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.geocode</label>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.twitterGeoCode>
                 </el>
             </ROOT>
         </display_twitter>

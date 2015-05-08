@@ -253,6 +253,7 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
             // TWITTER
             //
             case "twitter":
+                $apiParameters = '';
                 $config_consumerKey = $extConf['socialfeed.']['twitter.']['consumer.']['key'];
                 $config_consumerSecret = $extConf['socialfeed.']['twitter.']['consumer.']['secret'];
                 $config_accessToken = $extConf['socialfeed.']['twitter.']['oauth.']['access.']['token'];
@@ -263,10 +264,9 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                 }
 
                 $twitterSearchFieldValues = $settings['twitterSearchFieldValues'];
-                if (empty($twitterSearchFieldValues)) {
-                    $logger->warning($type . ' - no search term defined');
-                    break;
-                }
+                $twitterProfilePosts = $settings['twitterProfilePosts'];
+                $twitterLanguage = $settings['twitterLanguage'];
+                $twitterGeoCode = $settings['twitterGeoCode'];
 
                 $requestMethod = 'GET';
                 $url = 'https://api.twitter.com/1.1/search/tweets.json';
@@ -277,54 +277,106 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                     'consumer_secret' => $config_consumerSecret
                 ));
 
-                foreach (explode(",", $twitterSearchFieldValues) as $searchValue) {
-                    $feeds = $this->findByTypeAndCacheIdentifier($type, $searchValue);
+                if (empty($twitterSearchFieldValues) && empty($twitterProfilePosts)) {
+                    $logger->warning($type . ' - no search term defined');
+                    break;
+                }
 
-                    // because of the amount of data twitter is sending, the database can only carry 20 tweets ^^
-                    // 20 Tweets = ~86000 Character
-                    if ($feedRequestLimit > 20) {
-                        $feedRequestLimit = 20;
-                    }
+                // because of the amount of data twitter is sending, the database can only carry 20 tweets.
+                // 20 Tweets = ~86000 Character
+                if ($feedRequestLimit > 20) {
+                    $feedRequestLimit = 20;
+                }
+                if ($twitterHideRetweets) {
+                    $apiParameters .= "+exclude%3Aretweets";
+                }
+                if ($twitterShowOnlyImages) {
+                    $apiParameters .= "+filter%3Aimages";
+                }
+                if ($twitterLanguage) {
+                    $apiParameters .= "&lang=" . $twitterLanguage;
+                }
+                if ($twitterGeoCode) {
+                    $apiParameters .= "&geocode=" . $twitterGeoCode;
+                }
 
-                    //https://dev.twitter.com/rest/reference/get/search/tweets
-                    //include_entities=false => The entities node will be disincluded when set to false.
+                if ($twitterSearchFieldValues) {
+                    foreach (explode(",", $twitterSearchFieldValues) as $searchValue) {
+                        $feeds = $this->findByTypeAndCacheIdentifier($type, $searchValue);
 
-                    if ($twitterHideRetweets) {
-                        $searchValue .= "+exclude%3Aretweets";
-                    }
-                    if ($twitterShowOnlyImages) {
-                        $searchValue .= "+filter%3Aimages";
-                    }
+                        //https://dev.twitter.com/rest/reference/get/search/tweets
+                        //include_entities=false => The entities node will be disincluded when set to false.
 
-                    $getfield = '?q=' . $searchValue . '&count=' . $feedRequestLimit;
+                        $getfield = '?q=' . $searchValue . $apiParameters . '&count=' . $feedRequestLimit;
 
-                    if ($feeds && $feeds->count() > 0) {
-                        $feed = $feeds->getFirst();
-                        if ($devMod || ($feed->getDate()->getTimestamp() + $refreshTimeInMin * 60) < time()) {
-                            try {
-                                $feed->setDate(new \DateTime('now'));
-                                $feed->setResult($twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest());
-                                $this->update($feed);
+                        if ($feeds && $feeds->count() > 0) {
+                            $feed = $feeds->getFirst();
+                            if ($devMod || ($feed->getDate()->getTimestamp() + $refreshTimeInMin * 60) < time()) {
+                                try {
+                                    $feed->setDate(new \DateTime('now'));
+                                    $feed->setResult($twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest());
+                                    $this->update($feed);
 
-                            } catch (\Exception $e) {
-                                $logger->error($type . ' feeds can\'t be updated', array("data" => $e->getMessage()));
+                                } catch (\Exception $e) {
+                                    $logger->error($type . ' feeds can\'t be updated', array("data" => $e->getMessage()));
+                                }
                             }
+                            $result[] = $feed;
+                            continue;
                         }
-                        $result[] = $feed;
-                        continue;
+
+                        try {
+                            $feed = new Model\Item($type);
+                            $feed->setCacheIdentifier($searchValue);
+                            $feed->setResult($twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest());
+
+                            // save to DB and return current feed
+                            $this->saveFeed($feed);
+                            $result[] = $feed;
+
+                        } catch (\Exception $e) {
+                            $logger->error('initial load for ' . $type . ' feeds failed', array("data" => $e->getMessage()));
+                        }
                     }
+                }
 
-                    try {
-                        $feed = new Model\Item($type);
-                        $feed->setCacheIdentifier($searchValue);
-                        $feed->setResult($twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest());
+                if ($twitterProfilePosts) {
+                    foreach (explode(",", $twitterProfilePosts) as $searchValue) {
+                        $feeds = $this->findByTypeAndCacheIdentifier($type, $searchValue);
 
-                        // save to DB and return current feed
-                        $this->saveFeed($feed);
-                        $result[] = $feed;
+                        //https://dev.twitter.com/rest/reference/get/search/tweets
+                        //include_entities=false => The entities node will be disincluded when set to false.
 
-                    } catch (\Exception $e) {
-                        $logger->error('initial load for ' . $type . ' feeds failed', array("data" => $e->getMessage()));
+                        $getfield = '?q=from:' . $searchValue . $apiParameters . '&count=' . $feedRequestLimit;
+                        DebuggerUtility::var_dump($getfield);
+                        if ($feeds && $feeds->count() > 0) {
+                            $feed = $feeds->getFirst();
+                            if ($devMod || ($feed->getDate()->getTimestamp() + $refreshTimeInMin * 60) < time()) {
+                                try {
+                                    $feed->setDate(new \DateTime('now'));
+                                    $feed->setResult($twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest());
+                                    $this->update($feed);
+
+                                } catch (\Exception $e) {
+                                    $logger->error($type . ' feeds can\'t be updated', array("data" => $e->getMessage()));
+                                }
+                            }
+                            $result[] = $feed;
+                            continue;
+                        }
+
+                        try {
+                            $feed = new Model\Item($type);
+                            $feed->setCacheIdentifier($searchValue);
+                            $feed->setResult($twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest());
+
+                            // save to DB and return current feed
+                            $this->saveFeed($feed);
+                            $result[] = $feed;
+
+                        } catch (\Exception $e) {
+                            $logger->error('initial load for ' . $type . ' feeds failed', array("data" => $e->getMessage()));
+                        }
                     }
                 }
                 break;
