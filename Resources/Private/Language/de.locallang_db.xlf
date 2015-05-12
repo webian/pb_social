@@ -8,7 +8,7 @@
                 <target state="translated">Grundlegende Einstellungen</target>
             </trans-unit>
             <trans-unit id="flexform.tab.general.updatingFeeds">
-                <source>How often does the feeds have to be updated ? (in min)</source>
+                <source>How often does the feeds have to be updated? (in minutes)</source>
                 <target state="translated">Wie oft sollen die Feeds aktualisiert werden? (in Minuten)</target>
             </trans-unit>
             <trans-unit id="flexform.tab.general.requestLimit">
@@ -34,7 +34,7 @@
             </trans-unit>
             <trans-unit id="flexform.tab.facebook.searchID">
                 <source>Facebook search IDs (Page that helps to find the ID: http://findmyfacebookid.com/). Use commas to show more than one ID</source>
-                <target state="translated">Facebook IDs der Seiten, die angezeigt werden sollen (Hilfeseite zu den IDs: http://findmyfacebookid.com/). Verwende Kommas, um mehrere Seiten anzuzeigen</target>
+                <target state="translated">Facebook IDs der Seiten, die angezeigt werden sollen (Hilfeseite zu den IDs: http://blog.niklaskoehler.de/facebook-tools/facebook-id-ermitteln). Verwende Kommas, um mehrere Seiten anzuzeigen</target>
             </trans-unit>
 
             <trans-unit id="flexform.tab.google.caption">
@@ -62,6 +62,10 @@
                 <source>Instagram search IDs (Page that helps to find the ID: http://www.otzberg.net/iguserid/). Use commas to show more than one ID</source>
                 <target state="translated">Instagram IDs der Seiten, die angezeigt werden sollen (Hilfeseite zu den IDs: http://www.otzberg.net/iguserid/). Verwende Kommas, um mehrere Seiten anzuzeigen</target>
             </trans-unit>
+            <trans-unit id="flexform.tab.instagram.hashtag">
+                <source>Output most up to date Images with a specific Hashtag. Use commas to show more than one</source>
+                <target state="translated">Die aktuellsten Bilder mit einem bestimmten Hashtag anzeigen. Verwende Kommas, um mehrere anzuzeigen</target>
+            </trans-unit>
 
             <trans-unit id="flexform.tab.twitter.caption">
                 <source>Twitter Settings</source>
@@ -80,16 +84,16 @@
                 <target state="translated">Nur Tweets anzeigen, die Bilder beinhalten</target>
             </trans-unit>
             <trans-unit id="flexform.tab.twitter.searchID">
-                <source>Twitter search field values (e.g. #plusB,@plusB,...). Use commas to show more than one</source>
-                <target state="translated">Tweets anzeigen, die bestimmte Wörter beinhalten (z.b. plusB). Verwende Kommas, um mehrere Seiten anzuzeigen</target>
+                <source>Twitter search field values (e.g. #plusB,@plusB,...). Use commas to show show tweets from more than one page</source>
+                <target state="translated">Tweets anzeigen, die bestimmte Wörter beinhalten (z.b. plusB). Verwende Kommas, um Tweets mehrerer Seiten anzuzeigen</target>
             </trans-unit>
             <trans-unit id="flexform.tab.twitter.profilePosts">
                 <source>Show tweets of specific profiles. Use commas to show more than one</source>
                 <target state="translated">Zeige Tweets von bestimmten Twitter-Profilen. Verwende Kommas, um Tweets mehrerer Profile anzuzeigen</target>
             </trans-unit>
             <trans-unit id="flexform.tab.twitter.language">
-                <source>(Optional) Show tweets in a specific language (for example: use "de" for german language). For a list look at the ISO 639-1 codes on http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes</source>
-                <target state="translated">(Optional) Zeige Tweets nur in der entsprechenden Sprache an (z.B. "de" für Tweets, die in Deutsch sind). Für eine Liste, schaue auf die ISO 639-1 Codes auf http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes</target>
+                <source>(Optional) Show tweets in a specific language (for example: use "de" for tweets in german language). For a list look at the ISO 639-1 codes on http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes</source>
+                <target state="translated">(Optional) Zeige Tweets nur in der entsprechenden Sprache an (z.B. "de" für Tweets, die in der deutschen Sprache sind). Für eine Liste, schaue auf die ISO 639-1 Codes auf http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes</target>
             </trans-unit>
             <trans-unit id="flexform.tab.twitter.geocode">
                 <source>(Optional) Returns tweets by users located within a given radius of the given latitude/longitude. Example value: "37.781157,-122.398720,1mi". the last parameter is the radius ("1mi" stands for one mile, use "km" for kilometers). Use http://mygeoposition.com/ to find your preferred geolocation</source>
@@ -107,6 +111,10 @@
             <trans-unit id="flexform.tab.tumblr.searchID">
                 <source>Tumblr blog names. For your own Dashboard use "MYDASHBOARD" as value. Use commas to show more than one blog</source>
                 <target state="translated">Tumblr Blognamen, die angezeigt werden sollen. Für das eigene Dashboard "MYDASHBOARD" eingeben. Verwende Kommas, um mehrere Blogs anzuzeigen</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.tumblr.hashTag">
+                <source>Search the above-mentioned Tumblr blog names for a specific hashtag</source>
+                <target state="translated">Die obengenannten Tumblr Blogs nach einem bestimmten Hashtag durchsuchen</target>
             </trans-unit>
             <trans-unit id="flexform.tab.tumblr.showOnlyImages">
                 <source>Show only posts with images</source>

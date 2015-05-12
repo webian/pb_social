@@ -78,6 +78,7 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
                 $facebook = new \Facebook(array('appId' => $config_apiId, 'secret' => $config_apiSecret));
                 foreach (explode(",", $facebookSearchIds) as $searchId) {
+                    $searchId = trim($searchId);
                     $feeds = $this->findByTypeAndCacheIdentifier($type, $searchId);
 
                     // /links? /statuses? /tagged?
@@ -134,6 +135,7 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                 $fields = array('key' => $config_appKey, 'format' => 'json', 'ip' => $_SERVER['REMOTE_ADDR']);
 
                 foreach (explode(",", $googlePlusSearchIds) as $searchId) {
+                    $searchId = trim($searchId);
                     $feeds = $this->findByTypeAndCacheIdentifier($type, $searchId);
                     $url = 'https://www.googleapis.com/plus/v1/people/' . $searchId .
                         '/activities/public?maxResults=' . $feedRequestLimit . '&' . http_build_query($fields);
@@ -209,14 +211,16 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                     break;
                 }
 
+                $instagramHashTags = $settings['instagramHashTag'];
                 $instagramSearchIds = $settings['instagramSearchIds'];
-                if (empty($instagramSearchIds)) {
+
+                if (empty($instagramSearchIds) && empty($instagramHashTags)) {
                     $logger->warning($type . ' - no search term defined');
-                    break;
                 }
 
                 $instagram = new \Instagram($config_clientId);
                 foreach (explode(",", $instagramSearchIds) as $searchId) {
+                    $searchId = trim($searchId);
                     $feeds = $this->findByTypeAndCacheIdentifier($type, $searchId);
 
                     if ($feeds && $feeds->count() > 0) {
@@ -238,6 +242,39 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                         $feed = new Model\Item($type);
                         $feed->setCacheIdentifier($searchId);
                         $feed->setResult(json_encode($instagram->getUserMedia($searchId, $feedRequestLimit)));
+
+                        // save to DB and return current feed
+                        $this->saveFeed($feed);
+                        $result[] = $feed;
+
+                    } catch (\Exception $e) {
+                        $logger->error('initial load for ' . $type . ' feeds failed', array("data" => $e->getMessage()));
+                    }
+                }
+
+                foreach (explode(",", $instagramHashTags) as $searchId) {
+                    $searchId = trim($searchId);
+                    $feeds = $this->findByTypeAndCacheIdentifier($type, $searchId);
+
+                    if ($feeds && $feeds->count() > 0) {
+                        $feed = $feeds->getFirst();
+                        if ($devMod || ($feed->getDate()->getTimestamp() + $refreshTimeInMin * 60) < time()) {
+                            try {
+                                $feed->setDate(new \DateTime('now'));
+                                $feed->setResult(json_encode($instagram->getTagMedia($searchId, $feedRequestLimit)));
+                                $this->update($feed);
+                            } catch (\Exception $e) {
+                                $logger->error($type . ' feeds cant be updated', array("data" => $e->getMessage()));
+                            }
+                        }
+                        $result[] = $feed;
+                        continue;
+                    }
+
+                    try {
+                        $feed = new Model\Item($type);
+                        $feed->setCacheIdentifier($searchId);
+                        $feed->setResult(json_encode($instagram->getTagMedia($searchId, $feedRequestLimit)));
 
                         // save to DB and return current feed
                         $this->saveFeed($feed);
@@ -302,6 +339,7 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
                 if ($twitterSearchFieldValues) {
                     foreach (explode(",", $twitterSearchFieldValues) as $searchValue) {
+                        $searchValue = trim($searchValue);
                         $feeds = $this->findByTypeAndCacheIdentifier($type, $searchValue);
 
                         //https://dev.twitter.com/rest/reference/get/search/tweets
@@ -342,13 +380,13 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
                 if ($twitterProfilePosts) {
                     foreach (explode(",", $twitterProfilePosts) as $searchValue) {
+                        $searchValue = trim($searchValue);
                         $feeds = $this->findByTypeAndCacheIdentifier($type, $searchValue);
 
                         //https://dev.twitter.com/rest/reference/get/search/tweets
                         //include_entities=false => The entities node will be disincluded when set to false.
 
                         $getfield = '?q=from:' . $searchValue . $apiParameters . '&count=' . $feedRequestLimit;
-                        DebuggerUtility::var_dump($getfield);
                         if ($feeds && $feeds->count() > 0) {
                             $feed = $feeds->getFirst();
                             if ($devMod || ($feed->getDate()->getTimestamp() + $refreshTimeInMin * 60) < time()) {
@@ -389,6 +427,9 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                 $config_consumerSecret = $extConf['socialfeed.']['tumblr.']['consumer.']['secret'];
                 $config_Token = $extConf['socialfeed.']['tumblr.']['token'];
                 $config_TokenSecret = $extConf['socialfeed.']['tumblr.']['token_secret'];
+
+                $tumblrHashtag = strtolower(str_replace('#', '', $settings['tumblrHashTag']));
+
                 if (empty($config_consumerKey) || empty($config_consumerSecret) || empty($config_Token) || empty($config_TokenSecret)) {
                     $logger->warning($type . ' credentials not set');
                     break;
@@ -413,10 +454,18 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                                 if ($blogName == "MYDASHBOARD") {
                                     $feed->setResult(json_encode($tumblr->getDashboardPosts(array('limit' => $feedRequestLimit))));
                                 } else {
-                                    if ($tumblrShowOnlyImages) {
-                                        $feed->setResult(json_encode($tumblr->getBlogPosts($blogName, array('limit' => $feedRequestLimit, 'type' => 'photo', 'filter' => 'text'))));
+                                    if ($tumblrHashtag !== '') {
+                                        if ($tumblrShowOnlyImages) {
+                                            $feed->setResult(json_encode($tumblr->getBlogPosts($blogName, array('limit' => $feedRequestLimit, 'type' => 'photo', 'tag' => $tumblrHashtag, 'filter' => 'text'))));
+                                        } else {
+                                            $feed->setResult(json_encode($tumblr->getBlogPosts($blogName, array('limit' => $feedRequestLimit, 'tag' => $tumblrHashtag, 'filter' => 'text'))));
+                                        }
                                     } else {
-                                        $feed->setResult(json_encode($tumblr->getBlogPosts($blogName, array('limit' => $feedRequestLimit, 'filter' => 'text'))));
+                                        if ($tumblrShowOnlyImages) {
+                                            $feed->setResult(json_encode($tumblr->getBlogPosts($blogName, array('limit' => $feedRequestLimit, 'type' => 'photo', 'filter' => 'text'))));
+                                        } else {
+                                            $feed->setResult(json_encode($tumblr->getBlogPosts($blogName, array('limit' => $feedRequestLimit, 'filter' => 'text'))));
+                                        }
                                     }
                                 }
                                 $this->update($feed);
@@ -435,10 +484,18 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                         if ($blogName == "MYDASHBOARD") {
                             $feed->setResult(json_encode($tumblr->getDashboardPosts(array('limit' => $feedRequestLimit))));
                         } else {
-                            if ($tumblrShowOnlyImages) {
-                                $feed->setResult(json_encode($tumblr->getBlogPosts($blogName, array('limit' => $feedRequestLimit, 'type' => 'photo', 'filter' => 'text'))));
+                            if ($tumblrHashtag !== '') {
+                                if ($tumblrShowOnlyImages) {
+                                    $feed->setResult(json_encode($tumblr->getBlogPosts($blogName, array('limit' => $feedRequestLimit, 'type' => 'photo', 'tag' => $tumblrHashtag, 'filter' => 'text'))));
+                                } else {
+                                    $feed->setResult(json_encode($tumblr->getBlogPosts($blogName, array('limit' => $feedRequestLimit, 'tag' => $tumblrHashtag, 'filter' => 'text'))));
+                                }
                             } else {
-                                $feed->setResult(json_encode($tumblr->getBlogPosts($blogName, array('limit' => $feedRequestLimit, 'filter' => 'text'))));
+                                if ($tumblrShowOnlyImages) {
+                                    $feed->setResult(json_encode($tumblr->getBlogPosts($blogName, array('limit' => $feedRequestLimit, 'type' => 'photo', 'filter' => 'text'))));
+                                } else {
+                                    $feed->setResult(json_encode($tumblr->getBlogPosts($blogName, array('limit' => $feedRequestLimit, 'filter' => 'text'))));
+                                }
                             }
                         }
 
