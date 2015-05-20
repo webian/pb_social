@@ -35,6 +35,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 
     const TYPE_FACEBOOK = "facebook";
     const TYPE_GOOGLE = "googleplus";
+    const TYPE_IMGUR = "imgur";
     const TYPE_INSTAGRAM = "instagram";
     const TYPE_TWITTER = "twitter";
     const TYPE_TUMBLR = "tumblr";
@@ -120,6 +121,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
         $feeds = array();
         $feeds_facebook = null;
         $feeds_googleplus = null;
+        $feeds_imgur = null;
         $feeds_instagram = null;
         $feeds_twitter = null;
         $feeds_tumblr = null;
@@ -181,6 +183,30 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
                         $d = new \DateTime($rawFeed->updated);
                         $feed->setTimeStampTicks($d->getTimestamp());
                         $feeds[] = $feed;
+                    }
+                }
+            }
+        }
+
+        if (intval($this->settings["imgurEnabled"]) != 0) {
+            $feeds_imgur = $this->itemRepository->findFeedsByType(self::TYPE_IMGUR, $this->settings);
+            $endingArray = array('.gif', '.jpg', '.png');
+
+            if ($feeds_imgur !== NULL) {
+                foreach ($feeds_imgur as $im_feed) {
+                    $this->view->assign(self::TYPE_IMGUR . '_' . $im_feed->getCacheIdentifier() . '_raw', $im_feed->getResult());
+                    foreach ($im_feed->getResult()->data as $rawFeed) {
+                        if (is_object($rawFeed)) {
+                            if ($this->check_end($rawFeed->link, $endingArray)) {
+
+                                $feed = new Feed($im_feed->getType(), $rawFeed);
+                                $feed->setId($rawFeed->id);
+                                $feed->setImage($rawFeed->link);
+                                $feed->setLink('http://imgur.com/gallery/' . $rawFeed->id);
+                                $feed->setTimeStampTicks($rawFeed->created_time);
+                                $feeds[] = $feed;
+                            }
+                        }
                     }
                 }
             }
@@ -309,6 +335,13 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
         return ($a->getTimeStampTicks() > $b->getTimeStampTicks()) ? -1 : 1;
     }
 
+    function check_end($str, $ends) {
+        foreach ($ends as $try) {
+            if (substr($str, -1 * strlen($try)) === $try) return $try;
+        }
+        return false;
+    }
+
 }
 
 
@@ -347,7 +380,6 @@ class Feed {
      * @var string
      */
     protected $Raw;
-
 
     /**
      * @param string $provider

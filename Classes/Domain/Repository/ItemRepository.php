@@ -202,6 +202,96 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                 break;
 
             //
+            // IMGUR
+            //
+            case "imgur":
+                $config_apiId = $extConf['socialfeed.']['imgur.']['client.']['id'];
+                $config_apiSecret = $extConf['socialfeed.']['imgur.']['client.']['secret'];
+                if (empty($config_apiId) || empty($config_apiSecret)) {
+                    $logger->warning($type . ' credentials not set');
+                    break;
+                }
+
+                $imgSearchUsers = $settings['imgurUsers'];
+                $imgSearchTags = $settings['imgurTags'];
+
+                if (empty($imgSearchUsers) && empty($imgSearchTags)) {
+                    $logger->warning($type . ' - no search term defined');
+                    break;
+                }
+
+                $imgur = new \Imgur($config_apiId, $config_apiSecret);
+
+                // search for users
+                foreach (explode(",", $imgSearchUsers) as $searchId) {
+                    $searchId = trim($searchId);
+                    $feeds = $this->findByTypeAndCacheIdentifier($type, $searchId);
+                    if ($feeds && $feeds->count() > 0) {
+                        $feed = $feeds->getFirst();
+
+                        if ($devMod || ($feed->getDate()->getTimestamp() + $refreshTimeInMin * 60) < time()) {
+                            try {
+                                $feed->setDate(new \DateTime('now'));
+                                $feed->setResult(json_encode($imgur->account($searchId)->images($page = 0)));
+                                $this->update($feed);
+                            } catch (\Exception $e) {
+                                $logger->warning($type . ' feeds can\'t be updated', array("data" => $e->getMessage())); //TODO => handle FacebookApiException
+                            }
+                        }
+                        $result[] = $feed;
+                        continue;
+                    }
+
+                    try {
+                        $feed = new Model\Item($type);
+                        $feed->setCacheIdentifier($searchId);
+                        $feed->setResult(json_encode($imgur->account($searchId)->images($page = 0)));
+
+                        // save to DB and return current feed
+                        $this->saveFeed($feed);
+                        $result[] = $feed;
+
+                    } catch (\Exception $e) {
+                        $logger->warning('initial load for ' . $type . ' feeds failed', array("data" => $e->getMessage())); //TODO => handle FacebookApiException
+                    }
+                }
+
+                // search for tags
+                foreach (explode(",", $imgSearchTags) as $searchId) {
+                    $searchId = trim($searchId);
+                    $feeds = $this->findByTypeAndCacheIdentifier($type, $searchId);
+                    if ($feeds && $feeds->count() > 0) {
+                        $feed = $feeds->getFirst();
+
+                        if ($devMod || ($feed->getDate()->getTimestamp() + $refreshTimeInMin * 60) < time()) {
+                            try {
+                                $feed->setDate(new \DateTime('now'));
+                                $feed->setResult(json_encode($imgur->gallery()->search($searchId)));
+                                $this->update($feed);
+                            } catch (\Exception $e) {
+                                $logger->warning($type . ' feeds can\'t be updated', array("data" => $e->getMessage())); //TODO => handle FacebookApiException
+                            }
+                        }
+                        $result[] = $feed;
+                        continue;
+                    }
+
+                    try {
+                        $feed = new Model\Item($type);
+                        $feed->setCacheIdentifier($searchId);
+                        $feed->setResult(json_encode($imgur->gallery()->search($searchId)));
+
+                        // save to DB and return current feed
+                        $this->saveFeed($feed);
+                        $result[] = $feed;
+
+                    } catch (\Exception $e) {
+                        $logger->warning('initial load for ' . $type . ' feeds failed', array("data" => $e->getMessage())); //TODO => handle FacebookApiException
+                    }
+                }
+                break;
+
+            //
             // INSTAGRAM
             // https://github.com/cosenary/Instagram-PHP-API
             case "instagram":

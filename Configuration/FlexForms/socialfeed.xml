@@ -103,6 +103,43 @@
                 </el>
             </ROOT>
         </display_google>
+        <display_imgur>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.imgur.caption</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <settings.imgurEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.imgur.active</label>
+                            <!--<onChange>reload</onChange>-->
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.imgurEnabled>
+                    <!--<settings.imgurUsers>-->
+                        <!--<TCEforms>-->
+                            <!--<label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.imgur.User</label>-->
+                            <!--<displayCond>FIELD:settings.instagramEnabled:=:1</displayCond>-->
+                            <!--<config>-->
+                                <!--<type>input</type>-->
+                            <!--</config>-->
+                        <!--</TCEforms>-->
+                    <!--</settings.imgurUsers>-->
+                    <settings.imgurTags>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.imgur.tag</label>
+                            <!--<displayCond>FIELD:settings.instagramEnabled:=:1</displayCond>-->
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.imgurTags>
+                </el>
+            </ROOT>
+        </display_imgur>
         <display_instagram>
             <ROOT>
                 <TCEforms>

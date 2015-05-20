@@ -2,6 +2,7 @@
 # customsubcategory=0general=General options
 # customsubcategory=1facebook=Facebook --- https://developers.facebook.com/apps
 # customsubcategory=2googleplus=Google+ --- https://code.google.com/apis/console/
+# customsubcategory=7imgur=Imgur --- https://api.imgur.com/
 # customsubcategory=3instagram=Instagram --- http://instagram.com/developer/clients/manage/
 # customsubcategory=4twitter=Twitter --- https://dev.twitter.com/apps/
 # customsubcategory=5tumblr=Tumblr --- http://www.tumblr.com/oauth/apps
@@ -18,6 +19,11 @@ socialfeed{
 
     # cat=socialfeed/2googleplus/0010; type=string; label=app key
     googleplus.app.key=
+
+    # cat=socialfeed/7imgur/0010; type=string; label=client id
+    imgur.client.id=
+    # cat=socialfeed/7imgur/0020; type=string; label=client secret
+    imgur.client.secret=
 
     # cat=socialfeed/3instagram/0010; type=string; label=client id
     instagram.client.id=
