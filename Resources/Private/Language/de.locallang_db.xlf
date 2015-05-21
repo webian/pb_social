@@ -25,8 +25,8 @@
             </trans-unit>
 
             <trans-unit id="flexform.tab.facebook.caption">
-                <source>Facebook Settings</source>
-                <target state="translated">Facebook Einstellungen</target>
+                <source>Facebook</source>
+                <target state="translated">Facebook</target>
             </trans-unit>
             <trans-unit id="flexform.tab.facebook.active">
                 <source>Active</source>
@@ -38,8 +38,8 @@
             </trans-unit>
 
             <trans-unit id="flexform.tab.google.caption">
-                <source>Google Settings</source>
-                <target state="translated">Google Einstellungen</target>
+                <source>Google+</source>
+                <target state="translated">Google+</target>
             </trans-unit>
             <trans-unit id="flexform.tab.google.active">
                 <source>Active</source>
@@ -51,8 +51,8 @@
             </trans-unit>
 
             <trans-unit id="flexform.tab.imgur.caption">
-                <source>Imgur Settings</source>
-                <target state="translated">Imgur Einstellungen</target>
+                <source>Imgur</source>
+                <target state="translated">Imgur</target>
             </trans-unit>
             <trans-unit id="flexform.tab.imgur.active">
                 <source>Active</source>
@@ -64,12 +64,12 @@
             </trans-unit>
             <trans-unit id="flexform.tab.imgur.tag">
                 <source>Show Images Images with a specific Tag. Use commas for more than one tag </source>
-                <target state="translated">Bilder mit einem bestimmten Tag anzeigen. Verwende Kommas, um mehrere anzuzeigen</target>
+                <target state="translated">Bilder mit einem bestimmten Tag anzeigen. Verwende Kommas für mehrere Tags</target>
             </trans-unit>
 
             <trans-unit id="flexform.tab.instagram.caption">
-                <source>Instagram Settings</source>
-                <target state="translated">Instagram Einstellungen</target>
+                <source>Instagram</source>
+                <target state="translated">Instagram</target>
             </trans-unit>
             <trans-unit id="flexform.tab.instagram.active">
                 <source>Active</source>
@@ -85,8 +85,8 @@
             </trans-unit>
 
             <trans-unit id="flexform.tab.twitter.caption">
-                <source>Twitter Settings</source>
-                <target state="translated">Twitter Einstellungen</target>
+                <source>Twitter</source>
+                <target state="translated">Twitter</target>
             </trans-unit>
             <trans-unit id="flexform.tab.twitter.active">
                 <source>Active</source>
@@ -118,8 +118,8 @@
             </trans-unit>
 
             <trans-unit id="flexform.tab.tumblr.caption">
-                <source>Tumblr Settings</source>
-                <target state="translated">Tumblr Einstellungen</target>
+                <source>Tumblr</source>
+                <target state="translated">Tumblr</target>
             </trans-unit>
             <trans-unit id="flexform.tab.tumblr.active">
                 <source>Active</source>
@@ -145,6 +145,19 @@
             <trans-unit id="socialfeed_wizard.description">
                 <source>Displays feeds from social media platforms</source>
                 <target state="translated">Zeigt Feeds von Social Media Plattformen an</target>
+            </trans-unit>
+
+            <trans-unit id="flexform.tab.youtube.caption">
+                <source>Youtube</source>
+                <target state="translated">Youtube</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.youtube.active">
+                <source>Active</source>
+                <target state="translated">Ausgabe aktiviert</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.youtube.searchword">
+                <source>Youtube searchword. Use commas to show more than one</source>
+                <target state="translated">Youtube Suchwort. Verwende Kommas, um mehrere Seiten anzuzeigen</target>
             </trans-unit>
 
         </body>

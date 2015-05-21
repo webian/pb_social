@@ -39,6 +39,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
     const TYPE_INSTAGRAM = "instagram";
     const TYPE_TWITTER = "twitter";
     const TYPE_TUMBLR = "tumblr";
+    const TYPE_YOUTUBE = "youtube";
     const TYPE_DUMMY = "dummy";
 
     /**
@@ -126,10 +127,10 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
         $feeds_twitter = null;
         $feeds_tumblr = null;
         $feeds_dummy = null;
-        $onlyWithPicture = intval($this->settings["onlyWithPicture"]) != 0 ? true : false;
+        $onlyWithPicture = $this->settings["onlyWithPicture"] === '1' ? true : false;
         $textTrimLength = intval($this->settings["textTrimLength"]) > 0 ? intval($this->settings["textTrimLength"]) : 130;
 
-        if (intval($this->settings["facebookEnabled"]) != 0) {
+        if ($this->settings["facebookEnabled"] === '1') {
             $fb_feeds = $this->itemRepository->findFeedsByType(self::TYPE_FACEBOOK, $this->settings);
 
             if ($fb_feeds !== NULL) {
@@ -154,7 +155,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             }
         }
 
-        if (intval($this->settings["googleEnabled"]) != 0) {
+        if ($this->settings["googleEnabled"] === '1') {
             $feeds_googleplus = $this->itemRepository->findFeedsByType(self::TYPE_GOOGLE, $this->settings);
 
             if ($feeds_googleplus !== NULL) {
@@ -188,17 +189,16 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             }
         }
 
-        if (intval($this->settings["imgurEnabled"]) != 0) {
+        if ($this->settings["imgurEnabled"] === '1') {
             $feeds_imgur = $this->itemRepository->findFeedsByType(self::TYPE_IMGUR, $this->settings);
             $endingArray = array('.gif', '.jpg', '.png');
-
+//            DebuggerUtility::var_dump($feeds_imgur);
             if ($feeds_imgur !== NULL) {
                 foreach ($feeds_imgur as $im_feed) {
                     $this->view->assign(self::TYPE_IMGUR . '_' . $im_feed->getCacheIdentifier() . '_raw', $im_feed->getResult());
                     foreach ($im_feed->getResult()->data as $rawFeed) {
                         if (is_object($rawFeed)) {
                             if ($this->check_end($rawFeed->link, $endingArray)) {
-
                                 $feed = new Feed($im_feed->getType(), $rawFeed);
                                 $feed->setId($rawFeed->id);
                                 $feed->setImage($rawFeed->link);
@@ -212,7 +212,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             }
         }
 
-        if (intval($this->settings["instagramEnabled"]) != 0) {
+        if ($this->settings["instagramEnabled"] === '1') {
             $feeds_instagram = $this->itemRepository->findFeedsByType(self::TYPE_INSTAGRAM, $this->settings);
 
             if ($feeds_instagram !== NULL) {
@@ -234,7 +234,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             }
         }
 
-        if (intval($this->settings["tumblrEnabled"]) != 0) {
+        if ($this->settings["tumblrEnabled"] === '1') {
             $feeds_tumblr = $this->itemRepository->findFeedsByType(self::TYPE_TUMBLR, $this->settings);
 
             if ($feeds_tumblr !== NULL) {
@@ -265,7 +265,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             }
         }
 
-        if (intval($this->settings["twitterEnabled"]) != 0) {
+        if ($this->settings["twitterEnabled"] === '1') {
             $feeds_twitter = $this->itemRepository->findFeedsByType(self::TYPE_TWITTER, $this->settings);
             if ($feeds_twitter !== NULL) {
                 foreach ($feeds_twitter as $twt_feed) {
@@ -298,7 +298,31 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             }
         }
 
-        if (intval($this->settings["dummyEnabled"]) != 0) {
+        if ($this->settings["youtubeEnabled"] === '1') {
+            $feeds_youtube = $this->itemRepository->findFeedsByType(self::TYPE_YOUTUBE, $this->settings);
+//            DebuggerUtility::var_dump($feeds_youtube,'feeds youtube');
+//            json_decode ($feeds_youtube['result']);
+//            DebuggerUtility::var_dump(json_decode ($feeds_youtube->result),'feeds youtube');
+            if ($feeds_youtube !== NULL) {
+                foreach ($feeds_youtube as $yt_feed) {
+//                    DebuggerUtility::var_dump($yt_feed);
+                    $this->view->assign(self::TYPE_YOUTUBE . '_' . $yt_feed->getCacheIdentifier() . '_raw', $yt_feed->getResult());
+                    foreach ($yt_feed->getResult()->data as $rawFeed) {
+//                        DebuggerUtility::var_dump($rawFeed);
+                        if (is_object($rawFeed)) {
+                            $feed = new Feed($yt_feed->getType(), $rawFeed);
+                            $feed->setId($rawFeed->id);
+                            $feed->setImage($rawFeed->link);
+                            $feed->setLink('http://imgur.com/gallery/' . $rawFeed->id);
+                            $feed->setTimeStampTicks($rawFeed->created_time);
+                            $feeds[] = $feed;
+                        }
+                    }
+                }
+            }
+        }
+
+        if ($this->settings["dummyEnabled"] === '1') {
             $feeds_dummy = $this->itemRepository->findFeedsByType(self::TYPE_DUMMY, $this->settings);
 
             if ($feeds_dummy !== NULL) {

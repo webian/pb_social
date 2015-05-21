@@ -292,5 +292,33 @@
                 </el>
             </ROOT>
         </display_twitter>
+        <!--<display_youtube>-->
+            <!--<ROOT>-->
+                <!--<TCEforms>-->
+                    <!--<sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.caption</sheetTitle>-->
+                <!--</TCEforms>-->
+                <!--<type>array</type>-->
+                <!--<el>-->
+                    <!--<settings.youtubeEnabled>-->
+                        <!--<TCEforms>-->
+                            <!--<label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.active</label>-->
+                            <!--&lt;!&ndash;<onChange>reload</onChange>&ndash;&gt;-->
+                            <!--<config>-->
+                                <!--<type>check</type>-->
+                            <!--</config>-->
+                        <!--</TCEforms>-->
+                    <!--</settings.youtubeEnabled>-->
+                    <!--<settings.youtubeSearch>-->
+                        <!--<TCEforms>-->
+                            <!--<label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.searchword</label>-->
+                            <!--&lt;!&ndash;<displayCond>FIELD:settings.instagramEnabled:=:1</displayCond>&ndash;&gt;-->
+                            <!--<config>-->
+                                <!--<type>input</type>-->
+                            <!--</config>-->
+                        <!--</TCEforms>-->
+                    <!--</settings.youtubeSearch>-->
+                <!--</el>-->
+            <!--</ROOT>-->
+        <!--</display_youtube>-->
     </sheets>
 </T3DataStructure>

@@ -6,6 +6,7 @@ use Tumblr\API\Client;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 require_once \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/tumblr/vendor/autoload.php';
+require_once \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/youtube/src/Google/autoload.php';
 
 
 /***************************************************************
@@ -266,6 +267,8 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                         if ($devMod || ($feed->getDate()->getTimestamp() + $refreshTimeInMin * 60) < time()) {
                             try {
                                 $feed->setDate(new \DateTime('now'));
+//                                DebuggerUtility::var_dump($imgur->gallery()->search($searchId), 'imgur searchresponse before json');
+//                                DebuggerUtility::var_dump(json_encode($imgur->gallery()->search($searchId)), 'imgur searchresponse');
                                 $feed->setResult(json_encode($imgur->gallery()->search($searchId)));
                                 $this->update($feed);
                             } catch (\Exception $e) {
@@ -600,6 +603,72 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                 break;
 
             //
+            // YOUTUBE
+            //
+            case "youtube":
+                $api_key = $extConf['socialfeed.']['youtube.']['apikey'];
+                if (empty($api_key)) {
+                    $logger->warning($type . ' credentials not set');
+                    break;
+                }
+
+                $youtubeSearchwords = $settings['youtubeSearch'];
+
+                if (empty($youtubeSearchwords)) {
+                    $logger->warning($type . ' - no search term defined');
+                    break;
+                }
+
+                $client = new \Google_Client();
+                $client->setDeveloperKey($api_key);
+                $youtube = new \Google_Service_YouTube($client);
+
+                // search for users
+                foreach (explode(",", $youtubeSearchwords) as $searchId) {
+                    $searchId = trim($searchId);
+                    $feeds = $this->findByTypeAndCacheIdentifier($type, $searchId);
+//                    DebuggerUtility::var_dump($feeds, 'feeds');
+                    if ($feeds && $feeds->count() > 0) {
+                        $feed = $feeds->getFirst();
+
+                        if ($devMod || ($feed->getDate()->getTimestamp() + $refreshTimeInMin * 60) < time()) {
+                            try {
+                                $searchResponse = $youtube->search->listSearch('id,snippet', array(
+                                    'q' => $searchId,
+                                    'maxResults' => $feedRequestLimit,
+                                ));
+//                                DebuggerUtility::var_dump($searchResponse, 'searchresponse before json');
+//                                DebuggerUtility::var_dump(json_encode($searchResponse), 'searchresponse');
+                                $feed->setDate(new \DateTime('now'));
+                                $feed->setResult(json_encode($searchResponse));
+                                $this->update($feed);
+                            } catch (\Exception $e) {
+                                $logger->warning($type . ' feeds can\'t be updated', array("data" => $e->getMessage())); //TODO => handle FacebookApiException
+                            }
+                        }
+                        $result[] = $feed;
+                        continue;
+                    }
+
+                    try {
+                        $feed = new Model\Item($type);
+                        $feed->setCacheIdentifier($searchId);
+                        $searchResponse = $youtube->search->listSearch('id,snippet', array(
+                            'q' => $searchId,
+                            'maxResults' => $feedRequestLimit,
+                        ));
+                        $feed->setResult(json_encode($searchResponse));
+                        // save to DB and return current feed
+                        $this->saveFeed($feed);
+                        $result[] = $feed;
+
+                    } catch (\Exception $e) {
+                        $logger->warning('initial load for ' . $type . ' feeds failed', array("data" => $e->getMessage())); //TODO => handle FacebookApiException
+                    }
+                }
+                break;
+
+            //
             // DUMMY
             //
             case "dummy":
@@ -655,7 +724,7 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                 }
                 break;
         }
-
+//        DebuggerUtility::var_dump($result,'result');
         return $result;
     }
 
