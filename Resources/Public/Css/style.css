@@ -98,6 +98,9 @@
 .tx-pb-social .pb-list-item-instagram .icon {
   background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/instagram.png");
 }
+.tx-pb-social .pb-list-item-pinterest .icon {
+  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/pinterest.png");
+}
 .tx-pb-social .pb-list-item-tumblr .icon {
   background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/tumblr.png");
 }

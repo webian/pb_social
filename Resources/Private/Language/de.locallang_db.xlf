@@ -84,6 +84,44 @@
                 <target state="translated">Die aktuellsten Bilder mit einem bestimmten Hashtag anzeigen. Verwende Kommas, um mehrere anzuzeigen</target>
             </trans-unit>
 
+            <trans-unit id="flexform.tab.pinterest.caption">
+                <source>Pinterest</source>
+                <target state="translated">Pinterest</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.pinterest.active">
+                <source>Active</source>
+                <target state="translated">Ausgabe aktiviert</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.pinterest.username">
+                <source>Show pins of Pinterest user (please add the board at the bottom field)</source>
+                <target state="translated">Zeige Pins vom folgenden User an (unten bitte noch die Pinnwand angeben)</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.pinterest.boardname">
+                <source>Show pins of a specific Pinterest board of a user (needs username input at the upper field)</source>
+                <target state="translated">Zeige Pins von einer Pinnwand eines Users an (das Feld des Nutzernamens muss ausgefüllt sein)</target>
+            </trans-unit>
+
+            <trans-unit id="flexform.tab.tumblr.caption">
+                <source>Tumblr</source>
+                <target state="translated">Tumblr</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.tumblr.active">
+                <source>Active</source>
+                <target state="translated">Ausgabe aktiviert</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.tumblr.searchID">
+                <source>Tumblr blog names. For your own Dashboard use "MYDASHBOARD" as value. Use commas to show more than one blog</source>
+                <target state="translated">Tumblr Blognamen, die angezeigt werden sollen. Für das eigene Dashboard "MYDASHBOARD" eingeben. Verwende Kommas, um mehrere Blogs anzuzeigen</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.tumblr.hashTag">
+                <source>Search the above-mentioned Tumblr blog names for a specific hashtag</source>
+                <target state="translated">Die obengenannten Tumblr Blogs nach einem bestimmten Hashtag durchsuchen</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.tumblr.showOnlyImages">
+                <source>Show only posts with images</source>
+                <target state="translated">Nur Posts anzeigen, die Bilder beinhalten</target>
+            </trans-unit>
+
             <trans-unit id="flexform.tab.twitter.caption">
                 <source>Twitter</source>
                 <target state="translated">Twitter</target>
@@ -115,27 +153,6 @@
             <trans-unit id="flexform.tab.twitter.geocode">
                 <source>(Optional) Returns tweets by users located within a given radius of the given latitude/longitude. Example value: "37.781157,-122.398720,1mi". the last parameter is the radius ("1mi" stands for one mile, use "km" for kilometers). Use http://mygeoposition.com/ to find your preferred geolocation</source>
                 <target state="translated">(Optional) Zeige Tweets nach der Geolocation innerhalb eines bestimmten Radius an. Z.B.: "37.781157,-122.398720,1mi". Der letzte Parameter ist der Radius ("1mi" steht für 1 Meile. Benutze "km" für Kilometer). Um eine Geolocation herauszufinden, nutze z.B. http://mygeoposition.com/</target>
-            </trans-unit>
-
-            <trans-unit id="flexform.tab.tumblr.caption">
-                <source>Tumblr</source>
-                <target state="translated">Tumblr</target>
-            </trans-unit>
-            <trans-unit id="flexform.tab.tumblr.active">
-                <source>Active</source>
-                <target state="translated">Ausgabe aktiviert</target>
-            </trans-unit>
-            <trans-unit id="flexform.tab.tumblr.searchID">
-                <source>Tumblr blog names. For your own Dashboard use "MYDASHBOARD" as value. Use commas to show more than one blog</source>
-                <target state="translated">Tumblr Blognamen, die angezeigt werden sollen. Für das eigene Dashboard "MYDASHBOARD" eingeben. Verwende Kommas, um mehrere Blogs anzuzeigen</target>
-            </trans-unit>
-            <trans-unit id="flexform.tab.tumblr.hashTag">
-                <source>Search the above-mentioned Tumblr blog names for a specific hashtag</source>
-                <target state="translated">Die obengenannten Tumblr Blogs nach einem bestimmten Hashtag durchsuchen</target>
-            </trans-unit>
-            <trans-unit id="flexform.tab.tumblr.showOnlyImages">
-                <source>Show only posts with images</source>
-                <target state="translated">Nur Posts anzeigen, die Bilder beinhalten</target>
             </trans-unit>
 
             <trans-unit id="socialfeed_wizard.title">

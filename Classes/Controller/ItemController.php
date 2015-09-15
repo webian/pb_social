@@ -37,6 +37,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
     const TYPE_GOOGLE = "googleplus";
     const TYPE_IMGUR = "imgur";
     const TYPE_INSTAGRAM = "instagram";
+    const TYPE_PINTEREST = "pinterest";
     const TYPE_TWITTER = "twitter";
     const TYPE_TUMBLR = "tumblr";
     const TYPE_YOUTUBE = "youtube";
@@ -129,6 +130,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
         $feeds_dummy = null;
         $onlyWithPicture = $this->settings["onlyWithPicture"] === '1' ? true : false;
         $textTrimLength = intval($this->settings["textTrimLength"]) > 0 ? intval($this->settings["textTrimLength"]) : 130;
+        $feedRequestLimit = intval(empty($this->settings['feedRequestLimit']) ? 10 : $this->settings['feedRequestLimit']);
 
         if ($this->settings["facebookEnabled"] === '1') {
             $fb_feeds = $this->itemRepository->findFeedsByType(self::TYPE_FACEBOOK, $this->settings);
@@ -229,6 +231,30 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
                         $feed->setLink($rawFeed->link);
                         $feed->setTimeStampTicks($rawFeed->created_time);
                         $feeds[] = $feed;
+                    }
+                }
+            }
+        }
+
+        if ($this->settings["pinterestEnabled"] === '1') {
+            $feeds_pinterest = $this->itemRepository->findFeedsByType(self::TYPE_PINTEREST, $this->settings);
+            if ($feeds_pinterest !== NULL) {
+                foreach ($feeds_pinterest as $pin_feed) {
+                    $this->view->assign(self::TYPE_PINTEREST . '_' . $pin_feed->getCacheIdentifier() . '_raw', $pin_feed->getResult());
+                    foreach ($pin_feed->getResult()->data as $rawFeed) {
+                        $i = 0;
+                        foreach ($rawFeed as $pin) {
+                            if ($pin->images && ($i < $feedRequestLimit)) {
+                                $i++;
+                                $feed = new Feed($pin_feed->getType(), $pin);
+                                $feed->setText(trim_text($pin->description, $textTrimLength, true));
+                                $image = (array)$pin->images;
+                                $feed->setImage($image['237x']->url);
+                                $feed->setLink($pin->link);
+                                $feed->setTimeStampTicks($rawFeed->created_time);
+                                $feeds[] = $feed;
+                            }
+                        }
                     }
                 }
             }
