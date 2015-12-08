@@ -16,7 +16,7 @@ and time-saving way of integrating and interacting with common social media plat
 but we will give our best to make this extension as comfortable as you need it. For this we need your Feedback, so
 if you need something or have something to say, don't hesitate to contact us. Either write us an email at info@plusb.de.
 
-Please visit the plugin homepage www.plusb.de/log/pb-social
+Please visit the plugin homepage http://plusb.de/log/social-media-streams-pb_social/
 
 may the Force be with you
 
