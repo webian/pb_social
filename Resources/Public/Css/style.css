@@ -107,3 +107,6 @@
 .tx-pb-social .pb-list-item-twitter .icon {
   background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/twitter.png");
 }
+.tx-pb-social .pb-list-item-imgur .icon {
+  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/imgur.png");
+}

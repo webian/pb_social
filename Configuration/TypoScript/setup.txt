@@ -12,12 +12,16 @@ plugin.tx_pbsocial {
 		# uncomment the following line to enable the new Property Mapper.
 		# rewrittenPropertyMapper = 1
 	}
+    settings{
+        load-jquery = 0
+    }
 }
 
 [globalVar = LIT:1 = {$plugin.tx_pbsocial.settings.load-jquery}]
-    #page.includeJS.pbjquery = EXT:pb_social/Resources/Public/Js/jquery-2.1.1.min.js
+    page.includeJS.pbjquery = EXT:pb_social/Resources/Public/Js/jquery-2.1.1.min.js
 [END]
 
 
 page.includeCSS.pbsocialcss = EXT:pb_social/Resources/Public/Css/style.css
 page.includeJSFooter.pbsocialjs = EXT:pb_social/Resources/Public/Js/main.js
+

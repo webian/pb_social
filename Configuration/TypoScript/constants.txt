@@ -12,4 +12,7 @@ plugin.tx_pbsocial {
 		# cat=plugin.tx_pbsocial//a; type=string; label=Default storage PID
 		storagePid =
 	}
+    settings{
+        load-jquery = 0
+    }
 }

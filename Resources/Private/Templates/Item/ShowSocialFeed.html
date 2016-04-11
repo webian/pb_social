@@ -28,9 +28,11 @@
             <f:if condition="{0:feed.provider}=={0:'imgur'}">
                 <div class="pb-list-item pb-list-item-imgur pb-hidden" data-type="" data-url="{feed.link}">
                     <div class="image" style="background-image: url({feed.image})"></div>
-                    <f:comment>
-                        <div class="icon"></div>
-                    <a class="additional-info info-1" href="{feed.link}">{feed.raw.likes.count}</a></f:comment>
+                    <f:if condition="{feed.text}">
+                        <span class="text">{feed.text}</span>
+                    </f:if>
+                    <div class="icon"></div>
+                    <a class="additional-info info-1" href="{feed.link}">{feed.raw.likes.count}</a>
                     <a class="additional-info info-2" href="{feed.link}">{feed.Raw.comment_count}</a>
                 </div>
             </f:if>
@@ -38,6 +40,9 @@
             <f:if condition="{0:feed.provider}=={0:'instagram'}">
                 <div class="pb-list-item pb-list-item-instagram pb-hidden" data-type="" data-url="{feed.link}">
                     <div class="image" style="background-image: url({feed.image})"></div>
+                    <f:if condition="{feed.text}">
+                        <span class="text">{feed.text}</span>
+                    </f:if>
                     <div class="icon"></div>
                     <a class="additional-info info-1" href="{feed.link}">{feed.raw.likes.count}</a>
                     <a class="additional-info info-2" href="{feed.link}">{feed.raw.comments.count}</a>
@@ -73,7 +78,6 @@
             </f:if>
 
             <f:if condition="{0:feed.provider}=={0:'pinterest'}">
-                <f:debug>{feed}</f:debug>
                 <div class="pb-list-item pb-list-item-pinterest pb-hidden" data-type="" data-url="{feed.link}">
                     <div class="image" style="background-image: url({feed.image})"></div>
                     <div class="icon"></div>

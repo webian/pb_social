@@ -6,6 +6,7 @@ return array(
     'imgur'                         => $extensionPath . 'imgur/Imgur.php',
     'instagram'                     => $extensionPath . 'instagram/src/Instagram.php',
     'twitterAPIExchange'            => $extensionPath . 'twitter/TwitterAPIExchange.php',
+    'twitterOAuth'                  => $extensionPath . 'twitteroauth/autoload.php',
     'youtube'                       => $extensionPath . 'youtube/src/Google/autoload.php',
     //'tumblr_autoload'               => $extensionPath . 'tumblr/vendor/autoload.php',
 );

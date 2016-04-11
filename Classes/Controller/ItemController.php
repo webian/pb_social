@@ -1,5 +1,7 @@
 <?php
 namespace PlusB\PbSocial\Controller;
+use PlusB\PbSocial\Adapter;
+use PlusB\PbSocial\Domain\Model\Feed;
 
 
 /***************************************************************
@@ -33,15 +35,15 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  */
 class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 
-    const TYPE_FACEBOOK = "facebook";
-    const TYPE_GOOGLE = "googleplus";
-    const TYPE_IMGUR = "imgur";
-    const TYPE_INSTAGRAM = "instagram";
-    const TYPE_PINTEREST = "pinterest";
-    const TYPE_TWITTER = "twitter";
-    const TYPE_TUMBLR = "tumblr";
-    const TYPE_YOUTUBE = "youtube";
-    const TYPE_DUMMY = "dummy";
+    const TYPE_FACEBOOK = 'facebook';
+    const TYPE_GOOGLE = 'googleplus';
+    const TYPE_IMGUR = 'imgur';
+    const TYPE_INSTAGRAM = 'instagram';
+    const TYPE_PINTEREST = 'pinterest';
+    const TYPE_TWITTER = 'twitter';
+    const TYPE_TUMBLR = 'tumblr';
+    const TYPE_YOUTUBE = 'youtube';
+    const TYPE_DUMMY = 'dummy';
 
     /**
      * itemRepository
@@ -50,6 +52,8 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
      * @inject
      */
     protected $itemRepository = NULL;
+
+    protected $logger;
 
     /**
      * action list
@@ -89,7 +93,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
      * @return void
      */
     public function updateAction(\PlusB\PbSocial\Domain\Model\Item $item) {
-        $this->addFlashMessage('The object was updated. Please be aware that this action is publicly accessible unless you implement an access check. See <a href="http://wiki.typo3.org/T3Doc/Extension_Builder/Using_the_Extension_Builder#1._Model_the_domain" target="_blank">Wiki</a>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+        $this->addFlashMessage('The object was updated. Please be aware that this action is publicly accessible unless you implement an access check. See <a href=\'http://wiki.typo3.org/T3Doc/Extension_Builder/Using_the_Extension_Builder#1._Model_the_domain\' target=\'_blank\'>Wiki</a>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
         $this->itemRepository->update($item);
         $this->redirect('list');
     }
@@ -101,7 +105,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
      * @return void
      */
     public function deleteAction(\PlusB\PbSocial\Domain\Model\Item $item) {
-        $this->addFlashMessage('The object was deleted. Please be aware that this action is publicly accessible unless you implement an access check. See <a href="http://wiki.typo3.org/T3Doc/Extension_Builder/Using_the_Extension_Builder#1._Model_the_domain" target="_blank">Wiki</a>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+        $this->addFlashMessage('The object was deleted. Please be aware that this action is publicly accessible unless you implement an access check. See <a href=\'http://wiki.typo3.org/T3Doc/Extension_Builder/Using_the_Extension_Builder#1._Model_the_domain\' target=\'_blank\'>Wiki</a>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
         $this->itemRepository->remove($item);
         $this->redirect('list');
     }
@@ -120,211 +124,158 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
      * @return void
      */
     public function showSocialFeedAction() {
+
         $feeds = array();
-        $feeds_facebook = null;
-        $feeds_googleplus = null;
-        $feeds_imgur = null;
-        $feeds_instagram = null;
-        $feeds_twitter = null;
-        $feeds_tumblr = null;
-        $feeds_dummy = null;
-        $onlyWithPicture = $this->settings["onlyWithPicture"] === '1' ? true : false;
-        $textTrimLength = intval($this->settings["textTrimLength"]) > 0 ? intval($this->settings["textTrimLength"]) : 130;
-        $feedRequestLimit = intval(empty($this->settings['feedRequestLimit']) ? 10 : $this->settings['feedRequestLimit']);
+        $results = array();
 
-        if ($this->settings["facebookEnabled"] === '1') {
-            $fb_feeds = $this->itemRepository->findFeedsByType(self::TYPE_FACEBOOK, $this->settings);
+        $extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pb_social']); //TODO => search for a better way of accessing extconf
+        $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
 
-            if ($fb_feeds !== NULL) {
-                foreach ($fb_feeds as $fb_feed) {
-                    $this->view->assign(self::TYPE_FACEBOOK . '_' . $fb_feed->getCacheIdentifier() . '_raw', $fb_feed->getResult());
-                    foreach ($fb_feed->getResult()->data as $rawFeed) {
-                        if ($onlyWithPicture && empty($rawFeed->picture)) {
-                            continue;
-                        }
+        $adapterOptions = $this->getAdapterOptions();
+        $adapterOptions->devMod = $extConf['socialfeed.']['devmod'] == '1' ? true : false;
 
-                        $feed = new Feed($fb_feed->getType(), $rawFeed);
-                        $feed->setId($rawFeed->id);
-                        $feed->setText(trim_text($rawFeed->message, $textTrimLength, true));
-                        $feed->setImage(urldecode($rawFeed->picture));
-                        $feed->setLink($rawFeed->link);
-                        $d = new \DateTime($rawFeed->created_time);
-                        $feed->setTimeStampTicks($d->getTimestamp());
+        if ($this->settings['facebookEnabled'] === '1') {
 
-                        $feeds[] = $feed;
-                    }
-                }
+            # check api key #
+            $config_apiId = $extConf['socialfeed.']['facebook.']['api.']['id'];
+            $config_apiSecret = $extConf['socialfeed.']['facebook.']['api.']['secret'];
+
+            $this->logger->warning('facebook enabled');
+
+            if (empty($config_apiId) || empty($config_apiSecret)) {
+                $this->logger->warning( self::TYPE_FACEBOOK . ' credentials not set');
+            } else {
+                # retrieve data from adapter #
+                $adapter = new Adapter\FacebookAdapter($config_apiId, $config_apiSecret, $this->itemRepository);
+                $results[] = $adapter->getResultFromApi($adapterOptions);
+            }
+
+        }
+
+        if ($this->settings['googleEnabled'] === '1') {
+
+            # check api key #
+            $config_appKey = $extConf['socialfeed.']['googleplus.']['app.']['key'];
+
+            if (empty($config_appKey)) {
+                $this->logger->warning(self::TYPE_GOOGLE . ' credentials not set');
+            } elseif (empty($this->settings['googleSearchIds'])) {
+                $this->logger->warning(self::TYPE_GOOGLE . ' no search term defined');
+            } else {
+                # retrieve data from adapter #
+                $adapter = new Adapter\GooglePlusAdapter($config_appKey, $this->itemRepository);
+                $results[] = $adapter->getResultFromApi($adapterOptions);
+            }
+
+        }
+
+        if ($this->settings['imgurEnabled'] === '1') {
+
+            # check api key #
+            $config_apiId = $extConf['socialfeed.']['imgur.']['client.']['id'];
+            $config_apiSecret = $extConf['socialfeed.']['imgur.']['client.']['secret'];
+            $adapterOptions->imgSearchUsers = $this->settings['imgurUsers'];
+            $adapterOptions->imgSearchTags = $this->settings['imgurTags'];
+
+            if (empty($config_apiId) || empty($config_apiSecret)) {
+                $this->logger->warning(self::TYPE_IMGUR . ' credentials not set');
+            } elseif  (empty($adapterOptions->imgSearchUsers) && empty($adapterOptions->imgSearchTags)) {
+                $this->logger->warning(self::TYPE_IMGUR . ' - no search term defined');
+            } else {
+                # retrieve data from adapter #
+                $adapter = new Adapter\ImgurAdapter($config_apiId, $config_apiSecret, $this->itemRepository);
+                $results[] = $adapter->getResultFromApi($adapterOptions);
+            }
+
+        }
+
+        if ($this->settings['instagramEnabled'] === '1') {
+
+            # check api key #
+            $config_clientId = $extConf['socialfeed.']['instagram.']['client.']['id'];
+            $adapterOptions->instagramHashTags = $this->settings['instagramHashTag'];
+            $adapterOptions->instagramSearchIds = $this->settings['instagramSearchIds'];
+
+            if (empty($config_clientId)) {
+                $this->logger->warning(self::TYPE_INSTAGRAM . ' credentials not set');
+            } elseif (empty($adapterOptions->instagramSearchIds) && empty($adapterOptions->instagramHashTags)) {
+                $this->logger->warning(self::TYPE_INSTAGRAM . ' - no search term defined');
+            } else {
+                # retrieve data from adapter #
+                $adapter = new Adapter\InstagramAdapter($config_clientId, $this->itemRepository);
+                $results[] = $adapter->getResultFromApi($adapterOptions);
+            }
+
+        }
+
+        if ($this->settings['pinterestEnabled'] === '1') {
+
+            # check api key #
+            $username = $this->settings['username'];
+            $boardname = $this->settings['boardname'];
+
+            # retrieve data from adapter #
+            $adapter = new Adapter\PinterestAdapter($username, $boardname, $this->itemRepository);
+            $results[] = $adapter->getResultFromApi($adapterOptions);
+        }
+
+        if ($this->settings['tumblrEnabled'] === '1') {
+
+            # check api key #
+            $config_consumerKey = $extConf['socialfeed.']['tumblr.']['consumer.']['key'];
+            $config_consumerSecret = $extConf['socialfeed.']['tumblr.']['consumer.']['secret'];
+            $config_Token = $extConf['socialfeed.']['tumblr.']['token'];
+            $config_TokenSecret = $extConf['socialfeed.']['tumblr.']['token_secret'];
+
+            $adapterOptions->tumblrHashtag = strtolower(str_replace('#', '', $this->settings['tumblrHashTag']));
+            $adapterOptions->tumblrBlogNames = $this->settings['tumblrBlogNames'];
+            $adapterOptions->tumblrShowOnlyImages = $this->settings['tumblrShowOnlyImages'];
+
+            if (empty($config_consumerKey) || empty($config_consumerSecret) || empty($config_Token) || empty($config_TokenSecret)) {
+                $this->logger->warning(self::TYPE_TUMBLR . ' credentials not set');
+            } elseif (empty($adapterOptions->tumblrBlogNames)) {
+                $this->logger->warning(self::TYPE_TUMBLR . ' - no blog names for search term defined');
+            } else {
+                # retrieve data from adapter #
+                $adapter = new Adapter\TumblrAdapter($config_consumerKey, $config_consumerSecret, $config_Token, $config_TokenSecret, $this->itemRepository);
+                $results[] = $adapter->getResultFromApi($adapterOptions);
+            }
+
+        }
+
+        if ($this->settings['twitterEnabled'] === '1') {
+
+            # check api key #
+            $config_consumerKey = $extConf['socialfeed.']['twitter.']['consumer.']['key'];
+            $config_consumerSecret = $extConf['socialfeed.']['twitter.']['consumer.']['secret'];
+            $config_accessToken = $extConf['socialfeed.']['twitter.']['oauth.']['access.']['token'];
+            $config_accessTokenSecret = $extConf['socialfeed.']['twitter.']['oauth.']['access.']['token_secret'];
+
+            $adapterOptions->twitterSearchFieldValues = $this->settings['twitterSearchFieldValues'];
+            $adapterOptions->twitterProfilePosts = $this->settings['twitterProfilePosts'];
+            $adapterOptions->twitterLanguage = $this->settings['twitterLanguage'];
+            $adapterOptions->twitterGeoCode = $this->settings['twitterGeoCode'];
+            $adapterOptions->twitterHideRetweets = $this->settings['twitterHideRetweets'];
+            $adapterOptions->twitterShowOnlyImages = $this->settings['twitterShowOnlyImages'];
+
+            if (empty($config_consumerKey) || empty($config_consumerSecret) || empty($config_accessToken) || empty($config_accessTokenSecret)) {
+                $this->logger->warning(self::TYPE_TWITTER . ' credentials not set');
+            } elseif (empty($adapterOptions->twitterSearchFieldValues) && empty($adapterOptions->twitterProfilePosts)) {
+                $this->logger->warning(self::TYPE_TWITTER . ' - no search term defined');
+            } else {
+                # retrieve data from adapter #
+                $adapter = new Adapter\TwitterAdapter($config_consumerKey, $config_consumerSecret, $config_accessToken, $config_accessTokenSecret, $this->itemRepository);
+                $results[] = $adapter->getResultFromApi($adapterOptions);
             }
         }
 
-        if ($this->settings["googleEnabled"] === '1') {
-            $feeds_googleplus = $this->itemRepository->findFeedsByType(self::TYPE_GOOGLE, $this->settings);
-
-            if ($feeds_googleplus !== NULL) {
-                foreach ($feeds_googleplus as $gp_feed) {
-                    $this->view->assign(self::TYPE_GOOGLE . '_' . $gp_feed->getCacheIdentifier() . '_raw', $gp_feed->getResult());
-                    foreach ($gp_feed->getResult()->items as $rawFeed) {
-                        if ($onlyWithPicture && empty($rawFeed->object->attachments[0]->image->url)) {
-                            continue;
-                        }
-                        $feed = new Feed($gp_feed->getType(), $rawFeed);
-                        $feed->setId($rawFeed->id);
-                        $feed->setText(trim_text($rawFeed->title, $textTrimLength, true));
-                        $feed->setImage($rawFeed->object->attachments[0]->image->url);
-
-                        // only for type photo
-                        if ($rawFeed->object->attachments[0]->objectType == "photo" && $rawFeed->object->attachments[0]->fullImage->url != "") {
-                            $feed->setImage($rawFeed->object->attachments[0]->fullImage->url);
-                        }
-
-                        // only if no title is set but somehow the video is labeled
-                        if ($rawFeed->title == "" && $rawFeed->object->attachments[0]->displayName != "") {
-                            $feed->setText(trim_text($rawFeed->object->attachments[0]->displayName, $textTrimLength, true));
-                        }
-
-                        $feed->setLink($rawFeed->url);
-                        $d = new \DateTime($rawFeed->updated);
-                        $feed->setTimeStampTicks($d->getTimestamp());
-                        $feeds[] = $feed;
-                    }
-                }
-            }
+        # provide feeds to frontend #
+        foreach ($results as $result) {
+            foreach ($result['rawFeeds'] as $rfid => $rf) $this->view->assign($rfid, $rf);
+            foreach ($result['feedItems'] as $feed) $feeds[] = $feed;
         }
 
-        if ($this->settings["imgurEnabled"] === '1') {
-            $feeds_imgur = $this->itemRepository->findFeedsByType(self::TYPE_IMGUR, $this->settings);
-            $endingArray = array('.gif', '.jpg', '.png');
-//            DebuggerUtility::var_dump($feeds_imgur);
-            if ($feeds_imgur !== NULL) {
-                foreach ($feeds_imgur as $im_feed) {
-                    $this->view->assign(self::TYPE_IMGUR . '_' . $im_feed->getCacheIdentifier() . '_raw', $im_feed->getResult());
-                    foreach ($im_feed->getResult()->data as $rawFeed) {
-                        if (is_object($rawFeed)) {
-                            if ($this->check_end($rawFeed->link, $endingArray)) {
-                                $feed = new Feed($im_feed->getType(), $rawFeed);
-                                $feed->setId($rawFeed->id);
-                                $feed->setImage($rawFeed->link);
-                                $feed->setLink('http://imgur.com/gallery/' . $rawFeed->id);
-                                $feed->setTimeStampTicks($rawFeed->created_time);
-                                $feeds[] = $feed;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        if ($this->settings["instagramEnabled"] === '1') {
-            $feeds_instagram = $this->itemRepository->findFeedsByType(self::TYPE_INSTAGRAM, $this->settings);
-
-            if ($feeds_instagram !== NULL) {
-                foreach ($feeds_instagram as $ig_feed) {
-                    $this->view->assign(self::TYPE_INSTAGRAM . '_' . $ig_feed->getCacheIdentifier() . '_raw', $ig_feed->getResult());
-                    foreach ($ig_feed->getResult()->data as $rawFeed) {
-                        if ($onlyWithPicture && empty($rawFeed->images->standard_resolution->url)) {
-                            continue;
-                        }
-                        $feed = new Feed($ig_feed->getType(), $rawFeed);
-                        $feed->setId($rawFeed->id);
-                        $feed->setText(trim_text($rawFeed->caption->text, $textTrimLength, true));
-                        $feed->setImage($rawFeed->images->standard_resolution->url);
-                        $feed->setLink($rawFeed->link);
-                        $feed->setTimeStampTicks($rawFeed->created_time);
-                        $feeds[] = $feed;
-                    }
-                }
-            }
-        }
-
-        if ($this->settings["pinterestEnabled"] === '1') {
-            $feeds_pinterest = $this->itemRepository->findFeedsByType(self::TYPE_PINTEREST, $this->settings);
-            if ($feeds_pinterest !== NULL) {
-                foreach ($feeds_pinterest as $pin_feed) {
-                    $this->view->assign(self::TYPE_PINTEREST . '_' . $pin_feed->getCacheIdentifier() . '_raw', $pin_feed->getResult());
-                    foreach ($pin_feed->getResult()->data as $rawFeed) {
-                        $i = 0;
-                        foreach ($rawFeed as $pin) {
-                            if ($pin->images && ($i < $feedRequestLimit)) {
-                                $i++;
-                                $feed = new Feed($pin_feed->getType(), $pin);
-                                $feed->setText(trim_text($pin->description, $textTrimLength, true));
-                                $image = (array)$pin->images;
-                                $feed->setImage($image['237x']->url);
-                                $feed->setLink($pin->link);
-                                $feed->setTimeStampTicks($rawFeed->created_time);
-                                $feeds[] = $feed;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        if ($this->settings["tumblrEnabled"] === '1') {
-            $feeds_tumblr = $this->itemRepository->findFeedsByType(self::TYPE_TUMBLR, $this->settings);
-
-            if ($feeds_tumblr !== NULL) {
-                foreach ($feeds_tumblr as $tblr_feed) {
-                    $this->view->assign(self::TYPE_TUMBLR . '_' . $tblr_feed->getCacheIdentifier() . '_raw', $tblr_feed->getResult());
-                    foreach ($tblr_feed->getResult()->posts as $rawFeed) {
-                        if ($onlyWithPicture && empty($rawFeed->photos[0]->original_size->url)) {
-                            continue;
-                        }
-                        $feed = new Feed($tblr_feed->getType(), $rawFeed);
-                        $feed->setId($rawFeed->id);
-                        if ($rawFeed->caption) {
-                            $feed->setText(trim_text(strip_tags($rawFeed->caption), $textTrimLength, true));
-                        } else if ($rawFeed->body) {
-                            $feed->setText(trim_text(strip_tags($rawFeed->body), $textTrimLength, true));
-                        }
-                        if ($rawFeed->photos[0]->original_size->url) {
-                            $feed->setImage($rawFeed->photos[0]->original_size->url);
-                        } else if ($rawFeed->thumbnail_url) {
-                            $feed->setImage($rawFeed->thumbnail_url);
-                        }
-
-                        $feed->setLink($rawFeed->post_url);
-                        $feed->setTimeStampTicks($rawFeed->timestamp);
-                        $feeds[] = $feed;
-                    }
-                }
-            }
-        }
-
-        if ($this->settings["twitterEnabled"] === '1') {
-            $feeds_twitter = $this->itemRepository->findFeedsByType(self::TYPE_TWITTER, $this->settings);
-            if ($feeds_twitter !== NULL) {
-                foreach ($feeds_twitter as $twt_feed) {
-                    if (empty($twt_feed->getResult()->statuses)) {
-                        break;
-                    }
-                    $this->view->assign(self::TYPE_TWITTER . '_' . $twt_feed->getCacheIdentifier() . '_raw', $twt_feed->getResult());
-                    foreach ($twt_feed->getResult()->statuses as $rawFeed) {
-                        if ($onlyWithPicture && empty($rawFeed->entities->media)) {
-                            continue;
-                        }
-                        $feed = new Feed($twt_feed->getType(), $rawFeed);
-                        $feed->setId($rawFeed->id);
-                        $feed->setText(trim_text($rawFeed->text, $textTrimLength, true));
-                        if ($rawFeed->entities->media[0]->type == 'photo') {
-                            $feed->setImage($rawFeed->entities->media[0]->media_url);
-                        }
-                        if ($rawFeed->entities->media[0]->url) {
-                            $feed->setLink($rawFeed->entities->media[0]->url);
-                        } else if ($rawFeed->entities->urls[0]->expanded_url) {
-                            $feed->setLink($rawFeed->entities->urls[0]->expanded_url);
-                        } else {
-                            $feed->setLink('https://twitter.com/' . $rawFeed->user->screen_name . '/status/' . $rawFeed->id_str);
-                        }
-                        $dateTime = new \DateTime($rawFeed->created_at);
-                        $feed->setTimeStampTicks($dateTime->getTimestamp());
-                        $feeds[] = $feed;
-                    }
-                }
-            }
-        }
-
-        if ($this->settings["youtubeEnabled"] === '1') {
+        if ($this->settings['youtubeEnabled'] === '1') {
             $feeds_youtube = $this->itemRepository->findFeedsByType(self::TYPE_YOUTUBE, $this->settings);
 //            DebuggerUtility::var_dump($feeds_youtube,'feeds youtube');
 //            json_decode ($feeds_youtube['result']);
@@ -348,19 +299,19 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             }
         }
 
-        if ($this->settings["dummyEnabled"] === '1') {
+        if ($this->settings['dummyEnabled'] === '1') {
             $feeds_dummy = $this->itemRepository->findFeedsByType(self::TYPE_DUMMY, $this->settings);
 
             if ($feeds_dummy !== NULL) {
                 foreach ($feeds_dummy as $dmy_feed) {
                     $this->view->assign(self::TYPE_DUMMY . '_' . $dmy_feed->getCacheIdentifier() . '_raw', $dmy_feed->getResult());
                     foreach ($dmy_feed->getResult()->PROVIDER_AWESOME_JSON_STRUCTURE as $rawFeed) {
-                        if ($onlyWithPicture && empty($rawFeed->TODO_PROVIDER_JSON_PICTURE_NODE)) {
+                        if ($adapterOptions->onlyWithPicture && empty($rawFeed->TODO_PROVIDER_JSON_PICTURE_NODE)) {
                             continue;
                         }
                         $feed = new Feed($dmy_feed->getType(), $rawFeed);
                         $feed->setId($rawFeed->TODO_PROVIDER_JSON_PICTURE_NODE);
-                        $feed->setText(trim_text($rawFeed->TODO_PROVIDER_JSON_TEXT_NODE, $textTrimLength, true));
+                        $feed->setText(trim_text($rawFeed->TODO_PROVIDER_JSON_TEXT_NODE, $adapterOptions->textTrimLength, true));
                         $feed->setImage($rawFeed->TODO_PROVIDER_JSON_PICTURE_NODE);
                         $feed->setLink($rawFeed->TODO_PROVIDER_JSON_LINK_NODE);
                         $feed->setTimeStampTicks($rawFeed->TODO_PROVIDER_JSON_MODIFY_DATE_NODE);
@@ -372,7 +323,10 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 
         // sort array if not empty
         if (!empty($feeds)) {
-            usort($feeds, array($this, "cmp"));
+            usort($feeds, array($this, 'cmp'));
+            foreach ($feeds as $f) {
+                error_log(json_encode($f->getProvider()));
+            }
         }
 
         $this->view->assign('feeds', $feeds);
@@ -392,165 +346,28 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
         return false;
     }
 
-}
+    function getAdapterOptions(){
 
+        $options = (object) array();
 
-class Feed {
-    /**
-     * @var string
-     */
-    protected $id;
+        $options->twitterHideRetweets = empty($settings['twitterHideRetweets']) ? false : ($settings['twitterHideRetweets'] == '1' ? true : false);
+        $options->twitterShowOnlyImages = empty($settings['twitterShowOnlyImages']) ? false : ($settings['twitterShowOnlyImages'] == '1' ? true : false);
+        $options->tumblrShowOnlyImages = empty($settings['tumblrShowOnlyImages']) ? false : ($settings['tumblrShowOnlyImages'] == '1' ? true : false);
+        $options->feedRequestLimit = intval(empty($settings['feedRequestLimit']) ? '10' : $settings['feedRequestLimit']);
 
-    /**
-     * @var string
-     */
-    protected $Provider;
+        $refreshTimeInMin = intval(empty($settings['refreshTimeInMin']) ? '10' : $settings['refreshTimeInMin']);
+        if ($refreshTimeInMin == 0) $refreshTimeInMin = 10; //reset to 10 if intval() cant convert
+        $options->refreshTimeInMin = $refreshTimeInMin;
 
-    /**
-     * @var string
-     */
-    protected $Image;
+        $options->settings = $this->settings;
+        $options->onlyWithPicture = $this->settings['onlyWithPicture'] === '1' ? true : false;
+        $options->textTrimLength = intval($this->settings['textTrimLength']) > 0 ? intval($this->settings['textTrimLength']) : 130;
+        $options->feedRequestLimit = intval(empty($this->settings['feedRequestLimit']) ? 10 : $this->settings['feedRequestLimit']);
 
-    /**
-     * @var string
-     */
-    protected $Text;
+        return $options;
 
-    /**
-     * @var integer
-     */
-    protected $TimeStampTicks;
-
-    /**
-     * @var string
-     */
-    protected $Link;
-
-    /**
-     * @var string
-     */
-    protected $Raw;
-
-    /**
-     * @param string $provider
-     * @param string $rawFeed
-     */
-    function __construct($provider, $rawFeed) {
-        $this->setProvider($provider);
-        $this->setRaw($rawFeed);
     }
 
-    /**
-     * @param string $id
-     */
-    public function setId($id) {
-        $this->id = $id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getId() {
-        return $this->id;
-    }
-
-    /**
-     * @param string $Image
-     */
-    public function setImage($Image) {
-        if ($this->Provider == ItemController::TYPE_FACEBOOK) {
-            if ($this->Raw->type == "photo") {
-                if (strpos($Image, "//scontent") !== false) {
-                    //$Image = preg_replace('/\/v\/\S*\/p[0-9]*x[0-9]*\//', '/', $Image);
-                }
-                if (strpos($Image, "//fbcdn") !== false) {
-                    //$Image = str_replace("/v/","/",$Image);
-                    //$Image = str_replace("/p130x130/","/p/",$Image);
-                }
-            }
-            if ($this->Raw->type == "link") {
-                $Image = preg_replace('/&[wh]=[0-9]*/', '', $Image); // for embedded links
-            }
-        }
-        $this->Image = $Image;
-    }
-
-    /**
-     * @return string
-     */
-    public function getImage() {
-        return $this->Image;
-    }
-
-    /**
-     * @param string $Provider
-     */
-    public function setProvider($Provider) {
-        $this->Provider = $Provider;
-    }
-
-    /**
-     * @return string
-     */
-    public function getProvider() {
-        return $this->Provider;
-    }
-
-    /**
-     * @param string $Raw
-     */
-    public function setRaw($Raw) {
-        $this->Raw = $Raw;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRaw() {
-        return $this->Raw;
-    }
-
-    /**
-     * @param string $Text
-     */
-    public function setText($Text) {
-        $this->Text = $Text;
-    }
-
-    /**
-     * @return string
-     */
-    public function getText() {
-        return $this->Text;
-    }
-
-    /**
-     * @param int $TimeStampTicks
-     */
-    public function setTimeStampTicks($TimeStampTicks) {
-        $this->TimeStampTicks = $TimeStampTicks;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTimeStampTicks() {
-        return $this->TimeStampTicks;
-    }
-
-    /**
-     * @param string $Link
-     */
-    public function setLink($Link) {
-        $this->Link = $Link;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLink() {
-        return $this->Link;
-    }
 }
 
 /**
@@ -563,7 +380,7 @@ class Feed {
  */
 function trim_text($input, $length, $ellipses = true, $strip_html = true) {
     if (empty($input)) {
-        return "";
+        return '';
     }
 
     //strip tags, if desired
