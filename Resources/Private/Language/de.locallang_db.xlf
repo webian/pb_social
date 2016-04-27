@@ -36,6 +36,10 @@
                 <source>Facebook search IDs (Page that helps to find the ID: http://findmyfacebookid.com/). Use commas to show more than one ID</source>
                 <target state="translated">Facebook IDs der Seiten, die angezeigt werden sollen (Hilfeseite zu den IDs: http://blog.niklaskoehler.de/facebook-tools/facebook-id-ermitteln). Verwende Kommas, um mehrere Seiten anzuzeigen</target>
             </trans-unit>
+            <trans-unit id="flexform.tab.facebook.showOnlyImages">
+                <source>Show only posts with images</source>
+                <target state="translated">Nur Posts anzeigen, die Bilder beinhalten</target>
+            </trans-unit>
 
             <trans-unit id="flexform.tab.google.caption">
                 <source>Google+</source>
@@ -80,7 +84,7 @@
                 <target state="translated">Instagram IDs der Seiten, die angezeigt werden sollen (Hilfeseite zu den IDs: http://www.otzberg.net/iguserid/). Verwende Kommas, um mehrere Seiten anzuzeigen</target>
             </trans-unit>
             <trans-unit id="flexform.tab.instagram.hashtag">
-                <source>Output most up to date Images with a specific Hashtag. Use commas to show more than one</source>
+                <source>Output most up to date Images with a specific hashtag. Use commas to show more than one.</source>
                 <target state="translated">Die aktuellsten Bilder mit einem bestimmten Hashtag anzeigen. Verwende Kommas, um mehrere anzuzeigen</target>
             </trans-unit>
 
@@ -175,6 +179,42 @@
             <trans-unit id="flexform.tab.youtube.searchword">
                 <source>Youtube searchword. Use commas to show more than one</source>
                 <target state="translated">Youtube Suchwort. Verwende Kommas, um mehrere Seiten anzuzeigen</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.youtube.lang">
+                <source>(Optional) Show videos in a specific language (for example: use "de" for videos in german language). For a list look at the ISO 639-1 codes on http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes</source>
+                <target state="translated">(Optional) Zeige Videos nur in der entsprechenden Sprache an (z.B. "de" für Videos, die in der deutschen Sprache sind). Für eine Liste, schaue auf die ISO 639-1 Codes auf http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.youtube.type">
+                <source>(Optional) Restricts search on a particular type of resource. Default is "video,channel,playlist". "video,playlist" e.g. excludes channels from the result.</source>
+                <target state="translated">(Optional) Beschränkt die Suche auf gewisse Ergebnis-Typen. Der default-Wert ist "video,channel,playlist". "video,playlist" z.B. liefert keine Kanäle zurück.</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.youtube.order">
+                <source>(Optional) Order of posts (default is relevance)</source>
+                <target state="translated">(Optional) Sortierung der Ergebnisse (default ist "relevance")</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.youtube.order.relevance">
+                <source>relevance</source>
+                <target state="translated">Relevanz</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.youtube.order.date">
+                <source>date</source>
+                <target state="translated">Datum</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.youtube.order.viewCount">
+                <source>viewCount</source>
+                <target state="translated">viewCount</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.youtube.order.videoCount">
+                <source>videoCount (order in channel)</source>
+                <target state="translated">videoCount (Sortierung innerhalb des Kanals)</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.youtube.order.title">
+                <source>title</source>
+                <target state="translated">Titel</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.youtube.order.rating">
+                <source>rating</source>
+                <target state="translated">Bewertung</target>
             </trans-unit>
 
         </body>
