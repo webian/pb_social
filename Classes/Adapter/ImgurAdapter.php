@@ -41,6 +41,8 @@ class ImgurAdapter extends SocialMediaAdapter {
 
         $this->api =  new \Imgur($apiId, $apiSecret);
 
+        //TODO: Implement OAuth authentication (to get a user's images etc)
+
     }
 
     public function getResultFromApi($options){
@@ -56,8 +58,9 @@ class ImgurAdapter extends SocialMediaAdapter {
 
                 if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
                     try {
+                        $posts = json_encode($this->api->account($searchId)->images());
                         $feed->setDate(new \DateTime('now'));
-                        $feed->setResult(json_encode($this->api->account($searchId)->images($page = 0)));
+                        $feed->setResult($posts);
                         $this->itemRepository->update($feed);
                     } catch (\Exception $e) {
                         $this->logger->warning(self::TYPE . ' feeds can\'t be updated', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
@@ -68,9 +71,10 @@ class ImgurAdapter extends SocialMediaAdapter {
             }
 
             try {
+                $posts = json_encode($this->api->account($searchId)->images($page = 0));
                 $feed = new Item(self::TYPE);
                 $feed->setCacheIdentifier($searchId);
-                $feed->setResult(json_encode($this->api->account($searchId)->images($page = 0)));
+                $feed->setResult($posts);
 
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
@@ -90,10 +94,9 @@ class ImgurAdapter extends SocialMediaAdapter {
 
                 if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
                     try {
+                        $posts = json_encode($this->api->gallery()->search($searchId));
                         $feed->setDate(new \DateTime('now'));
-//                        DebuggerUtility::var_dump($imgur->gallery()->search($searchId), 'imgur searchresponse before json');
-//                        DebuggerUtility::var_dump(json_encode($imgur->gallery()->search($searchId)), 'imgur searchresponse');
-                        $feed->setResult(json_encode($this->api->gallery()->search($searchId)));
+                        $feed->setResult($posts);
                         $this->itemRepository->update($feed);
                     } catch (\Exception $e) {
                         $this->logger->warning(self::TYPE . ' feeds can\'t be updated', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
@@ -104,9 +107,10 @@ class ImgurAdapter extends SocialMediaAdapter {
             }
 
             try {
+                $posts = json_encode($this->api->gallery()->search($searchId));
                 $feed = new Item(self::TYPE);
                 $feed->setCacheIdentifier($searchId);
-                $feed->setResult(json_encode($this->api->gallery()->search($searchId)));
+                $feed->setResult($posts);
 
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
@@ -130,15 +134,17 @@ class ImgurAdapter extends SocialMediaAdapter {
         if (!empty($result)) {
             foreach ($result as $im_feed) {
                 $rawFeeds[self::TYPE . '_' . $im_feed->getCacheIdentifier() . '_raw'] = $im_feed->getResult();
+                $i = 0;
                 foreach ($im_feed->getResult()->data as $rawFeed) {
-                    if (is_object($rawFeed)) {
+                    if (is_object($rawFeed) && ($i < $options->feedRequestLimit)) {
                         if ($this->check_end($rawFeed->link, $endingArray)) {
+                            $i++;
                             $feed = new Feed(self::TYPE, $rawFeed);
                             $feed->setId($rawFeed->id);
                             $feed->setImage($rawFeed->link);
                             $feed->setText($this->trim_text($rawFeed->title, $options->textTrimLength, true));
                             $feed->setLink('http://imgur.com/gallery/' . $rawFeed->id);
-                            $feed->setTimeStampTicks($rawFeed->created_time);
+                            $feed->setTimeStampTicks($rawFeed->datetime);
                             $feedItems[] = $feed;
                         }
                     }

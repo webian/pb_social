@@ -135,6 +135,8 @@ class TumblrAdapter extends SocialMediaAdapter {
             }
         } else {
             if ($options->tumblrHashtag !== '') {
+                $options->tumblrHashtag = trim($options->tumblrHashtag);
+                $options->tumblrHashtag = ltrim($options->tumblrHashtag, '#'); //strip hastags
                 if ($options->tumblrShowOnlyImages) {
                     $posts = (json_encode($this->api->getBlogPosts($blogName, array('limit' => $options->feedRequestLimit, 'type' => 'photo', 'tag' => $options->tumblrHashtag, 'filter' => 'text'))));
                 } else {
@@ -150,8 +152,6 @@ class TumblrAdapter extends SocialMediaAdapter {
         }
 
         return $posts;
-
-
 
     }
 }

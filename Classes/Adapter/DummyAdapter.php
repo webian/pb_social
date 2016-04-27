@@ -2,7 +2,7 @@
 
 namespace PlusB\PbSocial\Adapter;
 $extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/';
-require_once $extensionPath . 'pinterest/autoload.php';
+#require_once $extensionPath . 'dummy/autoload.php'; # Include provider library if necessary
 use DirkGroenen\Pinterest;
 use PlusB\PbSocial\Domain\Model\Credential;
 use PlusB\PbSocial\Domain\Model\Feed;
@@ -34,36 +34,35 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class PinterestAdapter extends SocialMediaAdapter {
+class DummyAdapter extends SocialMediaAdapter {
 
-    const TYPE = 'pinterest';
+    /**
+     *  The TYPE property is used to identify the feed's provider.
+     */
+    const TYPE = 'dummy';
 
+    /**
+     *  If you're using a SDK you can assign the service to this variable.
+     */
     private $api;
 
+    /**
+     * Use this credentialRepository to store OAuth access tokens
+     *
+     * @var \PlusB\PbSocial\Domain\Repository\CredentialRepository
+     */
     private $credentialRepository;
 
-    private $appId;
-
-    public function __construct($appId, $appSecret, $accessCode, $itemRepository, $credentialRepository){
+    public function __construct($appId, $itemRepository, $credentialRepository){
 
         parent::__construct($itemRepository);
 
-        $this->appId = $appId;
+        //TODO: Initialize your service or implement any other initializing logic here.
 
-        $this->api = new Pinterest\Pinterest($appId, $appSecret);
-
-        $this->credentialRepository = $credentialRepository;
-
-        $code = $this->extractCode($accessCode);
-
-        $access_token = $this->getAccessToken($code);
-
-        $this->api->auth->setOAuthToken($access_token);
-
-        //testrequest
+        // Optional test request
         try {
-            $this->api->request->get('/me');
-        } catch (Pinterest\Exceptions\PinterestException $e){
+            // Simple request to test if the service is working
+        } catch (\Exception $e){
             $this->logger->warning(self::TYPE . ' exception - ' . $e->getMessage());
         }
 
@@ -72,21 +71,23 @@ class PinterestAdapter extends SocialMediaAdapter {
 
     public function getResultFromApi($options){
 
+        // Store Item objects in this array and pass it to $this->getFeedItemsFromApiRequest()
         $result = array();
 
-        $boardname = $options->pinterest_username . '/' . $options->pinterest_boardname;
-
-        foreach (explode(',', $options->username) as $searchId) {
-            $searchId = trim($searchId);
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchId);
+        // Get posts for each search value. dummySearchValues should be a comma,seperated,list,of,search,values,or,ids
+        foreach (explode(',', $options->dummySearchValues) as $searchValue) {
+            $searchValue = trim($searchValue);
+            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchValue);
 
             if ($feeds && $feeds->count() > 0) {
                 $feed = $feeds->getFirst();
 
                 if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
                     try {
+                        // TODO => GET SOME DATA FROM PROVIDER AND UPDATE FEED-ITEM
+                        $posts = $this->getPosts($searchValue);
                         $feed->setDate(new \DateTime('now'));
-                        $feed->setResult($this->getPosts($boardname));
+                        $feed->setResult($posts);
                         $this->itemRepository->update($feed);
                     } catch (\FacebookApiException $e) {
                         $this->logger->warning(self::TYPE . ' feeds can\'t be updated', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
@@ -97,10 +98,11 @@ class PinterestAdapter extends SocialMediaAdapter {
             }
 
             try {
-
+                // TODO => GET SOME DATA FROM YOUR PROVIDER AND INSERT THAT INTO NEW FEED-ITEM
+                $posts = $this->getPosts($searchValue);
                 $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($searchId);
-                $feed->setResult($this->getPosts($boardname));
+                $feed->setCacheIdentifier($searchValue);
+                $feed->setResult($posts);
 
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
@@ -121,22 +123,23 @@ class PinterestAdapter extends SocialMediaAdapter {
         $rawFeeds = array();
         $feedItems = array();
 
+        // TODO => Process post data from your service and create a Feed item for each post.
+        ## THIS IMPLEMENTATION IS ONLY AN EXAMPLE! MODIFY THIS CODE TO MATCH YOUR SERVICE'S RESPONSE ##
         if (!empty($result)) {
-            foreach ($result as $pin_feed) {
-                $rawFeeds[self::TYPE . '_' . $pin_feed->getCacheIdentifier() . '_raw'] = $pin_feed->getResult();
-                $i = 0;
-                foreach ($pin_feed->getResult()->data as $pin) {
-                    if ($pin->image && ($i < $options->feedRequestLimit)) {
-                        $i++;
-                        $feed = new Feed(self::TYPE, $pin);
-                        $feed->setText($this->trim_text($pin->note, $options->textTrimLength, true));
-                        $feed->setImage($pin->image->original->url);
-                        $link = $pin->link ? $pin->link : $pin->url;
-                        $feed->setLink($link);
-                        $d = new \DateTime($pin->created_at);
-                        $feed->setTimeStampTicks($d->getTimestamp());
-                        $feedItems[] = $feed;
+            foreach ($result as $rawFeed) {
+                $rawFeeds[self::TYPE . '_' . $rawFeed->getCacheIdentifier() . '_raw'] = $rawFeed->getResult();
+                foreach ($rawFeed->getResult()->data as $dummy_post) {
+                    if ($options->onlyWithPicture && empty($rawFeed->TODO_PROVIDER_JSON_PICTURE_NODE)) {
+                        continue;
                     }
+                    $feed = new Feed(self::TYPE, $dummy_post);
+                    $feed->setId($dummy_post->TODO_PROVIDER_JSON_PICTURE_NODE);
+                    $feed->setText(trim_text($dummy_post->TODO_PROVIDER_JSON_TEXT_NODE, $options->textTrimLength, true));
+                    $feed->setImage($dummy_post->TODO_PROVIDER_JSON_PICTURE_NODE);
+                    $feed->setLink($dummy_post->TODO_PROVIDER_JSON_LINK_NODE);
+                    $feed->setTimeStampTicks($dummy_post->TODO_PROVIDER_JSON_MODIFY_DATE_NODE);
+                    $feeds[] = $feed;
+
                 }
             }
         }
@@ -144,19 +147,25 @@ class PinterestAdapter extends SocialMediaAdapter {
         return array('rawFeeds' => $rawFeeds, 'feedItems' => $feedItems);
     }
 
-    function getPosts($boardname){
+    function getPosts($searchValue){
 
-        $fields = array(
-            'fields' => 'id,link,counts,note,created_at,image[small],url'
-        );
+        $posts = $this->api->TODO_METHOD_TO_GET_POST_FROM_SERVICE($searchValue);
 
-        return $this->api->pins->fromBoard($boardname, $fields);
+        return $posts;
 
     }
 
+    /** Dummy method to get OAuth access token
+     *
+     * @param $code
+     * @return null|string
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     */
     private function getAccessToken($code){
 
-        $apiKey = $this->appId;
+        // If your service does not provide a method to get the appId,
+        // you may have to store the appId in a private variable while initializing this adapter.
+        $apiKey =  $this->api->TODO_METHOD_TO_GET_APP_ID();
 
         # get access token from database #
         $credentials = $this->credentialRepository->findByTypeAndAppId(self::TYPE, $apiKey);
@@ -172,7 +181,7 @@ class PinterestAdapter extends SocialMediaAdapter {
 
         if(!isset($credential) || !$credential->isValid()) {
             # validate code to get access token #
-            $token = $this->api->auth->getOAuthToken($code);
+            $token = $this->api->TODO_METHOD_TO_GET_OAUTH_ACCESS($code);
             $access_token = $token->access_token;
             if($access_token){
 
@@ -197,28 +206,4 @@ class PinterestAdapter extends SocialMediaAdapter {
         return $credential->getAccessToken();
     }
 
-    /** Converts url-encoded code
-     * @param $accessCode
-     * @return string
-     */
-    function extractCode($accessCode){
-
-        $accessCode = urldecode($accessCode);
-
-        if(strpos($accessCode, '&state=')){
-            $accessCode = explode('&state=', $accessCode)[0];
-        }
-
-        if(strpos($accessCode, 'code=') > -1){
-            $parts = explode('code=', $accessCode);
-            $code = strpos($parts[0], 'http') > -1 || $parts[0] == '' ? $parts[1] : $parts[0];
-        } elseif(strpos($accessCode, '=') == 0){
-            $code = ltrim($accessCode, '=');
-        } else {
-            $code = $accessCode;
-        }
-
-        return $code;
-
-    }
 }

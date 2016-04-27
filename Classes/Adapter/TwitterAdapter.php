@@ -37,8 +37,8 @@ class TwitterAdapter extends SocialMediaAdapter {
     const TYPE = 'twitter';
 
     private $api;
+
     private $api_url = 'search/tweets';
-    private $requestMethod = 'GET';
 
     public function __construct($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret, $itemRepository){
 
@@ -68,9 +68,6 @@ class TwitterAdapter extends SocialMediaAdapter {
             foreach (explode(',', $options->twitterSearchFieldValues) as $searchValue) {
                 $searchValue = trim($searchValue);
                 $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchValue);
-
-                //https://dev.twitter.com/rest/reference/get/search/tweets
-                //include_entities=false => The entities node will be disincluded when set to false.
 
                 $tweets = $this->getPosts($apiParameters, $options, $searchValue);
 
@@ -153,6 +150,8 @@ class TwitterAdapter extends SocialMediaAdapter {
         $rawFeeds = array();
         $feedItems = array();
 
+        $placeholder = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Public/Icons/Placeholder/twitter.jpg';
+
         if (!empty($result)) {
             foreach ($result as $twt_feed) {
                 if (empty($twt_feed->getResult()->statuses)) {
@@ -167,6 +166,7 @@ class TwitterAdapter extends SocialMediaAdapter {
                     $feed = new Feed($twt_feed->getType(), $rawFeed);
                     $feed->setId($rawFeed->id);
                     $feed->setText($this->trim_text($rawFeed->text, $options->textTrimLength, true));
+                    $feed->setImage($placeholder);
                     if ($rawFeed->entities->media[0]->type == 'photo') {
                         $feed->setImage($rawFeed->entities->media[0]->media_url);
                     }
@@ -204,7 +204,7 @@ class TwitterAdapter extends SocialMediaAdapter {
         }
 
         $requestParameters['q'] = $searchValue;
-        $requestParameters['count'] = $options->feedRequesLimit;
+        $requestParameters['count'] = $options->feedRequestLimit;
         $tweets = json_encode($this->api->get($this->api_url, $requestParameters));
 
         return $tweets;

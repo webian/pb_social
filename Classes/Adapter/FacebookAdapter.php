@@ -1,6 +1,11 @@
 <?php
 
 namespace PlusB\PbSocial\Adapter;
+$extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/';
+require $extensionPath . 'facebook/src/Facebook/autoload.php';
+use Facebook\Facebook;
+use Facebook\FacebookRequest;
+use Facebook\Helpers\FacebookRedirectLoginHelper;
 use PlusB\PbSocial\Domain\Model\Item;
 use PlusB\PbSocial\Domain\Model\Feed;
 
@@ -33,13 +38,51 @@ class FacebookAdapter extends SocialMediaAdapter {
 
     const TYPE = 'facebook';
 
+    const api_url = 'https://graph.facebook.com';
+
     private $api;
+
+    private $access_token;
 
     public function __construct($apiId, $apiSecret, $itemRepository){
 
         parent::__construct($itemRepository);
 
-        $this->api = new \Facebook(array('appId' => $apiId, 'secret' => $apiSecret));
+        $this->api = new Facebook([
+            'app_id' => $apiId,
+            'app_secret' => $apiSecret,
+            'default_graph_version' => 'v2.6',
+        ]);
+
+        // Get access_token via grant_type=client_credentials
+        $url = self::api_url . '/oauth/access_token?client_id='. $apiId . '&client_secret=' . $apiSecret . '&grant_type=client_credentials';
+
+        $this->access_token = $this->itemRepository->curl_download($url);
+        if($this->access_token){
+            $this->access_token =  ltrim($this->access_token, 'access_token=');
+        }
+
+        $this->api->setDefaultAccessToken($this->access_token);
+
+//
+//        $this->oAuth2Client = $this->api->getOAuth2Client();
+//
+//        $this->oAuth2Client->getLongLivedAccessToken($this->access_token);
+//        $accessTokenMetadata = $this->oAuth2Client->debugToken($this->access_token);
+//
+//        if ($accessTokenMetadata->getExpiresAt() < new \DateTime()) {
+//
+//            error_log('facebook access token expired');
+//            error_log(json_encode($accessTokenMetadata));
+//            /**
+//             * todo: we have to do something here if page access token was expired!
+//             *
+//             * the user should visit this page: https://developers.facebook.com/tools/explorer
+//             * and generator new long lived page access token
+//             */
+//        }
+//
+//        $this->api->setDefaultAccessToken($this->access_token);
 
     }
 
@@ -57,16 +100,13 @@ class FacebookAdapter extends SocialMediaAdapter {
             $searchId = trim($searchId);
             $feeds = $this->itemRepository->findByTypeAndCacheIdentifier($options->type, $searchId);
 
-            // /links? /statuses? /tagged?
-            $url = '/' . $searchId . '/posts?filter=app_2392950137&limit=' . $options->feedRequestLimit;
-
             if ($feeds && $feeds->count() > 0) {
                 $feed = $feeds->getFirst();
 
                 if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
                     try {
                         $feed->setDate(new \DateTime('now'));
-                        $feed->setResult(json_encode($this->api->api($url)));
+                        $feed->setResult($this->getPosts($searchId, $options->feedRequestLimit));
                         $this->itemRepository->update($feed);
                     } catch (\FacebookApiException $e) {
                         $this->logger->warning($options->type . ' feeds can\'t be updated', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
@@ -79,7 +119,7 @@ class FacebookAdapter extends SocialMediaAdapter {
             try {
                 $feed = new Item($options->type);
                 $feed->setCacheIdentifier($searchId);
-                $feed->setResult(json_encode($this->api->api($url)));
+                $feed->setResult($this->getPosts($searchId, $options->feedRequestLimit));
 
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
@@ -98,6 +138,7 @@ class FacebookAdapter extends SocialMediaAdapter {
         $rawFeeds = array();
         $feedItems = array();
 
+        $placeholder = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Public/Icons/Placeholder/fb.jpg';
         //this can probably go in SocialMediaAdapter
         if (!empty($result)) {
             foreach ($result as $fb_feed) {
@@ -109,7 +150,8 @@ class FacebookAdapter extends SocialMediaAdapter {
                     $feed = new Feed(self::TYPE , $rawFeed);
                     $feed->setId($rawFeed->id);
                     $feed->setText($this->trim_text($rawFeed->message, $options->textTrimLength, true));
-                    $feed->setImage(urldecode($rawFeed->picture));
+                    $img = property_exists($rawFeed, 'picture') ? urldecode($rawFeed->picture) : $placeholder;
+                    $feed->setImage($img);
                     $feed->setLink($rawFeed->link);
                     $d = new \DateTime($rawFeed->created_time);
                     $feed->setTimeStampTicks($d->getTimestamp());
@@ -120,6 +162,34 @@ class FacebookAdapter extends SocialMediaAdapter {
         }
 
         return array('rawFeeds' => $rawFeeds, 'feedItems' => $feedItems);
+
+    }
+
+    /** Make API request via Facebook sdk function
+     *
+     * @param string $searchId
+     * @param integer $limit
+     * @return string
+     */
+    function getPosts($searchId, $limit)
+    {
+
+        /** @var \Facebook\FacebookResponse $resp */
+        $resp = $this->api->sendRequest(
+            'GET',
+            '/' . $searchId . '/feed',
+            array(
+                'fields' => 'id,link,likes,message,picture,comments,created_time',
+                'limit' => $limit
+            ),
+            $this->access_token
+        );
+
+        if(empty(json_decode($resp->getBody())->data)){
+            $this->logger->warning(self::TYPE . ' - no posts found for ' . $searchId);
+        }
+
+        return $resp->getBody();
 
     }
 }

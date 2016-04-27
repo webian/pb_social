@@ -1,8 +1,11 @@
 <?php
 
 namespace PlusB\PbSocial\Adapter;
+use PlusB\PbSocial\Domain\Model\Credential;
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
+use TYPO3\CMS\Core\FormProtection\Exception;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /***************************************************************
  *
@@ -35,11 +38,33 @@ class InstagramAdapter extends SocialMediaAdapter {
 
     private $api;
 
-    public function __construct($apiId, $itemRepository){
+    /**
+     * credentialRepository
+     *
+     * @var \PlusB\PbSocial\Domain\Repository\CredentialRepository
+     * @inject
+     */
+    protected $credentialRepository;
+
+    public function __construct($apiKey, $apiSecret, $apiCallback, $code, $itemRepository, $credentialRepository){
 
         parent::__construct($itemRepository);
 
-        $this->api =  new \Instagram($apiId);
+        $this->api =  new \Instagram(array('apiKey' => $apiKey, 'apiSecret' => $apiSecret, 'apiCallback' => $apiCallback));
+
+        $this->credentialRepository = $credentialRepository;
+
+        // get access token from database
+        $access_token = $this->getAccessToken($code);
+        $this->api->setAccessToken($access_token);
+
+        // test request
+        $testRequest = $this->api->getUserMedia('self');
+        if($testRequest->meta->code == 400){
+            error_log('Instagram access_token expired');
+            $this->logger->error('Instagram access code expired. Please provide new code in pb_social extension configuration.', array('data' => 'Instagram access code invalid. Provide new code in pb_social extension configuration.'));
+        }
+
 
     }
 
@@ -55,7 +80,9 @@ class InstagramAdapter extends SocialMediaAdapter {
                 if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
                     try {
                         $feed->setDate(new \DateTime('now'));
-                        $feed->setResult(json_encode($this->api->getUserMedia($searchId, $options->feedRequestLimit)));
+                        $userPosts = $this->api->getUserMedia($searchId, $options->feedRequestLimit);
+                        if($userPosts->meta->code >= 400) $this->logger->error('Instagram error: "' . json_encode($userPosts->meta));
+                        $feed->setResult(json_encode($userPosts));
                         $this->itemRepository->update($feed);
                     } catch (\Exception $e) {
                         $this->logger->error(self::TYPE . ' feeds cant be updated', array('data' => $e->getMessage()));
@@ -68,7 +95,9 @@ class InstagramAdapter extends SocialMediaAdapter {
             try {
                 $feed = new Item(self::TYPE);
                 $feed->setCacheIdentifier($searchId);
-                $feed->setResult(json_encode($this->api->getUserMedia($searchId, $options->feedRequestLimit)));
+                $userPosts = $this->api->getUserMedia($searchId, $options->feedRequestLimit);
+                if($userPosts->meta->code >= 400) $this->logger->error('Instagram error: ' . json_encode($userPosts->meta));
+                $feed->setResult(json_encode($userPosts));
 
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
@@ -81,6 +110,7 @@ class InstagramAdapter extends SocialMediaAdapter {
 
         foreach (explode(',', $options->instagramHashTags) as $searchId) {
             $searchId = trim($searchId);
+            $searchId = ltrim($searchId, '#'); //strip hastags
             $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchId);
 
             if ($feeds && $feeds->count() > 0) {
@@ -88,7 +118,9 @@ class InstagramAdapter extends SocialMediaAdapter {
                 if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
                     try {
                         $feed->setDate(new \DateTime('now'));
-                        $feed->setResult(json_encode($this->api->getTagMedia($searchId, $options->feedRequestLimit)));
+                        $tagPosts = $this->api->getTagMedia($searchId, $options->feedRequestLimit);
+                        if($tagPosts->meta->code >= 400) $this->logger->error('Instagram error: "' . json_encode($tagPosts->meta));
+                        $feed->setResult(json_encode($tagPosts));
                         $this->itemRepository->update($feed);
                     } catch (\Exception $e) {
                         $this->logger->error(self::TYPE . ' feeds cant be updated', array('data' => $e->getMessage()));
@@ -101,8 +133,9 @@ class InstagramAdapter extends SocialMediaAdapter {
             try {
                 $feed = new Item(self::TYPE);
                 $feed->setCacheIdentifier($searchId);
-                $feed->setResult(json_encode($this->api->getTagMedia($searchId, $options->feedRequestLimit)));
-
+                $tagPosts = $this->api->getTagMedia($searchId, $options->feedRequestLimit);
+                if($tagPosts->meta->code >= 400) $this->logger->error('Instagram error: "' . json_encode($tagPosts->meta));
+                $feed->setResult(json_encode($tagPosts));
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
@@ -142,5 +175,47 @@ class InstagramAdapter extends SocialMediaAdapter {
         }
 
         return array('rawFeeds' => $rawFeeds, 'feedItems' => $feedItems);
+    }
+
+    private function getAccessToken($code){
+
+        $apiKey = $this->api->getApiKey();
+
+        # get access token from database #
+        $credentials = $this->credentialRepository->findByTypeAndAppId(self::TYPE, $apiKey);
+
+        if($credentials->count() > 1) {
+            foreach ($credentials as $c) {
+                if($c->getAccessToken != '') $credential = $c;
+                else $this->credentialRepository->remove($c);
+            }
+        } else {
+            $credential = $credentials->getFirst();
+        }
+
+        if(!isset($credential) || !$credential->isValid()) {
+            # validate code to get access token #
+            $access_token = $this->api->getOAuthToken($code, true);
+            if($access_token){
+
+                if(isset($credential)){
+                    $credential->setAccessToken($access_token);
+                    $this->credentialRepository->update($credential);
+                } else {
+                    # create new credential #
+                    $credential = new Credential(self::TYPE, $apiKey);
+                    $credential->setAccessToken($access_token);
+                    $this->credentialRepository->saveCredential($credential);
+                }
+
+            }
+            else {
+                error_log('-------- need new code ---------');
+                $this->logger->error( self::TYPE . ' access code expired. Please provide new code in pb_social extension configuration.', array('data' => self::TYPE . ' access code invalid. Provide new code in pb_social extension configuration.'));
+                return null;
+            }
+        }
+
+        return $credential->getAccessToken();
     }
 }

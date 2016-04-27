@@ -33,7 +33,11 @@ class GooglePlusAdapter extends SocialMediaAdapter {
 
     const TYPE = 'googleplus';
 
+    const API_URL = 'https://www.googleapis.com/plus/v1/people/';
+
     private $appKey;
+
+    private $api;
 
     public function __construct($appKey, $itemRepository){
 
@@ -41,6 +45,11 @@ class GooglePlusAdapter extends SocialMediaAdapter {
 
         $this->appKey = $appKey;
 
+        //todo: use google client
+//        $client = new \Google_Client();
+//        $client->setDeveloperKey($appKey);
+//        $this->api = new \Google_Service_Plus($client);
+//        $getResults = $this->api->activities->listActivities($searchId, 'public', array('maxResults' => $options->feedRequestLimit));
     }
 
     public function getResultFromApi($options){
@@ -49,36 +58,19 @@ class GooglePlusAdapter extends SocialMediaAdapter {
 
         $googlePlusSearchIds = $options->settings['googleSearchIds'];
 
-        $headers = array('Content-Type: application/json',);
-        $fields = array('key' => $this->appKey, 'format' => 'json', 'ip' => $_SERVER['REMOTE_ADDR']);
-
-        foreach (explode(',', $googlePlusSearchIds) as $searchId) {
+       foreach (explode(',', $googlePlusSearchIds) as $searchId) {
             $searchId = trim($searchId);
             $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchId);
-            $url = 'https://www.googleapis.com/plus/v1/people/' . $searchId . '/activities/public?maxResults=' . $options->feedRequestLimit . '&' . http_build_query($fields);
 
             if ($feeds && $feeds->count() > 0) {
                 $feed = $feeds->getFirst();
                 if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
+                    error_log('aaaaahhh refreshing!');
                     try {
-                        $ch = curl_init();
-                        curl_setopt($ch, CURLOPT_URL, $url);
-                        curl_setopt($ch, CURLOPT_POST, false);
-                        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
-                        $curl_response = curl_exec($ch);
-
-                        // check if google error object is set => throw exception with json response
-                        if (property_exists(json_decode($curl_response), 'error')) {
-                            throw new \Exception($curl_response);
-                        }
-
+                        $posts = $this->getPosts($searchId, $options->feedRequestLimit);
                         $feed->setDate(new \DateTime('now'));
-                        $feed->setResult($curl_response);
+                        $feed->setResult($posts);
                         $this->itemRepository->update($feed);
-                        curl_close($ch);
                     } catch (\Exception $e) {
                         $this->logger->error(self::TYPE . ' feeds cant be updated', array('data' => $e->getMessage()));
                     }
@@ -88,26 +80,10 @@ class GooglePlusAdapter extends SocialMediaAdapter {
             }
 
             try {
+                $posts = $this->getPosts($searchId, $options->feedRequestLimit);
                 $feed = new Item(self::TYPE);
                 $feed->setCacheIdentifier($searchId);
-
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, $url);
-                curl_setopt($ch, CURLOPT_POST, false);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
-                $curl_response = curl_exec($ch);
-
-                // check if google error object is set => throw exception with json response
-                if (property_exists(json_decode($curl_response), 'error')) {
-                    throw new \Exception($curl_response);
-                }
-
-                $feed->setResult($curl_response);
-                curl_close($ch);
-
+                $feed->setResult($posts);
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
@@ -125,6 +101,8 @@ class GooglePlusAdapter extends SocialMediaAdapter {
         $rawFeeds = array();
         $feedItems = array();
 
+        $placeholder = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Public/Icons/Placeholder/gplus.jpg';
+
         if (!empty($result)) {
             foreach ($result as $gp_feed) {
                 $rawFeeds[self::TYPE . '_' . $gp_feed->getCacheIdentifier() . '_raw'] = $gp_feed->getResult();
@@ -135,6 +113,8 @@ class GooglePlusAdapter extends SocialMediaAdapter {
                     $feed = new Feed(self::TYPE, $rawFeed);
                     $feed->setId($rawFeed->id);
                     $feed->setText($this->trim_text($rawFeed->title, $options->textTrimLength, true));
+//                    $img = property_exists($rawFeed, 'picture') ? urldecode($rawFeed->picture) : $placeholder;
+                    error_log(json_encode($rawFeed->object->attachments[0]));
                     $feed->setImage($rawFeed->object->attachments[0]->image->url);
 
                     // only for type photo
@@ -156,5 +136,31 @@ class GooglePlusAdapter extends SocialMediaAdapter {
         }
 
         return array('rawFeeds' => $rawFeeds, 'feedItems' => $feedItems);
+    }
+
+    function getPosts($searchId, $limit){
+
+        $headers = array('Content-Type: application/json',);
+        $fields = array('key' => $this->appKey, 'format' => 'json', 'ip' => $_SERVER['REMOTE_ADDR']);
+
+        $url = self::API_URL . $searchId . '/activities/public?maxResults=' . $limit . '&' . http_build_query($fields);
+
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, false);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        $curl_response = curl_exec($ch);
+
+        // check if google error object is set => throw exception with json response
+        if (property_exists(json_decode($curl_response), 'error')) {
+            throw new \Exception($curl_response);
+        }
+
+        return $curl_response;
+
     }
 }
