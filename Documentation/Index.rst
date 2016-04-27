@@ -25,16 +25,16 @@ Social Media Stream
 	:Description:
 
 	:Keywords:
-		comma,separated,list,of,keywords
+		social,social media,facebook,google+,imgur,instagram,pinterest,tumblr,twitter
 
 	:Copyright:
-		2014
+		2016
 
 	:Author:
-		Mikolaj Jedrzejewski
+		Mikolaj Jedrzejewski, Ramon Mohi
 
 	:Email:
-		mj@plusb.de
+		mj@plusb.de, rm@plusb.de
 
 	:License:
 		This document is published under the Open Content License

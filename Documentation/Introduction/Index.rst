@@ -29,3 +29,7 @@ What does it do?
 It can display feeds from social media platforms in the way you like it. Maybe you want to get your
 Facebook-Page content? No problem, set your Facebook-Credentials and Facebook-UserId and you're ready to go.
 The Extension will do all the tricky authentication stuff and leave the relaxed part of making the result pretty to you.
+
+Sometimes you'll need to follow a link to generate access codes for our plugin. Be sure that we do not have access to any
+of your sensitive data. Everything is stored in your Typo3 database! Some social media platforms use OAuth 2 authentication,
+that's the reason why you need to provide these access codes.

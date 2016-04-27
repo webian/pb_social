@@ -16,20 +16,24 @@ Dear Typo3 Integrator,
 the next steps will hopefully explain you how to use this extension.
 
 1. Go to the extension manger, find this extension and open it configuration panel.
-2. Type all your available social media account data in. If you new in this or haven't the data,
+2. Type all your available social media account data in. If you're new in this or haven't the data,
    the following links will give you a base direction where to get these credentials.
     - developers.facebook.com/apps
     - code.google.com/apis/console/ (Public Api-Access -> Generate New Key -> Server Key)
     - instagram.com/developer/clients/manage/
     - dev.twitter.com/apps/
     - www.tumblr.com/oauth/apps
+    - developers.pinterest.com/apps/
+    - api.imgur.com/
+
+    You might need to grant special permissions and add users to your app etc. All the details should be documented on the pages above.
 
 3. Include the extension typoscript
 3. Navigate to an empty page and insert the "Socialfeed"-Plugin
 4. Open the flexform and navigate through the Provider-Tabs you want to activate.
     - find facebook id => http://findmyfacebookid.com
     - find instagram id => http://jelled.com/instagram/lookup-user-id
-    - find twitter id => http://id.twidder.info
+    - find google+ id => http://ansonalex.com/google-plus/how-do-i-find-my-google-plus-user-id-google/
 
 5. You can use multiple search values by making a comma separated string
 6. clear all caches and enjoy the result.
