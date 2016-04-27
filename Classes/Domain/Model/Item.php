@@ -35,8 +35,8 @@ class Item extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
     /**
      * @param string $type
      */
-    function __construct($type = "") {
-        if($this->getType() == "" && $type != "" && $type != null){
+    function __construct($type = '') {
+        if($this->getType() == '' && $type != '' && $type != null){
             $this->setType($type);
         }
 
