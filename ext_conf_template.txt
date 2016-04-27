@@ -8,6 +8,7 @@
 # customsubcategory=5tumblr=Tumblr --- http://www.tumblr.com/oauth/apps
 # customsubcategory=8youtube=Youtube --- https://code.google.com/apis/console/
 # customsubcategory=6website=Our Website
+# customsubcategory=9pinterest=Pinterest --- https://developers.pinterest.com/apps/
 
 socialfeed{
     # cat=socialfeed/0general/0010; type=boolean; label=enable devmode : database cache will refresh every pageload. Additional log messages active
@@ -26,8 +27,21 @@ socialfeed{
     # cat=socialfeed/7imgur/0020; type=string; label=client secret
     imgur.client.secret=
 
+    # cat=socialfeed/9pinterest/0010; type=string; label=app id
+    pinterest.app.id=
+    # cat=socialfeed/9pinterest/0020; type=string; label=app secret
+    pinterest.app.secret=
+    # cat=socialfeed/9pinterest/0030; type=string; label=auth code (all characters after "code") : https://api.pinterest.com/oauth/?response_type=code&redirect_uri=YOUR_REDIRECT_URI&client_id=YOUR_APP_ID&scope=read_public
+    pinterest.app.code=
+
     # cat=socialfeed/3instagram/0010; type=string; label=client id
     instagram.client.id=
+    # cat=socialfeed/3instagram/0020; type=string; label=client secret
+    instagram.client.secret=
+    # cat=socialfeed/3instagram/0030; type=string; label=redirect uri
+    instagram.client.callback=
+    # cat=socialfeed/3instagram/0040; type=string; label=Instagram Access Code - Retrieve code with following URL: https://api.instagram.com/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code
+    instagram.client.access_code=
 
     # cat=socialfeed/4twitter/0010; type=string; label=consumer key
     twitter.consumer.key=
@@ -48,7 +62,7 @@ socialfeed{
     tumblr.token_secret=
 
     # cat=socialfeed/8youtube/0010; type=string; label=API key
-    youtube.apikey=
+    #youtube.apikey=
 
     # cat=socialfeed/6website/0001; type=user[EXT:pb_social/lib/class.pb_social_extmanager.php:pb_social_extmanager->getLogoAndLink]; label=For further information about us please visit our website
     external_link=0
