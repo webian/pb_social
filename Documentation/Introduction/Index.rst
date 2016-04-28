@@ -42,3 +42,4 @@ Good to know
 1. Likes and comments of Facebook posts are limited to 70. Posts with more than 70 likes/comments are marked as 70+.
 2. Instagram can still be used, even if your app is in sandbox mode! You just have to send a sandbox invite to the user whose posts you want to show.
 3. Google+ search IDs do not necessarily have to be a numeric value. 
+4. Tumblr posts can only be filtered by one of the first five tags, because only the first 5 of your tags are searchable on Tumblr.
