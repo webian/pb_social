@@ -179,7 +179,7 @@ class FacebookAdapter extends SocialMediaAdapter {
             'GET',
             '/' . $searchId . '/feed',
             array(
-                'fields' => 'id,link,likes,message,picture,comments,created_time',
+                'fields' => 'id,link,likes.limit(70),message,picture,comments.limit(70),created_time',
                 'limit' => $limit
             ),
             $this->access_token
