@@ -183,6 +183,15 @@
                             </config>
                         </TCEforms>
                     </settings.instagramHashTag>
+                    <settings.instagramPostFilter>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.instagram.postfilter</label>
+                            <!--<onChange>reload</onChange>-->
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.instagramPostFilter>
                 </el>
             </ROOT>
         </display_instagram>

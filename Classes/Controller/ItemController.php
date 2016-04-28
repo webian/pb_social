@@ -206,6 +206,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             $config_access_code = $extConf['socialfeed.']['instagram.']['client.']['access_code'];
             $adapterOptions->instagramHashTags = $this->settings['instagramHashTag'];
             $adapterOptions->instagramSearchIds = $this->settings['instagramSearchIds'];
+            $adapterOptions->instagramPostFilter = $this->settings['instagramPostFilter'];
 
             if (empty($config_clientId) || empty($config_clientSecret) || empty($config_clientCallback) ) {
                 $this->logger->warning(self::TYPE_INSTAGRAM . ' credentials not set');

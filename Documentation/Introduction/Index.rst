@@ -11,10 +11,10 @@
 Introduction
 ============
 
-With this extension we decided to fill a gap of social media integration in typo3. Our Goal is it to provide an easy
+With this extension we decided to fill a gap of social media integration in typo3. Our goal is it to provide an easy
 and time-saving way of integrating and interacting with common social media platforms. As you know nothing is perfect
-but we will give our best to make this extension as comfortable as you need it. For this we need your Feedback, so
-if you need something or have something to say, don't hesitate to contact us. Either write us an email at info@plusb.de.
+but we will give our best to make this extension as comfortable as you need it. For this we need your feedback, so
+if you need anything or have something to say, don't hesitate to contact us. Simply write an email to info@plusb.de.
 
 Please visit the plugin homepage http://plusb.de/log/social-media-streams-pb_social/
 
@@ -30,6 +30,15 @@ It can display feeds from social media platforms in the way you like it. Maybe y
 Facebook-Page content? No problem, set your Facebook-Credentials and Facebook-UserId and you're ready to go.
 The Extension will do all the tricky authentication stuff and leave the relaxed part of making the result pretty to you.
 
-Sometimes you'll need to follow a link to generate access codes for our plugin. Be sure that we do not have access to any
-of your sensitive data. Everything is stored in your Typo3 database! Some social media platforms use OAuth 2 authentication,
-that's the reason why you need to provide these access codes.
+Sometimes you'll need to follow a link to generate access codes for our plugin. Be sure that we don't have access to any
+of your sensitive data. Everything is stored in your Typo3 database! The reason why you need to provide these access codes
+is that some social media platforms recently strated to use OAuth 2 authentication. Read more about OAuth here: http://oauth.net/articles/authentication/
+
+.. _good-to-know
+
+Good to know
+------------
+
+1. Likes and comments of Facebook posts are limited to 70. Posts with more than 70 likes/comments are marked as 70+.
+2. Instagram can still be used, even if your app is in sandbox mode! You just have to send a sandbox invite to the user whose posts you want to show.
+3. Google+ search IDs do not necessarily have to be a numeric value. 

@@ -15,9 +15,10 @@ Dear Typo3 Integrator,
 
 the next steps will hopefully explain you how to use this extension.
 
-1. Go to the extension manger, find this extension and open it configuration panel.
-2. Type all your available social media account data in. If you're new in this or haven't the data,
-   the following links will give you a base direction where to get these credentials.
+1. Go to the extension manger, install this extension and open it's configuration panel.
+2. Enter all your available social media account data into the respective input fields. 
+   If you're new to this or don't have the data, the following links will give you a 
+   base direction where to get these credentials.
     - developers.facebook.com/apps
     - code.google.com/apis/console/ (Public Api-Access -> Generate New Key -> Server Key)
     - instagram.com/developer/clients/manage/
@@ -26,7 +27,9 @@ the next steps will hopefully explain you how to use this extension.
     - developers.pinterest.com/apps/
     - api.imgur.com/
 
-    You might need to grant special permissions and add users to your app etc. All the details should be documented on the pages above.
+    You might need to grant special permissions and add users to your app etc. 
+	All the details should be documented on the pages above.
+	If you encounter any difficulties, check the FAQ section or contat us at info@plusb.de
 
 3. Include the extension typoscript
 3. Navigate to an empty page and insert the "Socialfeed"-Plugin
@@ -58,8 +61,27 @@ Feeds not getting updated ?
 Feeds not refreshing fast enough ?
 => check the flexform at the general tab. Is the "refresh time in minutes" correct set? (minimal value 10min)
 
-Feeds not interacting with your clicking ?
-=> check if jQuery is built-in
+Feeds not interacting with your clicks ?
+=> check if jQuery is installed and ready.
 
 Strange php errors ?
 => check if curl is enabled on your server
+
+Your Instagram feed should work but the plugin can't find the user you're looking for ?
+=> Maybe you are running your Instagram app in sandbox mode. That should be no problem, as long as you can invite 
+   the users whose feed you want to display. Read more about sandbox mode here: https://www.instagram.com/developer/sandbox/
+   
+Where do I get an Instagram access code from ?
+=> The link you need should be available above the input field for your access code. Simply replace the parts "YOUR_CLIENT_ID" and "YOUR_REDIRECT_URI"
+   with your data from the Instagram developer console and the link should work. Open the link and copy the access code. You will find the access code
+   at the end of the url in your browser's address bar. 
+   
+The Instagram feed can't display a user's posts ? 
+=> If your Instagram app is still in sandbox mode, you have to send a sandbox invite to the user you want to get posts from. Instagram's policy has changed recently 
+   so you'll now have to invite users to your sandbox in roder to get their posts.
+
+My page doesn't even redirect! What is my redirect uri ?
+=> The redirect uri is just an obligatory value you must provide to be able to authenticate via OAuth. Simply type in the base url of the page you use the plugin for
+   or your business homepage. The APIs just need an url they can send the access code to, so just provide any url you like in the respective developer console.
+   
+   

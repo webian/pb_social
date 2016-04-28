@@ -8,11 +8,11 @@
                 <target state="translated">Grundlegende Einstellungen</target>
             </trans-unit>
             <trans-unit id="flexform.tab.general.updatingFeeds">
-                <source>How often does the feeds have to be updated? (in minutes)</source>
+                <source>Feed update interval (in minutes)</source>
                 <target state="translated">Wie oft sollen die Feeds aktualisiert werden? (in Minuten)</target>
             </trans-unit>
             <trans-unit id="flexform.tab.general.requestLimit">
-                <source>Request limit for posts (small amount => fast response)</source>
+                <source>Request limit for posts (small amount -> fast response)</source>
                 <target state="translated">Anzahl der Posts pro Anbieter (je weniger, desto schneller arbeitet die Extension)</target>
             </trans-unit>
             <trans-unit id="flexform.tab.general.showOnlyImages">
@@ -78,6 +78,10 @@
             <trans-unit id="flexform.tab.instagram.active">
                 <source>Active</source>
                 <target state="translated">Ausgabe aktiviert</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.instagram.postfilter">
+                <source>Filter posts by given hashtag - if you specify search ID and hastags, check this box to show only posts with the given hashtag(s)</source>
+                <target state="translated">Posts nach Hashtag filtern - wenn search ID und Hashtag angegeben wurden, werden nur die Posts mit dem angegebenen Hashtag ausgegeben</target>
             </trans-unit>
             <trans-unit id="flexform.tab.instagram.searchID">
                 <source>Instagram search IDs (Page that helps to find the ID: http://www.otzberg.net/iguserid/). Use commas to show more than one ID</source>
