@@ -51,7 +51,7 @@ For testing you can execute the controller comand from the cli via:
 ./typo3/cli_dispatch.phpsh extbase pbsocial:updatefeeddata
 Called from your typo3 root directory.
 This hint should give you an example how to add a tast to your scheduler https://wiki.typo3.org/CommandController_In_Scheduler_Task
-Be sure the scheduler extension is installed and you have a backend user named _cli_lowlevel.
+Be sure the scheduler extension is installed, you have a backend user named _cli_lowlevel and your crontab executes ./typo3/cli_dispatch.phpsh periodically.
 
 
 .. _configuration-faq:
