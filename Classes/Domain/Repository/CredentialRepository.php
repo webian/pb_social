@@ -53,4 +53,12 @@ class CredentialRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
         $this->persistenceManager->persistAll();
     }
 
+    /**
+     * @param $credential
+     */
+    function deleteCredential($credential) {
+        $this->remove($credential);
+        $this->persistenceManager->persistAll();
+    }
+
 }
