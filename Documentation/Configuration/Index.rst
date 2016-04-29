@@ -43,6 +43,16 @@ the next steps will hopefully explain you how to use this extension.
 
 7. with great power comes great responsibility
 
+(OPTIONAL)
+
+If you want to avoid long loading times you can add a scheduler task to store the feeds automatically
+in the database. For example if your refresh time is 15 minutes, let the task get the feeds every 10 minutes.
+For testing you can execute the controller comand from the cli via:
+./typo3/cli_dispatch.phpsh extbase pbsocial:updatefeeddata
+Called from your typo3 root directory.
+This hint should give you an example how to add a tast to your scheduler https://wiki.typo3.org/CommandController_In_Scheduler_Task
+Be sure the scheduler extension is installed and you have a backend user named _cli_lowlevel.
+
 
 .. _configuration-faq:
 
