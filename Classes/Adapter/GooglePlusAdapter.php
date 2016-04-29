@@ -65,7 +65,6 @@ class GooglePlusAdapter extends SocialMediaAdapter {
             if ($feeds && $feeds->count() > 0) {
                 $feed = $feeds->getFirst();
                 if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
-                    error_log('aaaaahhh refreshing!');
                     try {
                         $posts = $this->getPosts($searchId, $options->feedRequestLimit);
                         $feed->setDate(new \DateTime('now'));
@@ -114,7 +113,6 @@ class GooglePlusAdapter extends SocialMediaAdapter {
                     $feed->setId($rawFeed->id);
                     $feed->setText($this->trim_text($rawFeed->title, $options->textTrimLength, true));
 //                    $img = property_exists($rawFeed, 'picture') ? urldecode($rawFeed->picture) : $placeholder;
-                    error_log(json_encode($rawFeed->object->attachments[0]));
                     $feed->setImage($rawFeed->object->attachments[0]->image->url);
 
                     // only for type photo

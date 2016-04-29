@@ -56,17 +56,7 @@ class PinterestAdapter extends SocialMediaAdapter {
 
         $code = $this->extractCode($accessCode);
 
-        $access_token = $this->getAccessToken($code);
-
-        $this->api->auth->setOAuthToken($access_token);
-
-        //testrequest
-        try {
-            $this->api->request->get('/me');
-        } catch (Pinterest\Exceptions\PinterestException $e){
-            $this->logger->warning(self::TYPE . ' exception - ' . $e->getMessage());
-        }
-
+        $this->getAccessToken($code);
 
     }
 
@@ -194,7 +184,16 @@ class PinterestAdapter extends SocialMediaAdapter {
             }
         }
 
-        return $credential->getAccessToken();
+        $this->api->auth->setOAuthToken($credential->getAccessToken());
+
+        //testrequest
+        try {
+            $this->api->request->get('/me');
+        } catch (Pinterest\Exceptions\PinterestException $e){
+            $this->credentialRepository->deleteCredential($credential);
+            $this->logger->warning(self::TYPE . ' exception - ' . $e->getMessage());
+        }
+
     }
 
     /** Converts url-encoded code
