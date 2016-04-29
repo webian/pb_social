@@ -133,16 +133,36 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
      */
     public function showSocialFeedAction() {
 
-        $feeds = array();
-        $results = array();
-
         $extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pb_social']); //TODO => search for a better way of accessing extconf
         $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
 
-        $adapterOptions = $this->getAdapterOptions();
+        # Get feeds #
+        $feeds = array();
+        $results = $this->getFeeds($extConf, $this->settings, $this->itemRepository, $this->credentialRepository);
+
+        # Provide feeds to frontend #
+        foreach ($results as $result) {
+            foreach ($result['rawFeeds'] as $rfid => $rf) $this->view->assign($rfid, $rf);
+            foreach ($result['feedItems'] as $feed) $feeds[] = $feed;
+        }
+
+        # Sort array if not empty #
+        if (!empty($feeds)) {
+            usort($feeds, array($this, 'cmp'));
+        }
+
+        $this->view->assign('feeds', $feeds);
+    }
+
+    public function getFeeds($extConf, $settings, $itemRepository, $credentialRepository){
+
+        // Build configuration from plugin settings
+        $adapterOptions = $this->getAdapterOptions($settings);
         $adapterOptions->devMod = $extConf['socialfeed.']['devmod'] == '1' ? true : false;
 
-        if ($this->settings['facebookEnabled'] === '1') {
+        $results = array();
+
+        if ($settings['facebookEnabled'] === '1') {
 
             # check api key #
             $config_apiId = $extConf['socialfeed.']['facebook.']['api.']['id'];
@@ -154,36 +174,36 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
                 $this->logger->warning( self::TYPE_FACEBOOK . ' no search term defined');
             } else {
                 # retrieve data from adapter #
-                $adapter = new Adapter\FacebookAdapter($config_apiId, $config_apiSecret, $this->itemRepository);
+                $adapter = new Adapter\FacebookAdapter($config_apiId, $config_apiSecret, $itemRepository);
                 $results[] = $adapter->getResultFromApi($adapterOptions);
             }
 
         }
 
-        if ($this->settings['googleEnabled'] === '1') {
+        if ($settings['googleEnabled'] === '1') {
 
             # check api key #
             $config_appKey = $extConf['socialfeed.']['googleplus.']['app.']['key'];
 
             if (empty($config_appKey)) {
                 $this->logger->warning(self::TYPE_GOOGLE . ' credentials not set');
-            } elseif (empty($this->settings['googleSearchIds'])) {
+            } elseif (empty($settings['googleSearchIds'])) {
                 $this->logger->warning(self::TYPE_GOOGLE . ' no search term defined');
             } else {
                 # retrieve data from adapter #
-                $adapter = new Adapter\GooglePlusAdapter($config_appKey, $this->itemRepository);
+                $adapter = new Adapter\GooglePlusAdapter($config_appKey, $itemRepository);
                 $results[] = $adapter->getResultFromApi($adapterOptions);
             }
 
         }
 
-        if ($this->settings['imgurEnabled'] === '1') {
+        if ($settings['imgurEnabled'] === '1') {
 
             # check api key #
             $config_apiId = $extConf['socialfeed.']['imgur.']['client.']['id'];
             $config_apiSecret = $extConf['socialfeed.']['imgur.']['client.']['secret'];
-            $adapterOptions->imgSearchUsers = $this->settings['imgurUsers'];
-            $adapterOptions->imgSearchTags = $this->settings['imgurTags'];
+            $adapterOptions->imgSearchUsers = $settings['imgurUsers'];
+            $adapterOptions->imgSearchTags = $settings['imgurTags'];
 
             if (empty($config_apiId) || empty($config_apiSecret)) {
                 $this->logger->warning(self::TYPE_IMGUR . ' credentials not set');
@@ -191,22 +211,22 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
                 $this->logger->warning(self::TYPE_IMGUR . ' no search term defined');
             } else {
                 # retrieve data from adapter #
-                $adapter = new Adapter\ImgurAdapter($config_apiId, $config_apiSecret, $this->itemRepository);
+                $adapter = new Adapter\ImgurAdapter($config_apiId, $config_apiSecret, $itemRepository);
                 $results[] = $adapter->getResultFromApi($adapterOptions);
             }
 
         }
 
-        if ($this->settings['instagramEnabled'] === '1') {
+        if ($settings['instagramEnabled'] === '1') {
 
             # check api key #
             $config_clientId = $extConf['socialfeed.']['instagram.']['client.']['id'];
             $config_clientSecret = $extConf['socialfeed.']['instagram.']['client.']['secret'];
             $config_clientCallback = $extConf['socialfeed.']['instagram.']['client.']['callback'];
             $config_access_code = $extConf['socialfeed.']['instagram.']['client.']['access_code'];
-            $adapterOptions->instagramHashTags = $this->settings['instagramHashTag'];
-            $adapterOptions->instagramSearchIds = $this->settings['instagramSearchIds'];
-            $adapterOptions->instagramPostFilter = $this->settings['instagramPostFilter'];
+            $adapterOptions->instagramHashTags = $settings['instagramHashTag'];
+            $adapterOptions->instagramSearchIds = $settings['instagramSearchIds'];
+            $adapterOptions->instagramPostFilter = $settings['instagramPostFilter'];
 
             if (empty($config_clientId) || empty($config_clientSecret) || empty($config_clientCallback) ) {
                 $this->logger->warning(self::TYPE_INSTAGRAM . ' credentials not set');
@@ -214,20 +234,20 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
                 $this->logger->warning(self::TYPE_INSTAGRAM . ' no search term defined');
             } else {
                 # retrieve data from adapter #
-                $adapter = new Adapter\InstagramAdapter($config_clientId, $config_clientSecret, $config_clientCallback, $config_access_code, $this->itemRepository, $this->credentialRepository);
+                $adapter = new Adapter\InstagramAdapter($config_clientId, $config_clientSecret, $config_clientCallback, $config_access_code, $itemRepository, $credentialRepository);
                 $results[] = $adapter->getResultFromApi($adapterOptions);
             }
 
         }
 
-        if ($this->settings['pinterestEnabled'] === '1') {
+        if ($settings['pinterestEnabled'] === '1') {
 
             # check api key #
             $config_appId = $extConf['socialfeed.']['pinterest.']['app.']['id'];
             $config_appSecret = $extConf['socialfeed.']['pinterest.']['app.']['secret'];
             $config_accessCode = $extConf['socialfeed.']['pinterest.']['app.']['code'];
-            $adapterOptions->pinterest_username = $this->settings['username'];
-            $adapterOptions->pinterest_boardname = $this->settings['boardname'];
+            $adapterOptions->pinterest_username = $settings['username'];
+            $adapterOptions->pinterest_boardname = $settings['boardname'];
 
 
             if (empty($config_appId) || empty($config_appSecret) || empty($config_accessCode) ) {
@@ -236,14 +256,13 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
                 $this->logger->warning(self::TYPE_PINTEREST . ' no username or no boardname defined');
             } else {
                 # retrieve data from adapter #
-                $adapter = new Adapter\PinterestAdapter($config_appId, $config_appSecret, $config_accessCode, $this->itemRepository, $this->credentialRepository);
+                $adapter = new Adapter\PinterestAdapter($config_appId, $config_appSecret, $config_accessCode, $itemRepository, $credentialRepository);
                 $results[] = $adapter->getResultFromApi($adapterOptions);
             }
 
-
         }
 
-        if ($this->settings['tumblrEnabled'] === '1') {
+        if ($settings['tumblrEnabled'] === '1') {
 
             # check api key #
             $config_consumerKey = $extConf['socialfeed.']['tumblr.']['consumer.']['key'];
@@ -251,9 +270,9 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             $config_Token = $extConf['socialfeed.']['tumblr.']['token'];
             $config_TokenSecret = $extConf['socialfeed.']['tumblr.']['token_secret'];
 
-            $adapterOptions->tumblrHashtag = strtolower(str_replace('#', '', $this->settings['tumblrHashTag']));
-            $adapterOptions->tumblrBlogNames = $this->settings['tumblrBlogNames'];
-            $adapterOptions->tumblrShowOnlyImages = $this->settings['tumblrShowOnlyImages'];
+            $adapterOptions->tumblrHashtag = strtolower(str_replace('#', '', $settings['tumblrHashTag']));
+            $adapterOptions->tumblrBlogNames = $settings['tumblrBlogNames'];
+            $adapterOptions->tumblrShowOnlyImages = $settings['tumblrShowOnlyImages'];
 
             if (empty($config_consumerKey) || empty($config_consumerSecret) || empty($config_Token) || empty($config_TokenSecret)) {
                 $this->logger->warning(self::TYPE_TUMBLR . ' credentials not set');
@@ -261,13 +280,13 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
                 $this->logger->warning(self::TYPE_TUMBLR . ' - no blog names for search term defined');
             } else {
                 # retrieve data from adapter #
-                $adapter = new Adapter\TumblrAdapter($config_consumerKey, $config_consumerSecret, $config_Token, $config_TokenSecret, $this->itemRepository);
+                $adapter = new Adapter\TumblrAdapter($config_consumerKey, $config_consumerSecret, $config_Token, $config_TokenSecret, $itemRepository);
                 $results[] = $adapter->getResultFromApi($adapterOptions);
             }
 
         }
 
-        if ($this->settings['twitterEnabled'] === '1') {
+        if ($settings['twitterEnabled'] === '1') {
 
             # check api key #
             $config_consumerKey = $extConf['socialfeed.']['twitter.']['consumer.']['key'];
@@ -275,12 +294,12 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             $config_accessToken = $extConf['socialfeed.']['twitter.']['oauth.']['access.']['token'];
             $config_accessTokenSecret = $extConf['socialfeed.']['twitter.']['oauth.']['access.']['token_secret'];
 
-            $adapterOptions->twitterSearchFieldValues = $this->settings['twitterSearchFieldValues'];
-            $adapterOptions->twitterProfilePosts = $this->settings['twitterProfilePosts'];
-            $adapterOptions->twitterLanguage = $this->settings['twitterLanguage'];
-            $adapterOptions->twitterGeoCode = $this->settings['twitterGeoCode'];
-            $adapterOptions->twitterHideRetweets = $this->settings['twitterHideRetweets'];
-            $adapterOptions->twitterShowOnlyImages = $this->settings['twitterShowOnlyImages'];
+            $adapterOptions->twitterSearchFieldValues = $settings['twitterSearchFieldValues'];
+            $adapterOptions->twitterProfilePosts = $settings['twitterProfilePosts'];
+            $adapterOptions->twitterLanguage = $settings['twitterLanguage'];
+            $adapterOptions->twitterGeoCode = $settings['twitterGeoCode'];
+            $adapterOptions->twitterHideRetweets = $settings['twitterHideRetweets'];
+            $adapterOptions->twitterShowOnlyImages = $settings['twitterShowOnlyImages'];
 
             if (empty($config_consumerKey) || empty($config_consumerSecret) || empty($config_accessToken) || empty($config_accessTokenSecret)) {
                 $this->logger->warning(self::TYPE_TWITTER . ' credentials not set');
@@ -288,17 +307,20 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
                 $this->logger->warning(self::TYPE_TWITTER . ' no search term defined');
             } else {
                 # retrieve data from adapter #
-                $adapter = new Adapter\TwitterAdapter($config_consumerKey, $config_consumerSecret, $config_accessToken, $config_accessTokenSecret, $this->itemRepository);
+                $adapter = new Adapter\TwitterAdapter($config_consumerKey, $config_consumerSecret, $config_accessToken, $config_accessTokenSecret, $itemRepository);
                 $results[] = $adapter->getResultFromApi($adapterOptions);
             }
+
         }
 
-        if ($this->settings['youtubeEnabled'] === '1') {
+        if ($settings['youtubeEnabled'] === '1') {
+
+            # check api key #
             $config_apiKey = $extConf['socialfeed.']['youtube.']['apikey'];
-            $adapterOptions->youtubeSearch = $this->settings['youtubeSearch'];
-            $adapterOptions->youtubeType = $this->settings['youtubeType'];
-            $adapterOptions->youtubeLanguage = $this->settings['youtubeLanguage'];
-            $adapterOptions->youtubeOrder = $this->settings['youtubeOrder'];
+            $adapterOptions->youtubeSearch = $settings['youtubeSearch'];
+            $adapterOptions->youtubeType = $settings['youtubeType'];
+            $adapterOptions->youtubeLanguage = $settings['youtubeLanguage'];
+            $adapterOptions->youtubeOrder = $settings['youtubeOrder'];
 
             if (empty($config_apiKey)) {
                 $this->logger->warning(self::TYPE_YOUTUBE . ' credentials not set');
@@ -306,19 +328,19 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
                 $this->logger->warning(self::TYPE_YOUTUBE . ' no search term defined');
             } else {
                 # retrieve data from adapter #
-                $adapter = new Adapter\YoutubeAdapter($config_apiKey, $this->itemRepository);
+                $adapter = new Adapter\YoutubeAdapter($config_apiKey, itemRepository);
                 $results[] = $adapter->getResultFromApi($adapterOptions);
             }
 
         }
 
-        if ($this->settings['dummyEnabled'] === '1') {
+        if ($settings['dummyEnabled'] === '1') {
 
             // TODO => set some configuration 'ext/pb_social/ext_conf_template.txt'
             $config_dummyKey = $extConf['socialfeed.']['youtube.']['apikey'];
 
             // TODO => move search params to flexform for usability
-            $adapterOptions->dummySearchValues = $this->settings['dummySearchValues'];
+            $adapterOptions->dummySearchValues = $settings['dummySearchValues'];
 
             if(empty($config_dummyKey)){
                 $this->logger->warning(self::TYPE_DUMMY . ' credentials not set');
@@ -326,25 +348,14 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
                 $this->logger->warning(self::TYPE_DUMMY . ' no search term defined');
             } else {
                 # retrieve data from adapter #
-                $adapter = new Adapter\DummyAdapter($config_dummyKey, $this->itemRepository, $this->credentialRepository);
+                $adapter = new Adapter\DummyAdapter($config_dummyKey, $itemRepository, $credentialRepository);
                 $results[] = $adapter->getResultFromApi($adapterOptions);
             }
 
         }
 
-        # Provide feeds to frontend #
-        foreach ($results as $result) {
-            foreach ($result['rawFeeds'] as $rfid => $rf) $this->view->assign($rfid, $rf);
-            foreach ($result['feedItems'] as $feed) $feeds[] = $feed;
-        }
+        return $results;
 
-
-        # Sort array if not empty #
-        if (!empty($feeds)) {
-            usort($feeds, array($this, 'cmp'));
-        }
-
-        $this->view->assign('feeds', $feeds);
     }
 
     public function cmp($a, $b) {
@@ -361,7 +372,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
         return false;
     }
 
-    function getAdapterOptions(){
+    public function getAdapterOptions($settings){
 
         $options = (object) array();
 
@@ -375,10 +386,10 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
         if ($refreshTimeInMin == 0) $refreshTimeInMin = 10; //reset to 10 if intval() cant convert
         $options->refreshTimeInMin = $refreshTimeInMin;
 
-        $options->settings = $this->settings;
-        $options->onlyWithPicture = $this->settings['onlyWithPicture'] === '1' ? true : false;
-        $options->textTrimLength = intval($this->settings['textTrimLength']) > 0 ? intval($this->settings['textTrimLength']) : 130;
-        $options->feedRequestLimit = intval(empty($this->settings['feedRequestLimit']) ? 10 : $this->settings['feedRequestLimit']);
+        $options->settings = $settings;
+        $options->onlyWithPicture = $settings['onlyWithPicture'] === '1' ? true : false;
+        $options->textTrimLength = intval($settings['textTrimLength']) > 0 ? intval($settings['textTrimLength']) : 130;
+        $options->feedRequestLimit = intval(empty($settings['feedRequestLimit']) ? 10 : $settings['feedRequestLimit']);
 
         return $options;
 
