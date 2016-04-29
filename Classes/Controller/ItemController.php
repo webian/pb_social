@@ -1,7 +1,6 @@
 <?php
 namespace PlusB\PbSocial\Controller;
 use PlusB\PbSocial\Adapter;
-use PlusB\PbSocial\Domain\Model\Feed;
 
 
 /***************************************************************

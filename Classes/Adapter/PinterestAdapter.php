@@ -192,6 +192,7 @@ class PinterestAdapter extends SocialMediaAdapter {
         } catch (Pinterest\Exceptions\PinterestException $e){
             $this->credentialRepository->deleteCredential($credential);
             $this->logger->warning(self::TYPE . ' exception - ' . $e->getMessage());
+            $this->logger->info('Please provide new ' . self::TYPE . ' access code');
         }
 
     }
