@@ -97,7 +97,7 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
         $output = curl_exec($ch);
 
         // Log errors
-        if(curl_error($ch)||curl_errno($ch)){
+        if(curl_error($ch)||curl_errno($ch)||FALSE === $output){
             error_log('|||||cURL errors|||||');
             error_log('Error: ' . curl_error($ch));
             error_log('Error number: ' . curl_errno($ch));
@@ -106,7 +106,6 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
         // Close the cURL resource, and free system resources
         curl_close($ch);
-
 
         return $output;
     }
