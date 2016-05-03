@@ -8,6 +8,7 @@ use Facebook\FacebookRequest;
 use Facebook\Helpers\FacebookRedirectLoginHelper;
 use PlusB\PbSocial\Domain\Model\Item;
 use PlusB\PbSocial\Domain\Model\Feed;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /***************************************************************
  *
@@ -48,6 +49,13 @@ class FacebookAdapter extends SocialMediaAdapter {
 
         parent::__construct($itemRepository);
 
+        $extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pb_social']);
+        $ignoreVerifySSL = $extConf['socialfeed.']['ignoreVerifySSL'] == '1' ? true : false;
+
+        DebuggerUtility::var_dump($ignoreVerifySSL,'Facebook Adapter');
+        DebuggerUtility::var_dump($extConf,'extConf Facebook Adapter');
+
+
         $this->api = new Facebook([
             'app_id' => $apiId,
             'app_secret' => $apiSecret,
@@ -57,7 +65,7 @@ class FacebookAdapter extends SocialMediaAdapter {
         // Get access_token via grant_type=client_credentials
         $url = self::api_url . '/oauth/access_token?client_id='. $apiId . '&client_secret=' . $apiSecret . '&grant_type=client_credentials';
 
-        $this->access_token = $this->itemRepository->curl_download($url);
+        $this->access_token = $this->itemRepository->curl_download($url, $ignoreVerifySSL);
         if($this->access_token){
             $this->access_token =  ltrim($this->access_token, 'access_token=');
         }
@@ -129,7 +137,6 @@ class FacebookAdapter extends SocialMediaAdapter {
                 $this->logger->warning('initial load for ' . $options->type . ' feeds failed', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
             }
         }
-
         return $this->getFeedItemsFromApiRequest($result, $options);
     }
 

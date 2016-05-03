@@ -63,7 +63,9 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
      * @param $Url
      * @return mixed
      */
-    public function curl_download($Url){
+    public function curl_download($Url, $ignoreVerifySSL){
+
+        DebuggerUtility::var_dump($ignoreVerifySSL,'Item Repository');
 
         // is cURL installed yet?
         if (!function_exists('curl_init')){
@@ -93,11 +95,13 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
         // Timeout in seconds
         curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, !$ignoreVerifySSL);
+
         // Download the given URL, and return output
         $output = curl_exec($ch);
 
         // Log errors
-        if(curl_error($ch)||curl_errno($ch)||FALSE === $output){
+        if(curl_error($ch)||curl_errno($ch)||false==$output){
             error_log('|||||cURL errors|||||');
             error_log('Error: ' . curl_error($ch));
             error_log('Error number: ' . curl_errno($ch));
@@ -106,6 +110,7 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
         // Close the cURL resource, and free system resources
         curl_close($ch);
+
 
         return $output;
     }

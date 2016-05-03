@@ -14,6 +14,9 @@ socialfeed{
     # cat=socialfeed/0general/0010; type=boolean; label=enable devmode : database cache will refresh every pageload. Additional log messages active
     devmod=0
 
+    # cat=socialfeed/0general/0020; type=boolean; label=Ignore Verify SSL
+    ignoreVerifySSL =
+
     # cat=socialfeed/1facebook/0010; type=string; label=api id
     facebook.api.id=
     # cat=socialfeed/1facebook/0020; type=string; label=api secret
