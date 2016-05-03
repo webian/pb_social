@@ -14,12 +14,12 @@ socialfeed{
     # cat=socialfeed/0general/0010; type=boolean; label=enable devmode : database cache will refresh every pageload. Additional log messages active
     devmod=0
 
-    # cat=socialfeed/0general/0020; type=boolean; label=Ignore Verify SSL
+    # cat=socialfeed/0general/0020; type=boolean; label=Ignore Verify SSL. Activating this checkbox might be a potential security risk
     ignoreVerifySSL =
 
-    # cat=socialfeed/1facebook/0010; type=string; label=api id
+    # cat=socialfeed/1facebook/0010; type=string; label=app id
     facebook.api.id=
-    # cat=socialfeed/1facebook/0020; type=string; label=api secret
+    # cat=socialfeed/1facebook/0020; type=string; label=app secret
     facebook.api.secret=
 
     # cat=socialfeed/2googleplus/0010; type=string; label=app key

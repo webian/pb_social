@@ -41,7 +41,10 @@ the next steps will hopefully explain you how to use this extension.
 5. You can use multiple search values by making a comma separated string
 6. clear all caches and enjoy the result.
 
-7. with great power comes great responsibility
+7. If you get the following error in the PHP error log: "Error: SSL certificate problem: unable to get local issuer certificate". This happens due to a outdated root certification authority file (cacert.pem). Check this link for further details: http://flwebsites.biz/posts/how-fix-curl-error-60-ssl-issue
+ATTENTION: Activating this checkbox might be a potential security risk
+
+8. with great power comes great responsibility
 
 (OPTIONAL)
 
