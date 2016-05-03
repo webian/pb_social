@@ -67,7 +67,7 @@
                 <target state="translated">Bilder von bestimmten Nutzern anzeigen. Verwende Kommas, um Bilder mehrerer Nutzer anzuzeigen</target>
             </trans-unit>
             <trans-unit id="flexform.tab.imgur.tag">
-                <source>Show Images Images with a specific Tag. Use commas for more than one tag </source>
+                <source>Show Images with a specific Tag. Use commas for more than one tag </source>
                 <target state="translated">Bilder mit einem bestimmten Tag anzeigen. Verwende Kommas für mehrere Tags</target>
             </trans-unit>
 
@@ -147,7 +147,7 @@
                 <target state="translated">Nur Tweets anzeigen, die Bilder beinhalten</target>
             </trans-unit>
             <trans-unit id="flexform.tab.twitter.searchID">
-                <source>Twitter search field values (e.g. #plusB,@plusB,...). Use commas to show show tweets from more than one page</source>
+                <source>Twitter search field values (e.g. #plusB,@plusB,...). Use commas to show tweets from more than one page</source>
                 <target state="translated">Tweets anzeigen, die bestimmte Wörter beinhalten (z.b. plusB). Verwende Kommas, um Tweets mehrerer Seiten anzuzeigen</target>
             </trans-unit>
             <trans-unit id="flexform.tab.twitter.profilePosts">
