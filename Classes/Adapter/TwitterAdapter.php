@@ -150,7 +150,7 @@ class TwitterAdapter extends SocialMediaAdapter {
         $rawFeeds = array();
         $feedItems = array();
 
-        $placeholder = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Public/Icons/Placeholder/twitter.jpg';
+        $placeholder = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('pb_social') . 'Resources/Public/Icons/Placeholder/twitter.jpg';
 
         if (!empty($result)) {
             foreach ($result as $twt_feed) {
