@@ -65,7 +65,6 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
      */
     public function curl_download($Url, $ignoreVerifySSL){
 
-        DebuggerUtility::var_dump($ignoreVerifySSL,'Item Repository');
 
         // is cURL installed yet?
         if (!function_exists('curl_init')){

@@ -52,10 +52,6 @@ class FacebookAdapter extends SocialMediaAdapter {
         $extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pb_social']);
         $ignoreVerifySSL = $extConf['socialfeed.']['ignoreVerifySSL'] == '1' ? true : false;
 
-        DebuggerUtility::var_dump($ignoreVerifySSL,'Facebook Adapter');
-        DebuggerUtility::var_dump($extConf,'extConf Facebook Adapter');
-
-
         $this->api = new Facebook([
             'app_id' => $apiId,
             'app_secret' => $apiSecret,
