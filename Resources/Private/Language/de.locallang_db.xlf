@@ -80,7 +80,7 @@
                 <target state="translated">Ausgabe aktiviert</target>
             </trans-unit>
             <trans-unit id="flexform.tab.instagram.postfilter">
-                <source>Filter posts by given hashtag - if you specify search ID and hastags, check this box to show only posts with the given hashtag(s)</source>
+                <source>Filter posts by given hashtag - if you specify search ID and hashtags, check this box to show only posts with the given hashtag(s)</source>
                 <target state="translated">Posts nach Hashtag filtern - wenn search ID und Hashtag angegeben wurden, werden nur die Posts mit dem angegebenen Hashtag ausgegeben</target>
             </trans-unit>
             <trans-unit id="flexform.tab.instagram.searchID">
