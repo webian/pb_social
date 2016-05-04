@@ -34,7 +34,7 @@ Sometimes you'll need to follow a link to generate access codes for our plugin. 
 of your sensitive data. Everything is stored in your Typo3 database! The reason why you need to provide these access codes
 is that some social media platforms recently strated to use OAuth 2 authentication. Read more about OAuth here: http://oauth.net/articles/authentication/
 
-.. _good-to-know
+.. _good-to-know:
 
 Good to know
 ------------

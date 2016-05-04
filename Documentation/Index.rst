@@ -23,18 +23,19 @@ Social Media Stream
 		en
 
 	:Description:
+		Social media stream enables you to get posts from social media channels on your website / into your typo3 system.
 
 	:Keywords:
 		social,social media,facebook,google+,imgur,instagram,pinterest,tumblr,twitter
 
 	:Copyright:
-		2016
+		2014-2016
 
 	:Author:
 		Mikolaj Jedrzejewski, Ramon Mohi
 
 	:Email:
-		mj@plusb.de, rm@plusb.de
+		hello@plusb.de
 
 	:License:
 		This document is published under the Open Content License
