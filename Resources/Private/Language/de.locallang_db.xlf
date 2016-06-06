@@ -36,6 +36,14 @@
                 <source>Facebook search IDs (Page that helps to find the ID: http://findmyfacebookid.com/). Use commas to show more than one ID</source>
                 <target state="translated">Facebook IDs der Seiten, die angezeigt werden sollen (Hilfeseite zu den IDs: http://blog.niklaskoehler.de/facebook-tools/facebook-id-ermitteln). Verwende Kommas, um mehrere Seiten anzuzeigen</target>
             </trans-unit>
+             <trans-unit id="flexform.tab.facebook.edge">
+                <source>Facebook edge (feed shows everything incl. tagged posts and links, posts filters only posts)</source>
+                <target state="translated">Facebook edge (feed zeigt alles an inkl. getaggte Beiträge und Links, posts zeigt nur die eigenen Beiträge)</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.facebook.linktopost">
+                <source>Link to the facebook post instead of article</source>
+                <target state="translated">Verlinkung auf den facebook post, anstatt auf den Artikel</target>
+            </trans-unit>
             <trans-unit id="flexform.tab.facebook.showOnlyImages">
                 <source>Show only posts with images</source>
                 <target state="translated">Nur Posts anzeigen, die Bilder beinhalten</target>
@@ -184,6 +192,10 @@
                 <source>Youtube searchword. Use commas to show more than one</source>
                 <target state="translated">Youtube Suchwort. Verwende Kommas, um mehrere Seiten anzuzeigen</target>
             </trans-unit>
+            <trans-unit id="flexform.tab.youtube.playlist">
+                <source>Youtube playlist. If set, searchword will be ignored</source>
+                <target state="translated">Youtube playlist. Wenn gesetzt wird das Suchwort ignoriert</target>
+            </trans-unit>
             <trans-unit id="flexform.tab.youtube.lang">
                 <source>(Optional) Show videos in a specific language (for example: use "de" for videos in german language). For a list look at the ISO 639-1 codes on http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes</source>
                 <target state="translated">(Optional) Zeige Videos nur in der entsprechenden Sprache an (z.B. "de" für Videos, die in der deutschen Sprache sind). Für eine Liste, schaue auf die ISO 639-1 Codes auf http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes</target>
@@ -220,6 +232,27 @@
                 <source>rating</source>
                 <target state="translated">Bewertung</target>
             </trans-unit>
+            
+            
+
+            <!-- vimeo -->
+            <trans-unit id="flexform.tab.vimeo.caption">
+                <source>Vimeo</source>
+                <target state="translated">Vimeo</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.vimeo.active">
+                <source>Active</source>
+                <target state="translated">Ausgabe aktiviert</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.vimeo.url">
+                <source>Channel url. Use commas to show more than one</source>
+                <target state="translated">Url des Kanals. Verwende Kommas, um mehrere anzuzeigen</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.vimeo.filter">
+                <source>Filter</source>
+                <target state="translated">Filter</target>
+            </trans-unit>
+
 
         </body>
     </file>

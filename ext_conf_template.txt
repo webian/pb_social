@@ -9,6 +9,7 @@
 # customsubcategory=8youtube=Youtube --- https://code.google.com/apis/console/
 # customsubcategory=6website=Our Website
 # customsubcategory=9pinterest=Pinterest --- https://developers.pinterest.com/apps/
+# customsubcategory=10vimeo=Vimeo --- https://developer.vimeo.com/api
 
 socialfeed{
     # cat=socialfeed/0general/0010; type=boolean; label=enable devmode : database cache will refresh every pageload. Additional log messages active
@@ -16,6 +17,16 @@ socialfeed{
 
     # cat=socialfeed/0general/0020; type=boolean; label=Ignore Verify SSL. Activating this checkbox might be a potential security risk
     ignoreVerifySSL =
+
+    # cat=socialfeed/10vimeo/0010; type=string; label=client identifier
+    vimeo.client.identifier=
+    # cat=socialfeed/10vimeo/0020; type=string; label=client secret
+    vimeo.client.secret=
+    # cat=socialfeed/10vimeo/0030; type=string; label=access token
+    vimeo.token=
+
+    # cat=socialfeed/8youtube/0010; type=string; label=access token
+    youtube.apikey=
 
     # cat=socialfeed/1facebook/0010; type=string; label=app id
     facebook.api.id=
@@ -66,6 +77,7 @@ socialfeed{
 
     # cat=socialfeed/6website/0001; type=user[EXT:pb_social/lib/class.pb_social_extmanager.php:pb_social_extmanager->getLogoAndLink]; label=For further information about us please visit our website
     external_link=0
+
 }
 
 

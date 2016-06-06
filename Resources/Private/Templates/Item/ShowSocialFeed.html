@@ -1,7 +1,49 @@
 <f:layout name="Default"/>
 <f:section name="main">
-    <div class="pb-list">
+    <div class="pb-list scrollable">
         <f:for each="{feeds}" as="feed">
+
+            <f:if condition="{0:feed.provider}=={0:'youtube'}">
+                <div class="pb-list-item pb-list-item-youtube pb-hidden" data-type="{feed.raw.type}" data-id="{feed.id}" data-url="{feed.link}">
+                    <f:if condition="{feed.image}">
+                        <f:then>
+                            <div class="image" style="background-image: url({feed.image})"></div>
+                        </f:then>
+                        <f:else>
+                            <div class="image" style="background-image: url(/typo3conf/ext/pb_social/Resources/Public/Icons/youtube.png);background-repeat:no-repeat;background-size: 128px;background-color:white;"></div>
+                        </f:else>
+                    </f:if>
+
+                    <div class="icon"></div>
+                    <f:if condition="{feed.text}">
+                        <span class="text">{feed.text}</span>
+                    </f:if>
+                    <img class="video-overlay" src="/typo3conf/ext/pb_social/Resources/Public/Icons/play_icon.png"/>
+                </div>
+            </f:if>
+
+
+
+            <f:if condition="{0:feed.provider}=={0:'vimeo'}">
+                <div class="pb-list-item pb-list-item-vimeo pb-hidden" data-type="{feed.raw.type}" data-id="{feed.id}" data-url="{feed.id}">
+                    <f:if condition="{feed.image}">
+                        <f:then>
+                            <div class="image" style="background-image: url({feed.image})"></div>
+                        </f:then>
+                        <f:else>
+                            <div class="image" style="background-image: url(/typo3conf/ext/pb_social/Resources/Public/Icons/vimeo.png);background-repeat:no-repeat;background-size: 128px;background-color:white;"></div>
+                        </f:else>
+                    </f:if>
+                    <div class="icon"></div>
+                    <f:if condition="{feed.text}">
+                        <span class="text">{feed.text}</span>
+                    </f:if>
+                    <img class="video-overlay" src="/typo3conf/ext/pb_social/Resources/Public/Icons/play_icon.png"/>
+                </div>
+            </f:if>
+
+
+
 
             <f:if condition="{0:feed.provider}=={0:'googleplus'}">
                 <div class="pb-list-item pb-list-item-googleplus pb-hidden" data-type="{feed.raw.object.attachments.0.objectType}" data-url="{feed.link}">

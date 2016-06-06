@@ -110,7 +110,7 @@ class FacebookAdapter extends SocialMediaAdapter {
                 if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
                     try {
                         $feed->setDate(new \DateTime('now'));
-                        $feed->setResult($this->getPosts($searchId, $options->feedRequestLimit));
+                        $feed->setResult($this->getPosts($searchId, $options->feedRequestLimit, $options->settings['facebookEdge']));
                         $this->itemRepository->update($feed);
                     } catch (\FacebookApiException $e) {
                         $this->logger->warning($options->type . ' feeds can\'t be updated', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
@@ -123,7 +123,7 @@ class FacebookAdapter extends SocialMediaAdapter {
             try {
                 $feed = new Item($options->type);
                 $feed->setCacheIdentifier($searchId);
-                $feed->setResult($this->getPosts($searchId, $options->feedRequestLimit));
+                $feed->setResult($this->getPosts($searchId, $options->feedRequestLimit, $options->settings['facebookEdge']));
 
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
@@ -150,12 +150,20 @@ class FacebookAdapter extends SocialMediaAdapter {
                     if ($options->onlyWithPicture && empty($rawFeed->picture)) {
                         continue;
                     }
+
+                    
                     $feed = new Feed(self::TYPE , $rawFeed);
                     $feed->setId($rawFeed->id);
                     $feed->setText($this->trim_text($rawFeed->message, $options->textTrimLength, true));
                     $img = property_exists($rawFeed, 'picture') ? urldecode($rawFeed->picture) : $placeholder;
                     $feed->setImage($img);
-                    $feed->setLink($rawFeed->link);
+
+                    // ouput link to facebook post instead of article
+                    if ($options->settings['facebookLinktopost']) {
+                        $feed->setLink('https://facebook.com/'.$rawFeed->id);
+                    } else {
+                        $feed->setLink($rawFeed->link);
+                    }
                     $d = new \DateTime($rawFeed->created_time);
                     $feed->setTimeStampTicks($d->getTimestamp());
 
@@ -174,16 +182,24 @@ class FacebookAdapter extends SocialMediaAdapter {
      * @param integer $limit
      * @return string
      */
-    function getPosts($searchId, $limit)
+    function getPosts($searchId, $limit, $edge)
     {
+        // only posts or feed possible
+        if ($edge == 'posts') {
+            $request = 'posts';
+        } else {
+            $request = 'feed';
+        }
 
         /** @var \Facebook\FacebookResponse $resp */
         $resp = $this->api->sendRequest(
             'GET',
-            '/' . $searchId . '/feed',
+            '/' . $searchId . '/'.$request,
             array(
                 'fields' => 'id,link,likes.limit(70),message,picture,comments.limit(70),created_time',
                 'limit' => $limit
+                // 'include_hidden' => false,
+                // 'is_published' => true
             ),
             $this->access_token
         );

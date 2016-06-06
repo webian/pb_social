@@ -1,6 +1,8 @@
 <?php
 
 namespace PlusB\PbSocial\Adapter;
+$extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/';
+require $extensionPath . 'vimeo/autoload.php';
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
 use TYPO3\CMS\Core\FormProtection\Exception;
@@ -30,27 +32,19 @@ use TYPO3\CMS\Core\FormProtection\Exception;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class YoutubeAdapter extends SocialMediaAdapter {
+class VimeoAdapter extends SocialMediaAdapter {
 
-    const TYPE = 'youtube';
+    const TYPE = 'vimeo';
 
-    const YT_LINK = 'https://www.youtube.com/watch?v=';
-
-    const YT_SEARCH = 'https://www.googleapis.com/youtube/v3/search?q=';
-
-    // get items from playlist api call
-    const YT_SEARCH_PLAYLIST = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=';
+    const VIMEO_LINK = 'https://player.vimeo.com';
 
     private $appKey;
 
-    public function __construct($appKey, $itemRepository){
+    public function __construct($clientIdentifier, $clientSecret, $accessToken,$itemRepository){
 
         parent::__construct($itemRepository);
 
-        $this->appKey = $appKey;
-
-        //todo: use google client
-
+        $this->api = new \Vimeo\Vimeo($clientIdentifier, $clientSecret, $accessToken);
     }
 
 
@@ -59,17 +53,12 @@ class YoutubeAdapter extends SocialMediaAdapter {
         $result = array();
 
         $fields = array(
-            'key' => $this->appKey,
-            'maxResults' => $options->feedRequestLimit,
-            'part' => 'snippet'
+            // 'key' => $this->appKey,
+            // 'per_page' => $options->feedRequestLimit,
+            // 'part' => 'snippet'
         );
 
-        if($options->youtubeType != '') $fields['type'] = $options->youtubeType;
-        if($options->youtubeLanguage != '') $fields['relevanceLanguage'] = $options->youtubeLanguage;
-        if($options->youtubeOrder != 'relevance') $fields['order'] = $options->youtubeOrder;
-
-        $searchTerms = explode(',', $options->youtubeSearch);
-        if ($options->youtubePlaylist) $searchTerms = explode(',', $options->youtubePlaylist);
+        $searchTerms = explode(',', $options->vimeoUrl);
 
         foreach ($searchTerms as $searchString) {
             $searchString = trim($searchString);
@@ -92,12 +81,13 @@ class YoutubeAdapter extends SocialMediaAdapter {
             try {
                 $feed = new Item(self::TYPE);
                 $feed->setCacheIdentifier($searchString);
-                $feed->setResult($this->getPosts($searchString, $fields));
+                $feed->setResult($this->getPosts($searchString, $fields, $options));
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
 
             } catch (\Exception $e) {
+
                 error_log('catched ' . $e->getMessage());
                 $this->logger->warning('initial load for ' . self::TYPE . ' feeds failed. Please check the log file typo3temp/log/typo3.log for further information.');
             }
@@ -112,23 +102,21 @@ class YoutubeAdapter extends SocialMediaAdapter {
         $feedItems = array();
 
         if (!empty($result)) {
-            foreach ($result as $yt_feed) {
-                $rawFeeds[self::TYPE . '_' . $yt_feed->getCacheIdentifier() . '_raw'] = $yt_feed->getResult();
-                error_log(json_encode($yt_feed->getResult()));
-                foreach ($yt_feed->getResult()->items as $rawFeed) {
+            foreach ($result as $vimeo_feed) {
+                $rawFeeds[self::TYPE . '_' . $vimeo_feed->getCacheIdentifier() . '_raw'] = $vimeo_feed->getResult();
+                error_log(json_encode($vimeo_feed->getResult()));
+
+                foreach ($vimeo_feed->getResult()->body->data as $rawFeed) {
+                    
                     $feed = new Feed(self::TYPE, $rawFeed);
                     error_log(json_encode($rawFeed));
 
-                    if ($options->youtubePlaylist) {
-                        $id = $rawFeed->snippet->resourceId->videoId;
-                    } else {
-                        $id = $rawFeed->id->videoId;
-                    }
-                    $feed->setId($id);
-                    $feed->setText($this->trim_text($rawFeed->snippet->title, $options->textTrimLength, true));
-                    $feed->setImage($rawFeed->snippet->thumbnails->standard->url);
-                    $feed->setLink(self::YT_LINK . $id);
-                    $d = new \DateTime($rawFeed->snippet->publishedAt);
+                    $feed->setId($rawFeed->link);
+                    $feed->setText($this->trim_text($rawFeed->name, $options->textTrimLength, true));
+                    $feed->setImage($rawFeed->pictures->sizes[5]->link);
+                    $feed->setLink(self::VIMEO_LINK . $rawFeed->link);
+                    $d = new \DateTime($rawFeed->created_time);
+
                     $feed->setTimeStampTicks($d->getTimestamp());
                     $feedItems[] = $feed;
                 }
@@ -138,36 +126,9 @@ class YoutubeAdapter extends SocialMediaAdapter {
         return array('rawFeeds' => $rawFeeds, 'feedItems' => $feedItems);
     }
 
-    /**
-     * @param $searchString
-     * @param $fields
-     * @return mixed
-     * @throws \Exception
-     */
     function getPosts($searchString, $fields, $options){
-
-        $headers = array('Content-Type: application/json');
-
-        // use different api call for playlist
-        if ($options->youtubePlaylist) {
-            $url = self::YT_SEARCH_PLAYLIST . $searchString . '&' . http_build_query($fields);
-        } else {
-            $url = self::YT_SEARCH . $searchString . '&' . http_build_query($fields);
-        }
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, false);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
-        $curl_response = curl_exec($ch);
-
-        if (property_exists(json_decode($curl_response), 'error')) {
-            throw new \Exception($curl_response);
-        }
-
-        return $curl_response;
+        $response = $this->api->request($searchString, array('per_page' => $options->feedRequestLimit), 'GET');
+        return json_encode($response);
     }
+
 }

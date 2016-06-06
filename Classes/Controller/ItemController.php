@@ -42,6 +42,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
     const TYPE_TWITTER = 'twitter';
     const TYPE_TUMBLR = 'tumblr';
     const TYPE_YOUTUBE = 'youtube';
+    const TYPE_VIMEO = 'vimeo';
     const TYPE_DUMMY = 'dummy';
 
     /**
@@ -149,7 +150,6 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
         if (!empty($feeds)) {
             usort($feeds, array($this, 'cmp'));
         }
-
         $this->view->assign('feeds', $feeds);
     }
 
@@ -159,10 +159,10 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
         $adapterOptions = $this->getAdapterOptions($settings);
         $adapterOptions->devMod = $extConf['socialfeed.']['devmod'] == '1' ? true : false;
 
+        
         $results = array();
 
         if ($settings['facebookEnabled'] === '1') {
-
             # check api key #
             $config_apiId = $extConf['socialfeed.']['facebook.']['api.']['id'];
             $config_apiSecret = $extConf['socialfeed.']['facebook.']['api.']['secret'];
@@ -317,17 +317,41 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             # check api key #
             $config_apiKey = $extConf['socialfeed.']['youtube.']['apikey'];
             $adapterOptions->youtubeSearch = $settings['youtubeSearch'];
+            $adapterOptions->youtubePlaylist = $settings['youtubePlaylist'];
             $adapterOptions->youtubeType = $settings['youtubeType'];
             $adapterOptions->youtubeLanguage = $settings['youtubeLanguage'];
             $adapterOptions->youtubeOrder = $settings['youtubeOrder'];
 
             if (empty($config_apiKey)) {
                 $this->logger->warning(self::TYPE_YOUTUBE . ' credentials not set');
-            } elseif (empty($adapterOptions->youtubeSearch)) {
+            } elseif (empty($adapterOptions->youtubeSearch) && empty($adapterOptions->youtubePlaylist)) {
                 $this->logger->warning(self::TYPE_YOUTUBE . ' no search term defined');
             } else {
                 # retrieve data from adapter #
-                $adapter = new Adapter\YoutubeAdapter($config_apiKey, itemRepository);
+                $adapter = new Adapter\YoutubeAdapter($config_apiKey, $itemRepository);
+                $results[] = $adapter->getResultFromApi($adapterOptions);
+            }
+
+        }
+
+        if ($settings['vimeoEnabled'] === '1') {
+
+            # check api key #
+            
+            $config_clientIdentifier = $extConf['socialfeed.']['vimeo.']['client.']['identifier'];
+            $config_clientSecret = $extConf['socialfeed.']['vimeo.']['client.']['secret'];
+            $config_token = $extConf['socialfeed.']['vimeo.']['token'];
+            $adapterOptions->vimeoUrl = $settings['vimeoUrl'];
+            $adapterOptions->vimeoFilter = $settings['vimeoFilter'];
+
+            // if (empty($config_clientIdentifier) || empty($config_clientSecret) || empty($config_token)) {
+            if (empty($config_clientIdentifier) || empty($config_clientSecret) || empty($config_token)) {
+                $this->logger->warning(self::TYPE_VIMEO . ' credentials not set');
+            } elseif (empty($adapterOptions->vimeoUrl)) {
+                $this->logger->warning(self::TYPE_VIMEO . ' no url defined');
+            } else {
+                # retrieve data from adapter #
+                $adapter = new Adapter\VimeoAdapter($config_clientIdentifier, $config_clientSecret, $config_token, $itemRepository);
                 $results[] = $adapter->getResultFromApi($adapterOptions);
             }
 

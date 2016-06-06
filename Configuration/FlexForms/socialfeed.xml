@@ -72,6 +72,7 @@
                             <!--</config>-->
                         <!--</TCEforms>-->
                     <!--</settings.facebookShowOnlyImages>-->
+                    
                     <settings.facebookSearchIds>
                         <TCEforms>
                             <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.facebook.searchID</label>
@@ -81,6 +82,43 @@
                             </config>
                         </TCEforms>
                     </settings.facebookSearchIds>
+                    <settings.facebookEdge>
+                        <TCEforms>
+                        <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.facebook.edge</label>
+                        <config>
+                          <type>radio</type>
+                          <items type="array">
+                            <numIndex index="0" type="array">
+                              <numIndex index="0">Feed</numIndex>
+                              <numIndex index="1">feed</numIndex>
+                            </numIndex>
+                            <numIndex index="1" type="array">
+                              <numIndex index="0">Posts</numIndex>
+                              <numIndex index="1">posts</numIndex>
+                            </numIndex>
+                            <!-- not tested <numIndex index="3" type="array">
+                              <numIndex index="0">Tagged</numIndex>
+                              <numIndex index="1">tagged</numIndex>
+                            </numIndex>
+                            <numIndex index="3" type="array">
+                              <numIndex index="0">Promotable posts</numIndex>
+                              <numIndex index="1">promotable_posts</numIndex>
+                            </numIndex> -->
+
+                          </items>
+                          <default>feed</default>
+                        </config>
+                        </TCEforms>
+                    </settings.facebookEdge>
+                    <settings.facebookLinktopost>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.facebook.linktopost</label>
+                            <!--<onChange>reload</onChange>-->
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.facebookLinktopost>
                 </el>
             </ROOT>
         </display_facebook>
@@ -347,86 +385,130 @@
                 </el>
             </ROOT>
         </display_twitter>
-        <!--<display_youtube>-->
-            <!--<ROOT>-->
-                <!--<TCEforms>-->
-                    <!--<sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.caption</sheetTitle>-->
-                <!--</TCEforms>-->
-                <!--<type>array</type>-->
-                <!--<el>-->
-                    <!--<settings.youtubeEnabled>-->
-                        <!--<TCEforms>-->
-                            <!--<label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.active</label>-->
-                            <!--&lt;!&ndash;<onChange>reload</onChange>&ndash;&gt;-->
-                            <!--<config>-->
-                                <!--<type>check</type>-->
-                            <!--</config>-->
-                        <!--</TCEforms>-->
-                    <!--</settings.youtubeEnabled>-->
-                    <!--<settings.youtubeSearch>-->
-                        <!--<TCEforms>-->
-                            <!--<label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.searchword</label>-->
-                            <!--&lt;!&ndash;<displayCond>FIELD:settings.instagramEnabled:=:1</displayCond>&ndash;&gt;-->
-                            <!--<config>-->
-                                <!--<type>input</type>-->
-                            <!--</config>-->
-                        <!--</TCEforms>-->
-                    <!--</settings.youtubeSearch>-->
-                    <!--<settings.youtubeLanguage>-->
-                        <!--<TCEforms>-->
-                            <!--<label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.lang</label>-->
-                            <!--<config>-->
-                                <!--<type>input</type>-->
-                            <!--</config>-->
-                        <!--</TCEforms>-->
-                    <!--</settings.youtubeLanguage>-->
-                    <!--<settings.youtubeType>-->
-                        <!--<TCEforms>-->
-                            <!--<label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.type</label>-->
-                            <!--<config>-->
-                                <!--<type>input</type>-->
-                            <!--</config>-->
-                        <!--</TCEforms>-->
-                    <!--</settings.youtubeType>-->
-                    <!--<settings.youtubeOrder>-->
-                        <!--<TCEforms>-->
-                            <!--<label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.order</label>-->
-                            <!--<config>-->
-                                <!--<type>select</type>-->
-                                <!--<items type="array">-->
-                                    <!--<numIndex index="0" type="array">-->
-                                        <!--<numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.order.relevance</numIndex>-->
-                                        <!--<numIndex index="1">relevance</numIndex>-->
-                                    <!--</numIndex>-->
-                                    <!--<numIndex index="1" type="array">-->
-                                        <!--<numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.order.date</numIndex>-->
-                                        <!--<numIndex index="1">date</numIndex>-->
-                                    <!--</numIndex>-->
-                                    <!--<numIndex index="2" type="array">-->
-                                        <!--<numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.order.viewCount</numIndex>-->
-                                        <!--<numIndex index="1">viewCount</numIndex>-->
-                                    <!--</numIndex>-->
-                                    <!--<numIndex index="3" type="array">-->
-                                        <!--<numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.order.videoCount</numIndex>-->
-                                        <!--<numIndex index="1">videoCount</numIndex>-->
-                                    <!--</numIndex>-->
-                                    <!--<numIndex index="4" type="array">-->
-                                        <!--<numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.order.title</numIndex>-->
-                                        <!--<numIndex index="1">title</numIndex>-->
-                                    <!--</numIndex>-->
-                                    <!--<numIndex index="5" type="array">-->
-                                        <!--<numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.order.rating</numIndex>-->
-                                        <!--<numIndex index="1">rating</numIndex>-->
-                                    <!--</numIndex>-->
-                                <!--</items>-->
-                                <!--<minitems>1</minitems>-->
-                                <!--<maxitems>1</maxitems>-->
-                                <!--<size>1</size>-->
-                            <!--</config>-->
-                        <!--</TCEforms>-->
-                    <!--</settings.youtubeOrder>-->
-                <!--</el>-->
-            <!--</ROOT>-->
-        <!--</display_youtube>-->
+        <display_youtube>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.caption</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <settings.youtubeEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.active</label>
+                           <!--  &lt;!&ndash;<onChange>reload</onChange>&ndash;&gt; -->
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.youtubeEnabled>
+                    <settings.youtubeSearch>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.searchword</label>
+                            <!-- &lt;!&ndash;<displayCond>FIELD:settings.instagramEnabled:=:1</displayCond>&ndash;&gt; -->
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.youtubeSearch>
+                    <settings.youtubePlaylist>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.playlist</label>
+                            <!-- &lt;!&ndash;<displayCond>FIELD:settings.instagramEnabled:=:1</displayCond>&ndash;&gt; -->
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.youtubePlaylist>
+                    <settings.youtubeLanguage>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.lang</label>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.youtubeLanguage>
+                    <settings.youtubeType>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.type</label>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.youtubeType>
+                    <settings.youtubeOrder>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.order</label>
+                            <config>
+                                <type>select</type>
+                                <items type="array">
+                                    <numIndex index="0" type="array">
+                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.order.relevance</numIndex>
+                                        <numIndex index="1">relevance</numIndex>
+                                    </numIndex>
+                                    <numIndex index="1" type="array">
+                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.order.date</numIndex>
+                                        <numIndex index="1">date</numIndex>
+                                    </numIndex>
+                                    <numIndex index="2" type="array">
+                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.order.viewCount</numIndex>
+                                        <numIndex index="1">viewCount</numIndex>
+                                    </numIndex>
+                                    <numIndex index="3" type="array">
+                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.order.videoCount</numIndex>
+                                        <numIndex index="1">videoCount</numIndex>
+                                    </numIndex>
+                                    <numIndex index="4" type="array">
+                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.order.title</numIndex>
+                                        <numIndex index="1">title</numIndex>
+                                    </numIndex>
+                                    <numIndex index="5" type="array">
+                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.order.rating</numIndex>
+                                        <numIndex index="1">rating</numIndex>
+                                    </numIndex>
+                                </items>
+                                <minitems>1</minitems>
+                                <maxitems>1</maxitems>
+                                <size>1</size>
+                            </config>
+                        </TCEforms>
+                    </settings.youtubeOrder>
+                </el>
+            </ROOT>
+        </display_youtube>
+        <display_vimeo>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.vimeo.caption</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <settings.vimeoEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.vimeo.active</label>
+                           <!--  &lt;!&ndash;<onChange>reload</onChange>&ndash;&gt; -->
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.vimeoEnabled>
+                    <settings.vimeoUrl>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.vimeo.url</label>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.vimeoUrl>
+                    <!-- <settings.vimeoFilter>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.vimeo.filter</label>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.vimeoFilter> -->
+                </el>
+            </ROOT>
+        </display_vimeo>
     </sheets>
 </T3DataStructure>
