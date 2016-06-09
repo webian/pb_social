@@ -1,9 +1,12 @@
 
 plugin.tx_pbsocial {
 	view {
-		templateRootPath = {$plugin.tx_pbsocial.view.templateRootPath}
-		partialRootPath = {$plugin.tx_pbsocial.view.partialRootPath}
-		layoutRootPath = {$plugin.tx_pbsocial.view.layoutRootPath}
+		templateRootPaths.0 = EXT:pb_social/Resources/Private/Templates/
+		templateRootPaths.1 = {$plugin.tx_pbsocial.view.templateRootPath}
+		partialRootPaths.0 = EXT:pb_social/Resources/Private/Partials/
+		partialRootPaths.1 = {$plugin.tx_pbsocial.view.partialRootPath}
+		layoutRootPaths.0 = EXT:pb_social/Resources/Private/Layouts/
+		layoutRootPaths.1 = {$plugin.tx_pbsocial.view.layoutRootPath}
 	}
 	persistence {
 		storagePid = {$plugin.tx_pbsocial.persistence.storagePid}
