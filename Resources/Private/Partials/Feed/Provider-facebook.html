@@ -1,0 +1,27 @@
+<f:if condition="{0:feed.raw.type}!={0:'status'}">
+	<div class="pb-list-item pb-list-item-facebook pb-hidden" data-type="{feed.raw.type}" data-id="{feed.id}" data-url="{feed.link}">
+		<f:if condition="{feed.raw.object_id}">
+			<f:then>
+				<div class="image" data-image-id="{feed.raw.object_id}" style="background-image: url(https://graph.facebook.com/{feed.raw.object_id}/picture)"></div>
+			</f:then>
+			<f:else>
+				<div class="image" data-image-id="{feed.raw.object_id}" style="background-image: url({feed.raw.picture})"></div>
+			</f:else>
+		</f:if>
+		<f:if condition="{feed.text}">
+			<span class="text">{feed.text}</span>
+		</f:if>
+		<div class="icon"></div>
+		<a class="additional-info info-1" href="{feed.link}">
+			<f:count>{feed.raw.likes.data}</f:count>
+			<f:if condition="{feed.raw.likes.data -> f:count()} > 69"><f:then>+</f:then></f:if>
+		</a>
+		<a class="additional-info info-2" href="{feed.link}">
+			<f:count>{feed.raw.comments.data}</f:count>
+			<f:if condition="{feed.raw.comments.data -> f:count()} > 69"><f:then>+</f:then></f:if>
+		</a>
+		<f:if condition="{0:feed.raw.type}=={0:'video'}">
+			<img class="video-overlay" src="/typo3conf/ext/pb_social/Resources/Public/Icons/play_icon.png"/>
+		</f:if>
+	</div>
+</f:if>
