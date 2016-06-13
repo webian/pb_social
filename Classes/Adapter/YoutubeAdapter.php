@@ -72,7 +72,7 @@ class YoutubeAdapter extends SocialMediaAdapter {
         if ($options->youtubePlaylist) $searchTerms = explode(',', $options->youtubePlaylist);
 
         foreach ($searchTerms as $searchString) {
-            $searchString = trim($searchString);
+            $searchString = trim(urlencode($searchString));
             $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchString);
             if ($feeds && $feeds->count() > 0) {
                 $feed = $feeds->getFirst();
@@ -92,7 +92,7 @@ class YoutubeAdapter extends SocialMediaAdapter {
             try {
                 $feed = new Item(self::TYPE);
                 $feed->setCacheIdentifier($searchString);
-                $feed->setResult($this->getPosts($searchString, $fields));
+                $feed->setResult($this->getPosts($searchString, $fields, $options));
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
@@ -114,10 +114,10 @@ class YoutubeAdapter extends SocialMediaAdapter {
         if (!empty($result)) {
             foreach ($result as $yt_feed) {
                 $rawFeeds[self::TYPE . '_' . $yt_feed->getCacheIdentifier() . '_raw'] = $yt_feed->getResult();
-                error_log(json_encode($yt_feed->getResult()));
+//                error_log(json_encode($yt_feed->getResult()));
                 foreach ($yt_feed->getResult()->items as $rawFeed) {
                     $feed = new Feed(self::TYPE, $rawFeed);
-                    error_log(json_encode($rawFeed));
+//                    error_log(json_encode($rawFeed));
 
                     if ($options->youtubePlaylist) {
                         $id = $rawFeed->snippet->resourceId->videoId;
@@ -154,6 +154,8 @@ class YoutubeAdapter extends SocialMediaAdapter {
         } else {
             $url = self::YT_SEARCH . $searchString . '&' . http_build_query($fields);
         }
+
+//        error_log($url);
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);

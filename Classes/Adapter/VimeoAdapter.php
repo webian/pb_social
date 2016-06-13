@@ -106,12 +106,12 @@ class VimeoAdapter extends SocialMediaAdapter {
         if (!empty($result)) {
             foreach ($result as $vimeo_feed) {
                 $rawFeeds[self::TYPE . '_' . $vimeo_feed->getCacheIdentifier() . '_raw'] = $vimeo_feed->getResult();
-                error_log(json_encode($vimeo_feed->getResult()));
+//                error_log(json_encode($vimeo_feed->getResult()));
 
                 foreach ($vimeo_feed->getResult()->body->data as $rawFeed) {
                     
                     $feed = new Feed(self::TYPE, $rawFeed);
-                    error_log(json_encode($rawFeed));
+//                    error_log(json_encode($rawFeed));
 
                     $feed->setId($rawFeed->link);
                     $feed->setText($this->trim_text($rawFeed->name, $options->textTrimLength, true));
