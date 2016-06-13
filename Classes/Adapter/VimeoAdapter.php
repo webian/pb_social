@@ -58,7 +58,9 @@ class VimeoAdapter extends SocialMediaAdapter {
             // 'part' => 'snippet'
         );
 
-        $searchTerms = explode(',', $options->vimeoUrl);
+        $searchTerms = explode(',', $options->settings['vimeoChannel']);
+
+
 
         foreach ($searchTerms as $searchString) {
             $searchString = trim($searchString);
@@ -127,7 +129,12 @@ class VimeoAdapter extends SocialMediaAdapter {
     }
 
     function getPosts($searchString, $fields, $options){
-        $response = $this->api->request($searchString, array('per_page' => $options->feedRequestLimit), 'GET');
+        if ($searchString == 'me') {
+            $url = '/me/videos';
+        } else {
+            $url = '/channels/'.$searchString.'/videos';
+        }
+        $response = $this->api->request($url, array('per_page' => $options->feedRequestLimit), 'GET');
         return json_encode($response);
     }
 

@@ -39,6 +39,8 @@
                         <span class="text">{feed.text}</span>
                     </f:if>
                     <img class="video-overlay" src="/typo3conf/ext/pb_social/Resources/Public/Icons/play_icon.png"/>
+                    <a class="additional-info info-1" href="{feed.link}">{feed.raw.metadata.connections.comments.total}</a>
+                    <a class="additional-info info-2" href="{feed.link}">{feed.raw.metadata.connections.likes.total}</a>
                 </div>
             </f:if>
 

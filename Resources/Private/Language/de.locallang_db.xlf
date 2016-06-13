@@ -244,14 +244,19 @@
                 <source>Active</source>
                 <target state="translated">Ausgabe aktiviert</target>
             </trans-unit>
-            <trans-unit id="flexform.tab.vimeo.url">
+            <trans-unit id="flexform.tab.vimeo.channel">
+                <source>Channel ID to display. Show all your videos with "me".</source>
+                <target state="translated">Channel ID, die angezeigt werden soll. Alle eigenen Videos können durch Eingabe von "me" ausgegeben werden.</target>
+            </trans-unit>
+            
+            <!-- <trans-unit id="flexform.tab.vimeo.url">
                 <source>Channel url. Use commas to show more than one</source>
                 <target state="translated">Url des Kanals. Verwende Kommas, um mehrere anzuzeigen</target>
             </trans-unit>
             <trans-unit id="flexform.tab.vimeo.filter">
                 <source>Filter</source>
                 <target state="translated">Filter</target>
-            </trans-unit>
+            </trans-unit> -->
 
 
         </body>

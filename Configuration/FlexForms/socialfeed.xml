@@ -491,14 +491,23 @@
                             </config>
                         </TCEforms>
                     </settings.vimeoEnabled>
-                    <settings.vimeoUrl>
+                    
+                    <settings.vimeoChannel>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.vimeo.channel</label>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.vimeoChannel>
+                    <!-- <settings.vimeoUrl>
                         <TCEforms>
                             <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.vimeo.url</label>
                             <config>
                                 <type>input</type>
                             </config>
                         </TCEforms>
-                    </settings.vimeoUrl>
+                    </settings.vimeoUrl> -->
                     <!-- <settings.vimeoFilter>
                         <TCEforms>
                             <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.vimeo.filter</label>
