@@ -14,9 +14,8 @@ Known Problems
 If you are testing the extension locally, you may encounter some small problems:
 
 - Facebook posts may not be loaded because of some xampp malconfiguration. You have two choices here:
-  1. Update your ssl certificates (.cert files)
-  2. Turn off ssl verification (considered as unsafe method because you'll send your credentials unencrypted)
-  3. Private Facebook profile posts may be not displayed.
+  + Update your ssl certificates (.cert files) or Turn off ssl verification (considered as unsafe method because you'll send your credentials unencrypted) -> see FAQ for details
+  + Private Facebook profile posts may be not displayed.
 
 - Posts without image may not load the placeholder image because of a 'Not allowed to load local resource' error.
 

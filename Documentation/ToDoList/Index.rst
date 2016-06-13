@@ -12,3 +12,5 @@ To-Do list
 ==========
 
 implement more provider
+
+Bug-Tracker: https://forge.typo3.org/projects/extension-pb_social/activity

@@ -59,4 +59,5 @@ Social Media Stream
 	Developer/Index
 	KnownProblems/Index
 	ToDoList/Index
+	SpecialThanks/Index
 	Targets

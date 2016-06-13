@@ -13,8 +13,8 @@ Developer Corner
 
 From developer to developer,
 
-i have implemented you a dummy provider strain through the extension. If you want to add a provider, modify or clone it.
-If you want to add some features or make some bugfixing ... ah never mind ... if you want to implement a feature read
+I have implemented a dummy provider as a guideline. If you want to add a provider, modify or clone it.
+If you want to add some features or do some bugfixing ... ah never mind ... if you want to implement a feature read
 my comments.
 
 The extension follows the adapter design pattern. On one hand to simplify updating processes and on the other to structure
