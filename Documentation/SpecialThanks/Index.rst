@@ -13,8 +13,8 @@ Special Thanks
 
 Special thanks to the community, especially:
 
-André Wuttig
-Frank Stein
-Jan Kiesewetter
+- André Wuttig
+- Frank Stein
+- Jan Kiesewetter
 
 for improving our code and adding new features!
