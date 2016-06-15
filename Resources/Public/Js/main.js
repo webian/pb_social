@@ -16,18 +16,16 @@ window.onload = function() {
 
 function documentReady(){
 
-    if($('a.likes,a.comments,a.plus,a.replies')){
-        $('a.likes,a.comments,a.plus,a.replies').click(function(){
+        jQuery('a.likes,a.comments,a.plus,a.replies').click(function(){
             window.open(this.href,'_blank','width=1200,height=800');
             return false;
         });
-    }
 
         //
         // ANY CLICK REDIRECT TO SOURCE OBJECT PAGE
         //
-        $('.pb-list-item .image, .pb-list-item .icon, .pb-list-item img, .pb-list-item .text').click(function(e){
-            var _Url = $(this).closest('.pb-list-item').data('url');
+        jQuery('.pb-list-item .image, .pb-list-item .icon, .pb-list-item img, .pb-list-item .text').click(function(e){
+            var _Url = jQuery(this).closest('.pb-list-item').data('url');
             window.open(_Url,'_blank','width=1200,height=800');
             return false;
         });
