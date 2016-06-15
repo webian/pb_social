@@ -150,7 +150,7 @@ class FacebookAdapter extends SocialMediaAdapter {
                     if ($options->onlyWithPicture && empty($rawFeed->picture)) {
                         continue;
                     }
-
+//                    error_log(json_encode($rawFeed));
                     
                     $feed = new Feed(self::TYPE , $rawFeed);
                     $feed->setId($rawFeed->id);
