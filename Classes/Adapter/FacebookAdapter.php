@@ -155,9 +155,7 @@ class FacebookAdapter extends SocialMediaAdapter {
                     $feed = new Feed(self::TYPE , $rawFeed);
                     $feed->setId($rawFeed->id);
                     $feed->setText($this->trim_text($rawFeed->message, $options->textTrimLength, true));
-                    $img = property_exists($rawFeed, 'picture') ? urldecode($rawFeed->picture) : $placeholder;
-                    $feed->setImage($img);
-
+                    if(property_exists($rawFeed, 'picture')) $feed->setImage(urldecode($rawFeed->picture));
                     // ouput link to facebook post instead of article
                     if ($options->settings['facebookLinktopost']) {
                         $feed->setLink('https://facebook.com/'.$rawFeed->id);

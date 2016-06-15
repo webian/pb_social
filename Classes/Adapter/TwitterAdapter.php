@@ -166,7 +166,7 @@ class TwitterAdapter extends SocialMediaAdapter {
                     $feed = new Feed($twt_feed->getType(), $rawFeed);
                     $feed->setId($rawFeed->id);
                     $feed->setText($this->trim_text($rawFeed->text, $options->textTrimLength, true));
-                    $feed->setImage($placeholder);
+//                    $feed->setImage($placeholder);
                     if ($rawFeed->entities->media[0]->type == 'photo') {
                         $feed->setImage($rawFeed->entities->media[0]->media_url);
                     }

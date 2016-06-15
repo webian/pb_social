@@ -4,7 +4,7 @@
 			<div class="image" data-image-id="{feed.raw.object_id}" style="background-image: url({feed.image})"></div>
 		</f:then>
 		<f:else>
-			<div class="image" data-image-id="{feed.raw.object_id}" style="background-image: url(/typo3conf/ext/pb_social/Resources/Public/Icons/Placeholder/twitter.jpg);"></div>
+			<div class="image placeholder-image"></div>
 		</f:else>
 	</f:if>
 	<f:if condition="{feed.text}">
