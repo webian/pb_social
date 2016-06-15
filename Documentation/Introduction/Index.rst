@@ -32,7 +32,8 @@ The Extension will do all the tricky authentication stuff and leave the relaxed 
 
 Sometimes you'll need to follow a link to generate access codes for our plugin. Be sure that we don't have access to any
 of your sensitive data. Everything is stored in your Typo3 database! The reason why you need to provide these access codes
-is that some social media platforms recently strated to use OAuth 2 authentication. Read more about OAuth here: http://oauth.net/articles/authentication/
+is that some social media platforms recently strated to use OAuth 2 authentication.
+Read more about OAuth here: http://oauth.net/articles/authentication/
 
 .. _good-to-know:
 
