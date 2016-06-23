@@ -96,7 +96,7 @@
   background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/facebook.png");
 }
 .tx-pb-social .pb-list-item-googleplus .placeholder-image {
-  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/Placeholder/yt.jpg");
+  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/Placeholder/gplus.jpg");
 }
 .tx-pb-social .pb-list-item-googleplus .icon {
   background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/google+.png");
@@ -122,8 +122,14 @@
 .tx-pb-social .pb-list-item-imgur .icon {
   background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/imgur.png");
 }
+.tx-pb-social .pb-list-item-youtube .placeholder-image {
+  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/Placeholder/yt.jpg");
+}
 .tx-pb-social .pb-list-item-youtube .icon {
   background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/youtube.png");
+}
+.tx-pb-social .pb-list-item-vimeo .placeholder-image {
+  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/Placeholder/vimeo.png");
 }
 .tx-pb-social .pb-list-item-vimeo .icon {
   background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/vimeo.png");
