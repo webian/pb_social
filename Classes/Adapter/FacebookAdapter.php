@@ -147,11 +147,9 @@ class FacebookAdapter extends SocialMediaAdapter {
             foreach ($result as $fb_feed) {
                 $rawFeeds[self::TYPE . '_' . $fb_feed->getCacheIdentifier() . '_raw'] = $fb_feed->getResult();
                 foreach ($fb_feed->getResult()->data as $rawFeed) {
-                    if ($options->onlyWithPicture && empty($rawFeed->picture)) {
+                    if ($options->onlyWithPicture && ( empty($rawFeed->picture) || empty($rawFeed->full_picture ))) {
                         continue;
                     }
-//                    error_log(json_encode($rawFeed));
-                    
                     $feed = new Feed(self::TYPE , $rawFeed);
                     $feed->setId($rawFeed->id);
                     $feed->setText($this->trim_text($rawFeed->message, $options->textTrimLength, true));
@@ -194,7 +192,7 @@ class FacebookAdapter extends SocialMediaAdapter {
             'GET',
             '/' . $searchId . '/'.$request,
             array(
-                'fields' => 'id,link,likes.limit(70),message,picture,comments.limit(70),created_time',
+                'fields' => 'id,link,message,picture,comments.limit(999),created_time,full_picture,reactions.limit(9999)',
                 'limit' => $limit
                 // 'include_hidden' => false,
                 // 'is_published' => true
@@ -206,7 +204,36 @@ class FacebookAdapter extends SocialMediaAdapter {
             $this->logger->warning(self::TYPE . ' - no posts found for ' . $searchId);
         }
 
-        return $resp->getBody();
+        // count reaction types
+        $raw_body = json_decode($resp->getBody());
+        for($c = 0; $c < count($raw_body->data); $c++){
+            $reactions = $raw_body->data[$c]->reactions->data;
+            $_reactions = array("NONE"=>0,"LIKE"=>0,"LOVE"=>0,"WOW"=>0,"HAHA"=>0,"SAD"=>0,"ANGRY"=>0,"THANKFUL"=>0);
+            foreach ($reactions as $reaction) {
+                if(in_array($reaction->type, $_reactions)) $_reactions[$reaction->type]++;
+            }
+            $raw_body->data[$c]->reactions_detail = $_reactions;
+        }
 
+        return json_encode($raw_body);
+
+    }
+
+    function getReactions($post_id){
+        /** @var \Facebook\FacebookResponse $resp */
+        $resp = $this->api->sendRequest(
+            'GET',
+            '/' . $post_id . '/reactions',
+            array(
+                'limit' => 999
+            ),
+            $this->access_token
+        );
+
+        if(empty(json_decode($resp->getBody())->data)){
+            error_log('Facebook-Adapter: failed to get reactions for post ' . $post_id);
+        }
+
+        return $resp->getBody();
     }
 }

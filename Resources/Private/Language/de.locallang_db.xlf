@@ -44,9 +44,9 @@
                 <source>Link to the facebook post instead of article</source>
                 <target state="translated">Verlinkung auf den facebook post, anstatt auf den Artikel</target>
             </trans-unit>
-            <trans-unit id="flexform.tab.facebook.showOnlyImages">
-                <source>Show only posts with images</source>
-                <target state="translated">Nur Posts anzeigen, die Bilder beinhalten</target>
+            <trans-unit id="flexform.tab.facebook.fullpicture">
+                <source>Load full sized picture</source>
+                <target state="translated">Bilder in voller Größe laden</target>
             </trans-unit>
 
             <trans-unit id="flexform.tab.google.caption">

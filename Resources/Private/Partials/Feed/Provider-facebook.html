@@ -2,7 +2,14 @@
 	<div class="pb-list-item pb-list-item-facebook pb-hidden" data-type="{feed.raw.type}" data-id="{feed.id}" data-url="{feed.link}">
 		<f:if condition="{feed.raw.picture}">
 			<f:then>
-                <div class="image" data-image-id="{feed.raw.picture}" style="background-image: url({feed.raw.picture})"></div>
+                <f:if condition="{fb_full_res}">
+                    <f:then>
+                        <div class="image full_resolution" data-image-id="{feed.raw.full_picture}" style="background-image: url({feed.raw.full_picture})"></div>
+                    </f:then>
+                    <f:else>
+                        <div class="image" data-image-id="{feed.raw.picture}" style="background-image: url({feed.raw.picture})"></div>
+                    </f:else>
+                </f:if>
 			</f:then>
 			<f:else>
                 <div class="image placeholder-image"></div>
@@ -12,13 +19,21 @@
 			<span class="text">{feed.text}</span>
 		</f:if>
 		<div class="icon"></div>
-		<a class="additional-info info-1" href="{feed.link}">
-			<f:count>{feed.raw.likes.data}</f:count>
-			<f:if condition="{feed.raw.likes.data -> f:count()} > 69"><f:then>+</f:then></f:if>
+        <div class="fb-like-detail-wrap"><div class="fb-like-details">
+            <span><i class="fb-like-detail__like"></i>{feed.raw.reactions_detail.LIKE}</span>
+            <span><i class="fb-like-detail__love"></i>{feed.raw.reactions_detail.LOVE}</span>
+            <span><i class="fb-like-detail__haha"></i>{feed.raw.reactions_detail.HAHA}</span>
+            <span><i class="fb-like-detail__wow" ></i>{feed.raw.reactions_detail.WOW}</span>
+            <span><i class="fb-like-detail__sad" ></i>{feed.raw.reactions_detail.SAD}</span>
+            <span><i class="fb-like-detail__angry"></i>{feed.raw.reactions_detail.ANGRY}</span>
+        </div></div>
+		<a class="additional-info info-1" href="{feed.link}" target="_blank">
+			<f:count>{feed.raw.reactions.data}</f:count>
+			<!--<f:if condition="{feed.raw.likes.data -> f:count()} > 69"><f:then>+</f:then></f:if>-->
 		</a>
-		<a class="additional-info info-2" href="{feed.link}">
+		<a class="additional-info info-2" href="{feed.link}" target="_blank">
 			<f:count>{feed.raw.comments.data}</f:count>
-			<f:if condition="{feed.raw.comments.data -> f:count()} > 69"><f:then>+</f:then></f:if>
+			<!--<f:if condition="{feed.raw.comments.data -> f:count()} > 69"><f:then>+</f:then></f:if>-->
 		</a>
 		<f:if condition="{0:feed.raw.type}=={0:'video'}">
 			<img class="video-overlay" src="/typo3conf/ext/pb_social/Resources/Public/Icons/play_icon.png"/>

@@ -151,6 +151,37 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             usort($feeds, array($this, 'cmp'));
         }
         $this->view->assign('feeds', $feeds);
+
+        // load facebook images with full resolution
+        if($this->settings['facebookFullPicture'])$this->view->assign('fb_full_res', 1);
+
+    }
+
+    /** Returns Facebook recations (wow, love, sad..) for post with given id
+     *
+     * @param string $id
+     * @return array|void
+     */
+    public function facebookReactionAction($id){
+
+        $extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pb_social']); //TODO => search for a better way of accessing extconf
+
+        # check api key #
+        $config_apiId = $extConf['socialfeed.']['facebook.']['api.']['id'];
+        $config_apiSecret = $extConf['socialfeed.']['facebook.']['api.']['secret'];
+
+        $reactions = array();
+
+        if (empty($config_apiId) || empty($config_apiSecret)) {
+            $this->logger->warning( self::TYPE_FACEBOOK . ' credentials not set');
+        } else {
+            # retrieve data from adapter #
+            $adapter = new Adapter\FacebookAdapter($config_apiId, $config_apiSecret, $this->itemRepository);
+            $reactions = $adapter->getReactions($id);
+        }
+
+        $this->view->assign('reactions', $reactions);
+        return $reactions;
     }
 
     public function getFeeds($extConf, $settings, $itemRepository, $credentialRepository){

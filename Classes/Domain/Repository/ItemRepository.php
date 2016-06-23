@@ -60,10 +60,11 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
     /**
      * basic cURL example
      *
-     * @param $Url
+     * @param string $Url
+     * @param boolean $ignoreVerifySSL
      * @return mixed
      */
-    public function curl_download($Url, $ignoreVerifySSL){
+    public function curl_download($Url, $ignoreVerifySSL = false){
 
 
         // is cURL installed yet?

@@ -108,39 +108,134 @@
   }
 
 
-  .pb-list-item-facebook .icon {
-    background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/facebook.png");
+  .pb-list-item-facebook {
+    .placeholder-image{
+      background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/Placeholder/fb.jpg");
+    }
+    .icon {
+      background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/facebook.png");
+    }
   }
 
-  .pb-list-item-googleplus .icon {
-    background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/google+.png");
+  .pb-list-item-googleplus {
+    .placeholder-image{
+      background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/Placeholder/yt.jpg");
+    }
+    .icon {
+      background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/google+.png");
+    }
   }
 
-  .pb-list-item-instagram .icon {
+  .pb-list-item-instagram {    
+    .icon {
     background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/instagram.png");
+    }
   }
 
-  .pb-list-item-pinterest .icon {
+  .pb-list-item-pinterest {    
+    .icon {
     background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/pinterest.png");
+    }
   }
 
-  .pb-list-item-tumblr .icon {
+  .pb-list-item-tumblr {    
+    .placeholder-image{
+      background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/Placeholder/tumblr.jpg");
+    }
+    .icon {
     background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/tumblr.png");
+    }
   }
 
-  .pb-list-item-twitter .icon {
+  .pb-list-item-twitter {
+    .placeholder-image{
+      background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/Placeholder/twitter.jpg");
+    }
+    .icon {
     background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/twitter.png");
+    }
   }
 
-  .pb-list-item-imgur .icon {
+  .pb-list-item-imgur {    
+    .icon {
     background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/imgur.png");
+    }
   }
 
-  .pb-list-item-youtube .icon {
+  .pb-list-item-youtube {    
+    .icon {
     background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/youtube.png");
+    }
   }
-  .pb-list-item-vimeo .icon {
-    background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/vimeo.png");
-  }
-}
 
+  .pb-list-item-vimeo {
+    .icon {
+    background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/vimeo.png");
+    }
+  }
+
+  // facebook reactions
+  .pb-list-item-facebook{
+    .fb-like-detail-wrap{
+      position: relative;
+      top: 190px;
+      text-align: center;
+      width: 100%;
+    }
+    .fb-like-details{
+//      display: none;
+      opacity: 0;
+      position: relative;
+      width: 100%;
+//      border-radius: 10px;
+      height: 60px;
+      background: rgba(0,0,0,0.75);
+      color: white;
+      text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+      //      padding-right: 10px;
+      -webkit-transition: all 0.2s ease;
+      -moz-transition: all 0.2s ease;
+      -o-transition: all 0.2s ease;
+      transition: all 0.2s ease;
+      &.active{
+//        display: inline-block;
+        opacity: 1;
+      }
+      span{
+        position: relative;
+        top: 10px;
+        margin: 0 4px 0 5px;
+      }
+      i{
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        margin-right: 3px;
+        background-size: 12px 12px;
+        background-size: cover;
+      }
+      .fb-like-detail{
+        &__like{
+          background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/facebook_reactions/like.png");
+        }
+        &__love{
+          background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/facebook_reactions/love.png");
+        }
+        &__haha{
+          background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/facebook_reactions/haha.png");
+        }
+        &__wow{
+          background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/facebook_reactions/wow.png");
+        }
+        &__sad{
+          background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/facebook_reactions/sad.png");
+        }
+        &__angry{
+          background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/facebook_reactions/angry.png");
+        }
+      }
+
+    }
+  }
+
+}

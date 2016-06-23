@@ -89,17 +89,17 @@
   top: 95px;
   bottom: auto;
 }
+.tx-pb-social .pb-list-item-facebook .placeholder-image {
+  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/Placeholder/fb.jpg");
+}
 .tx-pb-social .pb-list-item-facebook .icon {
   background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/facebook.png");
 }
-.tx-pb-social .pb-list-item-facebook .placeholder-image{
-  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/Placeholder/fb.jpg");
+.tx-pb-social .pb-list-item-googleplus .placeholder-image {
+  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/Placeholder/yt.jpg");
 }
 .tx-pb-social .pb-list-item-googleplus .icon {
   background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/google+.png");
-}
-.tx-pb-social .pb-list-item-googleplus .placeholder-image {
-  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/Placeholder/gplus.jpg")
 }
 .tx-pb-social .pb-list-item-instagram .icon {
   background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/instagram.png");
@@ -107,17 +107,17 @@
 .tx-pb-social .pb-list-item-pinterest .icon {
   background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/pinterest.png");
 }
+.tx-pb-social .pb-list-item-tumblr .placeholder-image {
+  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/Placeholder/tumblr.jpg");
+}
 .tx-pb-social .pb-list-item-tumblr .icon {
   background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/tumblr.png");
 }
-.tx-pb-social .pb-list-item-tumblr .placeholder-image {
-  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/Placeholder/tumblr.jpg")
+.tx-pb-social .pb-list-item-twitter .placeholder-image {
+  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/Placeholder/twitter.jpg");
 }
 .tx-pb-social .pb-list-item-twitter .icon {
   background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/twitter.png");
-}
-.tx-pb-social .pb-list-item-twitter .placeholder-image{
-  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/Placeholder/twitter.jpg");
 }
 .tx-pb-social .pb-list-item-imgur .icon {
   background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/imgur.png");
@@ -125,12 +125,59 @@
 .tx-pb-social .pb-list-item-youtube .icon {
   background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/youtube.png");
 }
-.tx-pb-social .pb-list-item-youtube .placeholder-image{
-    background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/Placeholder/yt.jpg");
-}
 .tx-pb-social .pb-list-item-vimeo .icon {
   background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/vimeo.png");
 }
-.tx-pb-social .pb-list-item-vimeo .placeholder-image{
-  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/Placeholder/vimeo.jpg");
+.tx-pb-social .pb-list-item-facebook .fb-like-detail-wrap {
+  position: relative;
+  top: 190px;
+  text-align: center;
+  width: 100%;
+}
+.tx-pb-social .pb-list-item-facebook .fb-like-details {
+  opacity: 0;
+  position: relative;
+  width: 100%;
+  height: 60px;
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+  text-shadow: -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000, 1px 1px 0 #000000;
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+}
+.tx-pb-social .pb-list-item-facebook .fb-like-details.active {
+  opacity: 1;
+}
+.tx-pb-social .pb-list-item-facebook .fb-like-details span {
+  position: relative;
+  top: 10px;
+  margin: 0 4px 0 5px;
+}
+.tx-pb-social .pb-list-item-facebook .fb-like-details i {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 3px;
+  background-size: 12px 12px;
+  background-size: cover;
+}
+.tx-pb-social .pb-list-item-facebook .fb-like-details .fb-like-detail__like {
+  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/facebook_reactions/like.png");
+}
+.tx-pb-social .pb-list-item-facebook .fb-like-details .fb-like-detail__love {
+  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/facebook_reactions/love.png");
+}
+.tx-pb-social .pb-list-item-facebook .fb-like-details .fb-like-detail__haha {
+  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/facebook_reactions/haha.png");
+}
+.tx-pb-social .pb-list-item-facebook .fb-like-details .fb-like-detail__wow {
+  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/facebook_reactions/wow.png");
+}
+.tx-pb-social .pb-list-item-facebook .fb-like-details .fb-like-detail__sad {
+  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/facebook_reactions/sad.png");
+}
+.tx-pb-social .pb-list-item-facebook .fb-like-details .fb-like-detail__angry {
+  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/facebook_reactions/angry.png");
 }

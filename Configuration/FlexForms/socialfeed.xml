@@ -63,16 +63,15 @@
                             </config>
                         </TCEforms>
                     </settings.facebookEnabled>
-                    <!--<settings.facebookShowOnlyImages>-->
-                        <!--<TCEforms>-->
-                            <!--<label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.facebook.showOnlyImages</label>-->
-                            <!--&lt;!&ndash;<onChange>reload</onChange>&ndash;&gt;-->
-                            <!--<config>-->
-                                <!--<type>check</type>-->
-                            <!--</config>-->
-                        <!--</TCEforms>-->
-                    <!--</settings.facebookShowOnlyImages>-->
-                    
+                    <settings.facebookFullPicture>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.facebook.fullpicture</label>
+                            <!--<onChange>reload</onChange>-->
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.facebookFullPicture>
                     <settings.facebookSearchIds>
                         <TCEforms>
                             <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.facebook.searchID</label>

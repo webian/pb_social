@@ -102,17 +102,18 @@ class TumblrAdapter extends SocialMediaAdapter {
                     }
                     $feed = new Feed(self::TYPE, $rawFeed);
                     $feed->setId($rawFeed->id);
-                    if ($rawFeed->caption) {
-                        $feed->setText($this->trim_text(strip_tags($rawFeed->caption), $options->textTrimLength, true));
-                    } else if ($rawFeed->body) {
-                        $feed->setText($this->trim_text(strip_tags($rawFeed->body), $options->textTrimLength, true));
-                    }
+                    $text = '';
+                    if ($rawFeed->caption) $text = $rawFeed->caption;
+                    else if ($rawFeed->body) $text = $rawFeed->body;
+                    else if ($rawFeed->description) $text = $rawFeed->description;
+                    else if ($rawFeed->text) $text = $rawFeed->text;
+                    else if ($rawFeed->summary) $text = $rawFeed->summary;
+                    $feed->setText($this->trim_text(strip_tags($text), $options->textTrimLength, true));
                     if ($rawFeed->photos[0]->original_size->url) {
                         $feed->setImage($rawFeed->photos[0]->original_size->url);
                     } else if ($rawFeed->thumbnail_url) {
                         $feed->setImage($rawFeed->thumbnail_url);
                     }
-
                     $feed->setLink($rawFeed->post_url);
                     $feed->setTimeStampTicks($rawFeed->timestamp);
                     $feedItems[] = $feed;
