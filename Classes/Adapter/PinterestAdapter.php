@@ -140,7 +140,7 @@ class PinterestAdapter extends SocialMediaAdapter {
             'fields' => 'id,link,counts,note,created_at,image[small],url'
         );
 
-        return $this->api->pins->fromBoard($boardname, $fields);
+        return json_encode($this->api->pins->fromBoard($boardname, $fields));
 
     }
 
