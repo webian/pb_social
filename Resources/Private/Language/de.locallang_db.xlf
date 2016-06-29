@@ -25,11 +25,11 @@
             </trans-unit>
             <trans-unit id="flexform.tab.general.asynchRequest">
                 <source>Display "load more posts" button. Loads post in the background and shows a specified number on click.</source>
-                <target state="translated">Zeige "weitere Posts laden" button. Posts werden im Hintergrund geladen und bei Klick auf den Button wird die hier definierte Anzahl angezeigt.</target>
+                <target state="translated">Zeige "weitere Posts laden"-Button. Posts werden im Hintergrund geladen, bei Klick auf den Button wird die hier definierte Anzahl angezeigt.</target>
             </trans-unit>
             <trans-unit id="flexform.tab.general.asynchLimit">
                 <source>Limit for request in background</source>
-                <target state="translated">Anzahl der Posts, die im Hintergrund geladen werden sollen</target>
+                <target state="translated">Anzahl der Posts (pro Anbieter) die im Hintergrund geladen werden sollen</target>
             </trans-unit>
             <trans-unit id="flexform.tab.general.asynchShow">
                 <source>Show how many posts on click?</source>
