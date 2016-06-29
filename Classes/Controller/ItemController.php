@@ -129,12 +129,16 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 
     /**
      * action showSocialFeedAction
+     * @param bool $ajax is true, when the request is coming from an ajax request
      * @return void
      */
-    public function showSocialFeedAction() {
+    public function showSocialFeedAction($ajax = false) {
 
         $extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pb_social']); //TODO => search for a better way of accessing extconf
         $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
+
+        // update feedRequestLimit if request is asynchronous
+        if($ajax) $this->settings['feedRequestLimit'] = $this->settings['asynchLimit'] > 0 ? $this->settings['asynchLimit'] : $this->settings['feedRequestLimit'];
 
         # Get feeds #
         $feeds = array();
@@ -155,6 +159,12 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
         // load facebook images with full resolution
         if($this->settings['facebookFullPicture'])$this->view->assign('fb_full_res', 1);
 
+        // request via ajax
+        if($this->settings['asynchRequest']){
+            $this->view->assign('asynch_request', 1);
+            $asynch_show = $this->settings['asynchShow'] > 0 ? $this->settings['asynchShow'] : $this->settings['feedRequestLimit'];
+            $this->view->assign('asynch_show', $asynch_show);
+        }
     }
 
     /** Returns Facebook recations (wow, love, sad..) for post with given id

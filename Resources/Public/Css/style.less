@@ -244,4 +244,28 @@
     }
   }
 
+  .button{
+    display: inline-block;
+    cursor: pointer;
+    text-transform: uppercase;
+    height: 30px;
+    width: 300px;
+    padding-top: 15px;
+    &.loading{
+      background-color: darkgray;
+      cursor: progress;
+    }
+    &.pb-disabled{
+      visibility: hidden;
+    }
+    &__wrap{
+      float: left;
+      width: 100%;
+      text-align: center;
+    }
+  }
+
+  .pb-hide-initial{
+    display: none;
+  }
 }

@@ -23,6 +23,22 @@
                 <source>Trim text after reaching this letter limit</source>
                 <target state="translated">Den Text nach einer bestimmten Anzahl von Zeichen abschneiden</target>
             </trans-unit>
+            <trans-unit id="flexform.tab.general.asynchRequest">
+                <source>Display "load more posts" button. Loads post in the background and shows a specified number on click.</source>
+                <target state="translated">Zeige "weitere Posts laden" button. Posts werden im Hintergrund geladen und bei Klick auf den Button wird die hier definierte Anzahl angezeigt.</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.general.asynchLimit">
+                <source>Limit for request in background</source>
+                <target state="translated">Anzahl der Posts, die im Hintergrund geladen werden sollen</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.general.asynchShow">
+                <source>Show how many posts on click?</source>
+                <target state="translated">Wie viele Posts per Klick anzeigen?</target>
+            </trans-unit>
+            <trans-unit id="general.asynchButtonText">
+                <source>load more posts</source>
+                <target state="translated">weitere Posts laden</target>
+            </trans-unit>
 
             <trans-unit id="flexform.tab.facebook.caption">
                 <source>Facebook</source>

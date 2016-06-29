@@ -187,3 +187,26 @@
 .tx-pb-social .pb-list-item-facebook .fb-like-details .fb-like-detail__angry {
   background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/facebook_reactions/angry.png");
 }
+.tx-pb-social .button {
+  display: inline-block;
+  cursor: pointer;
+  text-transform: uppercase;
+  height: 30px;
+  width: 300px;
+  padding-top: 15px;
+}
+.tx-pb-social .button.loading {
+  background-color: darkgray;
+  cursor: progress;
+}
+.tx-pb-social .button.pb-disabled {
+  visibility: hidden;
+}
+.tx-pb-social .button__wrap {
+  float: left;
+  width: 100%;
+  text-align: center;
+}
+.tx-pb-social .pb-hide-initial {
+  display: none;
+}
