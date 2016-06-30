@@ -138,10 +138,8 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
         $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
 
         // update feedRequestLimit if request is asynchronous
-        if($ajax){
-            $this->settings['feedRequestLimit'] = $this->settings['asynchLimit'] > 0 ? $this->settings['asynchLimit'] : $this->settings['feedRequestLimit'];
-            $this->settings['devMod'] = 1;
-        }
+        if($ajax)$this->settings['feedRequestLimit'] = $this->settings['asynchLimit'] > 0 ? $this->settings['asynchLimit'] : $this->settings['feedRequestLimit'];
+        if($this->settings['asynchRequest']) $extConf['socialfeed.']['devmod'] = 1;
 
         # Get feeds #
         $feeds = array();
