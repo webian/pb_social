@@ -54,9 +54,9 @@ class TwitterAdapter extends SocialMediaAdapter {
         // because of the amount of data twitter is sending, the database can only carry 20 tweets.
         // 20 Tweets = ~86000 Character
         $apiParameters = array();
-        if ($options->feedRequestLimit > 20) {
-            $options->feedRequestLimit = 20;
-        }
+//        if ($options->feedRequestLimit > 20) {
+//            $options->feedRequestLimit = 20;
+//        }
         if ($options->twitterLanguage) {
             $apiParameters['lang'] = $options->twitterLanguage;
         }
