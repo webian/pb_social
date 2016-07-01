@@ -36,8 +36,8 @@
                 <target state="translated">Wie viele Posts per Klick anzeigen?</target>
             </trans-unit>
             <trans-unit id="general.asynchButtonText">
-                <source>load more posts</source>
-                <target state="translated">weitere Posts laden</target>
+                <source>show more posts</source>
+                <target state="translated">weitere Posts anzeigen</target>
             </trans-unit>
 
             <trans-unit id="flexform.tab.facebook.caption">
