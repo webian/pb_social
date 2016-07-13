@@ -1,13 +1,8 @@
 <?php
 namespace PlusB\PbSocial\Domain\Repository;
 
-use PlusB\PbSocial\Domain\Model;
-use Tumblr\API\Client;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
-
 require_once \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/tumblr/vendor/autoload.php';
 require_once \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/google/src/Google/autoload.php';
-
 
 /***************************************************************
  *
@@ -37,13 +32,15 @@ require_once \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_soc
 /**
  * The repository for Items
  */
-class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
+class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+{
     /**
      * @param string $type
      * @param string $cacheIdentifier
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    function findByTypeAndCacheIdentifier($type, $cacheIdentifier) {
+    public function findByTypeAndCacheIdentifier($type, $cacheIdentifier)
+    {
         $query = $this->createQuery();
         $query->matching($query->logicalAnd($query->like('type', $type), $query->equals('cacheIdentifier', $cacheIdentifier)));
         return $query->execute();
@@ -52,7 +49,8 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
     /**
      * @param $feed
      */
-    function saveFeed($feed) {
+    public function saveFeed($feed)
+    {
         $this->add($feed);
         $this->persistenceManager->persistAll();
     }
@@ -61,14 +59,14 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
      * basic cURL example
      *
      * @param string $Url
-     * @param boolean $ignoreVerifySSL
+     * @param bool $ignoreVerifySSL
      * @return mixed
      */
-    public function curl_download($Url, $ignoreVerifySSL = false){
-
+    public function curl_download($Url, $ignoreVerifySSL = false)
+    {
 
         // is cURL installed yet?
-        if (!function_exists('curl_init')){
+        if (!function_exists('curl_init')) {
             die('Sorry cURL is not installed!');
         }
 
@@ -101,7 +99,7 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
         $output = curl_exec($ch);
 
         // Log errors
-        if(curl_error($ch)||curl_errno($ch)||false==$output){
+        if (curl_error($ch)||curl_errno($ch)||false==$output) {
             error_log('|||||cURL errors|||||');
             error_log('Error: ' . curl_error($ch));
             error_log('Error number: ' . curl_errno($ch));
@@ -110,7 +108,6 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
         // Close the cURL resource, and free system resources
         curl_close($ch);
-
 
         return $output;
     }

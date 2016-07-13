@@ -1,9 +1,6 @@
 <?php
 namespace PlusB\PbSocial\Domain\Repository;
 
-use PlusB\PbSocial\Domain\Model;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
-
 /***************************************************************
  *
  *  Copyright notice
@@ -32,14 +29,16 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 /**
  * The repository for Items
  */
-class CredentialRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
+class CredentialRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+{
 
     /**
      * @param string $type
      * @param string $appId
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    function findByTypeAndAppId($type, $appId) {
+    public function findByTypeAndAppId($type, $appId)
+    {
         $query = $this->createQuery();
         $query->matching($query->logicalAnd($query->like('type', $type), $query->equals('appId', $appId)));
         return $query->execute();
@@ -48,7 +47,8 @@ class CredentialRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
     /**
      * @param $credential
      */
-    function saveCredential($credential) {
+    public function saveCredential($credential)
+    {
         $this->add($credential);
         $this->persistenceManager->persistAll();
     }
@@ -56,9 +56,9 @@ class CredentialRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
     /**
      * @param $credential
      */
-    function deleteCredential($credential) {
+    public function deleteCredential($credential)
+    {
         $this->remove($credential);
         $this->persistenceManager->persistAll();
     }
-
 }

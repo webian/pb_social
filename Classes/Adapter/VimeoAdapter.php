@@ -1,11 +1,11 @@
 <?php
 
 namespace PlusB\PbSocial\Adapter;
+
 $extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/';
 require $extensionPath . 'vimeo/autoload.php';
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
-use TYPO3\CMS\Core\FormProtection\Exception;
 
 /***************************************************************
  *
@@ -32,7 +32,8 @@ use TYPO3\CMS\Core\FormProtection\Exception;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class VimeoAdapter extends SocialMediaAdapter {
+class VimeoAdapter extends SocialMediaAdapter
+{
 
     const TYPE = 'vimeo';
 
@@ -40,16 +41,15 @@ class VimeoAdapter extends SocialMediaAdapter {
 
     private $appKey;
 
-    public function __construct($clientIdentifier, $clientSecret, $accessToken,$itemRepository){
-
+    public function __construct($clientIdentifier, $clientSecret, $accessToken, $itemRepository)
+    {
         parent::__construct($itemRepository);
 
         $this->api = new \Vimeo\Vimeo($clientIdentifier, $clientSecret, $accessToken);
     }
 
-
-    public function getResultFromApi($options){
-
+    public function getResultFromApi($options)
+    {
         $result = array();
 
         $fields = array(
@@ -59,8 +59,6 @@ class VimeoAdapter extends SocialMediaAdapter {
         );
 
         $searchTerms = explode(',', $options->settings['vimeoChannel']);
-
-
 
         foreach ($searchTerms as $searchString) {
             $searchString = trim($searchString);
@@ -87,9 +85,7 @@ class VimeoAdapter extends SocialMediaAdapter {
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
-
             } catch (\Exception $e) {
-
                 error_log('catched ' . $e->getMessage());
                 $this->logger->warning('initial load for ' . self::TYPE . ' feeds failed. Please check the log file typo3temp/log/typo3.log for further information.');
             }
@@ -98,8 +94,8 @@ class VimeoAdapter extends SocialMediaAdapter {
         return $this->getFeedItemsFromApiRequest($result, $options);
     }
 
-    function getFeedItemsFromApiRequest($result, $options) {
-
+    public function getFeedItemsFromApiRequest($result, $options)
+    {
         $rawFeeds = array();
         $feedItems = array();
 
@@ -109,7 +105,6 @@ class VimeoAdapter extends SocialMediaAdapter {
 //                error_log(json_encode($vimeo_feed->getResult()));
 
                 foreach ($vimeo_feed->getResult()->body->data as $rawFeed) {
-                    
                     $feed = new Feed(self::TYPE, $rawFeed);
 //                    error_log(json_encode($rawFeed));
 
@@ -128,14 +123,14 @@ class VimeoAdapter extends SocialMediaAdapter {
         return array('rawFeeds' => $rawFeeds, 'feedItems' => $feedItems);
     }
 
-    function getPosts($searchString, $fields, $options){
+    public function getPosts($searchString, $fields, $options)
+    {
         if ($searchString == 'me') {
             $url = '/me/videos';
         } else {
-            $url = '/channels/'.$searchString.'/videos';
+            $url = '/channels/' . $searchString . '/videos';
         }
         $response = $this->api->request($url, array('per_page' => $options->feedRequestLimit), 'GET');
         return json_encode($response);
     }
-
 }

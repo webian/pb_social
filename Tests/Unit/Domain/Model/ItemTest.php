@@ -34,110 +34,121 @@ namespace PlusB\PbSocial\Tests\Unit\Domain\Model;
  *
  * @author Mikolaj Jedrzejewski <mj@plusb.de>
  */
-class ItemTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
-	/**
-	 * @var \PlusB\PbSocial\Domain\Model\Item
-	 */
-	protected $subject = NULL;
+class ItemTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
+{
+    /**
+     * @var \PlusB\PbSocial\Domain\Model\Item
+     */
+    protected $subject = null;
 
-	protected function setUp() {
-		$this->subject = new \PlusB\PbSocial\Domain\Model\Item();
-	}
+    protected function setUp()
+    {
+        $this->subject = new \PlusB\PbSocial\Domain\Model\Item();
+    }
 
-	protected function tearDown() {
-		unset($this->subject);
-	}
+    protected function tearDown()
+    {
+        unset($this->subject);
+    }
 
-	/**
-	 * @test
-	 */
-	public function getTypeReturnsInitialValueForString() {
-		$this->assertSame(
-			'',
-			$this->subject->getType()
-		);
-	}
+    /**
+     * @test
+     */
+    public function getTypeReturnsInitialValueForString()
+    {
+        $this->assertSame(
+            '',
+            $this->subject->getType()
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function setTypeForStringSetsType() {
-		$this->subject->setType('Conceived at T3CON10');
+    /**
+     * @test
+     */
+    public function setTypeForStringSetsType()
+    {
+        $this->subject->setType('Conceived at T3CON10');
 
-		$this->assertAttributeEquals(
-			'Conceived at T3CON10',
-			'type',
-			$this->subject
-		);
-	}
+        $this->assertAttributeEquals(
+            'Conceived at T3CON10',
+            'type',
+            $this->subject
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function getCacheIdentifierReturnsInitialValueForString() {
-		$this->assertSame(
-			'',
-			$this->subject->getCacheIdentifier()
-		);
-	}
+    /**
+     * @test
+     */
+    public function getCacheIdentifierReturnsInitialValueForString()
+    {
+        $this->assertSame(
+            '',
+            $this->subject->getCacheIdentifier()
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function setCacheIdentifierForStringSetsCacheIdentifier() {
-		$this->subject->setCacheIdentifier('Conceived at T3CON10');
+    /**
+     * @test
+     */
+    public function setCacheIdentifierForStringSetsCacheIdentifier()
+    {
+        $this->subject->setCacheIdentifier('Conceived at T3CON10');
 
-		$this->assertAttributeEquals(
-			'Conceived at T3CON10',
-			'cacheidentifier',
-			$this->subject
-		);
-	}
+        $this->assertAttributeEquals(
+            'Conceived at T3CON10',
+            'cacheidentifier',
+            $this->subject
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function getDateReturnsInitialValueForDateTime() {
-		$this->assertEquals(
-			NULL,
-			$this->subject->getDate()
-		);
-	}
+    /**
+     * @test
+     */
+    public function getDateReturnsInitialValueForDateTime()
+    {
+        $this->assertEquals(
+            null,
+            $this->subject->getDate()
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function setDateForDateTimeSetsDate() {
-		$dateTimeFixture = new \DateTime();
-		$this->subject->setDate($dateTimeFixture);
+    /**
+     * @test
+     */
+    public function setDateForDateTimeSetsDate()
+    {
+        $dateTimeFixture = new \DateTime();
+        $this->subject->setDate($dateTimeFixture);
 
-		$this->assertAttributeEquals(
-			$dateTimeFixture,
-			'date',
-			$this->subject
-		);
-	}
+        $this->assertAttributeEquals(
+            $dateTimeFixture,
+            'date',
+            $this->subject
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function getResultReturnsInitialValueForString() {
-		$this->assertSame(
-			'',
-			$this->subject->getResult()
-		);
-	}
+    /**
+     * @test
+     */
+    public function getResultReturnsInitialValueForString()
+    {
+        $this->assertSame(
+            '',
+            $this->subject->getResult()
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function setResultForStringSetsResult() {
-		$this->subject->setResult('Conceived at T3CON10');
+    /**
+     * @test
+     */
+    public function setResultForStringSetsResult()
+    {
+        $this->subject->setResult('Conceived at T3CON10');
 
-		$this->assertAttributeEquals(
-			'Conceived at T3CON10',
-			'result',
-			$this->subject
-		);
-	}
+        $this->assertAttributeEquals(
+            'Conceived at T3CON10',
+            'result',
+            $this->subject
+        );
+    }
 }

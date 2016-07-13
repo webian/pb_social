@@ -1,8 +1,7 @@
 <?php
 namespace PlusB\PbSocial\Controller;
+
 use PlusB\PbSocial\Adapter;
-
-
 /***************************************************************
  *
  *  Copyright notice
@@ -27,12 +26,12 @@ use PlusB\PbSocial\Adapter;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * ItemController
  */
-class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
+class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+{
 
     const TYPE_FACEBOOK = 'facebook';
     const TYPE_GOOGLE = 'googleplus';
@@ -51,7 +50,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
      * @var \PlusB\PbSocial\Domain\Repository\ItemRepository
      * @inject
      */
-    protected $itemRepository = NULL;
+    protected $itemRepository = null;
 
     /**
      * credentialRepository
@@ -59,7 +58,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
      * @var \PlusB\PbSocial\Domain\Repository\CredentialRepository
      * @inject
      */
-    protected $credentialRepository = NULL;
+    protected $credentialRepository = null;
 
     protected $logger;
 
@@ -68,7 +67,8 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
      *
      * @return void
      */
-    public function listAction() {
+    public function listAction()
+    {
         $items = $this->itemRepository->findAll();
         $this->view->assign('items', $items);
     }
@@ -79,7 +79,8 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
      * @param \PlusB\PbSocial\Domain\Model\Item $item
      * @return void
      */
-    public function showAction(\PlusB\PbSocial\Domain\Model\Item $item) {
+    public function showAction(\PlusB\PbSocial\Domain\Model\Item $item)
+    {
         $this->view->assign('item', $item);
     }
 
@@ -90,7 +91,8 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
      * @ignorevalidation $item
      * @return void
      */
-    public function editAction(\PlusB\PbSocial\Domain\Model\Item $item) {
+    public function editAction(\PlusB\PbSocial\Domain\Model\Item $item)
+    {
         $this->view->assign('item', $item);
     }
 
@@ -100,7 +102,8 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
      * @param \PlusB\PbSocial\Domain\Model\Item $item
      * @return void
      */
-    public function updateAction(\PlusB\PbSocial\Domain\Model\Item $item) {
+    public function updateAction(\PlusB\PbSocial\Domain\Model\Item $item)
+    {
         $this->addFlashMessage('The object was updated. Please be aware that this action is publicly accessible unless you implement an access check. See <a href=\'http://wiki.typo3.org/T3Doc/Extension_Builder/Using_the_Extension_Builder#1._Model_the_domain\' target=\'_blank\'>Wiki</a>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
         $this->itemRepository->update($item);
         $this->redirect('list');
@@ -112,7 +115,8 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
      * @param \PlusB\PbSocial\Domain\Model\Item $item
      * @return void
      */
-    public function deleteAction(\PlusB\PbSocial\Domain\Model\Item $item) {
+    public function deleteAction(\PlusB\PbSocial\Domain\Model\Item $item)
+    {
         $this->addFlashMessage('The object was deleted. Please be aware that this action is publicly accessible unless you implement an access check. See <a href=\'http://wiki.typo3.org/T3Doc/Extension_Builder/Using_the_Extension_Builder#1._Model_the_domain\' target=\'_blank\'>Wiki</a>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
         $this->itemRepository->remove($item);
         $this->redirect('list');
@@ -122,7 +126,8 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
      * action showSocialBarAction
      * @return void
      */
-    public function showSocialBarAction() {
+    public function showSocialBarAction()
+    {
         // function has nothing to do with database => only as template ref dummy
         // the magic is located only in the template and main.js :)
     }
@@ -132,14 +137,18 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
      * @param bool $ajax is true, when the request is coming from an ajax request
      * @return void
      */
-    public function showSocialFeedAction($ajax = false) {
-
+    public function showSocialFeedAction($ajax = false)
+    {
         $extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pb_social']); //TODO => search for a better way of accessing extconf
         $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
 
         // update feedRequestLimit if request is asynchronous
-        if($ajax)$this->settings['feedRequestLimit'] = $this->settings['asynchLimit'] > 0 ? $this->settings['asynchLimit'] : $this->settings['feedRequestLimit'];
-        if($this->settings['asynchRequest']) $extConf['socialfeed.']['devmod'] = 1;
+        if ($ajax) {
+            $this->settings['feedRequestLimit'] = $this->settings['asynchLimit'] > 0 ? $this->settings['asynchLimit'] : $this->settings['feedRequestLimit'];
+        }
+        if ($this->settings['asynchRequest']) {
+            $extConf['socialfeed.']['devmod'] = 1;
+        }
 
         # Get feeds #
         $feeds = array();
@@ -147,8 +156,12 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 
         # Provide feeds to frontend #
         foreach ($results as $result) {
-            foreach ($result['rawFeeds'] as $rfid => $rf) $this->view->assign($rfid, $rf);
-            foreach ($result['feedItems'] as $feed) $feeds[] = $feed;
+            foreach ($result['rawFeeds'] as $rfid => $rf) {
+                $this->view->assign($rfid, $rf);
+            }
+            foreach ($result['feedItems'] as $feed) {
+                $feeds[] = $feed;
+            }
         }
 
         # Sort array if not empty #
@@ -158,10 +171,12 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
         $this->view->assign('feeds', $feeds);
 
         // load facebook images with full resolution
-        if($this->settings['facebookFullPicture'])$this->view->assign('fb_full_res', 1);
+        if ($this->settings['facebookFullPicture']) {
+            $this->view->assign('fb_full_res', 1);
+        }
 
         // request via ajax
-        if($this->settings['asynchRequest']){
+        if ($this->settings['asynchRequest']) {
             $this->view->assign('asynch_request', 1);
             $asynch_show = $this->settings['asynchShow'] > 0 ? $this->settings['asynchShow'] : $this->settings['feedRequestLimit'];
             $this->view->assign('asynch_show', $asynch_show);
@@ -173,8 +188,8 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
      * @param string $id
      * @return array|void
      */
-    public function facebookReactionAction($id){
-
+    public function facebookReactionAction($id)
+    {
         $extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pb_social']); //TODO => search for a better way of accessing extconf
 
         # check api key #
@@ -184,7 +199,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
         $reactions = array();
 
         if (empty($config_apiId) || empty($config_apiSecret)) {
-            $this->logger->warning( self::TYPE_FACEBOOK . ' credentials not set');
+            $this->logger->warning(self::TYPE_FACEBOOK . ' credentials not set');
         } else {
             # retrieve data from adapter #
             $adapter = new Adapter\FacebookAdapter($config_apiId, $config_apiSecret, $this->itemRepository);
@@ -195,13 +210,13 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
         return $reactions;
     }
 
-    public function getFeeds($extConf, $settings, $itemRepository, $credentialRepository){
+    public function getFeeds($extConf, $settings, $itemRepository, $credentialRepository)
+    {
 
         // Build configuration from plugin settings
         $adapterOptions = $this->getAdapterOptions($settings);
         $adapterOptions->devMod = $extConf['socialfeed.']['devmod'] == '1' ? true : false;
 
-        
         $results = array();
 
         if ($settings['facebookEnabled'] === '1') {
@@ -210,15 +225,14 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             $config_apiSecret = $extConf['socialfeed.']['facebook.']['api.']['secret'];
 
             if (empty($config_apiId) || empty($config_apiSecret)) {
-                $this->logger->warning( self::TYPE_FACEBOOK . ' credentials not set');
-            } elseif(empty($adapterOptions->settings['facebookSearchIds'])){
-                $this->logger->warning( self::TYPE_FACEBOOK . ' no search term defined');
+                $this->logger->warning(self::TYPE_FACEBOOK . ' credentials not set');
+            } elseif (empty($adapterOptions->settings['facebookSearchIds'])) {
+                $this->logger->warning(self::TYPE_FACEBOOK . ' no search term defined');
             } else {
                 # retrieve data from adapter #
                 $adapter = new Adapter\FacebookAdapter($config_apiId, $config_apiSecret, $itemRepository);
                 $results[] = $adapter->getResultFromApi($adapterOptions);
             }
-
         }
 
         if ($settings['googleEnabled'] === '1') {
@@ -235,7 +249,6 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
                 $adapter = new Adapter\GooglePlusAdapter($config_appKey, $itemRepository);
                 $results[] = $adapter->getResultFromApi($adapterOptions);
             }
-
         }
 
         if ($settings['imgurEnabled'] === '1') {
@@ -248,14 +261,13 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 
             if (empty($config_apiId) || empty($config_apiSecret)) {
                 $this->logger->warning(self::TYPE_IMGUR . ' credentials not set');
-            } elseif  (empty($adapterOptions->imgSearchUsers) && empty($adapterOptions->imgSearchTags)) {
+            } elseif (empty($adapterOptions->imgSearchUsers) && empty($adapterOptions->imgSearchTags)) {
                 $this->logger->warning(self::TYPE_IMGUR . ' no search term defined');
             } else {
                 # retrieve data from adapter #
                 $adapter = new Adapter\ImgurAdapter($config_apiId, $config_apiSecret, $itemRepository);
                 $results[] = $adapter->getResultFromApi($adapterOptions);
             }
-
         }
 
         if ($settings['instagramEnabled'] === '1') {
@@ -269,7 +281,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             $adapterOptions->instagramSearchIds = $settings['instagramSearchIds'];
             $adapterOptions->instagramPostFilter = $settings['instagramPostFilter'];
 
-            if (empty($config_clientId) || empty($config_clientSecret) || empty($config_clientCallback) ) {
+            if (empty($config_clientId) || empty($config_clientSecret) || empty($config_clientCallback)) {
                 $this->logger->warning(self::TYPE_INSTAGRAM . ' credentials not set');
             } elseif (empty($adapterOptions->instagramSearchIds) && empty($adapterOptions->instagramHashTags)) {
                 $this->logger->warning(self::TYPE_INSTAGRAM . ' no search term defined');
@@ -278,7 +290,6 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
                 $adapter = new Adapter\InstagramAdapter($config_clientId, $config_clientSecret, $config_clientCallback, $config_access_code, $itemRepository, $credentialRepository);
                 $results[] = $adapter->getResultFromApi($adapterOptions);
             }
-
         }
 
         if ($settings['pinterestEnabled'] === '1') {
@@ -290,8 +301,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             $adapterOptions->pinterest_username = $settings['username'];
             $adapterOptions->pinterest_boardname = $settings['boardname'];
 
-
-            if (empty($config_appId) || empty($config_appSecret) || empty($config_accessCode) ) {
+            if (empty($config_appId) || empty($config_appSecret) || empty($config_accessCode)) {
                 $this->logger->warning(self::TYPE_PINTEREST . ' credentials not set');
             } elseif (empty($adapterOptions->pinterest_username) || empty($adapterOptions->pinterest_boardname)) {
                 $this->logger->warning(self::TYPE_PINTEREST . ' no username or no boardname defined');
@@ -300,7 +310,6 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
                 $adapter = new Adapter\PinterestAdapter($config_appId, $config_appSecret, $config_accessCode, $itemRepository, $credentialRepository);
                 $results[] = $adapter->getResultFromApi($adapterOptions);
             }
-
         }
 
         if ($settings['tumblrEnabled'] === '1') {
@@ -324,7 +333,6 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
                 $adapter = new Adapter\TumblrAdapter($config_consumerKey, $config_consumerSecret, $config_Token, $config_TokenSecret, $itemRepository);
                 $results[] = $adapter->getResultFromApi($adapterOptions);
             }
-
         }
 
         if ($settings['twitterEnabled'] === '1') {
@@ -351,7 +359,6 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
                 $adapter = new Adapter\TwitterAdapter($config_consumerKey, $config_consumerSecret, $config_accessToken, $config_accessTokenSecret, $itemRepository);
                 $results[] = $adapter->getResultFromApi($adapterOptions);
             }
-
         }
 
         if ($settings['youtubeEnabled'] === '1') {
@@ -373,13 +380,12 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
                 $adapter = new Adapter\YoutubeAdapter($config_apiKey, $itemRepository);
                 $results[] = $adapter->getResultFromApi($adapterOptions);
             }
-
         }
 
         if ($settings['vimeoEnabled'] === '1') {
 
             # check api key #
-            
+
             $config_clientIdentifier = $extConf['socialfeed.']['vimeo.']['client.']['identifier'];
             $config_clientSecret = $extConf['socialfeed.']['vimeo.']['client.']['secret'];
             $config_token = $extConf['socialfeed.']['vimeo.']['token'];
@@ -396,7 +402,6 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
                 $adapter = new Adapter\VimeoAdapter($config_clientIdentifier, $config_clientSecret, $config_token, $itemRepository);
                 $results[] = $adapter->getResultFromApi($adapterOptions);
             }
-
         }
 
         if ($settings['dummyEnabled'] === '1') {
@@ -407,7 +412,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             // TODO => move search params to flexform for usability
             $adapterOptions->dummySearchValues = $settings['dummySearchValues'];
 
-            if(empty($config_dummyKey)){
+            if (empty($config_dummyKey)) {
                 $this->logger->warning(self::TYPE_DUMMY . ' credentials not set');
             } elseif (empty($adapterOptions->dummySearchValue)) {
                 $this->logger->warning(self::TYPE_DUMMY . ' no search term defined');
@@ -416,29 +421,31 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
                 $adapter = new Adapter\DummyAdapter($config_dummyKey, $itemRepository, $credentialRepository);
                 $results[] = $adapter->getResultFromApi($adapterOptions);
             }
-
         }
 
         return $results;
-
     }
 
-    public function cmp($a, $b) {
+    public function cmp($a, $b)
+    {
         if ($a == $b) {
             return 0;
         }
         return ($a->getTimeStampTicks() > $b->getTimeStampTicks()) ? -1 : 1;
     }
 
-    function check_end($str, $ends) {
+    public function check_end($str, $ends)
+    {
         foreach ($ends as $try) {
-            if (substr($str, -1 * strlen($try)) === $try) return $try;
+            if (substr($str, -1 * strlen($try)) === $try) {
+                return $try;
+            }
         }
         return false;
     }
 
-    public function getAdapterOptions($settings){
-
+    public function getAdapterOptions($settings)
+    {
         $options = (object) array();
 
         $options->twitterHideRetweets = empty($settings['twitterHideRetweets']) ? false : ($settings['twitterHideRetweets'] == '1' ? true : false);
@@ -448,7 +455,9 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
         $options->feedRequestLimit = intval(empty($settings['feedRequestLimit']) ? '10' : $settings['feedRequestLimit']);
 
         $refreshTimeInMin = intval(empty($settings['refreshTimeInMin']) ? '10' : $settings['refreshTimeInMin']);
-        if ($refreshTimeInMin == 0) $refreshTimeInMin = 10; //reset to 10 if intval() cant convert
+        if ($refreshTimeInMin == 0) {
+            $refreshTimeInMin = 10;
+        } //reset to 10 if intval() cant convert
         $options->refreshTimeInMin = $refreshTimeInMin;
 
         $options->settings = $settings;
@@ -457,9 +466,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
         $options->feedRequestLimit = intval(empty($settings['feedRequestLimit']) ? 10 : $settings['feedRequestLimit']);
 
         return $options;
-
     }
-
 }
 
 /**
@@ -470,7 +477,8 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
  * @param bool $strip_html if html tags are to be stripped
  * @return string
  */
-function trim_text($input, $length, $ellipses = true, $strip_html = true) {
+function trim_text($input, $length, $ellipses = true, $strip_html = true)
+{
     if (empty($input)) {
         return '';
     }

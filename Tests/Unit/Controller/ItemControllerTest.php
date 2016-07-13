@@ -1,5 +1,6 @@
 <?php
 namespace PlusB\PbSocial\Tests\Unit\Controller;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -29,88 +30,95 @@ namespace PlusB\PbSocial\Tests\Unit\Controller;
  *
  * @author Mikolaj Jedrzejewski <mj@plusb.de>
  */
-class ItemControllerTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
+class ItemControllerTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
+{
 
-	/**
-	 * @var \PlusB\PbSocial\Controller\ItemController
-	 */
-	protected $subject = NULL;
+    /**
+     * @var \PlusB\PbSocial\Controller\ItemController
+     */
+    protected $subject = null;
 
-	protected function setUp() {
-		$this->subject = $this->getMock('PlusB\\PbSocial\\Controller\\ItemController', array('redirect', 'forward', 'addFlashMessage'), array(), '', FALSE);
-	}
+    protected function setUp()
+    {
+        $this->subject = $this->getMock('PlusB\\PbSocial\\Controller\\ItemController', array('redirect', 'forward', 'addFlashMessage'), array(), '', false);
+    }
 
-	protected function tearDown() {
-		unset($this->subject);
-	}
+    protected function tearDown()
+    {
+        unset($this->subject);
+    }
 
-	/**
-	 * @test
-	 */
-	public function listActionFetchesAllItemsFromRepositoryAndAssignsThemToView() {
+    /**
+     * @test
+     */
+    public function listActionFetchesAllItemsFromRepositoryAndAssignsThemToView()
+    {
+        $allItems = $this->getMock('TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage', array(), array(), '', false);
 
-		$allItems = $this->getMock('TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage', array(), array(), '', FALSE);
+        $itemRepository = $this->getMock('PlusB\\PbSocial\\Domain\\Repository\\ItemRepository', array('findAll'), array(), '', false);
+        $itemRepository->expects($this->once())->method('findAll')->will($this->returnValue($allItems));
+        $this->inject($this->subject, 'itemRepository', $itemRepository);
 
-		$itemRepository = $this->getMock('PlusB\\PbSocial\\Domain\\Repository\\ItemRepository', array('findAll'), array(), '', FALSE);
-		$itemRepository->expects($this->once())->method('findAll')->will($this->returnValue($allItems));
-		$this->inject($this->subject, 'itemRepository', $itemRepository);
+        $view = $this->getMock('TYPO3\\CMS\\Extbase\\Mvc\\View\\ViewInterface');
+        $view->expects($this->once())->method('assign')->with('items', $allItems);
+        $this->inject($this->subject, 'view', $view);
 
-		$view = $this->getMock('TYPO3\\CMS\\Extbase\\Mvc\\View\\ViewInterface');
-		$view->expects($this->once())->method('assign')->with('items', $allItems);
-		$this->inject($this->subject, 'view', $view);
+        $this->subject->listAction();
+    }
 
-		$this->subject->listAction();
-	}
+    /**
+     * @test
+     */
+    public function showActionAssignsTheGivenItemToView()
+    {
+        $item = new \PlusB\PbSocial\Domain\Model\Item();
 
-	/**
-	 * @test
-	 */
-	public function showActionAssignsTheGivenItemToView() {
-		$item = new \PlusB\PbSocial\Domain\Model\Item();
+        $view = $this->getMock('TYPO3\\CMS\\Extbase\\Mvc\\View\\ViewInterface');
+        $this->inject($this->subject, 'view', $view);
+        $view->expects($this->once())->method('assign')->with('item', $item);
 
-		$view = $this->getMock('TYPO3\\CMS\\Extbase\\Mvc\\View\\ViewInterface');
-		$this->inject($this->subject, 'view', $view);
-		$view->expects($this->once())->method('assign')->with('item', $item);
+        $this->subject->showAction($item);
+    }
 
-		$this->subject->showAction($item);
-	}
+    /**
+     * @test
+     */
+    public function editActionAssignsTheGivenItemToView()
+    {
+        $item = new \PlusB\PbSocial\Domain\Model\Item();
 
-	/**
-	 * @test
-	 */
-	public function editActionAssignsTheGivenItemToView() {
-		$item = new \PlusB\PbSocial\Domain\Model\Item();
+        $view = $this->getMock('TYPO3\\CMS\\Extbase\\Mvc\\View\\ViewInterface');
+        $this->inject($this->subject, 'view', $view);
+        $view->expects($this->once())->method('assign')->with('item', $item);
 
-		$view = $this->getMock('TYPO3\\CMS\\Extbase\\Mvc\\View\\ViewInterface');
-		$this->inject($this->subject, 'view', $view);
-		$view->expects($this->once())->method('assign')->with('item', $item);
+        $this->subject->editAction($item);
+    }
 
-		$this->subject->editAction($item);
-	}
+    /**
+     * @test
+     */
+    public function updateActionUpdatesTheGivenItemInItemRepository()
+    {
+        $item = new \PlusB\PbSocial\Domain\Model\Item();
 
-	/**
-	 * @test
-	 */
-	public function updateActionUpdatesTheGivenItemInItemRepository() {
-		$item = new \PlusB\PbSocial\Domain\Model\Item();
+        $itemRepository = $this->getMock('PlusB\\PbSocial\\Domain\\Repository\\ItemRepository', array('update'), array(), '', false);
+        $itemRepository->expects($this->once())->method('update')->with($item);
+        $this->inject($this->subject, 'itemRepository', $itemRepository);
 
-		$itemRepository = $this->getMock('PlusB\\PbSocial\\Domain\\Repository\\ItemRepository', array('update'), array(), '', FALSE);
-		$itemRepository->expects($this->once())->method('update')->with($item);
-		$this->inject($this->subject, 'itemRepository', $itemRepository);
+        $this->subject->updateAction($item);
+    }
 
-		$this->subject->updateAction($item);
-	}
+    /**
+     * @test
+     */
+    public function deleteActionRemovesTheGivenItemFromItemRepository()
+    {
+        $item = new \PlusB\PbSocial\Domain\Model\Item();
 
-	/**
-	 * @test
-	 */
-	public function deleteActionRemovesTheGivenItemFromItemRepository() {
-		$item = new \PlusB\PbSocial\Domain\Model\Item();
+        $itemRepository = $this->getMock('PlusB\\PbSocial\\Domain\\Repository\\ItemRepository', array('remove'), array(), '', false);
+        $itemRepository->expects($this->once())->method('remove')->with($item);
+        $this->inject($this->subject, 'itemRepository', $itemRepository);
 
-		$itemRepository = $this->getMock('PlusB\\PbSocial\\Domain\\Repository\\ItemRepository', array('remove'), array(), '', FALSE);
-		$itemRepository->expects($this->once())->method('remove')->with($item);
-		$this->inject($this->subject, 'itemRepository', $itemRepository);
-
-		$this->subject->deleteAction($item);
-	}
+        $this->subject->deleteAction($item);
+    }
 }

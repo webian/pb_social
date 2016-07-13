@@ -1,13 +1,13 @@
 <?php
 
 namespace PlusB\PbSocial\Adapter;
+
 $extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/';
 require_once $extensionPath . 'pinterest/autoload.php';
 use DirkGroenen\Pinterest;
 use PlusB\PbSocial\Domain\Model\Credential;
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /***************************************************************
  *
@@ -34,7 +34,8 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class PinterestAdapter extends SocialMediaAdapter {
+class PinterestAdapter extends SocialMediaAdapter
+{
 
     const TYPE = 'pinterest';
 
@@ -44,8 +45,8 @@ class PinterestAdapter extends SocialMediaAdapter {
 
     private $appId;
 
-    public function __construct($appId, $appSecret, $accessCode, $itemRepository, $credentialRepository){
-
+    public function __construct($appId, $appSecret, $accessCode, $itemRepository, $credentialRepository)
+    {
         parent::__construct($itemRepository);
 
         $this->appId = $appId;
@@ -57,11 +58,10 @@ class PinterestAdapter extends SocialMediaAdapter {
         $code = $this->extractCode($accessCode);
 
         $this->getAccessToken($code);
-
     }
 
-    public function getResultFromApi($options){
-
+    public function getResultFromApi($options)
+    {
         $result = array();
 
         $boardname = $options->pinterest_username . '/' . $options->pinterest_boardname;
@@ -87,7 +87,6 @@ class PinterestAdapter extends SocialMediaAdapter {
             }
 
             try {
-
                 $feed = new Item(self::TYPE);
                 $feed->setCacheIdentifier($searchId);
                 $feed->setResult($this->getPosts($boardname));
@@ -95,19 +94,16 @@ class PinterestAdapter extends SocialMediaAdapter {
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
-
             } catch (\FacebookApiException $e) {
                 $this->logger->warning('initial load for ' . self::TYPE . ' feeds failed', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
             }
         }
 
         return $this->getFeedItemsFromApiRequest($result, $options);
-
     }
 
-    function getFeedItemsFromApiRequest($result, $options)
+    public function getFeedItemsFromApiRequest($result, $options)
     {
-
         $rawFeeds = array();
         $feedItems = array();
 
@@ -134,39 +130,40 @@ class PinterestAdapter extends SocialMediaAdapter {
         return array('rawFeeds' => $rawFeeds, 'feedItems' => $feedItems);
     }
 
-    function getPosts($boardname){
-
+    public function getPosts($boardname)
+    {
         $fields = array(
             'fields' => 'id,link,counts,note,created_at,image[small],url'
         );
 
         return json_encode($this->api->pins->fromBoard($boardname, $fields));
-
     }
 
-    private function getAccessToken($code){
-
+    private function getAccessToken($code)
+    {
         $apiKey = $this->appId;
 
         # get access token from database #
         $credentials = $this->credentialRepository->findByTypeAndAppId(self::TYPE, $apiKey);
 
-        if($credentials->count() > 1) {
+        if ($credentials->count() > 1) {
             foreach ($credentials as $c) {
-                if($c->getAccessToken != '') $credential = $c;
-                else $this->credentialRepository->remove($c);
+                if ($c->getAccessToken != '') {
+                    $credential = $c;
+                } else {
+                    $this->credentialRepository->remove($c);
+                }
             }
         } else {
             $credential = $credentials->getFirst();
         }
 
-        if(!isset($credential) || !$credential->isValid()) {
+        if (!isset($credential) || !$credential->isValid()) {
             # validate code to get access token #
             $token = $this->api->auth->getOAuthToken($code);
             $access_token = $token->access_token;
-            if($access_token){
-
-                if(isset($credential)){
+            if ($access_token) {
+                if (isset($credential)) {
                     $credential->setAccessToken($access_token);
                     $this->credentialRepository->update($credential);
                 } else {
@@ -175,11 +172,9 @@ class PinterestAdapter extends SocialMediaAdapter {
                     $credential->setAccessToken($access_token);
                     $this->credentialRepository->saveCredential($credential);
                 }
-
-            }
-            else {
+            } else {
                 error_log('-------- need new code ---------');
-                $this->logger->error( self::TYPE . ' access code expired. Please provide new code in pb_social extension configuration.', array('data' => self::TYPE . ' access code invalid. Provide new code in pb_social extension configuration.'));
+                $this->logger->error(self::TYPE . ' access code expired. Please provide new code in pb_social extension configuration.', array('data' => self::TYPE . ' access code invalid. Provide new code in pb_social extension configuration.'));
                 return null;
             }
         }
@@ -189,36 +184,34 @@ class PinterestAdapter extends SocialMediaAdapter {
         //testrequest
         try {
             $this->api->request->get('/me');
-        } catch (Pinterest\Exceptions\PinterestException $e){
+        } catch (Pinterest\Exceptions\PinterestException $e) {
             $this->credentialRepository->deleteCredential($credential);
             $this->logger->warning(self::TYPE . ' exception - ' . $e->getMessage());
             $this->logger->info('Please provide new ' . self::TYPE . ' access code');
         }
-
     }
 
     /** Converts url-encoded code
      * @param $accessCode
      * @return string
      */
-    function extractCode($accessCode){
-
+    public function extractCode($accessCode)
+    {
         $accessCode = urldecode($accessCode);
 
-        if(strpos($accessCode, '&state=')){
+        if (strpos($accessCode, '&state=')) {
             $accessCode = explode('&state=', $accessCode)[0];
         }
 
-        if(strpos($accessCode, 'code=') > -1){
+        if (strpos($accessCode, 'code=') > -1) {
             $parts = explode('code=', $accessCode);
             $code = strpos($parts[0], 'http') > -1 || $parts[0] == '' ? $parts[1] : $parts[0];
-        } elseif(strpos($accessCode, '=') == 0){
+        } elseif (strpos($accessCode, '=') == 0) {
             $code = ltrim($accessCode, '=');
         } else {
             $code = $accessCode;
         }
 
         return $code;
-
     }
 }

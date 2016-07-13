@@ -1,13 +1,12 @@
 <?php
 
 namespace PlusB\PbSocial\Adapter;
+
 $extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/';
 #require_once $extensionPath . 'dummy/autoload.php'; # Include provider library if necessary
-use DirkGroenen\Pinterest;
 use PlusB\PbSocial\Domain\Model\Credential;
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /***************************************************************
  *
@@ -34,7 +33,8 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class DummyAdapter extends SocialMediaAdapter {
+class DummyAdapter extends SocialMediaAdapter
+{
 
     /**
      *  The TYPE property is used to identify the feed's provider.
@@ -53,8 +53,8 @@ class DummyAdapter extends SocialMediaAdapter {
      */
     private $credentialRepository;
 
-    public function __construct($appId, $itemRepository, $credentialRepository){
-
+    public function __construct($appId, $itemRepository, $credentialRepository)
+    {
         parent::__construct($itemRepository);
 
         //TODO: Initialize your service or implement any other initializing logic here.
@@ -62,14 +62,13 @@ class DummyAdapter extends SocialMediaAdapter {
         // Optional test request
         try {
             // Simple request to test if the service is working
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             $this->logger->warning(self::TYPE . ' exception - ' . $e->getMessage());
         }
-
-
     }
 
-    public function getResultFromApi($options){
+    public function getResultFromApi($options)
+    {
 
         // Store Item objects in this array and pass it to $this->getFeedItemsFromApiRequest()
         $result = array();
@@ -107,19 +106,16 @@ class DummyAdapter extends SocialMediaAdapter {
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
-
             } catch (\FacebookApiException $e) {
                 $this->logger->warning('initial load for ' . self::TYPE . ' feeds failed', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
             }
         }
 
         return $this->getFeedItemsFromApiRequest($result, $options);
-
     }
 
-    function getFeedItemsFromApiRequest($result, $options)
+    public function getFeedItemsFromApiRequest($result, $options)
     {
-
         $rawFeeds = array();
         $feedItems = array();
 
@@ -139,7 +135,6 @@ class DummyAdapter extends SocialMediaAdapter {
                     $feed->setLink($dummy_post->TODO_PROVIDER_JSON_LINK_NODE);
                     $feed->setTimeStampTicks($dummy_post->TODO_PROVIDER_JSON_MODIFY_DATE_NODE);
                     $feeds[] = $feed;
-
                 }
             }
         }
@@ -147,12 +142,11 @@ class DummyAdapter extends SocialMediaAdapter {
         return array('rawFeeds' => $rawFeeds, 'feedItems' => $feedItems);
     }
 
-    function getPosts($searchValue){
-
+    public function getPosts($searchValue)
+    {
         $posts = $this->api->TODO_METHOD_TO_GET_POST_FROM_SERVICE($searchValue);
 
         return $posts;
-
     }
 
     /** Dummy method to get OAuth access token
@@ -161,7 +155,8 @@ class DummyAdapter extends SocialMediaAdapter {
      * @return null|string
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      */
-    private function getAccessToken($code){
+    private function getAccessToken($code)
+    {
 
         // If your service does not provide a method to get the appId,
         // you may have to store the appId in a private variable while initializing this adapter.
@@ -170,22 +165,24 @@ class DummyAdapter extends SocialMediaAdapter {
         # get access token from database #
         $credentials = $this->credentialRepository->findByTypeAndAppId(self::TYPE, $apiKey);
 
-        if($credentials->count() > 1) {
+        if ($credentials->count() > 1) {
             foreach ($credentials as $c) {
-                if($c->getAccessToken != '') $credential = $c;
-                else $this->credentialRepository->remove($c);
+                if ($c->getAccessToken != '') {
+                    $credential = $c;
+                } else {
+                    $this->credentialRepository->remove($c);
+                }
             }
         } else {
             $credential = $credentials->getFirst();
         }
 
-        if(!isset($credential) || !$credential->isValid()) {
+        if (!isset($credential) || !$credential->isValid()) {
             # validate code to get access token #
             $token = $this->api->TODO_METHOD_TO_GET_OAUTH_ACCESS($code);
             $access_token = $token->access_token;
-            if($access_token){
-
-                if(isset($credential)){
+            if ($access_token) {
+                if (isset($credential)) {
                     $credential->setAccessToken($access_token);
                     $this->credentialRepository->update($credential);
                 } else {
@@ -194,16 +191,13 @@ class DummyAdapter extends SocialMediaAdapter {
                     $credential->setAccessToken($access_token);
                     $this->credentialRepository->saveCredential($credential);
                 }
-
-            }
-            else {
+            } else {
                 error_log('-------- need new code ---------');
-                $this->logger->error( self::TYPE . ' access code expired. Please provide new code in pb_social extension configuration.', array('data' => self::TYPE . ' access code invalid. Provide new code in pb_social extension configuration.'));
+                $this->logger->error(self::TYPE . ' access code expired. Please provide new code in pb_social extension configuration.', array('data' => self::TYPE . ' access code invalid. Provide new code in pb_social extension configuration.'));
                 return null;
             }
         }
 
         return $credential->getAccessToken();
     }
-
 }

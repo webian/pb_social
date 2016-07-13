@@ -1,8 +1,8 @@
 <?php
 namespace PlusB\PbSocial\Adapter;
 
-interface SocialMediaAdapterInterface{
+interface SocialMediaAdapterInterface
+{
 
     public function getResultFromApi($options);
-
 }

@@ -3,7 +3,8 @@ namespace PlusB\PbSocial\Command;
 
 use PlusB\PbSocial\Controller\ItemController;
 
-class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandController {
+class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandController
+{
 
     /**
      * @var \PlusB\PbSocial\Controller\ItemController
@@ -34,7 +35,8 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
      */
     protected $db;
 
-    private function getDB(){
+    private function getDB()
+    {
         return $GLOBALS['TYPO3_DB'];
     }
 
@@ -44,11 +46,11 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
      */
     protected $flexformService;
 
-
     /**
      *  Updates database with feeds
      */
-    public function updateFeedDataCommand(){
+    public function updateFeedDataCommand()
+    {
 
         # Get extension configuration #
         $extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pb_social']);
@@ -58,17 +60,14 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
         $xml_settings = $this->db->exec_SELECTgetRows('pi_flexform', 'tt_content', 'CType = "list" AND list_type = "pbsocial_socialfeed"');
 
         # Convert flexform settings into usable array structure #
-        if(!empty($xml_settings)){
+        if (!empty($xml_settings)) {
 
             # Update feeds #
             foreach ($xml_settings as $xml_string) {
                 $settings = $this->flexform2SettingsArray($xml_string);
                 $this->itemController->getFeeds($extConf, $settings, $this->itemRepository, $this->credentialRepository);
             }
-
-
         }
-
     }
 
     /** Converts some complex flexform xml structure into an easy to use array.
@@ -76,8 +75,8 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
      * @param $xml_string
      * @return array
      */
-    function flexform2SettingsArray($xml_string){
-
+    public function flexform2SettingsArray($xml_string)
+    {
         $xml_obj = simplexml_load_string($xml_string['pi_flexform']);
         $settings = array();
         $extract = 'settings.';
@@ -91,18 +90,13 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
             foreach ($sheet->children()->children() as $field) {
 
                 # if index is settings.xyzabcdef* #
-                if(strpos($field['index'], $extract) == 0){
-
+                if (strpos($field['index'], $extract) == 0) {
                     $index = str_replace($extract, '', $field['index']);
                     $settings[$index] = (string) $field->children();
-
                 }
-
             }
-
         }
 
         return $settings;
     }
-
 }

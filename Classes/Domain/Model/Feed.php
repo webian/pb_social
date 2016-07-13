@@ -1,7 +1,7 @@
 <?php
 namespace PlusB\PbSocial\Domain\Model;
 
-    /***************************************************************
+/***************************************************************
      *  Copyright notice
      *
      *  (c) 2016 Andre Wuttig <andr.wuttig@gmail.com>
@@ -28,9 +28,9 @@ namespace PlusB\PbSocial\Domain\Model;
 /**
  * Class Feed
  *
- * @package PlusB\PbSocial\Domain\Model
  */
-class Feed {
+class Feed
+{
 
     /**
      * @var string
@@ -53,7 +53,7 @@ class Feed {
     protected $Text;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $TimeStampTicks;
 
@@ -76,7 +76,8 @@ class Feed {
      * @param string $provider
      * @param string $rawFeed
      */
-    function __construct($provider, $rawFeed) {
+    public function __construct($provider, $rawFeed)
+    {
         $this->setProvider($provider);
         $this->setRaw($rawFeed);
     }
@@ -84,27 +85,30 @@ class Feed {
     /**
      * @param string $id
      */
-    public function setId($id) {
+    public function setId($id)
+    {
         $this->id = $id;
     }
 
     /**
      * @return string
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
     /**
      * @param string $Image
      */
-    public function setImage($Image) {
+    public function setImage($Image)
+    {
         if ($this->Provider == \PlusB\PbSocial\Controller\ItemController::TYPE_FACEBOOK) {
             if ($this->Raw->type == 'photo') {
-                if (strpos($Image, '//scontent') !== FALSE) {
+                if (strpos($Image, '//scontent') !== false) {
                     //$Image = preg_replace('/\/v\/\S*\/p[0-9]*x[0-9]*\//', '/', $Image);
                 }
-                if (strpos($Image, '//fbcdn') !== FALSE) {
+                if (strpos($Image, '//fbcdn') !== false) {
                     //$Image = str_replace("/v/","/",$Image);
                     //$Image = str_replace("/p130x130/","/p/",$Image);
                 }
@@ -119,91 +123,104 @@ class Feed {
     /**
      * @return string
      */
-    public function getImage() {
+    public function getImage()
+    {
         return $this->Image;
     }
 
     /**
      * @param string $Provider
      */
-    public function setProvider($Provider) {
+    public function setProvider($Provider)
+    {
         $this->Provider = $Provider;
     }
 
     /**
      * @return string
      */
-    public function getProvider() {
+    public function getProvider()
+    {
         return $this->Provider;
     }
 
     /**
      * @param string $Raw
      */
-    public function setRaw($Raw) {
+    public function setRaw($Raw)
+    {
         $this->Raw = $Raw;
     }
 
     /**
      * @return string
      */
-    public function getRaw() {
+    public function getRaw()
+    {
         return $this->Raw;
     }
 
     /**
      * @param string $Text
      */
-    public function setText($Text) {
+    public function setText($Text)
+    {
         $this->Text = $Text;
     }
 
     /**
      * @return string
      */
-    public function getText() {
+    public function getText()
+    {
         return $this->Text;
     }
 
     /**
      * @return \DateTime
      */
-    public function getCreationDate() {
+    public function getCreationDate()
+    {
         return $this->creationDate;
     }
 
     /**
      * @param \DateTime $creationDate
      */
-    public function setCreationDate($creationDate) {
+    public function setCreationDate($creationDate)
+    {
         $this->creationDate = $creationDate;
     }
 
     /**
      * @param int $TimeStampTicks
      */
-    public function setTimeStampTicks($TimeStampTicks) {
+    public function setTimeStampTicks($TimeStampTicks)
+    {
         $this->TimeStampTicks = $TimeStampTicks;
     }
 
     /**
      * @return int
      */
-    public function getTimeStampTicks() {
+    public function getTimeStampTicks()
+    {
         return $this->TimeStampTicks;
     }
 
     /**
      * @param string $Link
      */
-    public function setLink($Link) {
+    public function setLink($Link)
+    {
         $this->Link = $Link;
     }
 
     /**
      * @return string
      */
-    public function getLink() {
+    public function getLink()
+    {
         return $this->Link;
     }
 }

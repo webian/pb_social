@@ -10,7 +10,7 @@
  * writing. "version" and "dependencies" must not be touched!
  ***************************************************************/
 
-$EM_CONF[$_EXTKEY] = array (
+$EM_CONF[$_EXTKEY] = array(
   'title' => 'Social Media Streams',
   'description' => '',
   'category' => 'plugin',
@@ -21,23 +21,22 @@ $EM_CONF[$_EXTKEY] = array (
   'createDirs' => '',
   'clearCacheOnLoad' => 0,
   'version' => '1.1.0',
-  'constraints' => 
-  array (
-    'depends' => 
-    array (
+  'constraints' =>
+  array(
+    'depends' =>
+    array(
       'typo3' => '6.2.0-7.99.99',
       'php' => '5.4.0-7.0.99',
       'extbase' => '',
       'fluid' => '',
     ),
-    'conflicts' => 
-    array (
+    'conflicts' =>
+    array(
     ),
-    'suggests' => 
-    array (
+    'suggests' =>
+    array(
     ),
   ),
   'clearcacheonload' => false,
-  'author_company' => NULL,
+  'author_company' => null,
 );
-

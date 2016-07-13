@@ -23,12 +23,12 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-class pb_social_extmanager {
-
+class pb_social_extmanager
+{
 
     // Outputs the logo with link to our website in the extension manager window
-    function getLogoAndLink() {
-
+    public function getLogoAndLink()
+    {
         $str_prompt = null;
         $str_prompt = $str_prompt . '<div class="message-body"><a target="_blank" href="http://www.plusb.de"><img src="../../../../typo3conf/ext/pb_social/Resources/Public/Icons/plusblogobig.gif"></a></div>';
 

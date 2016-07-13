@@ -1,7 +1,6 @@
 <?php
 namespace PlusB\PbSocial\Domain\Model;
 
-
 /***************************************************************
  *
  *  Copyright notice
@@ -30,13 +29,15 @@ namespace PlusB\PbSocial\Domain\Model;
 /**
  * Credential
  */
-class Credential extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
+class Credential extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+{
 
     /**
      * @param string $type
      */
-    function __construct($type = '', $appId) {
-        if($this->getType() == '' && $type != '' && $type != null){
+    public function __construct($type = '', $appId)
+    {
+        if ($this->getType() == '' && $type != '' && $type != null) {
             $this->setType($type);
         }
 
@@ -47,131 +48,137 @@ class Credential extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
         $this->setValid(false);
     }
 
-	/**
-	 * type
-	 *
-	 * @var string
-	 */
-	protected $type;
+    /**
+     * type
+     *
+     * @var string
+     */
+    protected $type;
 
-	/**
-	 * appId
-	 *
-	 * @var string
-	 */
-	protected $appId;
+    /**
+     * appId
+     *
+     * @var string
+     */
+    protected $appId;
 
-	/**
-	 * date
-	 *
-	 * @var \DateTime
-	 */
-	protected $expirationDate;
+    /**
+     * date
+     *
+     * @var \DateTime
+     */
+    protected $expirationDate;
 
-	/**
-	 * result
-	 *
-	 * @var string
-	 */
-	protected $accessToken;
+    /**
+     * result
+     *
+     * @var string
+     */
+    protected $accessToken;
 
-	/**
-	 * isValid
-	 *
-	 * @var bool
-	 */
-	protected $valid;
+    /**
+     * isValid
+     *
+     * @var bool
+     */
+    protected $valid;
 
-	/**
-	 * Returns the type
-	 *
-	 * @return string $type
-	 */
-	public function getType() {
-		return $this->type;
-	}
+    /**
+     * Returns the type
+     *
+     * @return string $type
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
 
-	/**
-	 * Sets the type
-	 *
-	 * @param string $type
-	 * @return void
-	 */
-	public function setType($type) {
-		$this->type = $type;
-	}
+    /**
+     * Sets the type
+     *
+     * @param string $type
+     * @return void
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
 
-	/**
-	 * Returns the cacheIdentifier
-	 *
-	 * @return string $cacheIdentifier
-	 */
-	public function getAppId() {
-		return $this->appId;
-	}
+    /**
+     * Returns the cacheIdentifier
+     *
+     * @return string $cacheIdentifier
+     */
+    public function getAppId()
+    {
+        return $this->appId;
+    }
 
-	/**
-	 * Sets the cacheIdentifier
-	 *
-	 * @param string $appId
-	 * @return void
-	 */
-	public function setAppId($appId) {
-		$this->appId = $appId;
-	}
+    /**
+     * Sets the cacheIdentifier
+     *
+     * @param string $appId
+     * @return void
+     */
+    public function setAppId($appId)
+    {
+        $this->appId = $appId;
+    }
 
-	/**
-	 * Returns the date
-	 *
-	 * @return \DateTime $date
-	 */
-	public function getExpirationDate() {
-		return $this->expirationDate;
-	}
+    /**
+     * Returns the date
+     *
+     * @return \DateTime $date
+     */
+    public function getExpirationDate()
+    {
+        return $this->expirationDate;
+    }
 
-	/**
-	 * Sets the date
-	 *
-	 * @param \DateTime $expirationDate
-	 * @return void
-	 */
-	public function setExpirationDate(\DateTime $expirationDate) {
-		$this->expirationDate = $expirationDate;
-	}
+    /**
+     * Sets the date
+     *
+     * @param \DateTime $expirationDate
+     * @return void
+     */
+    public function setExpirationDate(\DateTime $expirationDate)
+    {
+        $this->expirationDate = $expirationDate;
+    }
 
-	/**
-	 * Returns the result
-	 *
-	 * @return string $result
-	 */
-	public function getAccessToken() {
+    /**
+     * Returns the result
+     *
+     * @return string $result
+     */
+    public function getAccessToken()
+    {
         return $this->accessToken;
-	}
+    }
 
-	/**
-	 * Sets the result
-	 *
-	 * @param string $accessToken
-	 * @return void
-	 */
-	public function setAccessToken($accessToken) {
-
+    /**
+     * Sets the result
+     *
+     * @param string $accessToken
+     * @return void
+     */
+    public function setAccessToken($accessToken)
+    {
         $accessToken = (string) $accessToken;
 
-        if($accessToken != ''){
+        if ($accessToken != '') {
             $this->setValid(true);
         }
 
-		$this->accessToken = $accessToken;
-	}
+        $this->accessToken = $accessToken;
+    }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isValid()
     {
-
-        if($this->getAccessToken() == ''){
+        if ($this->getAccessToken() == '') {
             return false;
         }
 
@@ -179,7 +186,7 @@ class Credential extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
     }
 
     /**
-     * @param boolean $valid
+     * @param bool $valid
      */
     public function setValid($valid)
     {

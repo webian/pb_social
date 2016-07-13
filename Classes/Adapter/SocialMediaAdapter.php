@@ -1,8 +1,6 @@
 <?php
 
 namespace PlusB\PbSocial\Adapter;
-use PlusB\PbSocial\Domain\Model\Feed;
-use PlusB\PbSocial\Domain\Model\Item;
 
 /***************************************************************
  *
@@ -29,22 +27,22 @@ use PlusB\PbSocial\Domain\Model\Item;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-abstract class SocialMediaAdapter {
+abstract class SocialMediaAdapter
+{
 
     public $logger;
     public $itemRepository;
 
-
-    public function __construct($itemRepository){
-
+    public function __construct($itemRepository)
+    {
         $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
 
         $this->itemRepository = $itemRepository;
     }
 
-    abstract function getResultFromApi($options);
+    abstract public function getResultFromApi($options);
 
-    abstract function getFeedItemsFromApiRequest($result, $options);
+    abstract public function getFeedItemsFromApiRequest($result, $options);
 
     /**
      * trims text to a space then adds ellipses if desired
@@ -54,7 +52,8 @@ abstract class SocialMediaAdapter {
      * @param bool $strip_html if html tags are to be stripped
      * @return string
      */
-    function trim_text($input, $length, $ellipses = true, $strip_html = true) {
+    public function trim_text($input, $length, $ellipses = true, $strip_html = true)
+    {
         if (empty($input)) {
             return '';
         }
@@ -81,18 +80,21 @@ abstract class SocialMediaAdapter {
         return $trimmed_text;
     }
 
-    function cmp($a, $b) {
+    public function cmp($a, $b)
+    {
         if ($a == $b) {
             return 0;
         }
         return ($a->getTimeStampTicks() > $b->getTimeStampTicks()) ? -1 : 1;
     }
 
-    function check_end($str, $ends) {
+    public function check_end($str, $ends)
+    {
         foreach ($ends as $try) {
-            if (substr($str, -1 * strlen($try)) === $try) return $try;
+            if (substr($str, -1 * strlen($try)) === $try) {
+                return $try;
+            }
         }
         return false;
     }
-
 }

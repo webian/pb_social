@@ -1,14 +1,12 @@
 <?php
 
 namespace PlusB\PbSocial\Adapter;
+
 $extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/';
 require $extensionPath . 'facebook/src/Facebook/autoload.php';
 use Facebook\Facebook;
-use Facebook\FacebookRequest;
-use Facebook\Helpers\FacebookRedirectLoginHelper;
-use PlusB\PbSocial\Domain\Model\Item;
 use PlusB\PbSocial\Domain\Model\Feed;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use PlusB\PbSocial\Domain\Model\Item;
 
 /***************************************************************
  *
@@ -35,7 +33,8 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class FacebookAdapter extends SocialMediaAdapter {
+class FacebookAdapter extends SocialMediaAdapter
+{
 
     const TYPE = 'facebook';
 
@@ -45,8 +44,8 @@ class FacebookAdapter extends SocialMediaAdapter {
 
     private $access_token;
 
-    public function __construct($apiId, $apiSecret, $itemRepository){
-
+    public function __construct($apiId, $apiSecret, $itemRepository)
+    {
         parent::__construct($itemRepository);
 
         $extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pb_social']);
@@ -59,10 +58,10 @@ class FacebookAdapter extends SocialMediaAdapter {
         ]);
 
         // Get access_token via grant_type=client_credentials
-        $url = self::api_url . '/oauth/access_token?client_id='. $apiId . '&client_secret=' . $apiSecret . '&grant_type=client_credentials';
+        $url = self::api_url . '/oauth/access_token?client_id=' . $apiId . '&client_secret=' . $apiSecret . '&grant_type=client_credentials';
 
         $this->access_token = $this->itemRepository->curl_download($url, $ignoreVerifySSL);
-        if($this->access_token){
+        if ($this->access_token) {
             $this->access_token =  ltrim($this->access_token, 'access_token=');
         }
 
@@ -87,11 +86,10 @@ class FacebookAdapter extends SocialMediaAdapter {
 //        }
 //
 //        $this->api->setDefaultAccessToken($this->access_token);
-
     }
 
-    public function getResultFromApi($options){
-
+    public function getResultFromApi($options)
+    {
         $result = array();
 
         $facebookSearchIds = $options->settings['facebookSearchIds'];
@@ -128,7 +126,6 @@ class FacebookAdapter extends SocialMediaAdapter {
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
-
             } catch (\FacebookApiException $e) {
                 $this->logger->warning('initial load for ' . $options->type . ' feeds failed', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
             }
@@ -136,8 +133,8 @@ class FacebookAdapter extends SocialMediaAdapter {
         return $this->getFeedItemsFromApiRequest($result, $options);
     }
 
-    function getFeedItemsFromApiRequest($result, $options){
-
+    public function getFeedItemsFromApiRequest($result, $options)
+    {
         $rawFeeds = array();
         $feedItems = array();
 
@@ -147,16 +144,18 @@ class FacebookAdapter extends SocialMediaAdapter {
             foreach ($result as $fb_feed) {
                 $rawFeeds[self::TYPE . '_' . $fb_feed->getCacheIdentifier() . '_raw'] = $fb_feed->getResult();
                 foreach ($fb_feed->getResult()->data as $rawFeed) {
-                    if ($options->onlyWithPicture && ( empty($rawFeed->picture) || empty($rawFeed->full_picture ))) {
+                    if ($options->onlyWithPicture && (empty($rawFeed->picture) || empty($rawFeed->full_picture))) {
                         continue;
                     }
-                    $feed = new Feed(self::TYPE , $rawFeed);
+                    $feed = new Feed(self::TYPE, $rawFeed);
                     $feed->setId($rawFeed->id);
                     $feed->setText($this->trim_text($rawFeed->message, $options->textTrimLength, true));
-                    if(property_exists($rawFeed, 'picture')) $feed->setImage(urldecode($rawFeed->picture));
+                    if (property_exists($rawFeed, 'picture')) {
+                        $feed->setImage(urldecode($rawFeed->picture));
+                    }
                     // ouput link to facebook post instead of article
                     if ($options->settings['facebookLinktopost']) {
-                        $feed->setLink('https://facebook.com/'.$rawFeed->id);
+                        $feed->setLink('https://facebook.com/' . $rawFeed->id);
                     } else {
                         $feed->setLink($rawFeed->link);
                     }
@@ -169,16 +168,15 @@ class FacebookAdapter extends SocialMediaAdapter {
         }
 
         return array('rawFeeds' => $rawFeeds, 'feedItems' => $feedItems);
-
     }
 
     /** Make API request via Facebook sdk function
      *
      * @param string $searchId
-     * @param integer $limit
+     * @param int $limit
      * @return string
      */
-    function getPosts($searchId, $limit, $edge)
+    public function getPosts($searchId, $limit, $edge)
     {
         // only posts or feed possible
         if ($edge == 'posts') {
@@ -190,7 +188,7 @@ class FacebookAdapter extends SocialMediaAdapter {
         /** @var \Facebook\FacebookResponse $resp */
         $resp = $this->api->sendRequest(
             'GET',
-            '/' . $searchId . '/'.$request,
+            '/' . $searchId . '/' . $request,
             array(
                 'fields' => 'id,link,message,picture,comments.limit(999),created_time,full_picture,reactions.limit(9999)',
                 'limit' => $limit
@@ -200,26 +198,28 @@ class FacebookAdapter extends SocialMediaAdapter {
             $this->access_token
         );
 
-        if(empty(json_decode($resp->getBody())->data)){
+        if (empty(json_decode($resp->getBody())->data)) {
             $this->logger->warning(self::TYPE . ' - no posts found for ' . $searchId);
         }
 
         // count reaction types
         $raw_body = json_decode($resp->getBody());
-        for($c = 0; $c < count($raw_body->data); $c++){
+        for ($c = 0; $c < count($raw_body->data); $c++) {
             $reactions = $raw_body->data[$c]->reactions->data;
-            $_reactions = array("NONE"=>0,"LIKE"=>0,"LOVE"=>0,"WOW"=>0,"HAHA"=>0,"SAD"=>0,"ANGRY"=>0,"THANKFUL"=>0);
+            $_reactions = array('NONE'=>0,'LIKE'=>0,'LOVE'=>0,'WOW'=>0,'HAHA'=>0,'SAD'=>0,'ANGRY'=>0,'THANKFUL'=>0);
             foreach ($reactions as $reaction) {
-                if(in_array($reaction->type, $_reactions)) $_reactions[$reaction->type]++;
+                if (in_array($reaction->type, $_reactions)) {
+                    $_reactions[$reaction->type]++;
+                }
             }
             $raw_body->data[$c]->reactions_detail = $_reactions;
         }
 
         return json_encode($raw_body);
-
     }
 
-    function getReactions($post_id){
+    public function getReactions($post_id)
+    {
         /** @var \Facebook\FacebookResponse $resp */
         $resp = $this->api->sendRequest(
             'GET',
@@ -230,7 +230,7 @@ class FacebookAdapter extends SocialMediaAdapter {
             $this->access_token
         );
 
-        if(empty(json_decode($resp->getBody())->data)){
+        if (empty(json_decode($resp->getBody())->data)) {
             error_log('Facebook-Adapter: failed to get reactions for post ' . $post_id);
         }
 

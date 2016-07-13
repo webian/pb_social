@@ -1,6 +1,7 @@
 <?php
 
 namespace PlusB\PbSocial\Adapter;
+
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
 
@@ -29,24 +30,24 @@ use PlusB\PbSocial\Domain\Model\Item;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class ImgurAdapter extends SocialMediaAdapter {
+class ImgurAdapter extends SocialMediaAdapter
+{
 
     const TYPE = 'imgur';
 
     private $api;
 
-    public function __construct($apiId, $apiSecret, $itemRepository){
-
+    public function __construct($apiId, $apiSecret, $itemRepository)
+    {
         parent::__construct($itemRepository);
 
         $this->api =  new \Imgur($apiId, $apiSecret);
 
         //TODO: Implement OAuth authentication (to get a user's images etc)
-
     }
 
-    public function getResultFromApi($options){
-
+    public function getResultFromApi($options)
+    {
         $result = array();
 
         // search for users
@@ -79,7 +80,6 @@ class ImgurAdapter extends SocialMediaAdapter {
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
-
             } catch (\Exception $e) {
                 $this->logger->warning('initial load for ' . self::TYPE . ' feeds failed', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
             }
@@ -115,18 +115,16 @@ class ImgurAdapter extends SocialMediaAdapter {
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
-
             } catch (\Exception $e) {
                 $this->logger->warning('initial load for ' . self::TYPE . ' feeds failed', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
             }
         }
 
         return $this->getFeedItemsFromApiRequest($result, $options);
-
     }
 
-    function getFeedItemsFromApiRequest($result, $options) {
-
+    public function getFeedItemsFromApiRequest($result, $options)
+    {
         $rawFeeds = array();
         $feedItems = array();
 
