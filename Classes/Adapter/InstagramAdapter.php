@@ -68,17 +68,62 @@ class InstagramAdapter extends SocialMediaAdapter
         if (!$filterByHastags) {
             foreach (explode(',', $options->instagramSearchIds) as $searchId) {
                 $searchId = trim($searchId);
+                if ($searchId != ""){
+                    $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchId);
+                    if ($feeds && $feeds->count() > 0) {
+                        $feed = $feeds->getFirst();
+                        if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
+                            try {
+                                $userPosts = $this->api->getUserMedia($searchId, $options->feedRequestLimit);
+                                if ($userPosts->meta->code >= 400) {
+                                    $this->logger->error('Instagram error: "' . json_encode($userPosts->meta));
+                                }
+                                $feed->setDate(new \DateTime('now'));
+                                $feed->setResult(json_encode($userPosts));
+                                $this->itemRepository->update($feed);
+                            } catch (\Exception $e) {
+                                $this->logger->error(self::TYPE . ' feeds cant be updated', array('data' => $e->getMessage()));
+                            }
+                        }
+                        $result[] = $feed;
+                        continue;
+                    }
+
+                    try {
+                        $userPosts = $this->api->getUserMedia($searchId, $options->feedRequestLimit);
+                        if ($userPosts->meta->code >= 400) {
+                            $this->logger->error('Instagram error: ' . json_encode($userPosts->meta));
+                        }
+                        $feed = new Item(self::TYPE);
+                        $feed->setCacheIdentifier($searchId);
+                        $feed->setResult(json_encode($userPosts));
+
+                        // save to DB and return current feed
+                        $this->itemRepository->saveFeed($feed);
+                        $result[] = $feed;
+                    } catch (\Exception $e) {
+                        $this->logger->error('initial load for ' . self::TYPE . ' feeds failed', array('data' => $e->getMessage()));
+                    }
+                }
+            }
+        }
+
+        foreach (explode(',', $options->instagramHashTags) as $searchId) {
+            $searchId = trim($searchId);
+            $searchId = ltrim($searchId, '#'); //strip hastags
+            if ($searchId != "") {
                 $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchId);
+
                 if ($feeds && $feeds->count() > 0) {
                     $feed = $feeds->getFirst();
                     if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
                         try {
-                            $userPosts = $this->api->getUserMedia($searchId, $options->feedRequestLimit);
-                            if ($userPosts->meta->code >= 400) {
-                                $this->logger->error('Instagram error: "' . json_encode($userPosts->meta));
+                            $tagPosts = $this->api->getTagMedia($searchId, $options->feedRequestLimit);
+                            if ($tagPosts->meta->code >= 400) {
+                                $this->logger->error('Instagram error: "' . json_encode($tagPosts->meta));
                             }
                             $feed->setDate(new \DateTime('now'));
-                            $feed->setResult(json_encode($userPosts));
+                            $feed->setResult(json_encode($tagPosts));
                             $this->itemRepository->update($feed);
                         } catch (\Exception $e) {
                             $this->logger->error(self::TYPE . ' feeds cant be updated', array('data' => $e->getMessage()));
@@ -89,60 +134,19 @@ class InstagramAdapter extends SocialMediaAdapter
                 }
 
                 try {
-                    $userPosts = $this->api->getUserMedia($searchId, $options->feedRequestLimit);
-                    if ($userPosts->meta->code >= 400) {
-                        $this->logger->error('Instagram error: ' . json_encode($userPosts->meta));
+                    $tagPosts = $this->api->getTagMedia($searchId, $options->feedRequestLimit);
+                    if ($tagPosts->meta->code >= 400) {
+                        $this->logger->error('Instagram error: "' . json_encode($tagPosts->meta));
                     }
                     $feed = new Item(self::TYPE);
                     $feed->setCacheIdentifier($searchId);
-                    $feed->setResult(json_encode($userPosts));
-
+                    $feed->setResult(json_encode($tagPosts));
                     // save to DB and return current feed
                     $this->itemRepository->saveFeed($feed);
                     $result[] = $feed;
                 } catch (\Exception $e) {
                     $this->logger->error('initial load for ' . self::TYPE . ' feeds failed', array('data' => $e->getMessage()));
                 }
-            }
-        }
-
-        foreach (explode(',', $options->instagramHashTags) as $searchId) {
-            $searchId = trim($searchId);
-            $searchId = ltrim($searchId, '#'); //strip hastags
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchId);
-
-            if ($feeds && $feeds->count() > 0) {
-                $feed = $feeds->getFirst();
-                if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
-                    try {
-                        $tagPosts = $this->api->getTagMedia($searchId, $options->feedRequestLimit);
-                        if ($tagPosts->meta->code >= 400) {
-                            $this->logger->error('Instagram error: "' . json_encode($tagPosts->meta));
-                        }
-                        $feed->setDate(new \DateTime('now'));
-                        $feed->setResult(json_encode($tagPosts));
-                        $this->itemRepository->update($feed);
-                    } catch (\Exception $e) {
-                        $this->logger->error(self::TYPE . ' feeds cant be updated', array('data' => $e->getMessage()));
-                    }
-                }
-                $result[] = $feed;
-                continue;
-            }
-
-            try {
-                $tagPosts = $this->api->getTagMedia($searchId, $options->feedRequestLimit);
-                if ($tagPosts->meta->code >= 400) {
-                    $this->logger->error('Instagram error: "' . json_encode($tagPosts->meta));
-                }
-                $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($searchId);
-                $feed->setResult(json_encode($tagPosts));
-                // save to DB and return current feed
-                $this->itemRepository->saveFeed($feed);
-                $result[] = $feed;
-            } catch (\Exception $e) {
-                $this->logger->error('initial load for ' . self::TYPE . ' feeds failed', array('data' => $e->getMessage()));
             }
         }
 

@@ -54,7 +54,7 @@ socialfeed{
     instagram.client.secret=
     # cat=socialfeed/3instagram/0030; type=string; label=redirect uri
     instagram.client.callback=
-    # cat=socialfeed/3instagram/0040; type=string; label=Instagram access code - Retrieve code with following URL (all characters after "code"): https://api.instagram.com/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code
+    # cat=socialfeed/3instagram/0040; type=string; label=Instagram access code - Retrieve code with following URL (all characters after "code"): https://api.instagram.com/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=public_content
     instagram.client.access_code=
 
     # cat=socialfeed/4twitter/0010; type=string; label=consumer key

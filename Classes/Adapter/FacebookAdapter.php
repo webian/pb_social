@@ -207,9 +207,11 @@ class FacebookAdapter extends SocialMediaAdapter
         for ($c = 0; $c < count($raw_body->data); $c++) {
             $reactions = $raw_body->data[$c]->reactions->data;
             $_reactions = array('NONE'=>0,'LIKE'=>0,'LOVE'=>0,'WOW'=>0,'HAHA'=>0,'SAD'=>0,'ANGRY'=>0,'THANKFUL'=>0);
-            foreach ($reactions as $reaction) {
-                if (in_array($reaction->type, $_reactions)) {
-                    $_reactions[$reaction->type]++;
+            if (is_array($reactions)){
+                foreach ($reactions as $reaction) {
+                    if (in_array($reaction->type, $_reactions)) {
+                        $_reactions[$reaction->type]++;
+                    }
                 }
             }
             $raw_body->data[$c]->reactions_detail = $_reactions;
