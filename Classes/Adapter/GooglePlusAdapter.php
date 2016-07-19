@@ -1,6 +1,7 @@
 <?php
 
 namespace PlusB\PbSocial\Adapter;
+
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
 
@@ -29,7 +30,8 @@ use PlusB\PbSocial\Domain\Model\Item;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class GooglePlusAdapter extends SocialMediaAdapter {
+class GooglePlusAdapter extends SocialMediaAdapter
+{
 
     const TYPE = 'googleplus';
 
@@ -39,8 +41,8 @@ class GooglePlusAdapter extends SocialMediaAdapter {
 
     private $api;
 
-    public function __construct($appKey, $itemRepository){
-
+    public function __construct($appKey, $itemRepository)
+    {
         parent::__construct($itemRepository);
 
         $this->appKey = $appKey;
@@ -52,13 +54,13 @@ class GooglePlusAdapter extends SocialMediaAdapter {
 //        $getResults = $this->api->activities->listActivities($searchId, 'public', array('maxResults' => $options->feedRequestLimit));
     }
 
-    public function getResultFromApi($options){
-
+    public function getResultFromApi($options)
+    {
         $result = array();
 
         $googlePlusSearchIds = $options->settings['googleSearchIds'];
 
-       foreach (explode(',', $googlePlusSearchIds) as $searchId) {
+        foreach (explode(',', $googlePlusSearchIds) as $searchId) {
             $searchId = trim($searchId);
             $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchId);
 
@@ -86,7 +88,6 @@ class GooglePlusAdapter extends SocialMediaAdapter {
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
-
             } catch (\Exception $e) {
                 $this->logger->error('initial load for ' . self::TYPE . ' feeds failed', array('data' => $e->getMessage()));
             }
@@ -95,8 +96,8 @@ class GooglePlusAdapter extends SocialMediaAdapter {
         return $this->getFeedItemsFromApiRequest($result, $options);
     }
 
-    function getFeedItemsFromApiRequest($result, $options) {
-
+    public function getFeedItemsFromApiRequest($result, $options)
+    {
         $rawFeeds = array();
         $feedItems = array();
 
@@ -136,13 +137,12 @@ class GooglePlusAdapter extends SocialMediaAdapter {
         return array('rawFeeds' => $rawFeeds, 'feedItems' => $feedItems);
     }
 
-    function getPosts($searchId, $limit){
-
-        $headers = array('Content-Type: application/json',);
+    public function getPosts($searchId, $limit)
+    {
+        $headers = array('Content-Type: application/json');
         $fields = array('key' => $this->appKey, 'format' => 'json', 'ip' => $_SERVER['REMOTE_ADDR']);
 
         $url = self::API_URL . $searchId . '/activities/public?maxResults=' . $limit . '&' . http_build_query($fields);
-
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -159,6 +159,5 @@ class GooglePlusAdapter extends SocialMediaAdapter {
         }
 
         return $curl_response;
-
     }
 }

@@ -1,7 +1,6 @@
 <?php
 namespace PlusB\PbSocial\Domain\Model;
 
-
 /***************************************************************
  *
  *  Copyright notice
@@ -30,121 +29,130 @@ namespace PlusB\PbSocial\Domain\Model;
 /**
  * Item
  */
-class Item extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
+class Item extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+{
 
     /**
      * @param string $type
      */
-    function __construct($type = '') {
-        if($this->getType() == '' && $type != '' && $type != null){
+    public function __construct($type = '')
+    {
+        if ($this->getType() == '' && $type != '' && $type != null) {
             $this->setType($type);
         }
 
         $this->setDate(new \DateTime('now'));
     }
 
-	/**
-	 * type
-	 *
-	 * @var string
-	 */
-	protected $type = '';
+    /**
+     * type
+     *
+     * @var string
+     */
+    protected $type = '';
 
-	/**
-	 * cacheIdentifier
-	 *
-	 * @var string
-	 */
-	protected $cacheIdentifier = '';
+    /**
+     * cacheIdentifier
+     *
+     * @var string
+     */
+    protected $cacheIdentifier = '';
 
-	/**
-	 * date
-	 *
-	 * @var \DateTime
-	 */
-	protected $date = NULL;
+    /**
+     * date
+     *
+     * @var \DateTime
+     */
+    protected $date = null;
 
-	/**
-	 * result
-	 *
-	 * @var string
-	 */
-	protected $result = '';
+    /**
+     * result
+     *
+     * @var string
+     */
+    protected $result = '';
 
-	/**
-	 * Returns the type
-	 *
-	 * @return string $type
-	 */
-	public function getType() {
-		return $this->type;
-	}
+    /**
+     * Returns the type
+     *
+     * @return string $type
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
 
-	/**
-	 * Sets the type
-	 *
-	 * @param string $type
-	 * @return void
-	 */
-	public function setType($type) {
-		$this->type = $type;
-	}
+    /**
+     * Sets the type
+     *
+     * @param string $type
+     * @return void
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
 
-	/**
-	 * Returns the cacheIdentifier
-	 *
-	 * @return string $cacheIdentifier
-	 */
-	public function getCacheIdentifier() {
-		return $this->cacheIdentifier;
-	}
+    /**
+     * Returns the cacheIdentifier
+     *
+     * @return string $cacheIdentifier
+     */
+    public function getCacheIdentifier()
+    {
+        return $this->cacheIdentifier;
+    }
 
-	/**
-	 * Sets the cacheIdentifier
-	 *
-	 * @param string $cacheIdentifier
-	 * @return void
-	 */
-	public function setCacheIdentifier($cacheIdentifier) {
-		$this->cacheIdentifier = $cacheIdentifier;
-	}
+    /**
+     * Sets the cacheIdentifier
+     *
+     * @param string $cacheIdentifier
+     * @return void
+     */
+    public function setCacheIdentifier($cacheIdentifier)
+    {
+        $this->cacheIdentifier = $cacheIdentifier;
+    }
 
-	/**
-	 * Returns the date
-	 *
-	 * @return \DateTime $date
-	 */
-	public function getDate() {
-		return $this->date;
-	}
+    /**
+     * Returns the date
+     *
+     * @return \DateTime $date
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
 
-	/**
-	 * Sets the date
-	 *
-	 * @param \DateTime $date
-	 * @return void
-	 */
-	public function setDate(\DateTime $date) {
-		$this->date = $date;
-	}
+    /**
+     * Sets the date
+     *
+     * @param \DateTime $date
+     * @return void
+     */
+    public function setDate(\DateTime $date)
+    {
+        $this->date = $date;
+    }
 
-	/**
-	 * Returns the result
-	 *
-	 * @return string $result
-	 */
-	public function getResult() {
+    /**
+     * Returns the result
+     *
+     * @return string $result
+     */
+    public function getResult()
+    {
         return json_decode($this->result);
-	}
+    }
 
-	/**
-	 * Sets the result
-	 *
-	 * @param string $result
-	 * @return void
-	 */
-	public function setResult($result) {
-		$this->result = $result;
-	}
-
+    /**
+     * Sets the result
+     *
+     * @param string $result
+     * @return void
+     */
+    public function setResult($result)
+    {
+        $this->result = $result;
+    }
 }

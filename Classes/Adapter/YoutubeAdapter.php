@@ -1,9 +1,9 @@
 <?php
 
 namespace PlusB\PbSocial\Adapter;
+
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
-use TYPO3\CMS\Core\FormProtection\Exception;
 
 /***************************************************************
  *
@@ -30,7 +30,8 @@ use TYPO3\CMS\Core\FormProtection\Exception;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class YoutubeAdapter extends SocialMediaAdapter {
+class YoutubeAdapter extends SocialMediaAdapter
+{
 
     const TYPE = 'youtube';
 
@@ -43,19 +44,17 @@ class YoutubeAdapter extends SocialMediaAdapter {
 
     private $appKey;
 
-    public function __construct($appKey, $itemRepository){
-
+    public function __construct($appKey, $itemRepository)
+    {
         parent::__construct($itemRepository);
 
         $this->appKey = $appKey;
 
         //todo: use google client
-
     }
 
-
-    public function getResultFromApi($options){
-
+    public function getResultFromApi($options)
+    {
         $result = array();
 
         $fields = array(
@@ -64,12 +63,20 @@ class YoutubeAdapter extends SocialMediaAdapter {
             'part' => 'snippet'
         );
 
-        if($options->youtubeType != '') $fields['type'] = $options->youtubeType;
-        if($options->youtubeLanguage != '') $fields['relevanceLanguage'] = $options->youtubeLanguage;
-        if($options->youtubeOrder != 'relevance') $fields['order'] = $options->youtubeOrder;
+        if ($options->youtubeType != '') {
+            $fields['type'] = $options->youtubeType;
+        }
+        if ($options->youtubeLanguage != '') {
+            $fields['relevanceLanguage'] = $options->youtubeLanguage;
+        }
+        if ($options->youtubeOrder != 'relevance') {
+            $fields['order'] = $options->youtubeOrder;
+        }
 
         $searchTerms = explode(',', $options->youtubeSearch);
-        if ($options->youtubePlaylist) $searchTerms = explode(',', $options->youtubePlaylist);
+        if ($options->youtubePlaylist) {
+            $searchTerms = explode(',', $options->youtubePlaylist);
+        }
 
         foreach ($searchTerms as $searchString) {
             $searchString = trim(urlencode($searchString));
@@ -96,7 +103,6 @@ class YoutubeAdapter extends SocialMediaAdapter {
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
-
             } catch (\Exception $e) {
                 error_log('catched ' . $e->getMessage());
                 $this->logger->warning('initial load for ' . self::TYPE . ' feeds failed. Please check the log file typo3temp/log/typo3.log for further information.');
@@ -106,8 +112,8 @@ class YoutubeAdapter extends SocialMediaAdapter {
         return $this->getFeedItemsFromApiRequest($result, $options);
     }
 
-    function getFeedItemsFromApiRequest($result, $options) {
-
+    public function getFeedItemsFromApiRequest($result, $options)
+    {
         $rawFeeds = array();
         $feedItems = array();
 
@@ -144,8 +150,8 @@ class YoutubeAdapter extends SocialMediaAdapter {
      * @return mixed
      * @throws \Exception
      */
-    function getPosts($searchString, $fields, $options){
-
+    public function getPosts($searchString, $fields, $options)
+    {
         $headers = array('Content-Type: application/json');
 
         // use different api call for playlist

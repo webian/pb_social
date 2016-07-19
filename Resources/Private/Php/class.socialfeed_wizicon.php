@@ -27,41 +27,44 @@
 /**
  * Class that adds the socialfeeds wizard icon.
  */
-class pbsocial_socialfeed_wizicon {
+class pbsocial_socialfeed_wizicon
+{
 
-	/** @var string */
-	protected $extKey = '';
-	/** @var string  */
-	protected $plugin = '';
-	/** @var string  */
-	protected $pluginSignature = '';
-	/** @var \TYPO3\CMS\Lang\LanguageService */
-	protected $LANG;
+    /** @var string */
+    protected $extKey = '';
+    /** @var string  */
+    protected $plugin = '';
+    /** @var string  */
+    protected $pluginSignature = '';
+    /** @var \TYPO3\CMS\Lang\LanguageService */
+    protected $LANG;
 
-	public function __construct() {
-		$this->extKey = 'pb_social';
-		$this->plugin = 'socialfeed';
-		$this->pluginSignature = strtolower('pbsocial_' . $this->plugin);
-		$this->LANG =& $GLOBALS['LANG'];
-	}
+    public function __construct()
+    {
+        $this->extKey = 'pb_social';
+        $this->plugin = 'socialfeed';
+        $this->pluginSignature = strtolower('pbsocial_' . $this->plugin);
+        $this->LANG =& $GLOBALS['LANG'];
+    }
 
-	/**
-	 * Processing the wizard items array
-	 *
-	 * @param array $wizardItems: The wizard items
-	 * @return array Modified array with wizard items
-	 */
-	public function proc($wizardItems) {
-		$wizardItems['plugins_tx_' . $this->extKey] = array(
-			'icon' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($this->extKey) . 'Resources/Public/Icons/pb_logo.gif',
+    /**
+     * Processing the wizard items array
+     *
+     * @param array $wizardItems: The wizard items
+     * @return array Modified array with wizard items
+     */
+    public function proc($wizardItems)
+    {
+        $wizardItems['plugins_tx_' . $this->extKey] = array(
+            'icon' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($this->extKey) . 'Resources/Public/Icons/pb_logo.gif',
             'title' => $GLOBALS['LANG']->sL('LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:socialfeed_wizard.title'),
             'description' => $GLOBALS['LANG']->sL('LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:socialfeed_wizard.description'),
-			'params' => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=' . $this->pluginSignature
-		);
-		return $wizardItems;
-	}
+            'params' => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=' . $this->pluginSignature
+        );
+        return $wizardItems;
+    }
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/pb_social/Resources/Private/Php/class.socialfeed_wizicon.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/pb_social/Resources/Private/Php/class.socialfeed_wizicon.php']);
+    include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/pb_social/Resources/Private/Php/class.socialfeed_wizicon.php']);
 }

@@ -1,11 +1,10 @@
 <?php
 
 namespace PlusB\PbSocial\Adapter;
+
 use PlusB\PbSocial\Domain\Model\Credential;
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
-use TYPO3\CMS\Core\FormProtection\Exception;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /***************************************************************
  *
@@ -32,7 +31,8 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class InstagramAdapter extends SocialMediaAdapter {
+class InstagramAdapter extends SocialMediaAdapter
+{
 
     const TYPE = 'instagram';
 
@@ -46,8 +46,8 @@ class InstagramAdapter extends SocialMediaAdapter {
      */
     protected $credentialRepository;
 
-    public function __construct($apiKey, $apiSecret, $apiCallback, $code, $itemRepository, $credentialRepository){
-
+    public function __construct($apiKey, $apiSecret, $apiCallback, $code, $itemRepository, $credentialRepository)
+    {
         parent::__construct($itemRepository);
 
         $this->api =  new \Instagram(array('apiKey' => $apiKey, 'apiSecret' => $apiSecret, 'apiCallback' => $apiCallback));
@@ -56,17 +56,16 @@ class InstagramAdapter extends SocialMediaAdapter {
 
         // get access token from database
         $this->getAccessToken($code);
-
     }
 
-    public function getResultFromApi($options){
-
+    public function getResultFromApi($options)
+    {
         $result = array();
 
         // If search ID is given and hashtag is given and filter is checked, only show posts with given hashtag
         $filterByHastags = $options->instagramPostFilter && $options->instagramSearchIds && $options->instagramHashTags;
 
-        if(!$filterByHastags){
+        if (!$filterByHastags) {
             foreach (explode(',', $options->instagramSearchIds) as $searchId) {
                 $searchId = trim($searchId);
                 $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchId);
@@ -75,7 +74,9 @@ class InstagramAdapter extends SocialMediaAdapter {
                     if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
                         try {
                             $userPosts = $this->api->getUserMedia($searchId, $options->feedRequestLimit);
-                            if($userPosts->meta->code >= 400) $this->logger->error('Instagram error: "' . json_encode($userPosts->meta));
+                            if ($userPosts->meta->code >= 400) {
+                                $this->logger->error('Instagram error: "' . json_encode($userPosts->meta));
+                            }
                             $feed->setDate(new \DateTime('now'));
                             $feed->setResult(json_encode($userPosts));
                             $this->itemRepository->update($feed);
@@ -89,7 +90,9 @@ class InstagramAdapter extends SocialMediaAdapter {
 
                 try {
                     $userPosts = $this->api->getUserMedia($searchId, $options->feedRequestLimit);
-                    if($userPosts->meta->code >= 400) $this->logger->error('Instagram error: ' . json_encode($userPosts->meta));
+                    if ($userPosts->meta->code >= 400) {
+                        $this->logger->error('Instagram error: ' . json_encode($userPosts->meta));
+                    }
                     $feed = new Item(self::TYPE);
                     $feed->setCacheIdentifier($searchId);
                     $feed->setResult(json_encode($userPosts));
@@ -97,7 +100,6 @@ class InstagramAdapter extends SocialMediaAdapter {
                     // save to DB and return current feed
                     $this->itemRepository->saveFeed($feed);
                     $result[] = $feed;
-
                 } catch (\Exception $e) {
                     $this->logger->error('initial load for ' . self::TYPE . ' feeds failed', array('data' => $e->getMessage()));
                 }
@@ -114,7 +116,9 @@ class InstagramAdapter extends SocialMediaAdapter {
                 if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
                     try {
                         $tagPosts = $this->api->getTagMedia($searchId, $options->feedRequestLimit);
-                        if($tagPosts->meta->code >= 400) $this->logger->error('Instagram error: "' . json_encode($tagPosts->meta));
+                        if ($tagPosts->meta->code >= 400) {
+                            $this->logger->error('Instagram error: "' . json_encode($tagPosts->meta));
+                        }
                         $feed->setDate(new \DateTime('now'));
                         $feed->setResult(json_encode($tagPosts));
                         $this->itemRepository->update($feed);
@@ -128,32 +132,32 @@ class InstagramAdapter extends SocialMediaAdapter {
 
             try {
                 $tagPosts = $this->api->getTagMedia($searchId, $options->feedRequestLimit);
-                if($tagPosts->meta->code >= 400) $this->logger->error('Instagram error: "' . json_encode($tagPosts->meta));
+                if ($tagPosts->meta->code >= 400) {
+                    $this->logger->error('Instagram error: "' . json_encode($tagPosts->meta));
+                }
                 $feed = new Item(self::TYPE);
                 $feed->setCacheIdentifier($searchId);
                 $feed->setResult(json_encode($tagPosts));
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
-
             } catch (\Exception $e) {
                 $this->logger->error('initial load for ' . self::TYPE . ' feeds failed', array('data' => $e->getMessage()));
             }
         }
 
         return $this->getFeedItemsFromApiRequest($result, $options);
-
     }
 
-    function getFeedItemsFromApiRequest($result, $options) {
-
+    public function getFeedItemsFromApiRequest($result, $options)
+    {
         $rawFeeds = array();
         $feedItems = array();
 
         if (!empty($result)) {
             foreach ($result as $ig_feed) {
                 $rawFeeds[self::TYPE . '_' . $ig_feed->getCacheIdentifier() . '_raw'] = $ig_feed->getResult();
-                if(is_array($ig_feed->getResult()->data)){
+                if (is_array($ig_feed->getResult()->data)) {
                     foreach ($ig_feed->getResult()->data as $rawFeed) {
                         if ($options->onlyWithPicture && empty($rawFeed->images->standard_resolution->url)) {
                             continue;
@@ -173,28 +177,30 @@ class InstagramAdapter extends SocialMediaAdapter {
         return array('rawFeeds' => $rawFeeds, 'feedItems' => $feedItems);
     }
 
-    private function getAccessToken($code){
-
+    private function getAccessToken($code)
+    {
         $apiKey = $this->api->getApiKey();
 
         # get access token from database #
         $credentials = $this->credentialRepository->findByTypeAndAppId(self::TYPE, $apiKey);
 
-        if($credentials->count() > 1) {
+        if ($credentials->count() > 1) {
             foreach ($credentials as $c) {
-                if($c->getAccessToken != '') $credential = $c;
-                else $this->credentialRepository->remove($c);
+                if ($c->getAccessToken != '') {
+                    $credential = $c;
+                } else {
+                    $this->credentialRepository->remove($c);
+                }
             }
         } else {
             $credential = $credentials->getFirst();
         }
 
-        if(!isset($credential) || !$credential->isValid()) {
+        if (!isset($credential) || !$credential->isValid()) {
             # validate code to get access token #
             $access_token = $this->api->getOAuthToken($code, true);
-            if($access_token){
-
-                if(isset($credential)){
+            if ($access_token) {
+                if (isset($credential)) {
                     $credential->setAccessToken($access_token);
                     $this->credentialRepository->update($credential);
                 } else {
@@ -203,11 +209,9 @@ class InstagramAdapter extends SocialMediaAdapter {
                     $credential->setAccessToken($access_token);
                     $this->credentialRepository->saveCredential($credential);
                 }
-
-            }
-            else {
+            } else {
                 error_log('-------- need new code ---------');
-                $this->logger->error( self::TYPE . ' access code expired. Please provide new code in pb_social extension configuration.', array('data' => self::TYPE . ' access code invalid. Provide new code in pb_social extension configuration.'));
+                $this->logger->error(self::TYPE . ' access code expired. Please provide new code in pb_social extension configuration.', array('data' => self::TYPE . ' access code invalid. Provide new code in pb_social extension configuration.'));
                 return null;
             }
         }
@@ -216,11 +220,10 @@ class InstagramAdapter extends SocialMediaAdapter {
 
         // test request
         $testRequest = $this->api->getUserMedia('self');
-        if($testRequest->meta->code == 400){
+        if ($testRequest->meta->code == 400) {
             error_log('Instagram access_token expired');
             $this->logger->error('Instagram access code expired. Please provide new code in pb_social extension configuration.', array('data' => 'Instagram access code invalid. Provide new code in pb_social extension configuration.'));
         }
-
 
         return $credential->getAccessToken();
     }

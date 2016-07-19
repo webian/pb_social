@@ -1,6 +1,7 @@
 <?php
 
 namespace PlusB\PbSocial\Adapter;
+
 $extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/';
 require $extensionPath . 'twitteroauth/autoload.php';
 use Abraham\TwitterOAuth\TwitterOAuth;
@@ -32,7 +33,8 @@ use PlusB\PbSocial\Domain\Model\Item;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class TwitterAdapter extends SocialMediaAdapter {
+class TwitterAdapter extends SocialMediaAdapter
+{
 
     const TYPE = 'twitter';
 
@@ -40,15 +42,15 @@ class TwitterAdapter extends SocialMediaAdapter {
 
     private $api_url = 'search/tweets';
 
-    public function __construct($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret, $itemRepository){
-
+    public function __construct($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret, $itemRepository)
+    {
         parent::__construct($itemRepository);
 
         $this->api =  new TwitterOAuth($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret);
     }
 
-    public function getResultFromApi($options){
-
+    public function getResultFromApi($options)
+    {
         $result = array();
 
         // because of the amount of data twitter is sending, the database can only carry 20 tweets.
@@ -94,7 +96,6 @@ class TwitterAdapter extends SocialMediaAdapter {
                     // save to DB and return current feed
                     $this->itemRepository->saveFeed($feed);
                     $result[] = $feed;
-
                 } catch (\Exception $e) {
                     $this->logger->error('initial load for ' . self::TYPE . ' feeds failed', array('data' => $e->getMessage()));
                 }
@@ -118,7 +119,6 @@ class TwitterAdapter extends SocialMediaAdapter {
                             $feed->setDate(new \DateTime('now'));
                             $feed->setResult($tweets);
                             $this->itemRepository->update($feed);
-
                         } catch (\Exception $e) {
                             $this->logger->error(self::TYPE . ' feeds can\'t be updated', array('data' => $e->getMessage()));
                         }
@@ -135,7 +135,6 @@ class TwitterAdapter extends SocialMediaAdapter {
                     // save to DB and return current feed
                     $this->itemRepository->saveFeed($feed);
                     $result[] = $feed;
-
                 } catch (\Exception $e) {
                     $this->logger->error('initial load for ' . self::TYPE . ' feeds failed', array('data' => $e->getMessage()));
                 }
@@ -145,8 +144,8 @@ class TwitterAdapter extends SocialMediaAdapter {
         return $this->getFeedItemsFromApiRequest($result, $options);
     }
 
-    function getFeedItemsFromApiRequest($result, $options) {
-
+    public function getFeedItemsFromApiRequest($result, $options)
+    {
         $rawFeeds = array();
         $feedItems = array();
 
@@ -172,7 +171,7 @@ class TwitterAdapter extends SocialMediaAdapter {
                     }
                     if ($rawFeed->entities->media[0]->url) {
                         $feed->setLink($rawFeed->entities->media[0]->url);
-                    } else if ($rawFeed->entities->urls[0]->expanded_url) {
+                    } elseif ($rawFeed->entities->urls[0]->expanded_url) {
                         $feed->setLink($rawFeed->entities->urls[0]->expanded_url);
                     } else {
                         $feed->setLink('https://twitter.com/' . $rawFeed->user->screen_name . '/status/' . $rawFeed->id_str);
@@ -187,19 +186,20 @@ class TwitterAdapter extends SocialMediaAdapter {
         return array('rawFeeds' => $rawFeeds, 'feedItems' => $feedItems);
     }
 
-    function getPosts($apiParameters, $options, $searchValue){
+    public function getPosts($apiParameters, $options, $searchValue)
+    {
         $requestParameters = $apiParameters;
         $include_entities = false;
 
-        if($options->twitterHideRetweets){
+        if ($options->twitterHideRetweets) {
             $searchValue = $searchValue . ' -filter:retweets';
             $include_entities = true;
         }
-        if($options->twitterShowOnlyImages){
+        if ($options->twitterShowOnlyImages) {
             $searchValue = $searchValue . ' filter:images';
             $include_entities = true;
         }
-        if($include_entities){
+        if ($include_entities) {
             $requestParameters['include_entities'] = 'true';
         }
 

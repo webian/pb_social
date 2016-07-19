@@ -11,4 +11,3 @@ return array(
     'pinterest'                     => $extensionPath . 'pinterest/autoload.php',
     //'tumblr_autoload'               => $extensionPath . 'tumblr/vendor/autoload.php',
 );
-?>
