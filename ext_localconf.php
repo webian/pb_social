@@ -7,12 +7,12 @@ if (!defined('TYPO3_MODE')) {
     'PlusB.' . $_EXTKEY,
     'Socialfeed',
     array(
-        'Item' => 'showSocialFeed,facebookReaction',
+        'Item' => 'showSocialFeed',
 
     ),
     // non-cacheable actions
     array(
-        'Item' => 'showSocialFeed,facebookReaction',
+        'Item' => 'facebookReaction',
 
     )
 );
