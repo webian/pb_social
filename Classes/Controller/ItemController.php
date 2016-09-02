@@ -231,7 +231,11 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
             } else {
                 # retrieve data from adapter #
                 $adapter = new Adapter\FacebookAdapter($config_apiId, $config_apiSecret, $itemRepository);
-                $results[] = $adapter->getResultFromApi($adapterOptions);
+                try {
+                    $results[] = $adapter->getResultFromApi($adapterOptions);
+                } catch (\Exception $e) {
+                    $this->logger->warning($e->getMessage());
+                }
             }
         }
 
@@ -247,7 +251,11 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
             } else {
                 # retrieve data from adapter #
                 $adapter = new Adapter\GooglePlusAdapter($config_appKey, $itemRepository);
-                $results[] = $adapter->getResultFromApi($adapterOptions);
+                try {
+                    $results[] = $adapter->getResultFromApi($adapterOptions);
+                } catch (\Exception $e) {
+                    $this->logger->warning($e->getMessage());
+                }
             }
         }
 
@@ -266,7 +274,11 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
             } else {
                 # retrieve data from adapter #
                 $adapter = new Adapter\ImgurAdapter($config_apiId, $config_apiSecret, $itemRepository);
-                $results[] = $adapter->getResultFromApi($adapterOptions);
+                try{
+                    $results[] = $adapter->getResultFromApi($adapterOptions);
+                } catch (\Exception $e) {
+                    $this->logger->warning($e->getMessage());
+                }
             }
         }
 
@@ -288,7 +300,11 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
             } else {
                 # retrieve data from adapter #
                 $adapter = new Adapter\InstagramAdapter($config_clientId, $config_clientSecret, $config_clientCallback, $config_access_code, $itemRepository, $credentialRepository);
-                $results[] = $adapter->getResultFromApi($adapterOptions);
+                try {
+                    $results[] = $adapter->getResultFromApi($adapterOptions);
+                } catch (\Exception $e) {
+                    $this->logger->warning($e->getMessage());
+                }
             }
         }
 
@@ -308,7 +324,11 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
             } else {
                 # retrieve data from adapter #
                 $adapter = new Adapter\PinterestAdapter($config_appId, $config_appSecret, $config_accessCode, $itemRepository, $credentialRepository);
-                $results[] = $adapter->getResultFromApi($adapterOptions);
+                try {
+                    $results[] = $adapter->getResultFromApi($adapterOptions);
+                } catch (\Exception $e) {
+                    $this->logger->warning($e->getMessage());
+                }
             }
         }
 
@@ -331,7 +351,11 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
             } else {
                 # retrieve data from adapter #
                 $adapter = new Adapter\TumblrAdapter($config_consumerKey, $config_consumerSecret, $config_Token, $config_TokenSecret, $itemRepository);
-                $results[] = $adapter->getResultFromApi($adapterOptions);
+                try {
+                    $results[] = $adapter->getResultFromApi($adapterOptions);
+                } catch (\Exception $e) {
+                    $this->logger->warning($e->getMessage());
+                }
             }
         }
 
@@ -357,7 +381,11 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
             } else {
                 # retrieve data from adapter #
                 $adapter = new Adapter\TwitterAdapter($config_consumerKey, $config_consumerSecret, $config_accessToken, $config_accessTokenSecret, $itemRepository);
-                $results[] = $adapter->getResultFromApi($adapterOptions);
+                try {
+                    $results[] = $adapter->getResultFromApi($adapterOptions);
+                } catch (\Exception $e) {
+                    $this->logger->warning($e->getMessage());
+                }
             }
         }
 
@@ -378,7 +406,11 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
             } else {
                 # retrieve data from adapter #
                 $adapter = new Adapter\YoutubeAdapter($config_apiKey, $itemRepository);
-                $results[] = $adapter->getResultFromApi($adapterOptions);
+                try {
+                    $results[] = $adapter->getResultFromApi($adapterOptions);
+                } catch (\Exception $e) {
+                    $this->logger->warning($e->getMessage());
+                }
             }
         }
 
@@ -400,7 +432,11 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
             } else {
                 # retrieve data from adapter #
                 $adapter = new Adapter\VimeoAdapter($config_clientIdentifier, $config_clientSecret, $config_token, $itemRepository);
-                $results[] = $adapter->getResultFromApi($adapterOptions);
+                try {
+                    $results[] = $adapter->getResultFromApi($adapterOptions);
+                } catch (\Exception $e) {
+                    $this->logger->warning($e->getMessage());
+                }
             }
         }
 
@@ -419,7 +455,11 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
             } else {
                 # retrieve data from adapter #
                 $adapter = new Adapter\DummyAdapter($config_dummyKey, $itemRepository, $credentialRepository);
-                $results[] = $adapter->getResultFromApi($adapterOptions);
+                try {
+                    $results[] = $adapter->getResultFromApi($adapterOptions);
+                } catch (\Exception $e) {
+                    $this->logger->warning($e->getMessage());
+                }
             }
         }
 
