@@ -56,6 +56,15 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     }
 
     /**
+     * @param $feed
+     */
+    public function updateFeed($feed)
+    {
+        $this->update($feed);
+        $this->persistenceManager->persistAll();
+    }
+
+    /**
      * basic cURL example
      *
      * @param string $Url

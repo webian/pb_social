@@ -105,7 +105,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
     public function updateAction(\PlusB\PbSocial\Domain\Model\Item $item)
     {
         $this->addFlashMessage('The object was updated. Please be aware that this action is publicly accessible unless you implement an access check. See <a href=\'http://wiki.typo3.org/T3Doc/Extension_Builder/Using_the_Extension_Builder#1._Model_the_domain\' target=\'_blank\'>Wiki</a>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-        $this->itemRepository->update($item);
+        $this->itemRepository->updateFeed($item);
         $this->redirect('list');
     }
 

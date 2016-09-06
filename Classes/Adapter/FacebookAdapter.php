@@ -78,7 +78,7 @@ class FacebookAdapter extends SocialMediaAdapter
 //            error_log('facebook access token expired');
 //            error_log(json_encode($accessTokenMetadata));
 //            /**
-//             * todo: we have to do something here if page access token was expired!
+//             * todo: we have to do something here if page access token has expired!
 //             *
 //             * the user should visit this page: https://developers.facebook.com/tools/explorer
 //             * and generator new long lived page access token
@@ -94,24 +94,26 @@ class FacebookAdapter extends SocialMediaAdapter
 
         $facebookSearchIds = $options->settings['facebookSearchIds'];
         if (empty($facebookSearchIds)) {
-            $this->logger->warning($options->type . ' - no search term defined');
+            $this->logger->warning(self::TYPE . ' - no search term defined');
             return null;
         }
 
         foreach (explode(',', $facebookSearchIds) as $searchId) {
             $searchId = trim($searchId);
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier($options->type, $searchId);
+            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchId);
 
             if ($feeds && $feeds->count() > 0) {
+                /** @var \PlusB\PbSocial\Domain\Model\Item $feed */
                 $feed = $feeds->getFirst();
 
                 if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
+
                     try {
                         $feed->setDate(new \DateTime('now'));
                         $feed->setResult($this->getPosts($searchId, $options->feedRequestLimit, $options->settings['facebookEdge']));
                         $this->itemRepository->update($feed);
                     } catch (\FacebookApiException $e) {
-                        $this->logger->warning($options->type . ' feeds can\'t be updated', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
+                        $this->logger->warning(self::TYPE . ' feeds can\'t be updated', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
                     }
                 }
                 $result[] = $feed;
@@ -119,7 +121,7 @@ class FacebookAdapter extends SocialMediaAdapter
             }
 
             try {
-                $feed = new Item($options->type);
+                $feed = new Item(self::TYPE);
                 $feed->setCacheIdentifier($searchId);
                 $feed->setResult($this->getPosts($searchId, $options->feedRequestLimit, $options->settings['facebookEdge']));
 
@@ -127,8 +129,11 @@ class FacebookAdapter extends SocialMediaAdapter
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
             } catch (\FacebookApiException $e) {
-                $this->logger->warning('initial load for ' . $options->type . ' feeds failed', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
+                $this->logger->warning('initial load for ' . self::TYPE . ' feeds failed', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
             }
+
+
+
         }
         return $this->getFeedItemsFromApiRequest($result, $options);
     }
@@ -198,7 +203,7 @@ class FacebookAdapter extends SocialMediaAdapter
             $this->access_token
         );
 
-        if (empty(json_decode($resp->getBody())->data)) {
+        if (empty(json_decode($resp->getBody())->data) || json_encode($resp->getBody()->data) == null) {
             $this->logger->warning(self::TYPE . ' - no posts found for ' . $searchId);
         }
 
@@ -233,7 +238,7 @@ class FacebookAdapter extends SocialMediaAdapter
         );
 
         if (empty(json_decode($resp->getBody())->data)) {
-            error_log('Facebook-Adapter: failed to get reactions for post ' . $post_id);
+            $this->logger->warning('Facebook-Adapter: failed to get reactions for post ' . $post_id);
         }
 
         return $resp->getBody();
