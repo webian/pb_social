@@ -60,7 +60,7 @@ class TumblrAdapter extends SocialMediaAdapter
                         $feed->setDate(new \DateTime('now'));
                         $posts = $this->getPosts($blogName, $options);
                         $feed->setResult($posts);
-                        $this->itemRepository->update($feed);
+                        $this->itemRepository->updateFeed($feed);
                     } catch (\Exception $e) {
                         $this->logger->error(self::TYPE . ' feeds cant be updated', array('data' => $e->getMessage()));
                     }

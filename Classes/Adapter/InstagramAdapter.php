@@ -80,7 +80,7 @@ class InstagramAdapter extends SocialMediaAdapter
                                 }
                                 $feed->setDate(new \DateTime('now'));
                                 $feed->setResult(json_encode($userPosts));
-                                $this->itemRepository->update($feed);
+                                $this->itemRepository->updateFeed($feed);
                             } catch (\Exception $e) {
                                 $this->logger->error(self::TYPE . ' feeds cant be updated', array('data' => $e->getMessage()));
                             }
@@ -124,7 +124,7 @@ class InstagramAdapter extends SocialMediaAdapter
                             }
                             $feed->setDate(new \DateTime('now'));
                             $feed->setResult(json_encode($tagPosts));
-                            $this->itemRepository->update($feed);
+                            $this->itemRepository->updateFeed($feed);
                         } catch (\Exception $e) {
                             $this->logger->error(self::TYPE . ' feeds cant be updated', array('data' => $e->getMessage()));
                         }

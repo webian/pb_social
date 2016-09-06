@@ -71,7 +71,7 @@ class GooglePlusAdapter extends SocialMediaAdapter
                         $posts = $this->getPosts($searchId, $options->feedRequestLimit);
                         $feed->setDate(new \DateTime('now'));
                         $feed->setResult($posts);
-                        $this->itemRepository->update($feed);
+                        $this->itemRepository->updateFeed($feed);
                     } catch (\Exception $e) {
                         $this->logger->error(self::TYPE . ' feeds cant be updated', array('data' => $e->getMessage()));
                     }

@@ -87,7 +87,7 @@ class YoutubeAdapter extends SocialMediaAdapter
                     try {
                         $feed->setDate(new \DateTime('now'));
                         $feed->setResult($this->getPosts($searchString, $fields, $options));
-                        $this->itemRepository->update($feed);
+                        $this->itemRepository->updateFeed($feed);
                         $result[] = $feed;
                     } catch (\Exception $e) {
                         $this->logger->error(self::TYPE . ' feeds cant be updated', array('data' => $e->getMessage()));

@@ -79,7 +79,7 @@ class TwitterAdapter extends SocialMediaAdapter
                         try {
                             $feed->setDate(new \DateTime('now'));
                             $feed->setResult($tweets);
-                            $this->itemRepository->update($feed);
+                            $this->itemRepository->updateFeed($feed);
                         } catch (\Exception $e) {
                             $this->logger->error(self::TYPE . ' feeds can\'t be updated', array('data' => $e->getMessage()));
                         }
@@ -118,7 +118,7 @@ class TwitterAdapter extends SocialMediaAdapter
                         try {
                             $feed->setDate(new \DateTime('now'));
                             $feed->setResult($tweets);
-                            $this->itemRepository->update($feed);
+                            $this->itemRepository->updateFeed($feed);
                         } catch (\Exception $e) {
                             $this->logger->error(self::TYPE . ' feeds can\'t be updated', array('data' => $e->getMessage()));
                         }

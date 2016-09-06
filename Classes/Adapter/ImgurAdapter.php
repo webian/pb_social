@@ -62,7 +62,7 @@ class ImgurAdapter extends SocialMediaAdapter
                         $posts = json_encode($this->api->account($searchId)->images());
                         $feed->setDate(new \DateTime('now'));
                         $feed->setResult($posts);
-                        $this->itemRepository->update($feed);
+                        $this->itemRepository->updateFeed($feed);
                     } catch (\Exception $e) {
                         $this->logger->warning(self::TYPE . ' feeds can\'t be updated', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
                     }
@@ -97,7 +97,7 @@ class ImgurAdapter extends SocialMediaAdapter
                         $posts = json_encode($this->api->gallery()->search($searchId));
                         $feed->setDate(new \DateTime('now'));
                         $feed->setResult($posts);
-                        $this->itemRepository->update($feed);
+                        $this->itemRepository->updateFeed($feed);
                     } catch (\Exception $e) {
                         $this->logger->warning(self::TYPE . ' feeds can\'t be updated', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
                     }

@@ -77,7 +77,7 @@ class PinterestAdapter extends SocialMediaAdapter
                     try {
                         $feed->setDate(new \DateTime('now'));
                         $feed->setResult($this->getPosts($boardname));
-                        $this->itemRepository->update($feed);
+                        $this->itemRepository->updateFeed($feed);
                     } catch (\FacebookApiException $e) {
                         $this->logger->warning(self::TYPE . ' feeds can\'t be updated', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
                     }

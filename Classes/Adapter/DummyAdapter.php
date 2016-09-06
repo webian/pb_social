@@ -87,7 +87,7 @@ class DummyAdapter extends SocialMediaAdapter
                         $posts = $this->getPosts($searchValue);
                         $feed->setDate(new \DateTime('now'));
                         $feed->setResult($posts);
-                        $this->itemRepository->update($feed);
+                        $this->itemRepository->updateFeed($feed);
                     } catch (\FacebookApiException $e) {
                         $this->logger->warning(self::TYPE . ' feeds can\'t be updated', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
                     }
