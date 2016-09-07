@@ -110,6 +110,7 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         // Log errors
         if (curl_error($ch)||curl_errno($ch)||false==$output) {
             error_log('|||||cURL errors|||||');
+            error_log('Info: ' . json_encode(curl_getinfo($ch)));
             error_log('Error: ' . curl_error($ch));
             error_log('Error number: ' . curl_errno($ch));
             error_log('|||end cURL errors|||');
