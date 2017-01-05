@@ -1,15 +1,30 @@
 {
   "name": "plusb/pb_social",
-  "description": "Social Media Streams",
   "version": "1.1.2",
   "type": "typo3-cms-extension",
+  "description": "Social Media Streams",
   "homepage": "http://www.plusb.de",
+  "license": [
+    "GPL-2.0+"
+  ],
+  "keywords": [
+    "TYPO3 CMS",
+    "Social Media Streams"
+  ],
   "require": {
-    "typo3/cms" : ">=6.2.0"
+    "typo3/cms": "^6.2.14 || ^7.6.0",
+    "php": ">=5.4.0"
   },
   "autoload": {
     "psr-4": {
       "PlusB\\PbSocial\\": "Classes"
-    }
+    },
+    "classmap": [
+      "Resources/Private/Libs"
+    ]
+  },
+  "replace": {
+    "pb_social": "self.version",
+    "typo3-ter/pb_social": "self.version"
   }
 }
