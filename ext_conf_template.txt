@@ -1,83 +1,99 @@
 ## Custom categories
-# customsubcategory=0general=General options
-# customsubcategory=1facebook=Facebook --- https://developers.facebook.com/apps
-# customsubcategory=2googleplus=Google+ --- https://code.google.com/apis/console/
-# customsubcategory=7imgur=Imgur --- https://api.imgur.com/
-# customsubcategory=3instagram=Instagram --- http://instagram.com/developer/clients/manage/
-# customsubcategory=4twitter=Twitter --- https://dev.twitter.com/apps/
-# customsubcategory=5tumblr=Tumblr --- http://www.tumblr.com/oauth/apps
-# customsubcategory=8youtube=Youtube --- https://code.google.com/apis/console/
-# customsubcategory=6website=Our Website
-# customsubcategory=9pinterest=Pinterest --- https://developers.pinterest.com/apps/
-# customsubcategory=10vimeo=Vimeo --- https://developer.vimeo.com/api
+# customcategory=general=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:general
+
+# customcategory=facebook=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:facebook
+# customsubcategory=facebook=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:facebook.intro
+
+# customcategory=twitter=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:twitter
+# customsubcategory=twitter=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:twitter.intro
+
+# customcategory=googleplus=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:googleplus
+# customsubcategory=googleplus=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:googleplus.intro
+
+# customcategory=youtube=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:youtube
+# customsubcategory=youtube=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:youtube.intro
+
+# customcategory=vimeo=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:vimeo
+# customsubcategory=vimeo=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:vimeo.intro
+
+# customcategory=pinterest=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:pinterest
+# customsubcategory=pinterest=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:pinterest.intro
+
+# customcategory=instagram=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:instagram
+# customsubcategory=instagram=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:instagram.intro
+
+# customcategory=imgur=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:imgur
+# customsubcategory=imgur=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:imgur.intro
+
+# customcategory=tumblr=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:tumblr
+# customsubcategory=tumblr=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:tumblr.intro
 
 socialfeed{
-    # cat=socialfeed/0general/0010; type=boolean; label=enable devmode : database cache will refresh every pageload. Additional log messages active
-    devmod=0
-
-    # cat=socialfeed/0general/0020; type=boolean; label=Ignore Verify SSL. Activating this checkbox might be a potential security risk
-    ignoreVerifySSL =
-
-    # cat=socialfeed/10vimeo/0010; type=string; label=client identifier
-    vimeo.client.identifier=
-    # cat=socialfeed/10vimeo/0020; type=string; label=client secret
-    vimeo.client.secret=
-    # cat=socialfeed/10vimeo/0030; type=string; label=access token
-    vimeo.token=
-
-    # cat=socialfeed/8youtube/0010; type=string; label=access token
-    youtube.apikey=
-
-    # cat=socialfeed/1facebook/0010; type=string; label=app id
-    facebook.api.id=
-    # cat=socialfeed/1facebook/0020; type=string; label=app secret
-    facebook.api.secret=
-
-    # cat=socialfeed/2googleplus/0010; type=string; label=app key
-    googleplus.app.key=
-
-    # cat=socialfeed/7imgur/0010; type=string; label=client id
-    imgur.client.id=
-    # cat=socialfeed/7imgur/0020; type=string; label=client secret
-    imgur.client.secret=
-
-    # cat=socialfeed/9pinterest/0010; type=string; label=app id
-    pinterest.app.id=
-    # cat=socialfeed/9pinterest/0020; type=string; label=app secret
-    pinterest.app.secret=
-    # cat=socialfeed/9pinterest/0030; type=string; label=auth code (all characters after "code") : https://api.pinterest.com/oauth/?response_type=code&redirect_uri=YOUR_REDIRECT_URI&client_id=YOUR_APP_ID&scope=read_public
-    pinterest.app.code=
-
-    # cat=socialfeed/3instagram/0010; type=string; label=client id
-    instagram.client.id=
-    # cat=socialfeed/3instagram/0020; type=string; label=client secret
-    instagram.client.secret=
-    # cat=socialfeed/3instagram/0030; type=string; label=redirect uri
-    instagram.client.callback=
-    # cat=socialfeed/3instagram/0040; type=string; label=Instagram access code - Retrieve code with following URL (all characters after "code"): https://api.instagram.com/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=public_content
-    instagram.client.access_code=
-
-    # cat=socialfeed/4twitter/0010; type=string; label=consumer key
-    twitter.consumer.key=
-    # cat=socialfeed/4twitter/0020; type=string; label=consumer secret
-    twitter.consumer.secret=
-    # cat=socialfeed/4twitter/0030; type=string; label=oauth access token
-    twitter.oauth.access.token=
-    # cat=socialfeed/4twitter/0040; type=string; label=oauth access token secret
-    twitter.oauth.access.token_secret=
-
-    # cat=socialfeed/5tumblr/0010; type=string; label=consumer key
-    tumblr.consumer.key=
-    # cat=socialfeed/5tumblr/0020; type=string; label=consumer secret
-    tumblr.consumer.secret=
-    # cat=socialfeed/5tumblr/0030; type=string; label=token
-    tumblr.token=
-    # cat=socialfeed/5tumblr/0040; type=string; label=token secret
-    tumblr.token_secret=
-
-    # cat=socialfeed/6website/0001; type=user[EXT:pb_social/lib/class.pb_social_extmanager.php:pb_social_extmanager->getLogoAndLink]; label=For further information about us please visit our website
+    # cat=general/0001; type=user[EXT:pb_social/lib/class.pb_social_extmanager.php:pb_social_extmanager->getLogoAndLink]; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:general.external_link
     external_link=0
 
+    # cat=general/0010; type=boolean; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:general.devmod
+    devmod=0
+
+    # cat=general/0020; type=boolean; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:general.ignoreVerifySSL
+    ignoreVerifySSL =
+
+    # cat=facebook/facebook/0010; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:facebook.api.id
+    facebook.api.id=
+    # cat=facebook/facebook/0020; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:facebook.api.secret
+    facebook.api.secret=
+
+    # cat=twitter/twitter/0010; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:twitter.consumer.key
+    twitter.consumer.key=
+    # cat=twitter/twitter/0020; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:twitter.consumer.secret
+    twitter.consumer.secret=
+    # cat=twitter/twitter/0030; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:twitter.oauth.access.token
+    twitter.oauth.access.token=
+    # cat=twitter/twitter/0040; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:twitter.oauth.access.token_secret
+    twitter.oauth.access.token_secret=
+
+    # cat=googleplus/googleplus/0010; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:googleplus.app.key
+    googleplus.app.key=
+
+    # cat=youtube/youtube/0010; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:youtube.apikey
+    youtube.apikey=
+
+    # cat=vimeo/vimeo/0010; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:vimeo.client.identifier
+    vimeo.client.identifier=
+    # cat=vimeo/vimeo/0020; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:vimeo.client.secret
+    vimeo.client.secret=
+    # cat=vimeo/vimeo/0030; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:vimeo.token
+    vimeo.token=
+
+    # cat=pinterest/pinterest/0010; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:pinterest.app.id
+    pinterest.app.id=
+    # cat=pinterest/pinterest/0020; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:pinterest.app.secret
+    pinterest.app.secret=
+    # cat=pinterest/pinterest/0030; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:pinterest.app.code
+    pinterest.app.code=
+
+    # cat=instagram/instagram/0010; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:instagram.client.id
+    instagram.client.id=
+    # cat=instagram/instagram/0020; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:instagram.client.secret
+    instagram.client.secret=
+    # cat=instagram/instagram/0030; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:instagram.client.callback
+    instagram.client.callback=
+    # cat=instagram/instagram/0040; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:instagram.client.access_code
+    instagram.client.access_code=
+
+    # cat=imgur/imgur/0010; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:imgur.client.id
+    imgur.client.id=
+    # cat=imgur/imgur/0020; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:imgur.client.secret
+    imgur.client.secret=
+
+    # cat=tumblr/tumblr/0010; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:tumblr.consumer.key
+    tumblr.consumer.key=
+    # cat=tumblr/tumblr/0020; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:tumblr.consumer.secret
+    tumblr.consumer.secret=
+    # cat=tumblr/tumblr/0030; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:tumblr.token
+    tumblr.token=
+    # cat=tumblr/tumblr/0040; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:tumblr.token_secret
+    tumblr.token_secret=
 }
 
 
