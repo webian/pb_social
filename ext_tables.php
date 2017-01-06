@@ -37,7 +37,7 @@ $extensionName = strtolower(\TYPO3\CMS\Core\Utility\GeneralUtility::underscoredT
 
 $pluginName_feed = strtolower('Socialfeed');
 $pluginSignature_feed = $extensionName . '_' . $pluginName_feed;
-$TCA['tt_content']['types']['list']['subtypes_excludelist'][$pluginSignature_feed] = 'layout,select_key,pages';
+$TCA['tt_content']['types']['list']['subtypes_excludelist'][$pluginSignature_feed] = 'layout,select_key,pages,recursive';
 $TCA['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature_feed] = 'pi_flexform';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($pluginSignature_feed, 'FILE:EXT:' . $_EXTKEY . '/Configuration/FlexForms/socialfeed.xml');
 
