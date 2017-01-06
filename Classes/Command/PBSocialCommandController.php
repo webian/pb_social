@@ -1,16 +1,32 @@
 <?php
 namespace PlusB\PbSocial\Command;
 
-use PlusB\PbSocial\Controller\ItemController;
+use PlusB\PbSocial\Adapter;
 
 class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandController
 {
+    const TYPE_FACEBOOK = 'facebook';
+    const TYPE_GOOGLE = 'googleplus';
+    const TYPE_IMGUR = 'imgur';
+    const TYPE_INSTAGRAM = 'instagram';
+    const TYPE_PINTEREST = 'pinterest';
+    const TYPE_TWITTER = 'twitter';
+    const TYPE_TUMBLR = 'tumblr';
+    const TYPE_YOUTUBE = 'youtube';
+    const TYPE_VIMEO = 'vimeo';
+    const TYPE_DUMMY = 'dummy';
 
     /**
      * @var \PlusB\PbSocial\Controller\ItemController
      * @inject
      */
     protected $itemController;
+
+    /**
+     * @var \TYPO3\CMS\Core\Cache\CacheManager
+     * @inject
+     */
+    protected $cacheManager = null;
 
     /**
      * @var \PlusB\PbSocial\Domain\Repository\ItemRepository
@@ -35,6 +51,8 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
      */
     protected $db;
 
+    protected $logger;
+
     private function getDB()
     {
         return $GLOBALS['TYPO3_DB'];
@@ -51,9 +69,16 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
      */
     public function updateFeedDataCommand()
     {
+        # Initialize logger
+        $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
 
         # Get extension configuration #
         $extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pb_social']);
+
+        # Get caching backend #
+        $cache = $this->cacheManager->getCache('pb_social_cache');
+
+        $itemRepository = $this->itemRepository;
 
         # Setup database connection and fetch all flexform settings #
         $this->db = $this->getDB();
@@ -65,7 +90,279 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
             # Update feeds #
             foreach ($xml_settings as $xml_string) {
                 $settings = $this->flexform2SettingsArray($xml_string);
-                $this->itemController->getFeeds($extConf, $settings, $this->itemRepository, $this->credentialRepository);
+                $adapterOptions = $this->itemController->getAdapterOptions($settings);
+
+                if ($settings['facebookEnabled'] === '1') {
+                    # check api key #
+                    $config_apiId = $extConf['socialfeed.']['facebook.']['api.']['id'];
+                    $config_apiSecret = $extConf['socialfeed.']['facebook.']['api.']['secret'];
+
+                    if (empty($config_apiId) || empty($config_apiSecret)) {
+                        $this->logger->warning(self::TYPE_FACEBOOK . ' credentials not set');
+                    } elseif (empty($adapterOptions->settings['facebookSearchIds'])) {
+                        $this->logger->warning(self::TYPE_FACEBOOK . ' no search term defined');
+                    } else {
+                        $cacheIdentifier = $this->itemController->calculateCacheIdentifier(array(
+                            "facebook_".$adapterOptions->settings['facebookSearchIds'], // cache depends on the searchids
+                        ));
+
+                        $adapter = new Adapter\FacebookAdapter($config_apiId, $config_apiSecret, $itemRepository);
+                        try {
+                            $content = $adapter->getResultFromApi($adapterOptions);
+
+                            $cache->set($cacheIdentifier, $content);
+
+                        } catch (\Exception $e) {
+                            $this->logger->warning($e->getMessage());
+                        }
+                    }
+                }
+
+                if ($settings['googleEnabled'] === '1') {
+                    # check api key #
+                    $config_appKey = $extConf['socialfeed.']['googleplus.']['app.']['key'];
+
+                    if (empty($config_appKey)) {
+                        $this->logger->warning(self::TYPE_GOOGLE . ' credentials not set');
+                    } elseif (empty($settings['googleSearchIds'])) {
+                        $this->logger->warning(self::TYPE_GOOGLE . ' no search term defined');
+                    } else {
+                        $cacheIdentifier = $this->itemController->calculateCacheIdentifier(array(
+                            "googleplus_".$adapterOptions->settings['googleSearchIds'], // cache depends on the searchids
+                        ));
+
+                        # retrieve data from adapter #
+                        $adapter = new Adapter\GooglePlusAdapter($config_appKey, $itemRepository);
+                        try {
+                            $cache->set($cacheIdentifier, $adapter->getResultFromApi($adapterOptions));
+                        } catch (\Exception $e) {
+                            $this->logger->warning($e->getMessage());
+                        }
+                    }
+                }
+
+                if ($settings['imgurEnabled'] === '1') {
+                    # check api key #
+                    $config_apiId = $extConf['socialfeed.']['imgur.']['client.']['id'];
+                    $config_apiSecret = $extConf['socialfeed.']['imgur.']['client.']['secret'];
+                    $adapterOptions->imgSearchTags = $settings['imgurTags'];
+
+                    // TODO: not yet implemented in backend configuration
+                    $adapterOptions->imgSearchUsers = $settings['imgurUsers'];
+
+                    if (empty($config_apiId) || empty($config_apiSecret)) {
+                        $this->logger->warning(self::TYPE_IMGUR . ' credentials not set');
+                    } elseif (empty($adapterOptions->imgSearchUsers) && empty($adapterOptions->imgSearchTags)) {
+                        $this->logger->warning(self::TYPE_IMGUR . ' no search term defined');
+                    } else {
+                        $cacheIdentifier = $this->itemController->calculateCacheIdentifier(array(
+                            "imgur_".$adapterOptions->settings['imgurTags'],
+                            "imgur_".$adapterOptions->settings['imgurUsers']
+                        ));
+
+                        # retrieve data from adapter #
+                        $adapter = new Adapter\ImgurAdapter($config_apiId, $config_apiSecret, $itemRepository);
+                        try {
+                            $cache->set($cacheIdentifier, $adapter->getResultFromApi($adapterOptions));
+                        } catch (\Exception $e) {
+                            $this->logger->warning($e->getMessage());
+                        }
+                    }
+                }
+
+                if ($settings['instagramEnabled'] === '1') {
+                    # check api key #
+                    $config_clientId = $extConf['socialfeed.']['instagram.']['client.']['id'];
+                    $config_clientSecret = $extConf['socialfeed.']['instagram.']['client.']['secret'];
+                    $config_clientCallback = $extConf['socialfeed.']['instagram.']['client.']['callback'];
+                    $config_access_code = $extConf['socialfeed.']['instagram.']['client.']['access_code'];
+                    $adapterOptions->instagramHashTags = $settings['instagramHashTag'];
+                    $adapterOptions->instagramSearchIds = $settings['instagramSearchIds'];
+                    $adapterOptions->instagramPostFilter = $settings['instagramPostFilter'];
+
+                    if (empty($config_clientId) || empty($config_clientSecret) || empty($config_clientCallback)) {
+                        $this->logger->warning(self::TYPE_INSTAGRAM . ' credentials not set');
+                    } elseif (empty($adapterOptions->instagramSearchIds) && empty($adapterOptions->instagramHashTags)) {
+                        $this->logger->warning(self::TYPE_INSTAGRAM . ' no search term defined');
+                    } else {
+                        $cacheIdentifier = $this->itemController->calculateCacheIdentifier(array(
+                            "instagram_".$adapterOptions->settings['instagramSearchIds'],
+                            "instagram_".$adapterOptions->settings['instagramHashTag'],
+                            "instagram_".$adapterOptions->settings['instagramPostFilter']
+                        ));
+
+                        # retrieve data from adapter #
+                        $adapter = new Adapter\InstagramAdapter($config_clientId, $config_clientSecret, $config_clientCallback, $config_access_code, $itemRepository, $credentialRepository);
+                        try {
+                            $cache->set($cacheIdentifier, $adapter->getResultFromApi($adapterOptions));
+                        } catch (\Exception $e) {
+                            $this->logger->warning($e->getMessage());
+                        }
+                    }
+                }
+
+                if ($settings['pinterestEnabled'] === '1') {
+                    # check api key #
+                    $config_appId = $extConf['socialfeed.']['pinterest.']['app.']['id'];
+                    $config_appSecret = $extConf['socialfeed.']['pinterest.']['app.']['secret'];
+                    $config_accessCode = $extConf['socialfeed.']['pinterest.']['app.']['code'];
+                    $adapterOptions->pinterest_username = $settings['username'];
+                    $adapterOptions->pinterest_boardname = $settings['boardname'];
+
+                    if (empty($config_appId) || empty($config_appSecret) || empty($config_accessCode)) {
+                        $this->logger->warning(self::TYPE_PINTEREST . ' credentials not set');
+                    } elseif (empty($adapterOptions->pinterest_username) || empty($adapterOptions->pinterest_boardname)) {
+                        $this->logger->warning(self::TYPE_PINTEREST . ' no username or no boardname defined');
+                    } else {
+                        $cacheIdentifier = $this->itemController->calculateCacheIdentifier(array(
+                            "pinterest_".$adapterOptions->settings['username'],
+                            "pinterest_".$adapterOptions->settings['boardname']
+                        ));
+
+                        # retrieve data from adapter #
+                        $adapter = new Adapter\PinterestAdapter($config_appId, $config_appSecret, $config_accessCode, $itemRepository, $credentialRepository);
+                        try {
+                            $cache->set($cacheIdentifier, $adapter->getResultFromApi($adapterOptions));
+                        } catch (\Exception $e) {
+                            $this->logger->warning($e->getMessage());
+                        }
+                    }
+                }
+
+                if ($settings['tumblrEnabled'] === '1') {
+                    # check api key #
+                    $config_consumerKey = $extConf['socialfeed.']['tumblr.']['consumer.']['key'];
+                    $config_consumerSecret = $extConf['socialfeed.']['tumblr.']['consumer.']['secret'];
+                    $config_Token = $extConf['socialfeed.']['tumblr.']['token'];
+                    $config_TokenSecret = $extConf['socialfeed.']['tumblr.']['token_secret'];
+
+                    $adapterOptions->tumblrHashtag = strtolower(str_replace('#', '', $settings['tumblrHashTag']));
+                    $adapterOptions->tumblrBlogNames = $settings['tumblrBlogNames'];
+                    $adapterOptions->tumblrShowOnlyImages = $settings['tumblrShowOnlyImages'];
+
+                    if (empty($config_consumerKey) || empty($config_consumerSecret) || empty($config_Token) || empty($config_TokenSecret)) {
+                        $this->logger->warning(self::TYPE_TUMBLR . ' credentials not set');
+                    } elseif (empty($adapterOptions->tumblrBlogNames)) {
+                        $this->logger->warning(self::TYPE_TUMBLR . ' - no blog names for search term defined');
+                    } else {
+                        $cacheIdentifier = $this->itemController->calculateCacheIdentifier(array(
+                            "tumblr_".$adapterOptions->settings['tumblrBlogNames']
+                        ));
+
+                        # retrieve data from adapter #
+                        $adapter = new Adapter\TumblrAdapter($config_consumerKey, $config_consumerSecret, $config_Token, $config_TokenSecret, $itemRepository);
+                        try {
+                            $cache->set($cacheIdentifier, $adapter->getResultFromApi($adapterOptions));
+                        } catch (\Exception $e) {
+                            $this->logger->warning($e->getMessage());
+                        }
+                    }
+                }
+
+                if ($settings['twitterEnabled'] === '1') {
+                    # check api key #
+                    $config_consumerKey = $extConf['socialfeed.']['twitter.']['consumer.']['key'];
+                    $config_consumerSecret = $extConf['socialfeed.']['twitter.']['consumer.']['secret'];
+                    $config_accessToken = $extConf['socialfeed.']['twitter.']['oauth.']['access.']['token'];
+                    $config_accessTokenSecret = $extConf['socialfeed.']['twitter.']['oauth.']['access.']['token_secret'];
+
+                    $adapterOptions->twitterSearchFieldValues = $settings['twitterSearchFieldValues'];
+                    $adapterOptions->twitterProfilePosts = $settings['twitterProfilePosts'];
+                    $adapterOptions->twitterLanguage = $settings['twitterLanguage'];
+                    $adapterOptions->twitterGeoCode = $settings['twitterGeoCode'];
+                    $adapterOptions->twitterHideRetweets = $settings['twitterHideRetweets'];
+                    $adapterOptions->twitterShowOnlyImages = $settings['twitterShowOnlyImages'];
+
+                    if (empty($config_consumerKey) || empty($config_consumerSecret) || empty($config_accessToken) || empty($config_accessTokenSecret)) {
+                        $this->logger->warning(self::TYPE_TWITTER . ' credentials not set');
+                    } elseif (empty($adapterOptions->twitterSearchFieldValues) && empty($adapterOptions->twitterProfilePosts)) {
+                        $this->logger->warning(self::TYPE_TWITTER . ' no search term defined');
+                    } else {
+                        $cacheIdentifier = $this->itemController->calculateCacheIdentifier(array(
+                            "twitter_".$settings['twitterSearchFieldValues'],
+                            "twitter_".$settings['twitterProfilePosts'],
+                            "twitter_".$settings['twitterLanguage'],
+                            "twitter_".$settings['twitterGeoCode'],
+                            "twitter_".$settings['twitterHideRetweets'],
+                            "twitter_".$settings['twitterShowOnlyImages']
+                        ));
+
+                        # retrieve data from adapter #
+                        $adapter = new Adapter\TwitterAdapter($config_consumerKey, $config_consumerSecret, $config_accessToken, $config_accessTokenSecret, $itemRepository);
+                        try {
+                            $cache->set($cacheIdentifier, $adapter->getResultFromApi($adapterOptions));
+                        } catch (\Exception $e) {
+                            $this->logger->warning($e->getMessage());
+                        }
+                    }
+                }
+
+                if ($settings['youtubeEnabled'] === '1') {
+
+                    # check api key #
+                    $config_apiKey = $extConf['socialfeed.']['youtube.']['apikey'];
+                    $adapterOptions->youtubeSearch = $settings['youtubeSearch'];
+                    $adapterOptions->youtubePlaylist = $settings['youtubePlaylist'];
+                    $adapterOptions->youtubeType = $settings['youtubeType'];
+                    $adapterOptions->youtubeLanguage = $settings['youtubeLanguage'];
+                    $adapterOptions->youtubeOrder = $settings['youtubeOrder'];
+
+                    if (empty($config_apiKey)) {
+                        $this->logger->warning(self::TYPE_YOUTUBE . ' credentials not set');
+                    } elseif (empty($adapterOptions->youtubeSearch) && empty($adapterOptions->youtubePlaylist)) {
+                        $this->logger->warning(self::TYPE_YOUTUBE . ' no search term defined');
+                    } else {
+                        $cacheIdentifier = $this->itemController->calculateCacheIdentifier(array(
+                            "youtube_".$adapterOptions->settings['youtubeSearch'],
+                            "youtube_".$adapterOptions->settings['youtubePlaylist'],
+                            "youtube_".$adapterOptions->settings['youtubeType'],
+                            "youtube_".$adapterOptions->settings['youtubeLanguage'],
+                            "youtube_".$adapterOptions->settings['youtubeOrder']
+                        ));
+
+                        # retrieve data from adapter #
+                        $adapter = new Adapter\YoutubeAdapter($config_apiKey, $itemRepository);
+                        try {
+                            $cache->set($cacheIdentifier, $adapter->getResultFromApi($adapterOptions));
+                        } catch (\Exception $e) {
+                            $this->logger->warning($e->getMessage());
+                        }
+                    }
+                }
+
+                if ($settings['vimeoEnabled'] === '1') {
+
+                    # check api key #
+
+                    $config_clientIdentifier = $extConf['socialfeed.']['vimeo.']['client.']['identifier'];
+                    $config_clientSecret = $extConf['socialfeed.']['vimeo.']['client.']['secret'];
+                    $config_token = $extConf['socialfeed.']['vimeo.']['token'];
+                    $adapterOptions->vimeoUrl = $settings['vimeoUrl'];
+                    $adapterOptions->vimeoFilter = $settings['vimeoFilter'];
+
+                    // if (empty($config_clientIdentifier) || empty($config_clientSecret) || empty($config_token)) {
+                    if (empty($config_clientIdentifier) || empty($config_clientSecret) || empty($config_token)) {
+                        $this->logger->warning(self::TYPE_VIMEO . ' credentials not set');
+                    } elseif (empty($adapterOptions->vimeoUrl)) {
+                        $this->logger->warning(self::TYPE_VIMEO . ' no url defined');
+                    } else {
+                        $cacheIdentifier = $this->itemController->calculateCacheIdentifier(array(
+                            "vimeo_".$adapterOptions->vimeoUrl
+                        ));
+
+                        # retrieve data from adapter #
+                        $adapter = new Adapter\VimeoAdapter($config_clientIdentifier, $config_clientSecret, $config_token, $itemRepository);
+                        try {
+                            $cache->set($cacheIdentifier, $adapter->getResultFromApi($adapterOptions));
+                        } catch (\Exception $e) {
+                            $this->logger->warning($e->getMessage());
+                        }
+                    }
+                }
+
+
+
+
             }
         }
     }
