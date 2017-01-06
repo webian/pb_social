@@ -3,13 +3,37 @@ if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
 
-$GLOBALS['TCA']['tx_pbsocial_domain_model_item'] = array(
-    'ctrl' => $GLOBALS['TCA']['tx_pbsocial_domain_model_item']['ctrl'],
+return [
+    'ctrl' => array(
+        'title' => 'LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:tx_pbsocial_domain_model_credential',
+        'label' => 'type',
+        'tstamp' => 'tstamp',
+        'crdate' => 'crdate',
+        'cruser_id' => 'cruser_id',
+        'dividers2tabs' => true,
+
+        'hideTable' => true,
+
+        'versioningWS' => 2,
+        'versioning_followPages' => true,
+
+        'languageField' => 'sys_language_uid',
+        'transOrigPointerField' => 'l10n_parent',
+        'transOrigDiffSourceField' => 'l10n_diffsource',
+        'delete' => 'deleted',
+        'enablecolumns' => array(
+            'disabled' => 'hidden',
+            'starttime' => 'starttime',
+            'endtime' => 'endtime',
+        ),
+        'searchFields' => 'type,appId,expiration_date,access_token,valid',
+        'iconfile' => 'EXT:pb_social/Resources/Public/Icons/tx_pbsocial_domain_model_credential.gif'
+    ),
     'interface' => array(
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, type, cacheidentifier, date, result',
+        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, type, appId, expiration_date, access_token, valid',
     ),
     'types' => array(
-        '1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, type, cacheidentifier, date, result, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'),
+        '1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, type, appId, expiration_date, access_token, valid, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'),
     ),
     'palettes' => array(
         '1' => array('showitem' => ''),
@@ -38,8 +62,8 @@ $GLOBALS['TCA']['tx_pbsocial_domain_model_item'] = array(
                 'items' => array(
                     array('', 0),
                 ),
-                'foreign_table' => 'tx_pbsocial_domain_model_item',
-                'foreign_table_where' => 'AND tx_pbsocial_domain_model_item.pid=###CURRENT_PID### AND tx_pbsocial_domain_model_item.sys_language_uid IN (-1,0)',
+                'foreign_table' => 'tx_pbsocial_domain_model_credential',
+                'foreign_table_where' => 'AND tx_pbsocial_domain_model_credential.pid=###CURRENT_PID### AND tx_pbsocial_domain_model_item.sys_language_uid IN (-1,0)',
             ),
         ),
         'l10n_diffsource' => array(
@@ -99,25 +123,25 @@ $GLOBALS['TCA']['tx_pbsocial_domain_model_item'] = array(
 
         'type' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:tx_pbsocial_domain_model_item.type',
+            'label' => 'LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:tx_pbsocial_domain_model_credential.type',
             'config' => array(
                 'type' => 'input',
                 'size' => 30,
                 'eval' => 'trim'
             ),
         ),
-        'cache_identifier' => array(
+        'app_id' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:tx_pbsocial_domain_model_item.cache_identifier',
+            'label' => 'LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:tx_pbsocial_domain_model_credential.app_id',
             'config' => array(
                 'type' => 'input',
-                'size' => 30,
+                'size' => 80,
                 'eval' => 'trim'
             ),
         ),
-        'date' => array(
+        'expiration_date' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:tx_pbsocial_domain_model_item.date',
+            'label' => 'LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:tx_pbsocial_domain_model_credential.expiration_date',
             'config' => array(
                 'type' => 'input',
                 'size' => 10,
@@ -126,16 +150,21 @@ $GLOBALS['TCA']['tx_pbsocial_domain_model_item'] = array(
                 'default' => time()
             ),
         ),
-        'result' => array(
+        'access_token' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:tx_pbsocial_domain_model_item.result',
+            'label' => 'LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:tx_pbsocial_domain_model_credential.access_token',
             'config' => array(
-                'type' => 'text',
-                'cols' => 40,
-                'rows' => 15,
+                'type' => 'input',
+                'size' => 130,
                 'eval' => 'trim'
             )
         ),
+        'valid' => array(
+            'exclude' => 1,
+            'label' => 'LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:tx_pbsocial_domain_model_credential.valid',
+            'config' => array(
+                'type' => 'check')
+        ),
 
-    ),
-);
+    )
+];
