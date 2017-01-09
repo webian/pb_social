@@ -347,7 +347,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
                         $this->logger->warning(self::TYPE_VIMEO . ' no url defined');
                     } else {
                         $cacheIdentifier = $this->itemController->calculateCacheIdentifier(array(
-                            "vimeo_".$adapterOptions->vimeoUrl
+                            "vimeo_".$adapterOptions->settings['vimeoUrl']
                         ));
 
                         # retrieve data from adapter #
