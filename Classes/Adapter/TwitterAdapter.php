@@ -47,6 +47,7 @@ class TwitterAdapter extends SocialMediaAdapter
         parent::__construct($itemRepository);
 
         $this->api =  new TwitterOAuth($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret);
+        $this->api->setTimeouts(10, 10);
     }
 
     public function getResultFromApi($options)
