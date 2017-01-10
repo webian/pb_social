@@ -192,7 +192,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
                         ));
 
                         # retrieve data from adapter #
-                        $adapter = new Adapter\InstagramAdapter($config_clientId, $config_clientSecret, $config_clientCallback, $config_access_code, $itemRepository, $credentialRepository);
+                        $adapter = new Adapter\InstagramAdapter($config_clientId, $config_clientSecret, $config_clientCallback, $config_access_code, $itemRepository, $this->credentialRepository);
                         try {
                             $cache->set($cacheIdentifier, $adapter->getResultFromApi($adapterOptions));
                         } catch (\Exception $e) {
@@ -220,7 +220,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
                         ));
 
                         # retrieve data from adapter #
-                        $adapter = new Adapter\PinterestAdapter($config_appId, $config_appSecret, $config_accessCode, $itemRepository, $credentialRepository);
+                        $adapter = new Adapter\PinterestAdapter($config_appId, $config_appSecret, $config_accessCode, $itemRepository, $this->credentialRepository);
                         try {
                             $cache->set($cacheIdentifier, $adapter->getResultFromApi($adapterOptions));
                         } catch (\Exception $e) {
