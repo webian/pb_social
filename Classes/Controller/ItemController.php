@@ -325,7 +325,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 
         if ($settings['vimeoEnabled'] === '1') {
             $cacheIdentifier = $this->calculateCacheIdentifier(array(
-                "vimeo_".$adapterOptions->settings['vimeoUrl']
+                "vimeo_".$adapterOptions->settings['vimeoChannel']
             ));
 
             if ($content = $cache->get($cacheIdentifier)) { // the cached content is available

@@ -333,21 +333,19 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
                 if ($settings['vimeoEnabled'] === '1') {
 
                     # check api key #
-
                     $config_clientIdentifier = $extConf['socialfeed.']['vimeo.']['client.']['identifier'];
                     $config_clientSecret = $extConf['socialfeed.']['vimeo.']['client.']['secret'];
                     $config_token = $extConf['socialfeed.']['vimeo.']['token'];
-                    $adapterOptions->vimeoUrl = $settings['vimeoUrl'];
-                    $adapterOptions->vimeoFilter = $settings['vimeoFilter'];
+                    $adapterOptions->vimeoChannel = $settings['vimeoChannel'];
 
                     // if (empty($config_clientIdentifier) || empty($config_clientSecret) || empty($config_token)) {
                     if (empty($config_clientIdentifier) || empty($config_clientSecret) || empty($config_token)) {
                         $this->logger->warning(self::TYPE_VIMEO . ' credentials not set');
-                    } elseif (empty($adapterOptions->vimeoUrl)) {
-                        $this->logger->warning(self::TYPE_VIMEO . ' no url defined');
+                    } elseif (empty($adapterOptions->vimeoChannel)) {
+                        $this->logger->warning(self::TYPE_VIMEO . ' no channel defined');
                     } else {
                         $cacheIdentifier = $this->itemController->calculateCacheIdentifier(array(
-                            "vimeo_".$adapterOptions->settings['vimeoUrl']
+                            "vimeo_".$adapterOptions->settings['vimeoChannel']
                         ));
 
                         # retrieve data from adapter #
