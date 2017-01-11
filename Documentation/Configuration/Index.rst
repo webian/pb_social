@@ -31,18 +31,20 @@ the next steps will hopefully explain you how to use this extension.
     You might need to grant special permissions and add users to your app etc.
     All the details should be documented on the pages above.
     If you encounter any difficulties, check the FAQ section or contat us at info@plusb.de
-
 3. Include the extension typoscript
-3. Navigate to an empty page and insert the "Socialfeed"-Plugin
-4. Open the flexform and navigate through the Provider-Tabs you want to activate.
+4. Navigate to an empty page and insert the "Socialfeed"-Plugin
+5. Open the flexform and navigate through the Provider-Tabs you want to activate.
 
    - find facebook id => http://findmyfacebookid.com
    - find instagram id => http://jelled.com/instagram/lookup-user-id
    - find google+ id => http://ansonalex.com/google-plus/how-do-i-find-my-google-plus-user-id-google/
 
-5. You can use multiple search values by making a comma separated string
-6. clear all caches and enjoy the result.
-7. If you get the following error in the PHP error log: "Error: SSL certificate problem: unable to get local issuer certificate". This happens due to an outdated root certification authority file (cacert.pem). Check these links for further details:
+6. You can use multiple search values by making a comma separated string
+7. Add the Scheduler Task "Extbase CommandController Task" and choose "PbSocial PbSocial: updateFeedData" (Note: the frequency should be set to a relatively small value, because of the flexform property "Feed update interval" that is controlling the refresh rate, too)
+7.1. check that you have a backend user called "_cli_scheduler"
+7.2. check that you have a cron-job, that calls "./typo3/cli_dispatch.phpsh scheduler" from your project's root directory
+8. clear all caches and enjoy the result. (Feed-Caching by the CommandController is saved in the system-cache)
+9. If you get the following error in the PHP error log: "Error: SSL certificate problem: unable to get local issuer certificate". This happens due to an outdated root certification authority file (cacert.pem). Check these links for further details:
 
    - https://curl.haxx.se/docs/sslcerts.html
    - https://curl.haxx.se/ca/cacert.pem
@@ -51,15 +53,13 @@ the next steps will hopefully explain you how to use this extension.
    For a quick an dirty solution we included a checkbox in the extension configuration that turns off ssl verification for all pb_social requests
    ATTENTION: Activating this checkbox might be a potential security risk!
 
-8. with great power comes great responsibility
+10. with great power comes great responsibility
 
-9. OPTIONAL
-    If you want to avoid long loading times you can add a scheduler task to store the feeds automatically
-    in the database. For example if your refresh time is 15 minutes, let the task get the feeds every 10 minutes.
-    For testing you can execute the controller comand from the cli via:
+11. Testing the Scheduler Task
+    For testing you can execute the single controller command from the cli via:
     ./typo3/cli_dispatch.phpsh extbase pbsocial:updatefeeddata
-    Called from your typo3 root directory.
-    This hint should give you an example how to add a tast to your scheduler https://wiki.typo3.org/CommandController_In_Scheduler_Task
+    Called from your project's root directory.
+    This hint should give you an example how to add a test to your scheduler https://wiki.typo3.org/CommandController_In_Scheduler_Task
     Be sure the scheduler extension is installed, you have a backend user named _cli_lowlevel and your crontab executes ./typo3/cli_dispatch.phpsh periodically.
 
 
