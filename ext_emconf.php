@@ -14,13 +14,13 @@ $EM_CONF[$_EXTKEY] = array (
 	'title' => 'Social Media Streams',
 	'description' => '',
 	'category' => 'plugin',
-	'author' => 'Mikolaj Jedrzejewski - plus B, Ramon Mohi - plus B',
+	'author' => 'Mikolaj Jedrzejewski - plus B, Ramon Mohi - plus B, Kai Lorenz - plus B',
 	'author_email' => 'info@plusb.de',
 	'state' => 'stable',
 	'uploadfolder' => false,
 	'createDirs' => '',
 	'clearCacheOnLoad' => 0,
-	'version' => '1.1.2',
+	'version' => '1.2.0',
 	'constraints' => 
 	array (
 		'depends' => 
