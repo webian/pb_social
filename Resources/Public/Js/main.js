@@ -13,7 +13,7 @@ window.onload = function() {
 
 function documentReady(){
 
-    jQuery('a.likes,a.comments,a.plus,a.replies').click(function(){
+    jQuery('a.likes,a.comments,a.plus,a.replies').unbind('click').click(function(){
         window.open(this.href,'_blank','width=1200,height=800');
         return false;
     });
@@ -21,7 +21,7 @@ function documentReady(){
     //
     // ANY CLICK REDIRECT TO SOURCE OBJECT PAGE
     //
-    jQuery('.pb-list-item .image, .pb-list-item .icon, .pb-list-item img, .pb-list-item .text').click(function(e){
+    jQuery('.pb-list-item .image, .pb-list-item .icon, .pb-list-item img, .pb-list-item .text').unbind('click').click(function(e){
         var _Url = jQuery(this).closest('.pb-list-item').data('url');
         window.open(_Url,'_blank','width=1200,height=800');
         return false;
