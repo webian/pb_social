@@ -40,7 +40,7 @@ class TwitterAdapter extends SocialMediaAdapter
 
     private $api;
 
-    private $api_url = 'search/tweets';
+    //private $api_url = 'statuses/user_timeline';
 
     public function __construct($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret, $itemRepository)
     {
@@ -53,6 +53,7 @@ class TwitterAdapter extends SocialMediaAdapter
     public function getResultFromApi($options)
     {
         $result = array();
+        $apiMethod = '';
 
         // because of the amount of data twitter is sending, the database can only carry 20 tweets.
         // 20 Tweets = ~86000 Character
@@ -68,6 +69,8 @@ class TwitterAdapter extends SocialMediaAdapter
         }
 
         if ($options->twitterSearchFieldValues) {
+            $this->api_url = 'search/tweets';
+
             foreach (explode(',', $options->twitterSearchFieldValues) as $searchValue) {
                 $searchValue = trim($searchValue);
                 $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchValue);
@@ -104,6 +107,8 @@ class TwitterAdapter extends SocialMediaAdapter
         }
 
         if ($options->twitterProfilePosts) {
+            $this->api_url = 'statuses/user_timeline';
+
             foreach (explode(',', $options->twitterProfilePosts) as $searchValue) {
                 $searchValue = trim($searchValue);
                 $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchValue);
@@ -111,6 +116,7 @@ class TwitterAdapter extends SocialMediaAdapter
                 //https://dev.twitter.com/rest/reference/get/search/tweets
                 //include_entities=false => The entities node will be disincluded when set to false.
 
+                $apiParameters['screen_name'] = $searchValue;
                 $tweets = $this->getPosts($apiParameters, $options, $searchValue);
 
                 if ($feeds && $feeds->count() > 0) {
@@ -154,12 +160,18 @@ class TwitterAdapter extends SocialMediaAdapter
 
         if (!empty($result)) {
             foreach ($result as $twt_feed) {
-                if (empty($twt_feed->getResult()->statuses)) {
+                if ($this->api_url == 'search/tweets') {
+                    $twitterResult = $twt_feed->getResult()->statuses;
+                } else {
+                    $twitterResult = $twt_feed->getResult();
+                }
+
+                if (empty($twitterResult)) {
                     error_log('empty status @TwitterAdapter');
                     break;
                 }
                 $rawFeeds[self::TYPE . '_' . $twt_feed->getCacheIdentifier() . '_raw'] = $twt_feed->getResult();
-                foreach ($twt_feed->getResult()->statuses as $rawFeed) {
+                foreach ($twitterResult as $rawFeed) {
                     if ($options->twitterShowOnlyImages && null == $rawFeed->entities->media) {
                         continue;
                     }
