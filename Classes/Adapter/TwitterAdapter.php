@@ -177,7 +177,7 @@ class TwitterAdapter extends SocialMediaAdapter
                     }
                     $feed = new Feed($twt_feed->getType(), $rawFeed);
                     $feed->setId($rawFeed->id);
-                    $feed->setText($this->trim_text($rawFeed->text, $options->textTrimLength, true));
+                    $feed->setText($this->trim_text($rawFeed->full_text, $options->textTrimLength, true));
 //                    $feed->setImage($placeholder);
                     if ($rawFeed->entities->media[0]->type == 'photo') {
                         $feed->setImage($rawFeed->entities->media[0]->media_url);
@@ -216,6 +216,7 @@ class TwitterAdapter extends SocialMediaAdapter
             $requestParameters['include_entities'] = 'true';
         }
 
+        $requestParameters['tweet_mode'] = 'extended';
         $requestParameters['q'] = $searchValue;
         $requestParameters['count'] = $options->feedRequestLimit;
         $tweets = json_encode($this->api->get($this->api_url, $requestParameters));
