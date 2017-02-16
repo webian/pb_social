@@ -91,6 +91,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
             foreach ($xml_settings as $xml_string) {
                 $settings = $this->flexform2SettingsArray($xml_string);
                 $adapterOptions = $this->itemController->getAdapterOptions($settings);
+                $adapterOptions->devMod = $extConf['socialfeed.']['devmod'];
 
                 if ($settings['facebookEnabled'] === '1') {
                     # check api key #
