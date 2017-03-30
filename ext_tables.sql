@@ -51,7 +51,7 @@ CREATE TABLE tx_pbsocial_domain_model_credential (
 	app_id varchar(255) DEFAULT '' NOT NULL,
 	expiration_date int(11) DEFAULT '0' NOT NULL,
 	access_token varchar(255) DEFAULT '' NOT NULL,
-	valid boolean DEFAULT 0 NOT NULL,
+	valid tinyint(4) unsigned DEFAULT '0' NOT NULL,
 
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
 	crdate int(11) unsigned DEFAULT '0' NOT NULL,
