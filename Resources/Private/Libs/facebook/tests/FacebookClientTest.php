@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2016 Facebook, Inc.
+ * Copyright 2014 Facebook, Inc.
  *
  * You are hereby granted a non-exclusive, worldwide, royalty-free license to
  * use, copy, modify, and distribute this software in source code or binary
@@ -216,14 +216,6 @@ class FacebookClientTest extends \PHPUnit_Framework_TestCase
         $headersSent = $response->getRequest()->getHeaders();
 
         $this->assertContains('multipart/form-data; boundary=', $headersSent['Content-Type']);
-    }
-
-    public function testAFacebookRequestValidatesTheAccessTokenWhenOneIsNotProvided()
-    {
-        $this->setExpectedException('Facebook\Exceptions\FacebookSDKException');
-
-        $fbRequest = new FacebookRequest($this->fbApp, null, 'GET', '/foo');
-        $this->fbClient->sendRequest($fbRequest);
     }
 
     /**

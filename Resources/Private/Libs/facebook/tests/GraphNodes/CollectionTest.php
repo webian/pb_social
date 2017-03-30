@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2016 Facebook, Inc.
+ * Copyright 2014 Facebook, Inc.
  *
  * You are hereby granted a non-exclusive, worldwide, royalty-free license to
  * use, copy, modify, and distribute this software in source code or binary
@@ -58,20 +58,6 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         // @todo v6: Remove this assertion
         $property = $graphNode->getProperty('baz', 'faz');
         $this->assertEquals('faz', $property);
-    }
-
-    public function testFalseDefaultsWillReturnSameType()
-    {
-        $graphNode = new Collection(['foo' => 'bar']);
-
-        $field = $graphNode->getField('baz', '');
-        $this->assertSame('', $field);
-
-        $field = $graphNode->getField('baz', 0);
-        $this->assertSame(0, $field);
-
-        $field = $graphNode->getField('baz', false);
-        $this->assertSame(false, $field);
     }
 
     public function testTheKeysFromTheCollectionCanBeReturned()

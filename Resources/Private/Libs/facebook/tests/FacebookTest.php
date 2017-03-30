@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2016 Facebook, Inc.
+ * Copyright 2014 Facebook, Inc.
  *
  * You are hereby granted a non-exclusive, worldwide, royalty-free license to
  * use, copy, modify, and distribute this software in source code or binary
@@ -33,7 +33,6 @@ use Facebook\PseudoRandomString\PseudoRandomStringGeneratorInterface;
 use Facebook\FacebookRequest;
 use Facebook\Authentication\AccessToken;
 use Facebook\GraphNodes\GraphEdge;
-use Facebook\Tests\FakeGraphApi\FakeGraphApiForResumableUpload;
 
 class FooClientInterface implements FacebookHttpClientInterface
 {
@@ -177,14 +176,11 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
     public function testSettingAnInvalidUrlHandlerThrows()
     {
-        $expectedException = (PHP_MAJOR_VERSION > 5 && class_exists('TypeError'))
-            ? 'TypeError'
-            : 'PHPUnit_Framework_Error';
-
-        $this->setExpectedException($expectedException);
-
         $config = array_merge($this->config, [
             'url_detection_handler' => 'foo_handler',
         ]);
@@ -367,8 +363,6 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
                         'after' => 'bar_after_cursor',
                         'before' => 'bar_before_cursor',
                     ],
-                    'previous' => 'previous_url',
-                    'next' => 'next_url',
                 ]
             ],
             '/1337/photos',
@@ -383,33 +377,5 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $lastResponse = $fb->getLastResponse();
         $this->assertInstanceOf('Facebook\FacebookResponse', $lastResponse);
         $this->assertEquals(1337, $lastResponse->getHttpStatusCode());
-    }
-
-    public function testCanGetSuccessfulTransferWithMaxTries()
-    {
-        $config = array_merge($this->config, [
-          'http_client_handler' => new FakeGraphApiForResumableUpload(),
-        ]);
-        $fb = new Facebook($config);
-        $response = $fb->uploadVideo('me', __DIR__.'/foo.txt', [], 'foo-token', 3);
-        $this->assertEquals([
-          'video_id' => '1337',
-          'success' => true,
-        ], $response);
-    }
-
-    /**
-     * @expectedException \Facebook\Exceptions\FacebookResponseException
-     */
-    public function testMaxingOutRetriesWillThrow()
-    {
-        $client = new FakeGraphApiForResumableUpload();
-        $client->failOnTransfer();
-
-        $config = array_merge($this->config, [
-          'http_client_handler' => $client,
-        ]);
-        $fb = new Facebook($config);
-        $response = $fb->uploadVideo('4', __DIR__.'/foo.txt', [], 'foo-token', 3);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2016 Facebook, Inc.
+ * Copyright 2014 Facebook, Inc.
  *
  * You are hereby granted a non-exclusive, worldwide, royalty-free license to
  * use, copy, modify, and distribute this software in source code or binary
@@ -102,8 +102,7 @@ class FacebookBatchResponse extends FacebookResponse implements IteratorAggregat
 
         $httpResponseBody = isset($response['body']) ? $response['body'] : null;
         $httpResponseCode = isset($response['code']) ? $response['code'] : null;
-        // @TODO With PHP 5.5 support, this becomes array_column($response['headers'], 'value', 'name')
-        $httpResponseHeaders = isset($response['headers']) ? $this->normalizeBatchHeaders($response['headers']) : [];
+        $httpResponseHeaders = isset($response['headers']) ? $response['headers'] : [];
 
         $this->responses[$originalRequestName] = new FacebookResponse(
             $originalRequest,
@@ -151,24 +150,5 @@ class FacebookBatchResponse extends FacebookResponse implements IteratorAggregat
     public function offsetGet($offset)
     {
         return isset($this->responses[$offset]) ? $this->responses[$offset] : null;
-    }
-
-    /**
-     * Converts the batch header array into a standard format.
-     * @TODO replace with array_column() when PHP 5.5 is supported.
-     *
-     * @param array $batchHeaders
-     *
-     * @return array
-     */
-    private function normalizeBatchHeaders(array $batchHeaders)
-    {
-        $headers = [];
-
-        foreach ($batchHeaders as $header) {
-            $headers[$header['name']] = $header['value'];
-        }
-
-        return $headers;
     }
 }

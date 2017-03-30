@@ -13,7 +13,7 @@ To instantiate a new `Facebook\Facebook` service, pass an array of configuration
 $fb = new Facebook\Facebook([
   'app_id' => '{app-id}',
   'app_secret' => '{app-secret}',
-  'default_graph_version' => 'v2.5',
+  'default_graph_version' => 'v2.4',
   // . . .
   ]);
 ~~~~
@@ -53,7 +53,7 @@ $fb = new Facebook\Facebook([
   'app_secret' => '{app-secret}',
   'default_access_token' => '{access-token}',
   'enable_beta_mode' => true,
-  'default_graph_version' => 'v2.5',
+  'default_graph_version' => 'v2.4',
   'http_client_handler' => 'guzzle',
   'persistent_data_handler' => 'memory',
   'url_detection_handler' => new MyUrlDetectionHandler(),
@@ -74,7 +74,7 @@ The default fallback access token to use if one is not explicitly provided. The 
 Enable [beta mode](/docs/support/beta-tier/) so that request are made to the [https://graph.beta.facebook.com](https://graph.beta.facebook.com/) endpoint. Set to boolean `true` to enable or `false` to disable. Defaults to `false`.
 
 ### `default_graph_version` {#defaultversion}
-Allows you to overwrite the default Graph version number set in `Facebook\Facebook::DEFAULT_GRAPH_VERSION`. Set this as a string as it would appear in the Graph url, e.g. `v2.5`. Defaults to the [latest version of Graph](/docs/apps/changelog).
+Allows you to overwrite the default Graph version number set in `Facebook\Facebook::DEFAULT_GRAPH_VERSION`. Set this as a string as it would appear in the Graph url, e.g. `v2.0`. Defaults to the latest version of Graph.
 
 ### `http_client_handler` {#httpclient}
 Allows you to overwrite the default HTTP client.
@@ -326,7 +326,7 @@ public Facebook\FacebookResponse sendRequest(
 Sends a request to the Graph API.
 
 ~~~~
-$response = $fb->sendRequest('GET', '/me', [], '{access-token}', 'eTag', 'v2.5');
+$response = $fb->sendRequest('GET', '/me', [], '{access-token}', 'eTag', 'v2.2');
 ~~~~
 
 ## sendBatchRequest() {#send-batch-request}
@@ -494,62 +494,5 @@ try {
 $graphNode = $response->getGraphNode();
 
 echo 'Video ID: ' . $graphNode['id'];
-~~~~
-
-## uploadVideo() {#upload-video}
-~~~~
-public array videoToUpload(
-  string $target,
-  string $pathToFile,
-  array $metadata = [],
-  string|Facebook\AccessToken $accessToken = null,
-  int $maxTransferTries = 5,
-  string $graphVersion = null
-  )
-~~~~
-
-Functionality to [upload video files in chunks](/docs/graph-api/video-uploads#resumable) was added to the Graph API in v2.3. The `uploadVideo()` method provides an easy API to take advantage of this new feature.
-
-### Parameters
-
-`$target`
-The ID or alias of the target node. This can be a user ID, page ID, event ID, group ID or `me`.
-
-`$pathToFile`
-The absolute or relative path to the video file to upload.
-
-`$metadata`
-All the metadata associated with the [Video node](/docs/graph-api/reference/video/).
-
-`$accessToken`
-The access token to use for this request. Falls back to the default access token if one exists.
-
-`$maxTransferTries`
-During the [transfer phase](/docs/graph-api/video-uploads#transfer) an upload can fail for a number of reasons. If the Graph API responds with an error that is resumable, the PHP SDK will retry uploading the chunk automatically. By default the PHP SDK will try to upload each chunk five times before throwing a `FacebookResponseException`.
-
-`$graphVersion`
-The version of the Graph API to use. The resumable upload feature did not become available until Graph v2.3.
-
-### Return Value
-
-The array that is returned will contain two keys; `video_id` with the ID of the video node, and `success` with a boolean value that represents a successful or failed transfer.
-
-### Example
-
-~~~~
-// Upload a video for a user (chunked)
-$data = [
-  'title' => 'My awesome video',
-  'description' => 'More info about my awesome video.',
-];
-
-try {
-  $response = $fb->uploadVideo('me', '/path/to/video.mp4', $data, '{user-access-token}');
-} catch(Facebook\Exceptions\FacebookSDKException $e) {
-  echo 'Error: ' . $e->getMessage();
-  exit;
-}
-
-echo 'Video ID: ' . $response['video_id'];
 ~~~~
 </card>

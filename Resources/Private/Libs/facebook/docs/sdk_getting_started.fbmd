@@ -29,10 +29,14 @@ There are two methods to install the Facebook SDK for PHP. The recommended insta
 <card>
 ## Installing with Composer (recommended) {#install-composer}
 
-[Composer](https://getcomposer.org/) is the recommended way to install the Facebook SDK for PHP. Simply run the following in the root of your project.
+[Composer](https://getcomposer.org/) is the recommended way to install the Facebook SDK for PHP. Simply add the following "require" entry to the `composer.json` file in the root of your project.
 
 ~~~
-composer require facebook/php-sdk-v4
+{
+  "require" : {
+    "facebook/php-sdk-v4" : "~5.0"
+  }
+}
 ~~~
 
 %FB(devsite:markdown-wiki:info-card {
@@ -40,7 +44,7 @@ composer require facebook/php-sdk-v4
   type: 'info',
 })
 
-Once you do this, composer will edit your `composer.json` file and download the latest version of the SDK and put it in the `/vendor/` directory.
+Then run `composer install` from the command line, and composer will download the latest version of the SDK and put it in the `/vendor/` directory.
 
 Make sure to include the Composer autoloader at the top of your script.
 
@@ -83,7 +87,7 @@ After downloading the source code with the button above, extract the files in a 
 
 Move the folder `src/Facebook` to the root of your website installation or where ever you like to put third-party code. For this example we'll rename the `Facebook` directory to `facebook-sdk-v5`.
 
-The path the the core SDK files should now be located in `/var/html/facebook-sdk-v5` and inside will also be the `autoload.php` file.
+The path the the core SDK files should now be located in `/var/html/facebook-sdk-v5` and inside will also be the `autolaoder.php` file.
 
 Assuming we have a script called `index.php` in the root of our web project, we need to include the autoloader at the top of our script.
 
@@ -113,7 +117,7 @@ Before we can send requests to the Graph API, we need to load our app configurat
 $fb = new Facebook\Facebook([
   'app_id' => '{app-id}',
   'app_secret' => '{app-secret}',
-  'default_graph_version' => 'v2.5',
+  'default_graph_version' => 'v2.2',
   ]);
 ~~~
 

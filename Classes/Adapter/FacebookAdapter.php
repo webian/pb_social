@@ -5,8 +5,10 @@ namespace PlusB\PbSocial\Adapter;
 $extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/';
 require $extensionPath . 'facebook/src/Facebook/autoload.php';
 use Facebook\Facebook;
+use FluidTYPO3\Flux\Outlet\Pipe\Exception;
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /***************************************************************
  *
@@ -48,21 +50,22 @@ class FacebookAdapter extends SocialMediaAdapter
     {
         parent::__construct($itemRepository);
 
+
         $extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pb_social']);
         $ignoreVerifySSL = $extConf['socialfeed.']['ignoreVerifySSL'] == '1' ? true : false;
 
         $this->api = new Facebook([
             'app_id' => $apiId,
             'app_secret' => $apiSecret,
-            'default_graph_version' => 'v2.6',
+            'default_graph_version' => 'v2.8',
         ]);
 
         // Get access_token via grant_type=client_credentials
-        $url = self::api_url . '/oauth/access_token?client_id=' . $apiId . '&client_secret=' . $apiSecret . '&grant_type=client_credentials';
+        $url = 'https://graph.facebook.com/v2.8/oauth/access_token?client_id=' . $apiId . '&client_secret=' . $apiSecret . '&grant_type=client_credentials';
 
-        $this->access_token = $this->itemRepository->curl_download($url, $ignoreVerifySSL);
-        if ($this->access_token) {
-            $this->access_token =  ltrim($this->access_token, 'access_token=');
+        $accessTokenResponse = $this->itemRepository->curl_download($url, $ignoreVerifySSL);
+        if (($accessTokenJson = json_decode($accessTokenResponse)) != NULL) {
+            $this->access_token = $accessTokenJson->access_token;
         }
 
         $this->api->setDefaultAccessToken($this->access_token);
@@ -135,6 +138,7 @@ class FacebookAdapter extends SocialMediaAdapter
 
 
         }
+
         return $this->getFeedItemsFromApiRequest($result, $options);
     }
 
@@ -190,18 +194,26 @@ class FacebookAdapter extends SocialMediaAdapter
             $request = 'feed';
         }
 
-        /** @var \Facebook\FacebookResponse $resp */
-        $resp = $this->api->sendRequest(
-            'GET',
-            '/' . $searchId . '/' . $request,
-            array(
-                'fields' => 'id,link,message,picture,comments.limit(999),created_time,full_picture,reactions.limit(9999)',
-                'limit' => $limit
-                // 'include_hidden' => false,
-                // 'is_published' => true
-            ),
-            $this->access_token
-        );
+        try {
+            /** @var \Facebook\FacebookResponse $resp */
+            $resp = $this->api->sendRequest(
+                'GET',
+                '/' . $searchId . '/' . $request,
+                array(
+                    'fields' => 'id,link,message,picture,comments.limit(999),created_time,full_picture,reactions.limit(9999)',
+                    'limit' => $limit
+                    // 'include_hidden' => false,
+                    // 'is_published' => true
+                ),
+                $this->access_token
+            );
+        }
+        catch (\Exception $e) {
+            $this->logger->warning(self::TYPE . ' - facebook request failed: ' . $searchId);
+            return NULL;
+        }
+
+
 
         if (empty(json_decode($resp->getBody())->data) || json_encode($resp->getBody()->data) == null) {
             $this->logger->warning(self::TYPE . ' - no posts found for ' . $searchId);
