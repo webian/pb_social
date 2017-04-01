@@ -45,19 +45,21 @@ function initLoadMore(){
     // generate list of already shown posts
     jQuery('.pb-list-item').each(function(){ _postUrls.push(jQuery(this).data('url')); });
     // request new posts
-    jQuery.ajax({ url: _Url }).done(function( data ) {
-        var _pb_list = jQuery(data).find('.pb-list');
-        _pb_list.find('.pb-list-item').each(function(){
-            if(jQuery.inArray(jQuery(this).data('url'), _postUrls) == -1){
-                var _post = jQuery(this);
-                _post.addClass('pb-hide-initial');
-                jQuery('.pb-list').append(_post);
-            }
+    if(_Url){
+        jQuery.ajax({ url: _Url }).done(function( data ) {
+            var _pb_list = jQuery(data).find('.pb-list');
+            _pb_list.find('.pb-list-item').each(function(){
+                if(jQuery.inArray(jQuery(this).data('url'), _postUrls) == -1){
+                    var _post = jQuery(this);
+                    _post.addClass('pb-hide-initial');
+                    jQuery('.pb-list').append(_post);
+                }
+            });
+            // ladeanimation beenden
+            documentReady();
+            _button.removeClass('loading');
         });
-        // ladeanimation beenden
-        documentReady();
-        _button.removeClass('loading');
-    });
+    }
 
     // show loaded posts on click
     _button.click(function(){
