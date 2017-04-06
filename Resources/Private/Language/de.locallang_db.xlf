@@ -186,6 +186,10 @@
                 <source>(Optional) Returns tweets by users located within a given radius of the given latitude/longitude. Example value: "37.781157,-122.398720,1mi". the last parameter is the radius ("1mi" stands for one mile, use "km" for kilometers). Use http://mygeoposition.com/ to find your preferred geolocation</source>
                 <target state="translated">(Optional) Zeige Tweets nach der Geolocation innerhalb eines bestimmten Radius an. Z.B.: "37.781157,-122.398720,1mi". Der letzte Parameter ist der Radius ("1mi" steht für 1 Meile. Benutze "km" für Kilometer). Um eine Geolocation herauszufinden, nutze z.B. http://mygeoposition.com/</target>
             </trans-unit>
+            <trans-unit id="flexform.tab.twitter.https">
+                <source>Includes images with https</source>
+                <target state="translated">Einbinden der Bilder URLs mit https</target>
+            </trans-unit>
 
             <trans-unit id="socialfeed_wizard.title">
                 <source>Social Media Streams</source>

@@ -180,7 +180,11 @@ class TwitterAdapter extends SocialMediaAdapter
                     $feed->setText($this->trim_text($rawFeed->full_text, $options->textTrimLength, true));
 //                    $feed->setImage($placeholder);
                     if ($rawFeed->entities->media[0]->type == 'photo') {
-                        $feed->setImage($rawFeed->entities->media[0]->media_url);
+                        if ($options->twitterHTTPS) {
+                            $feed->setImage($rawFeed->entities->media[0]->media_url_https);
+                        } else {
+                            $feed->setImage($rawFeed->entities->media[0]->media_url);
+                        }
                     }
                     if ($rawFeed->entities->media[0]->url) {
                         $feed->setLink($rawFeed->entities->media[0]->url);

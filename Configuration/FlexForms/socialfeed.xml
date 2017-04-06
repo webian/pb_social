@@ -405,6 +405,15 @@
                             </config>
                         </TCEforms>
                     </settings.twitterGeoCode>
+                    <settings.twitterHTTPS>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.https</label>
+                            <!--<onChange>reload</onChange>-->
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.twitterHTTPS>
                 </el>
             </ROOT>
         </display_twitter>
