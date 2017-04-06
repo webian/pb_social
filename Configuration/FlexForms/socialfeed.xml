@@ -367,7 +367,6 @@
                     <settings.twitterShowOnlyImages>
                         <TCEforms>
                             <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.showOnlyImages</label>
-                            <!--<onChange>reload</onChange>-->
                             <config>
                                 <type>check</type>
                             </config>
@@ -408,7 +407,6 @@
                     <settings.twitterHTTPS>
                         <TCEforms>
                             <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.https</label>
-                            <!--<onChange>reload</onChange>-->
                             <config>
                                 <type>check</type>
                             </config>
