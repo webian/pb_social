@@ -57,8 +57,8 @@ class TumblrAdapter extends SocialMediaAdapter
                 $feed = $feeds->getFirst();
                 if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
                     try {
-                        $feed->setDate(new \DateTime('now'));
                         $posts = $this->getPosts($blogName, $options);
+                        $feed->setDate(new \DateTime('now'));
                         $feed->setResult($posts);
                         $this->itemRepository->updateFeed($feed);
                     } catch (\Exception $e) {

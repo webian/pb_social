@@ -112,9 +112,12 @@ class FacebookAdapter extends SocialMediaAdapter
                 if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
 
                     try {
-                        $feed->setDate(new \DateTime('now'));
-                        $feed->setResult($this->getPosts($searchId, $options->feedRequestLimit, $options->settings['facebookEdge']));
-                        $this->itemRepository->updateFeed($feed);
+                        $posts = $this->getPosts($searchId, $options->feedRequestLimit, $options->settings['facebookEdge']);
+                        if ($posts !== null) {
+                            $feed->setDate(new \DateTime('now'));
+                            $feed->setResult($posts);
+                            $this->itemRepository->updateFeed($feed);
+                        }
                     } catch (\FacebookApiException $e) {
                         $this->logger->warning(self::TYPE . ' feeds can\'t be updated', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
                     }
@@ -210,13 +213,14 @@ class FacebookAdapter extends SocialMediaAdapter
         }
         catch (\Exception $e) {
             $this->logger->warning(self::TYPE . ' - facebook request failed: ' . $searchId);
-            return NULL;
+            return null;
         }
 
 
 
         if (empty(json_decode($resp->getBody())->data) || json_encode($resp->getBody()->data) == null) {
             $this->logger->warning(self::TYPE . ' - no posts found for ' . $searchId);
+            return null;
         }
 
         // count reaction types

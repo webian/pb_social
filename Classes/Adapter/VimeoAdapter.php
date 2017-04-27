@@ -86,7 +86,7 @@ class VimeoAdapter extends SocialMediaAdapter
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
             } catch (\Exception $e) {
-                error_log('catched ' . $e->getMessage());
+                error_log('Vimeo error catched ' . $e->getMessage());
                 $this->logger->warning('initial load for ' . self::TYPE . ' feeds failed. Please check the log file typo3temp/log/typo3.log for further information.');
             }
         }

@@ -77,12 +77,14 @@ class InstagramAdapter extends SocialMediaAdapter
                                 $userPosts = $this->api->getUserMedia($searchId, $options->feedRequestLimit);
                                 if ($userPosts->meta->code >= 400) {
                                     $this->logger->error('Instagram error: "' . json_encode($userPosts->meta));
+                                    continue;
                                 }
                                 $feed->setDate(new \DateTime('now'));
                                 $feed->setResult(json_encode($userPosts));
                                 $this->itemRepository->updateFeed($feed);
                             } catch (\Exception $e) {
                                 $this->logger->error(self::TYPE . ' feeds cant be updated', array('data' => $e->getMessage()));
+                                continue;
                             }
                         }
                         $result[] = $feed;
@@ -214,7 +216,7 @@ class InstagramAdapter extends SocialMediaAdapter
                     $this->credentialRepository->saveCredential($credential);
                 }
             } else {
-                error_log('-------- need new code ---------');
+                error_log('Instagram: -------- need new code ---------');
                 $this->logger->error(self::TYPE . ' access code expired. Please provide new code in pb_social extension configuration.', array('data' => self::TYPE . ' access code invalid. Provide new code in pb_social extension configuration.'));
                 return null;
             }
@@ -225,7 +227,7 @@ class InstagramAdapter extends SocialMediaAdapter
         // test request
         $testRequest = $this->api->getUserMedia('self');
         if ($testRequest->meta->code == 400) {
-            error_log('Instagram access_token expired');
+            error_log('-------- Instagram access_token expired --------');
             $this->logger->error('Instagram access code expired. Please provide new code in pb_social extension configuration.', array('data' => 'Instagram access code invalid. Provide new code in pb_social extension configuration.'));
         }
 

@@ -580,7 +580,7 @@ class Instagram
     protected function _makeCall($function, $params = null, $method = 'GET')
     {
         if (!isset($this->_accesstoken)) {
-            error_log('must provide access_token!');
+            error_log('Instagram: must provide access_token!');
             throw new InstagramException("Error: _makeCall() | $function - This method requires an authenticated users access token.");
         }
 

@@ -75,12 +75,12 @@ class TwitterAdapter extends SocialMediaAdapter
                 $searchValue = trim($searchValue);
                 $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchValue);
 
-                $tweets = $this->getPosts($apiParameters, $options, $searchValue);
 
                 if ($feeds && $feeds->count() > 0) {
                     $feed = $feeds->getFirst();
                     if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
                         try {
+                            $tweets = $this->getPosts($apiParameters, $options, $searchValue);
                             $feed->setDate(new \DateTime('now'));
                             $feed->setResult($tweets);
                             $this->itemRepository->updateFeed($feed);
@@ -93,6 +93,7 @@ class TwitterAdapter extends SocialMediaAdapter
                 }
 
                 try {
+                    $tweets = $this->getPosts($apiParameters, $options, $searchValue);
                     $feed = new Item(self::TYPE);
                     $feed->setCacheIdentifier($searchValue);
                     $feed->setResult($tweets);
@@ -117,12 +118,12 @@ class TwitterAdapter extends SocialMediaAdapter
                 //include_entities=false => The entities node will be disincluded when set to false.
 
                 $apiParameters['screen_name'] = $searchValue;
-                $tweets = $this->getPosts($apiParameters, $options, $searchValue);
 
                 if ($feeds && $feeds->count() > 0) {
                     $feed = $feeds->getFirst();
                     if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
                         try {
+                            $tweets = $this->getPosts($apiParameters, $options, $searchValue);
                             $feed->setDate(new \DateTime('now'));
                             $feed->setResult($tweets);
                             $this->itemRepository->updateFeed($feed);
@@ -135,6 +136,7 @@ class TwitterAdapter extends SocialMediaAdapter
                 }
 
                 try {
+                    $tweets = $this->getPosts($apiParameters, $options, $searchValue);
                     $feed = new Item(self::TYPE);
                     $feed->setCacheIdentifier($searchValue);
                     $feed->setResult($tweets);

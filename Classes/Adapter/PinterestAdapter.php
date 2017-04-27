@@ -173,7 +173,7 @@ class PinterestAdapter extends SocialMediaAdapter
                     $this->credentialRepository->saveCredential($credential);
                 }
             } else {
-                error_log('-------- need new code ---------');
+                error_log('Pinterest: -------- need new code ---------');
                 $this->logger->error(self::TYPE . ' access code expired. Please provide new code in pb_social extension configuration.', array('data' => self::TYPE . ' access code invalid. Provide new code in pb_social extension configuration.'));
                 return null;
             }
