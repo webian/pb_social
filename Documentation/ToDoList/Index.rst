@@ -11,6 +11,8 @@
 To-Do list
 ==========
 
-implement more provider
+- refactor caching of feed items. remove from system cache and integrate into new pb_social cache
+- refactor "show more posts" function
+- implement more provider
 
-Bug-Tracker: https://forge.typo3.org/projects/extension-pb_social/activity
+Bug-Tracker: https://bitbucket.org/plus-b/pb_social/issues?status=new&status=open

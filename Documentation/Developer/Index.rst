@@ -24,7 +24,7 @@ you should be able to write your own adapter and add your desired provider.
 As you know comments are a very rare species, so be aware to not scare them. They also like to live among fellows. :)
 
 
-Bug-Tracker: https://forge.typo3.org/projects/extension-pb_social/activity
+Bug-Tracker: https://bitbucket.org/plus-b/pb_social/issues?status=new&status=open
 
 .. _developer-hooks:
 

@@ -29,10 +29,10 @@ Social Media Stream
 		social,social media,facebook,google+,imgur,instagram,pinterest,tumblr,twitter
 
 	:Copyright:
-		2014-2016
+		2014-2017
 
 	:Author:
-		Mikolaj Jedrzejewski, Ramon Mohi
+		Mikolaj Jedrzejewski, Ramon Mohi, Kai Lorenz, Robert Becker
 
 	:Email:
 		hello@plusb.de
