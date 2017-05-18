@@ -82,7 +82,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
 
         # Setup database connection and fetch all flexform settings #
         $this->db = $this->getDB();
-        $xml_settings = $this->db->exec_SELECTgetRows('pi_flexform', 'tt_content', 'CType = "list" AND list_type = "pbsocial_socialfeed"');
+        $xml_settings = $this->db->exec_SELECTgetRows('pi_flexform', 'tt_content', 'CType = "list" AND list_type = "pbsocial_socialfeed" AND deleted = 0');
 
         # Convert flexform settings into usable array structure #
         if (!empty($xml_settings)) {
