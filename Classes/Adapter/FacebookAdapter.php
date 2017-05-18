@@ -34,7 +34,6 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
 class FacebookAdapter extends SocialMediaAdapter
 {
 
@@ -57,7 +56,7 @@ class FacebookAdapter extends SocialMediaAdapter
         $this->api = new Facebook([
             'app_id' => $apiId,
             'app_secret' => $apiSecret,
-            'default_graph_version' => 'v2.8',
+            'default_graph_version' => 'v2.9',
         ]);
 
         // Get access_token via grant_type=client_credentials
@@ -139,7 +138,6 @@ class FacebookAdapter extends SocialMediaAdapter
             }
 
 
-
         }
 
         return $this->getFeedItemsFromApiRequest($result, $options);
@@ -203,19 +201,34 @@ class FacebookAdapter extends SocialMediaAdapter
                 'GET',
                 '/' . $searchId . '/' . $request,
                 array(
-                    'fields' => 'id,link,message,picture,comments.limit(999),created_time,full_picture,reactions.limit(9999)',
+                    'fields' => '
+                        id,
+                        link,
+                        message,
+                        picture,
+                        comments.summary(total_count).limit(0).as(comments),
+                        created_time,
+                        full_picture,
+                        reactions.summary(total_count).limit(0).as(reactions),
+                        reactions.type(NONE).summary(total_count).limit(0).as(none),
+                        reactions.type(LIKE).summary(total_count).limit(0).as(like),
+                        reactions.type(LOVE).summary(total_count).limit(0).as(love),
+                        reactions.type(WOW).summary(total_count).limit(0).as(wow),
+                        reactions.type(HAHA).summary(total_count).limit(0).as(haha),
+                        reactions.type(SAD).summary(total_count).limit(0).as(sad),
+                        reactions.type(ANGRY).summary(total_count).limit(0).as(angry),
+                        reactions.type(THANKFUL).summary(total_count).limit(0).as(thankful)
+                        ',
                     'limit' => $limit
                     // 'include_hidden' => false,
                     // 'is_published' => true
                 ),
                 $this->access_token
             );
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->warning(self::TYPE . ' - facebook request failed: ' . $searchId);
             return null;
         }
-
 
 
         if (empty(json_decode($resp->getBody())->data) || json_encode($resp->getBody()->data) == null) {
@@ -227,8 +240,17 @@ class FacebookAdapter extends SocialMediaAdapter
         $raw_body = json_decode($resp->getBody());
         for ($c = 0; $c < count($raw_body->data); $c++) {
             $reactions = $raw_body->data[$c]->reactions->data;
-            $_reactions = array('NONE'=>0,'LIKE'=>0,'LOVE'=>0,'WOW'=>0,'HAHA'=>0,'SAD'=>0,'ANGRY'=>0,'THANKFUL'=>0);
-            if (is_array($reactions)){
+            $_reactions = array(
+                'NONE' => $raw_body->data[$c]->none->summary->total_count,
+                'LIKE' => $raw_body->data[$c]->like->summary->total_count,
+                'LOVE' => $raw_body->data[$c]->love->summary->total_count,
+                'WOW' => $raw_body->data[$c]->wow->summary->total_count,
+                'HAHA' => $raw_body->data[$c]->haha->summary->total_count,
+                'SAD' => $raw_body->data[$c]->sad->summary->total_count,
+                'ANGRY' => $raw_body->data[$c]->angry->summary->total_count,
+                'THANKFUL' => $raw_body->data[$c]->thankful->summary->total_count
+            );
+            if (is_array($reactions)) {
                 foreach ($reactions as $reaction) {
                     if (in_array($reaction->type, $_reactions)) {
                         $_reactions[$reaction->type]++;
