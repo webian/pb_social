@@ -425,7 +425,6 @@
                     <settings.youtubeEnabled>
                         <TCEforms>
                             <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.active</label>
-                           <!--  &lt;!&ndash;<onChange>reload</onChange>&ndash;&gt; -->
                             <config>
                                 <type>check</type>
                             </config>
@@ -434,7 +433,6 @@
                     <settings.youtubeSearch>
                         <TCEforms>
                             <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.searchword</label>
-                            <!-- &lt;!&ndash;<displayCond>FIELD:settings.instagramEnabled:=:1</displayCond>&ndash;&gt; -->
                             <config>
                                 <type>input</type>
                             </config>
@@ -443,12 +441,19 @@
                     <settings.youtubePlaylist>
                         <TCEforms>
                             <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.playlist</label>
-                            <!-- &lt;!&ndash;<displayCond>FIELD:settings.instagramEnabled:=:1</displayCond>&ndash;&gt; -->
                             <config>
                                 <type>input</type>
                             </config>
                         </TCEforms>
                     </settings.youtubePlaylist>
+                    <settings.youtubeChannel>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.channel</label>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.youtubeChannel>
                     <settings.youtubeLanguage>
                         <TCEforms>
                             <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.lang</label>

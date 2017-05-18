@@ -313,6 +313,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
             $cacheIdentifier = $this->calculateCacheIdentifier(array(
                 "youtube_".$adapterOptions->settings['youtubeSearch'],
                 "youtube_".$adapterOptions->settings['youtubePlaylist'],
+                "youtube_".$adapterOptions->settings['youtubeChannel'],
                 "youtube_".$adapterOptions->settings['youtubeType'],
                 "youtube_".$adapterOptions->settings['youtubeLanguage'],
                 "youtube_".$adapterOptions->settings['youtubeOrder']

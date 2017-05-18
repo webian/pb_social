@@ -304,18 +304,20 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
                     $config_apiKey = $extConf['socialfeed.']['youtube.']['apikey'];
                     $adapterOptions->youtubeSearch = $settings['youtubeSearch'];
                     $adapterOptions->youtubePlaylist = $settings['youtubePlaylist'];
+                    $adapterOptions->youtubeChannel = $settings['youtubeChannel'];
                     $adapterOptions->youtubeType = $settings['youtubeType'];
                     $adapterOptions->youtubeLanguage = $settings['youtubeLanguage'];
                     $adapterOptions->youtubeOrder = $settings['youtubeOrder'];
 
                     if (empty($config_apiKey)) {
                         $this->logger->warning(self::TYPE_YOUTUBE . ' credentials not set');
-                    } elseif (empty($adapterOptions->youtubeSearch) && empty($adapterOptions->youtubePlaylist)) {
+                    } elseif (empty($adapterOptions->youtubeSearch) && empty($adapterOptions->youtubePlaylist) && empty($adapterOptions->youtubeChannel)) {
                         $this->logger->warning(self::TYPE_YOUTUBE . ' no search term defined');
                     } else {
                         $cacheIdentifier = $this->itemController->calculateCacheIdentifier(array(
                             "youtube_".$adapterOptions->settings['youtubeSearch'],
                             "youtube_".$adapterOptions->settings['youtubePlaylist'],
+                            "youtube_".$adapterOptions->settings['youtubeChannel'],
                             "youtube_".$adapterOptions->settings['youtubeType'],
                             "youtube_".$adapterOptions->settings['youtubeLanguage'],
                             "youtube_".$adapterOptions->settings['youtubeOrder']

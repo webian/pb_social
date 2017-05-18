@@ -42,6 +42,9 @@ class YoutubeAdapter extends SocialMediaAdapter
     // get items from playlist api call
     const YT_SEARCH_PLAYLIST = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=';
 
+    // get items from channel api call
+    const YT_SEARCH_CHANNEL = 'https://www.googleapis.com/youtube/v3/search?channelId=';
+
     private $appKey;
 
     public function __construct($appKey, $itemRepository)
@@ -76,6 +79,9 @@ class YoutubeAdapter extends SocialMediaAdapter
         $searchTerms = explode(',', $options->youtubeSearch);
         if ($options->youtubePlaylist) {
             $searchTerms = explode(',', $options->youtubePlaylist);
+        }
+        if ($options->youtubeChannel) {
+            $searchTerms = explode(',', $options->youtubeChannel);
         }
 
         foreach ($searchTerms as $searchString) {
@@ -154,8 +160,11 @@ class YoutubeAdapter extends SocialMediaAdapter
     {
         $headers = array('Content-Type: application/json');
 
-        // use different api call for playlist
-        if ($options->youtubePlaylist) {
+        // use different api call for channel
+        if ($options->youtubeChannel) {
+            $url = self::YT_SEARCH_CHANNEL . $searchString . '&' . http_build_query($fields);
+        } // use different api call for playlist
+        else if ($options->youtubePlaylist) {
             $url = self::YT_SEARCH_PLAYLIST . $searchString . '&' . http_build_query($fields);
         } else {
             $url = self::YT_SEARCH . $searchString . '&' . http_build_query($fields);

@@ -216,6 +216,10 @@
                 <source>Youtube playlist. If set, searchword will be ignored</source>
                 <target state="translated">Youtube playlist. Wenn gesetzt wird das Suchwort ignoriert</target>
             </trans-unit>
+            <trans-unit id="flexform.tab.youtube.channel">
+                <source>Youtube channel-id. If set, searchword &amp; playlist will be ignored</source>
+                <target state="translated">Youtube Channel-ID. Wenn gesetzt wird das Suchwort &amp; die Playlist ignoriert</target>
+            </trans-unit>
             <trans-unit id="flexform.tab.youtube.lang">
                 <source>(Optional) Show videos in a specific language (for example: use "de" for videos in german language). For a list look at the ISO 639-1 codes on http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes</source>
                 <target state="translated">(Optional) Zeige Videos nur in der entsprechenden Sprache an (z.B. "de" für Videos, die in der deutschen Sprache sind). Für eine Liste, schaue auf die ISO 639-1 Codes auf http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes</target>
