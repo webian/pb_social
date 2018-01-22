@@ -30,6 +30,9 @@ namespace PlusB\PbSocial\Adapter;
 abstract class SocialMediaAdapter
 {
 
+    const TYPE = 'socialAediaAdapter';
+
+    public $type = self::TYPE;
     public $logger;
     public $itemRepository;
 
@@ -96,5 +99,17 @@ abstract class SocialMediaAdapter
             }
         }
         return false;
+    }
+
+    public function logError($message)
+    {
+        $GLOBALS["BE_USER"]->simplelog($this->type . ": " . $message, "pb_social", 1);
+        $this->logger->error($this->type . " " . $message, array("data" => $this->type . " " . $message));
+    }
+
+    public function logWarning($message)
+    {
+        $GLOBALS["BE_USER"]->simplelog($this->type . ": " . $message, "pb_social", 0);
+        $this->logger->warning($this->type . " " . $message, array("data" => $this->type . " " . $message));
     }
 }
