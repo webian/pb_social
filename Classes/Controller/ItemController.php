@@ -1,7 +1,9 @@
 <?php
 namespace PlusB\PbSocial\Controller;
 
+use GeorgRinger\News\Domain\Model\Dto\NewsDemand;
 use PlusB\PbSocial\Adapter;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /***************************************************************
  *
@@ -148,6 +150,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
      */
     public function showSocialFeedAction($ajax = false)
     {
+
         $extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pb_social']); //TODO => search for a better way of accessing extconf
         $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
 
@@ -273,6 +276,21 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
             }
         }
 
+        if ($settings['linkedinEnabled'] === '1') {
+            $linkedInFeedFilters =
+                ($adapterOptions->settings['linkedinJobPostings']) .
+                ($adapterOptions->settings['linkedinNewProducts']) .
+                ($adapterOptions->settings['linkedinStatusUpdates']);
+            $cacheIdentifier = $this->calculateCacheIdentifier(array(
+                "linkedin_".$adapterOptions->settings['linkedinCompanyIds'],
+                "linkedin_".$linkedInFeedFilters
+            ));
+
+            if ($content = $cache->get($cacheIdentifier)) { // the cached content is available
+                $results[] = $content;
+            }
+        }
+
         if ($settings['pinterestEnabled'] === '1') {
             $cacheIdentifier = $this->calculateCacheIdentifier(array(
                 "pinterest_".$adapterOptions->settings['username'],
@@ -327,6 +345,17 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         if ($settings['vimeoEnabled'] === '1') {
             $cacheIdentifier = $this->calculateCacheIdentifier(array(
                 "vimeo_".$adapterOptions->settings['vimeoChannel']
+            ));
+
+            if ($content = $cache->get($cacheIdentifier)) { // the cached content is available
+                $results[] = $content;
+            }
+        }
+
+        if ($settings['newsEnabled'] === '1') {
+
+            $cacheIdentifier = $this->calculateCacheIdentifier(array(
+                "txnews_".$adapterOptions->settings['newsCategories']
             ));
 
             if ($content = $cache->get($cacheIdentifier)) { // the cached content is available

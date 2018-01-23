@@ -104,6 +104,18 @@
 .tx-pb-social .pb-list-item-instagram .icon {
   background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/instagram.png");
 }
+.tx-pb-social .pb-list-item-linkedin .placeholder-image {
+  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/Placeholder/linkedin.jpg");
+}
+.tx-pb-social .pb-list-item-linkedin .icon {
+  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/linkedin.png");
+}
+.tx-pb-social .pb-list-item-txnews .placeholder-image {
+  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/Placeholder/default.jpg");
+}
+.tx-pb-social .pb-list-item-txnews .icon {
+  background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/typo3.png");
+}
 .tx-pb-social .pb-list-item-pinterest .icon {
   background-image: url("/typo3conf/ext/pb_social/Resources/Public/Icons/pinterest.png");
 }

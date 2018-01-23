@@ -116,6 +116,31 @@
                 <target state="translated">Die aktuellsten Bilder mit einem bestimmten Hashtag anzeigen. Verwende Kommas, um mehrere anzuzeigen</target>
             </trans-unit>
 
+            <trans-unit id="flexform.tab.linkedin.caption">
+                <source>LinkedIn</source>
+                <target state="translated">LinkedIn</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.linkedin.active">
+                <source>Active</source>
+                <target state="translated">Ausgabe aktiviert</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.linkedin.companyIds">
+                <source>LinkedIn company ID. !! you need to be administrator of the given company page(s) !!</source>
+                <target state="translated">LinkedIn Unternehmens-ID. !! Sie müssen Administrator der LinkedIn-Unternehmensseite(n) sein !!</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.linkedin.jobPostings">
+                <source>Show job postings</source>
+                <target state="translated">Job-Postings anzeigen</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.linkedin.newProducts">
+                <source>Show product postings</source>
+                <target state="translated">Produkt-Postings anzeigen</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.linkedin.statusUpdates">
+                <source>Show status updates</source>
+                <target state="translated">Status-Updates anzeigen</target>
+            </trans-unit>
+
             <trans-unit id="flexform.tab.pinterest.caption">
                 <source>Pinterest</source>
                 <target state="translated">Pinterest</target>
@@ -282,6 +307,27 @@
                 <target state="translated">Filter</target>
             </trans-unit> -->
 
+            <!-- tx_news -->
+            <trans-unit id="flexform.tab.news.caption">
+                <source>News</source>
+                <target state="translated">News</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.news.active">
+                <source>Active</source>
+                <target state="translated">Ausgabe aktiviert</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.news.useHttps">
+                <source>Generate https links (check if your site uses https protocol)</source>
+                <target state="translated">Links mit https generieren (auswählen, wenn Ihre Webseite https nutzt)</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.news.newsDetailPageUid">
+                <source>uid of news detail page</source>
+                <target state="translated">uid der News-Detailseite</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.news.categories">
+                <source>Define the category of news. Please provide the category's pid (hover over category name). Leaving this empty will output all news.</source>
+                <target state="translated">News-Kategorie. Bitte die pid der jeweiligen Kategorie angeben (hover über den Namen der Kategorie) -  Bleibt dieses Feld leer, werden alle News ausgegeben.</target>
+            </trans-unit>
 
         </body>
     </file>

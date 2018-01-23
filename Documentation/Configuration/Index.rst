@@ -16,6 +16,7 @@ Dear Typo3 Integrator,
 the next steps will hopefully explain you how to use this extension.
 
 1. Go to the extension manger, install this extension and open it's configuration panel.
+   For projects in composer mode "composer require plusb/pb_social" should do the trick.
 2. Enter all your available social media account data into the respective input fields. 
    If you're new to this or don't have the data, the following links will give you a 
    base direction where to get these credentials.
@@ -24,19 +25,23 @@ the next steps will hopefully explain you how to use this extension.
    - code.google.com/apis/console/ (Public Api-Access -> Generate New Key -> Server Key)
    - instagram.com/developer/clients/manage/
    - dev.twitter.com/apps/
-   - www.tumblr.com/oauth/apps
+   - tumblr.com/oauth/apps
    - developers.pinterest.com/apps/
    - api.imgur.com/
+   - linkedin.com/developer/apps
 
     You might need to grant special permissions and add users to your app etc.
     All the details should be documented on the pages above.
     If you encounter any difficulties, check the FAQ section or contact us at hello@plusb.de
+    With version 1.2.7 you will be able to integrate tx_news posts into the feed.
+    It is possible to display news by category. The plugin needs a news plugin running on any other site to generate detail view links.
+    Just make sure tx_news is installed and running and you have some news to display.
 3. Include the extension typoscript
 4. Navigate to an empty page and insert the "Socialfeed"-Plugin
 5. Open the flexform and navigate through the Provider-Tabs you want to activate.
 
-   - find facebook id => http://findmyfacebookid.com
-   - find instagram id => http://jelled.com/instagram/lookup-user-id
+   - find facebook id => https://findmyfbid.com/
+   - find instagram id => https://codeofaninja.com/tools/find-instagram-user-id
    - find google+ id => http://ansonalex.com/google-plus/how-do-i-find-my-google-plus-user-id-google/
 
 6. You can use multiple search values by making a comma separated string
@@ -50,6 +55,8 @@ the next steps will hopefully explain you how to use this extension.
    - https://curl.haxx.se/docs/sslcerts.html
    - https://curl.haxx.se/ca/cacert.pem
    - TL:DR http://flwebsites.biz/posts/how-fix-curl-error-60-ssl-issue
+   - add/upload a valid cacert.pem file to your php root directory and add the following line to the php.ini file
+   - curl.cainfo="PATH TO\php\cacert.pem"
 
    For a quick an dirty solution we included a checkbox in the extension configuration that turns off ssl verification for all pb_social requests
    ATTENTION: Activating this checkbox might be a potential security risk!
@@ -109,5 +116,10 @@ so you'll now have to invite users to your sandbox in roder to get their posts. 
 
 - The redirect uri is just an obligatory value you must provide to be able to authenticate via OAuth. Simply type in the base url of the page you use the plugin for
 or your business homepage. The APIs just need an url they can send the access code to, so just provide any url you like in the respective developer console.
-   
-   
+
+**How do I setup LinkedIn?**
+
+- For showing LinkedIn company posts, you need to be administrator of this company. In the developer backend you'll need to set permissions "r_basicprofile" and "rw_company_admin".
+After setting up permissions proceed by following steps 1 to 3 of this manual: https://developer.linkedin.com/docs/oauth2 (as usual redirect URL can be any url since you only need the given codes).
+It is important to exchange the authorization code, obtained in step 2, for an access token very quickly, since these codes expire after approximately 20 seconds.
+Tools like postman can be useful for this but are not necessary.

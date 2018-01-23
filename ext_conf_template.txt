@@ -28,6 +28,9 @@
 # customcategory=tumblr=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:tumblr
 # customsubcategory=tumblr=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:tumblr.intro
 
+# customcategory=linkedin=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:linkedin
+# customsubcategory=linkedin=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:linkedin.intro
+
 socialfeed{
     # cat=general/0001; type=user[EXT:pb_social/lib/class.pb_social_extmanager.php:pb_social_extmanager->getLogoAndLink]; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:general.external_link
     external_link=0
@@ -94,6 +97,16 @@ socialfeed{
     tumblr.token=
     # cat=tumblr/tumblr/0040; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:tumblr.token_secret
     tumblr.token_secret=
+
+    # cat=linkedin/linkedin/0010; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:linkedin.client.key
+    linkedin.client.key=
+    # cat=linkedin/linkedin/0020; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:linkedin.client.secret
+    linkedin.client.secret=
+    # cat=linkedin/linkedin/0030; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:linkedin.client.callback_url
+    linkedin.client.callback_url=
+    # cat=linkedin/linkedin/0040; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:linkedin.access_token
+    linkedin.access_token=
+
 }
 
 

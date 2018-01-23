@@ -1,7 +1,10 @@
 <?php
 namespace PlusB\PbSocial\Command;
 
+use GeorgRinger\News\Domain\Model\Dto\NewsDemand;
+use GeorgRinger\News\Domain\Model\News;
 use PlusB\PbSocial\Adapter;
+use TYPO3\CMS\Core\Exception;
 
 class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandController
 {
@@ -9,10 +12,12 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
     const TYPE_GOOGLE = 'googleplus';
     const TYPE_IMGUR = 'imgur';
     const TYPE_INSTAGRAM = 'instagram';
+    const TYPE_LINKEDIN = 'linkedin';
     const TYPE_PINTEREST = 'pinterest';
     const TYPE_TWITTER = 'twitter';
     const TYPE_TUMBLR = 'tumblr';
     const TYPE_YOUTUBE = 'youtube';
+    const TYPE_TX_NEWS = 'tx_news';
     const TYPE_VIMEO = 'vimeo';
     const TYPE_DUMMY = 'dummy';
 
@@ -39,6 +44,14 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
      * @inject
      */
     protected $credentialRepository;
+
+    /**
+     * newsRepository
+     *
+     * @var \GeorgRinger\News\Domain\Repository\NewsRepository
+     * @inject
+     */
+    protected $newsRepository = null;
 
     /**
      * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
@@ -71,6 +84,9 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
     {
         # Initialize logger
         $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
+
+        # used for logging purposes
+        $extKey = 'pb_social';
 
         # Get extension configuration #
         $extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pb_social']);
@@ -198,6 +214,45 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
                             $cache->set($cacheIdentifier, $adapter->getResultFromApi($adapterOptions));
                         } catch (\Exception $e) {
                             $this->logger->warning($e->getMessage());
+                        }
+                    }
+                }
+
+                if ($settings['linkedinEnabled'] === '1') {
+
+                    # check api key #
+                    $config_clientId = $extConf['socialfeed.']['linkedin.']['client.']['key'];
+                    $config_clientSecret = $extConf['socialfeed.']['linkedin.']['client.']['secret'];
+                    $config_clientCallback = $extConf['socialfeed.']['linkedin.']['client.']['callback_url'];
+                    $config_access_code = $extConf['socialfeed.']['linkedin.']['access_token'];
+                    $adapterOptions->companyIds = $settings['linkedinCompanyIds'];
+                    $adapterOptions->showJobPostings = $settings['linkedinJobPostings'];
+                    $adapterOptions->showNewProducts = $settings['linkedinNewProducts'];
+                    $adapterOptions->showStatusUpdates = $settings['linkedinStatusUpdates'];
+
+                    if (empty($config_clientId) || empty($config_clientSecret) || empty($config_access_code)|| empty($config_clientCallback)) {
+                        $this->logger->warning(self::TYPE_LINKEDIN . ' credentials not set');
+                        $GLOBALS['BE_USER']->simplelog(self::TYPE_LINKEDIN . ' credentials not set', $extKey, 1);
+                    } elseif (empty($adapterOptions->companyIds)) {
+                        $this->logger->warning(self::TYPE_LINKEDIN . ' no company ID term defined');
+                        $GLOBALS['BE_USER']->simplelog(self::TYPE_LINKEDIN . ' no company ID term defined', $extKey, 1);
+                    } else {
+                        $linkedInFeedFilters =
+                            ($adapterOptions->settings['linkedinJobPostings']) .
+                            ($adapterOptions->settings['linkedinNewProducts']) .
+                            ($adapterOptions->settings['linkedinStatusUpdates']);
+                        $cacheIdentifier = $this->itemController->calculateCacheIdentifier(array(
+                            "linkedin_".$adapterOptions->companyIds,
+                            "linkedin_".$linkedInFeedFilters
+                        ));
+
+                        # retrieve data from adapter #
+                        $adapter = new Adapter\LinkedInAdapter($config_clientId, $config_clientSecret, $config_clientCallback, $config_access_code, $itemRepository, $this->credentialRepository);
+                        try {
+                            $cache->set($cacheIdentifier, $adapter->getResultFromApi($adapterOptions));
+                        } catch (\Exception $e) {
+                            $this->logger->warning($e->getMessage());
+                            $GLOBALS['BE_USER']->simplelog($e->getMessage(), $extKey, 1);
                         }
                     }
                 }
@@ -361,8 +416,48 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
                     }
                 }
 
+                if ($settings['newsEnabled'] === '1') {
 
+                    # check for news extension #
+                    try
+                    {
+                        # simply create a NewsDemand. If it fails tx_news is not installed..
+                        $newsDemand = new NewsDemand();
+                        $tx_news_loaded = true;
 
+                    } catch (Exception $e) #FileNotFoundException
+                    {
+                        # news not found abort mission
+                        $tx_news_loaded = false;
+                        $this->logger->warning(self::TYPE_TX_NEWS . ' extension not loaded.');
+                        $GLOBALS['BE_USER']->simplelog(self::TYPE_TX_NEWS . ' extension not loaded', $extKey, 1);
+                    }
+                    $adapterOptions->newsCategories = $settings['newsCategories'];
+                    $adapterOptions->newsDetailPageUid = $settings['newsDetailPageUid'];
+                    if ($settings['useHttpsLinks']) $adapterOptions->useHttps = true;
+
+                    # user should set a news category but it is not required. in this case all news are shown in feed
+                    if (empty($adapterOptions->newsCategories))
+                    {
+                        $this->logger->warning(self::TYPE_TX_NEWS . ': no news category defined, will output all available news');
+                        $GLOBALS['BE_USER']->simplelog(self::TYPE_TX_NEWS . ': no news category defined, will output all available news', $extKey, 0);
+                    }
+                    if ($tx_news_loaded)
+                    {
+                        $cacheIdentifier = $this->itemController->calculateCacheIdentifier(array(
+                            "txnews_".$adapterOptions->newsCategories
+                        ));
+
+                        # retrieve data from NewsDemand #
+                        $adapter = new Adapter\TxNewsAdapter($newsDemand, $itemRepository, $this->newsRepository);
+                        try {
+                            $cache->set($cacheIdentifier, $adapter->getResultFromApi($adapterOptions));
+                        } catch (\Exception $e) {
+                            $this->logger->warning($e->getMessage());
+                            $GLOBALS['BE_USER']->simplelog(self::TYPE_TX_NEWS . ': ' . $e->getMessage(), $extKey, 1);
+                        }
+                    }
+                }
 
             }
         }
