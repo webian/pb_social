@@ -73,7 +73,7 @@ class GooglePlusAdapter extends SocialMediaAdapter
                         $feed->setResult($posts);
                         $this->itemRepository->updateFeed($feed);
                     } catch (\Exception $e) {
-                        $this->logger->error(self::TYPE . ' feeds cant be updated', array('data' => $e->getMessage()));
+                        $this->logError("feeds can't be updated - " . $e->getMessage());
                     }
                 }
                 $result[] = $feed;
@@ -89,7 +89,7 @@ class GooglePlusAdapter extends SocialMediaAdapter
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
             } catch (\Exception $e) {
-                $this->logger->error('initial load for ' . self::TYPE . ' feeds failed', array('data' => $e->getMessage()));
+                $this->logError('initial load for feed failed - ' . $e->getMessage());
             }
         }
 

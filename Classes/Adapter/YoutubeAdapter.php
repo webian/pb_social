@@ -96,7 +96,7 @@ class YoutubeAdapter extends SocialMediaAdapter
                         $this->itemRepository->updateFeed($feed);
                         $result[] = $feed;
                     } catch (\Exception $e) {
-                        $this->logger->error(self::TYPE . ' feeds cant be updated', array('data' => $e->getMessage()));
+                        $this->logError("feeds can't be updated - " . $e->getMessage());
                     }
                 }
                 continue;
@@ -110,8 +110,7 @@ class YoutubeAdapter extends SocialMediaAdapter
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
             } catch (\Exception $e) {
-                error_log('YouTube error catched ' . $e->getMessage());
-                $this->logger->warning('initial load for ' . self::TYPE . ' feeds failed. Please check the log file typo3temp/log/typo3.log for further information.');
+                $this->logError('initial load for feed failed - ' . $e->getMessage());
             }
         }
 

@@ -76,14 +76,14 @@ class InstagramAdapter extends SocialMediaAdapter
                             try {
                                 $userPosts = $this->api->getUserMedia($searchId, $options->feedRequestLimit);
                                 if ($userPosts->meta->code >= 400) {
-                                    $this->logger->error('Instagram error: "' . json_encode($userPosts->meta));
+                                    $this->logWarning('error: ' . json_encode($userPosts->meta));
                                     continue;
                                 }
                                 $feed->setDate(new \DateTime('now'));
                                 $feed->setResult(json_encode($userPosts));
                                 $this->itemRepository->updateFeed($feed);
                             } catch (\Exception $e) {
-                                $this->logger->error(self::TYPE . ' feeds cant be updated', array('data' => $e->getMessage()));
+                                $this->logError("feeds can't be updated - " . $e->getMessage());
                                 continue;
                             }
                         }
@@ -94,7 +94,7 @@ class InstagramAdapter extends SocialMediaAdapter
                     try {
                         $userPosts = $this->api->getUserMedia($searchId, $options->feedRequestLimit);
                         if ($userPosts->meta->code >= 400) {
-                            $this->logger->error('Instagram error: ' . json_encode($userPosts->meta));
+                            $this->logWarning('error: ' . json_encode($userPosts->meta));
                         }
                         $feed = new Item(self::TYPE);
                         $feed->setCacheIdentifier($searchId);
@@ -104,7 +104,7 @@ class InstagramAdapter extends SocialMediaAdapter
                         $this->itemRepository->saveFeed($feed);
                         $result[] = $feed;
                     } catch (\Exception $e) {
-                        $this->logger->error('initial load for ' . self::TYPE . ' feeds failed', array('data' => $e->getMessage()));
+                        $this->logError('initial load for feed failed - ' . $e->getMessage());
                     }
                 }
             }
@@ -122,13 +122,13 @@ class InstagramAdapter extends SocialMediaAdapter
                         try {
                             $tagPosts = $this->api->getTagMedia($searchId, $options->feedRequestLimit);
                             if ($tagPosts->meta->code >= 400) {
-                                $this->logger->error('Instagram error: "' . json_encode($tagPosts->meta));
+                                $this->logWarning('error: ' . json_encode($tagPosts->meta));
                             }
                             $feed->setDate(new \DateTime('now'));
                             $feed->setResult(json_encode($tagPosts));
                             $this->itemRepository->updateFeed($feed);
                         } catch (\Exception $e) {
-                            $this->logger->error(self::TYPE . ' feeds cant be updated', array('data' => $e->getMessage()));
+                            $this->logError("feeds can't be updated - " . $e->getMessage());
                         }
                     }
                     $result[] = $feed;
@@ -138,7 +138,7 @@ class InstagramAdapter extends SocialMediaAdapter
                 try {
                     $tagPosts = $this->api->getTagMedia($searchId, $options->feedRequestLimit);
                     if ($tagPosts->meta->code >= 400) {
-                        $this->logger->error('Instagram error: "' . json_encode($tagPosts->meta));
+                        $this->logWarning('error: ' . json_encode($tagPosts->meta));
                     }
                     $feed = new Item(self::TYPE);
                     $feed->setCacheIdentifier($searchId);
@@ -147,7 +147,7 @@ class InstagramAdapter extends SocialMediaAdapter
                     $this->itemRepository->saveFeed($feed);
                     $result[] = $feed;
                 } catch (\Exception $e) {
-                    $this->logger->error('initial load for ' . self::TYPE . ' feeds failed', array('data' => $e->getMessage()));
+                    $this->logError('initial load for feed failed - ' . $e->getMessage());
                 }
             }
         }
@@ -216,8 +216,7 @@ class InstagramAdapter extends SocialMediaAdapter
                     $this->credentialRepository->saveCredential($credential);
                 }
             } else {
-                error_log('Instagram: -------- need new code ---------');
-                $this->logger->error(self::TYPE . ' access code expired. Please provide new code in pb_social extension configuration.', array('data' => self::TYPE . ' access code invalid. Provide new code in pb_social extension configuration.'));
+                $this->logError('access code expired. Please provide new code in pb_social extension configuration.');
                 return null;
             }
         }
@@ -227,8 +226,7 @@ class InstagramAdapter extends SocialMediaAdapter
         // test request
         $testRequest = $this->api->getUserMedia('self');
         if ($testRequest->meta->code == 400) {
-            error_log('-------- Instagram access_token expired --------');
-            $this->logger->error('Instagram access code expired. Please provide new code in pb_social extension configuration.', array('data' => 'Instagram access code invalid. Provide new code in pb_social extension configuration.'));
+            $this->logError('access code expired. Please provide new code in pb_social extension configuration.');
         }
 
         return $credential->getAccessToken();

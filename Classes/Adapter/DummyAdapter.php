@@ -63,7 +63,8 @@ class DummyAdapter extends SocialMediaAdapter
         try {
             // Simple request to test if the service is working
         } catch (\Exception $e) {
-            $this->logger->warning(self::TYPE . ' exception - ' . $e->getMessage());
+            // Log errors with automatic prefix for this provider.
+            $this->logError($e->getMessage());
         }
     }
 
@@ -88,8 +89,8 @@ class DummyAdapter extends SocialMediaAdapter
                         $feed->setDate(new \DateTime('now'));
                         $feed->setResult($posts);
                         $this->itemRepository->updateFeed($feed);
-                    } catch (\FacebookApiException $e) {
-                        $this->logger->warning(self::TYPE . ' feeds can\'t be updated', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
+                    } catch (\Exception $e) {
+                        $this->logError("feeds can't be updated - " . $e->getMessage());
                     }
                 }
                 $result[] = $feed;
@@ -106,8 +107,8 @@ class DummyAdapter extends SocialMediaAdapter
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
-            } catch (\FacebookApiException $e) {
-                $this->logger->warning('initial load for ' . self::TYPE . ' feeds failed', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
+            } catch (\Exception $e) {
+                $this->logError('initial load for feed failed - ' . $e->getMessage());
             }
         }
 
@@ -192,8 +193,7 @@ class DummyAdapter extends SocialMediaAdapter
                     $this->credentialRepository->saveCredential($credential);
                 }
             } else {
-                error_log('-------- need new code ---------');
-                $this->logger->error(self::TYPE . ' access code expired. Please provide new code in pb_social extension configuration.', array('data' => self::TYPE . ' access code invalid. Provide new code in pb_social extension configuration.'));
+                $this->logWarning('access code expired. Please provide new code in pb_social extension configuration.');
                 return null;
             }
         }

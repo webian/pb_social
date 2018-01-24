@@ -96,29 +96,29 @@ class FacebookAdapter extends SocialMediaAdapter
 
         $facebookSearchIds = $options->settings['facebookSearchIds'];
         if (empty($facebookSearchIds)) {
-            $this->logger->warning(self::TYPE . ' - no search term defined');
+            $this->logWarning('- no search term defined');
             return null;
         }
 
         foreach (explode(',', $facebookSearchIds) as $searchId) {
             $searchId = trim($searchId);
             $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchId);
-
             if ($feeds && $feeds->count() > 0) {
-                /** @var \PlusB\PbSocial\Domain\Model\Item $feed */
                 $feed = $feeds->getFirst();
-
                 if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
-
-                    try {
+                    try
+                    {
                         $posts = $this->getPosts($searchId, $options->feedRequestLimit, $options->settings['facebookEdge']);
-                        if ($posts !== null) {
+                        if ($posts !== null)
+                        {
                             $feed->setDate(new \DateTime('now'));
                             $feed->setResult($posts);
                             $this->itemRepository->updateFeed($feed);
                         }
-                    } catch (\FacebookApiException $e) {
-                        $this->logger->warning(self::TYPE . ' feeds can\'t be updated', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
+                    }
+                    catch (\FacebookApiException $e)
+                    {
+                        $this->logError("feeds can't be updated - " . $e->getMessage());
                     }
                 }
                 $result[] = $feed;
@@ -134,9 +134,8 @@ class FacebookAdapter extends SocialMediaAdapter
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
             } catch (\FacebookApiException $e) {
-                $this->logger->warning('initial load for ' . self::TYPE . ' feeds failed', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
+                $this->logError('initial load for feed failed - ' . $e->getMessage());
             }
-
 
         }
 
@@ -148,7 +147,6 @@ class FacebookAdapter extends SocialMediaAdapter
         $rawFeeds = array();
         $feedItems = array();
 
-        $placeholder = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Public/Icons/Placeholder/fb.jpg';
         //this can probably go in SocialMediaAdapter
         if (!empty($result)) {
             foreach ($result as $fb_feed) {
@@ -226,13 +224,12 @@ class FacebookAdapter extends SocialMediaAdapter
                 $this->access_token
             );
         } catch (\Exception $e) {
-            $this->logger->warning(self::TYPE . ' - facebook request failed: ' . $searchId);
+            $this->logWarning('request failed: ' . $e->getMessage());
             return null;
         }
 
-
         if (empty(json_decode($resp->getBody())->data) || json_encode($resp->getBody()->data) == null) {
-            $this->logger->warning(self::TYPE . ' - no posts found for ' . $searchId);
+            $this->logWarning('no posts found for ' . $searchId);
             return null;
         }
 
@@ -276,7 +273,7 @@ class FacebookAdapter extends SocialMediaAdapter
         );
 
         if (empty(json_decode($resp->getBody())->data)) {
-            $this->logger->warning('Facebook-Adapter: failed to get reactions for post ' . $post_id);
+            $this->logWarning('failed to get reactions for post ' . $post_id);
         }
 
         return $resp->getBody();

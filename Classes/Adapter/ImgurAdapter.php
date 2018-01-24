@@ -64,7 +64,7 @@ class ImgurAdapter extends SocialMediaAdapter
                         $feed->setResult($posts);
                         $this->itemRepository->updateFeed($feed);
                     } catch (\Exception $e) {
-                        $this->logger->warning(self::TYPE . ' feeds can\'t be updated', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
+                        $this->logError("feeds can't be updated - " . $e->getMessage());
                     }
                 }
                 $result[] = $feed;
@@ -81,7 +81,7 @@ class ImgurAdapter extends SocialMediaAdapter
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
             } catch (\Exception $e) {
-                $this->logger->warning('initial load for ' . self::TYPE . ' feeds failed', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
+                $this->logError('initial load for feed failed - ' . $e->getMessage());
             }
         }
 
@@ -99,7 +99,7 @@ class ImgurAdapter extends SocialMediaAdapter
                         $feed->setResult($posts);
                         $this->itemRepository->updateFeed($feed);
                     } catch (\Exception $e) {
-                        $this->logger->warning(self::TYPE . ' feeds can\'t be updated', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
+                        $this->logError("feeds can't be updated - " . $e->getMessage());
                     }
                 }
                 $result[] = $feed;
@@ -116,7 +116,7 @@ class ImgurAdapter extends SocialMediaAdapter
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
             } catch (\Exception $e) {
-                $this->logger->warning('initial load for ' . self::TYPE . ' feeds failed', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
+                $this->logError('initial load for feed failed - ' . $e->getMessage());
             }
         }
 

@@ -72,7 +72,7 @@ class VimeoAdapter extends SocialMediaAdapter
                         $this->itemRepository->updateFeed($feed);
                         $result[] = $feed;
                     } catch (\Exception $e) {
-                        $this->logger->error(self::TYPE . ' feeds cant be updated', array('data' => $e->getMessage()));
+                        $this->logError("feeds can't be updated - " . $e->getMessage());
                     }
                 }
                 continue;
@@ -86,8 +86,7 @@ class VimeoAdapter extends SocialMediaAdapter
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
             } catch (\Exception $e) {
-                error_log('Vimeo error catched ' . $e->getMessage());
-                $this->logger->warning('initial load for ' . self::TYPE . ' feeds failed. Please check the log file typo3temp/log/typo3.log for further information.');
+                $this->logError('initial load for feed failed - ' . $e->getMessage());
             }
         }
 
@@ -102,12 +101,8 @@ class VimeoAdapter extends SocialMediaAdapter
         if (!empty($result)) {
             foreach ($result as $vimeo_feed) {
                 $rawFeeds[self::TYPE . '_' . $vimeo_feed->getCacheIdentifier() . '_raw'] = $vimeo_feed->getResult();
-//                error_log(json_encode($vimeo_feed->getResult()));
-
                 foreach ($vimeo_feed->getResult()->body->data as $rawFeed) {
                     $feed = new Feed(self::TYPE, $rawFeed);
-//                    error_log(json_encode($rawFeed));
-
                     $feed->setId($rawFeed->link);
                     $feed->setText($this->trim_text($rawFeed->name, $options->textTrimLength, true));
                     $feed->setImage($rawFeed->pictures->sizes[5]->link);

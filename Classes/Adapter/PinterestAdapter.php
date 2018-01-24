@@ -78,8 +78,8 @@ class PinterestAdapter extends SocialMediaAdapter
                         $feed->setDate(new \DateTime('now'));
                         $feed->setResult($this->getPosts($boardname));
                         $this->itemRepository->updateFeed($feed);
-                    } catch (\FacebookApiException $e) {
-                        $this->logger->warning(self::TYPE . ' feeds can\'t be updated', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
+                    } catch (\Exception $e) {
+                        $this->logError("feeds can't be updated - " . $e->getMessage());
                     }
                 }
                 $result[] = $feed;
@@ -94,8 +94,8 @@ class PinterestAdapter extends SocialMediaAdapter
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
-            } catch (\FacebookApiException $e) {
-                $this->logger->warning('initial load for ' . self::TYPE . ' feeds failed', array('data' => $e->getMessage())); //TODO => handle FacebookApiException
+            } catch (\Exception $e) {
+                $this->logError('initial load for feed failed - ' . $e->getMessage());
             }
         }
 
@@ -173,8 +173,7 @@ class PinterestAdapter extends SocialMediaAdapter
                     $this->credentialRepository->saveCredential($credential);
                 }
             } else {
-                error_log('Pinterest: -------- need new code ---------');
-                $this->logger->error(self::TYPE . ' access code expired. Please provide new code in pb_social extension configuration.', array('data' => self::TYPE . ' access code invalid. Provide new code in pb_social extension configuration.'));
+                $this->logError('access code expired. Please provide new code in pb_social extension configuration.');
                 return null;
             }
         }
@@ -184,10 +183,10 @@ class PinterestAdapter extends SocialMediaAdapter
         //testrequest
         try {
             $this->api->request->get('me');
-        } catch (Pinterest\Exceptions\PinterestException $e) {
+        } catch (\Exception $e) {
             $this->credentialRepository->deleteCredential($credential);
-            $this->logger->warning(self::TYPE . ' exception - ' . $e->getMessage());
-            $this->logger->info('Please provide new ' . self::TYPE . ' access code');
+            $this->logError('exception: ' . $e->getMessage());
+            $this->logWarning(': Please provide new access code');
         }
     }
 
