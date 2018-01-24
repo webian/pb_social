@@ -125,11 +125,8 @@ class YoutubeAdapter extends SocialMediaAdapter
         if (!empty($result)) {
             foreach ($result as $yt_feed) {
                 $rawFeeds[self::TYPE . '_' . $yt_feed->getCacheIdentifier() . '_raw'] = $yt_feed->getResult();
-//                error_log(json_encode($yt_feed->getResult()));
                 foreach ($yt_feed->getResult()->items as $rawFeed) {
                     $feed = new Feed(self::TYPE, $rawFeed);
-//                    error_log(json_encode($rawFeed));
-
                     if ($options->youtubePlaylist) {
                         $id = $rawFeed->snippet->resourceId->videoId;
                     } else {
@@ -168,8 +165,6 @@ class YoutubeAdapter extends SocialMediaAdapter
         } else {
             $url = self::YT_SEARCH . $searchString . '&' . http_build_query($fields);
         }
-
-//        error_log($url);
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);

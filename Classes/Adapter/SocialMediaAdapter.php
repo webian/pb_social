@@ -30,9 +30,9 @@ namespace PlusB\PbSocial\Adapter;
 abstract class SocialMediaAdapter
 {
 
-    const TYPE = 'socialAediaAdapter';
+    const TYPE = 'socialMediaAdapter';
 
-    public $type = self::TYPE;
+    public $type;
     public $logger;
     public $itemRepository;
 
@@ -41,6 +41,8 @@ abstract class SocialMediaAdapter
         $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
 
         $this->itemRepository = $itemRepository;
+
+        $this->type = static::TYPE;
     }
 
     abstract public function getResultFromApi($options);

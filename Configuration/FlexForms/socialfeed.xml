@@ -301,7 +301,7 @@
                     </settings.linkedinNewProducts>
                     <settings.linkedinStatusUpdates>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.linkedin.newProducts</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.linkedin.statusUpdates</label>
                             <!--<onChange>reload</onChange>-->
                             <config>
                                 <type>check</type>
