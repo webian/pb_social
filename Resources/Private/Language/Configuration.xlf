@@ -167,11 +167,11 @@
                 <source>callback url</source>
             </trans-unit>
             <trans-unit id="linkedin.access_token">
-                <source><![CDATA[LinkedIn access code - Retrieve code with following URL (all characters after "code"): https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&scope=rw_company_admin,r_basicprofile]]>
-                    You'll need to activate "rw_company_admin" and "r_basicprofile" scopes first.
-                    Please have in mind that the access code is only valid for approxametely 20 seconds. Immediately after generating the code you need to retrieve an access_token via:
+                <source><![CDATA[LinkedIn access token - Retrieve code and token with following URLs: Access code (all characters after "code"): https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&scope=rw_company_admin,r_basicprofile]]>
+                    You'll need to activate "rw_company_admin" and "r_basicprofile" scopes first (LinkedIn developer backend).
+                    Please have in mind that the access code is only valid for approxametely 20 seconds. Immediately after generating the code you need to retrieve an access token via:
                     <![CDATA[ https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&code=GENERATED_CODE&redirect_uri=YOUR_REDIRECT_URI&client_id=YOUR_CLIENT_ID&client_secret=YOUR_CLIENT_SECRET ]]>
-                    Paste your access_token here
+                    Paste your access_token here.
                 </source>
             </trans-unit>
 
