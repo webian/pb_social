@@ -5,7 +5,7 @@
   "description": "Social Media Streams",
   "homepage": "http://www.plusb.de",
   "license": [
-    "GPL-2.0+"
+    "GPL-2.0-or-later"
   ],
   "keywords": [
     "TYPO3 CMS",
