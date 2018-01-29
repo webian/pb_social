@@ -1,10 +1,9 @@
 <?php
 namespace PlusB\PbSocial\Command;
 
-use GeorgRinger\News\Domain\Model\Dto\NewsDemand;
-use GeorgRinger\News\Domain\Model\News;
 use PlusB\PbSocial\Adapter;
 use TYPO3\CMS\Core\Exception;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandController
 {
@@ -44,14 +43,6 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
      * @inject
      */
     protected $credentialRepository;
-
-    /**
-     * newsRepository
-     *
-     * @var \GeorgRinger\News\Domain\Repository\NewsRepository
-     * @inject
-     */
-    protected $newsRepository = null;
 
     /**
      * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
@@ -417,39 +408,27 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
                 }
 
                 if ($settings['newsEnabled'] === '1') {
-
-                    # check for news extension #
-                    try
+                    if (!ExtensionManagementUtility::isLoaded('news'))
                     {
-                        # simply create a NewsDemand. If it fails tx_news is not installed..
-                        $newsDemand = new NewsDemand();
-                        $tx_news_loaded = true;
-
-                    } catch (Exception $e) #FileNotFoundException
-                    {
-                        # news not found abort mission
-                        $tx_news_loaded = false;
                         $this->logger->warning(self::TYPE_TX_NEWS . ' extension not loaded.');
                         $GLOBALS['BE_USER']->simplelog(self::TYPE_TX_NEWS . ' extension not loaded', $extKey, 1);
-                    }
-                    $adapterOptions->newsCategories = $settings['newsCategories'];
-                    $adapterOptions->newsDetailPageUid = $settings['newsDetailPageUid'];
-                    if ($settings['useHttpsLinks']) $adapterOptions->useHttps = true;
+                    } else {
+                        $adapterOptions->newsCategories = $settings['newsCategories'];
+                        $adapterOptions->newsDetailPageUid = $settings['newsDetailPageUid'];
+                        if ($settings['useHttpsLinks']) $adapterOptions->useHttps = true;
 
-                    # user should set a news category but it is not required. in this case all news are shown in feed
-                    if (empty($adapterOptions->newsCategories))
-                    {
-                        $this->logger->warning(self::TYPE_TX_NEWS . ': no news category defined, will output all available news');
-                        $GLOBALS['BE_USER']->simplelog(self::TYPE_TX_NEWS . ': no news category defined, will output all available news', $extKey, 0);
-                    }
-                    if ($tx_news_loaded)
-                    {
+                        # user should set a news category but it is not required. in this case all news are shown in feed
+                        if (empty($adapterOptions->newsCategories))
+                        {
+                            $this->logger->warning(self::TYPE_TX_NEWS . ': no news category defined, will output all available news');
+                            $GLOBALS['BE_USER']->simplelog(self::TYPE_TX_NEWS . ': no news category defined, will output all available news', $extKey, 0);
+                        }
+
                         $cacheIdentifier = $this->itemController->calculateCacheIdentifier(array(
                             "txnews_".$adapterOptions->newsCategories
                         ));
 
-                        # retrieve data from NewsDemand #
-                        $adapter = new Adapter\TxNewsAdapter($newsDemand, $itemRepository, $this->newsRepository);
+                        $adapter = new Adapter\TxNewsAdapter(new \GeorgRinger\News\Domain\Model\Dto\NewsDemand(), $itemRepository);
                         try {
                             $cache->set($cacheIdentifier, $adapter->getResultFromApi($adapterOptions));
                         } catch (\Exception $e) {

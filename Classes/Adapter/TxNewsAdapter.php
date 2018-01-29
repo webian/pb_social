@@ -2,11 +2,13 @@
 
 namespace PlusB\PbSocial\Adapter;
 
-use GeorgRinger\News\Domain\Model\FileReference;
+use GeorgRinger\News\Domain\Model\Dto\NewsDemand;
+use GeorgRinger\News\Domain\Repository\NewsRepository;
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
-use TYPO3\CMS\Core\Utility\ArrayUtility;
+use PlusB\PbSocial\Domain\Repository\ItemRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /***************************************************************
@@ -39,19 +41,32 @@ class TxNewsAdapter extends SocialMediaAdapter
 
     const TYPE = 'txnews';
 
-    public $newsRepository;
-    public $newsDemand;
-
     protected $cObj;
     protected $detailPageUid;
 
-    public function __construct($newsDemand, $itemRepository, $newsRepository)
+    /**
+     * newsRepository
+     *
+     * @var \GeorgRinger\News\Domain\Repository\NewsRepository
+     * @inject
+     */
+    protected $newsRepository;
+    public $newsDemand;
+
+    /**
+     * TxNewsAdapter constructor.
+     * @param NewsDemand $newsDemand
+     * @param ItemRepository $itemRepository
+     */
+    public function __construct($newsDemand, $itemRepository)
     {
         parent::__construct($itemRepository);
 
-        $this->newsRepository = $newsRepository;
-        $this->newsDemand = $newsDemand;
         $this->cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
+        $this->newsDemand = $newsDemand;
+
+        $om = new ObjectManager();
+        $this->newsRepository = $om->get(NewsRepository::class);
     }
 
     public function getResultFromApi($options)
