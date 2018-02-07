@@ -146,16 +146,21 @@ class LinkedInAdapter extends SocialMediaAdapter
         if (!empty($result)) {
             foreach ($result as $linkedin_feed) {
                 $rawFeeds[self::TYPE . '_' . $linkedin_feed->getCacheIdentifier() . '_raw'] = $linkedin_feed->getResult();
+                $i = 0;
                 if (is_array($linkedin_feed->getResult()->values)) {
                     foreach ($linkedin_feed->getResult()->values as $rawFeed) {
-                        $feed = new Feed(self::TYPE, $rawFeed);
-                        $feed->setId($rawFeed->timestamp);
-                        $feed->setText($this->trim_text($rawFeed->updateContent->companyStatusUpdate->share->comment, $options->textTrimLength, true));
-                        $feed->setImage($rawFeed->updateContent->companyStatusUpdate->share->content->thumbnailUrl);
-                        $link = self::linkedin_company_post_uri . array_reverse(explode('-', $rawFeed->updateKey))[0];
-                        $feed->setLink($link);
-                        $feed->setTimeStampTicks($rawFeed->timestamp);
-                        $feedItems[] = $feed;
+                        if ($i < $options->feedRequestLimit)
+                        {
+                            $feed = new Feed(self::TYPE, $rawFeed);
+                            $feed->setId($rawFeed->timestamp);
+                            $feed->setText($this->trim_text($rawFeed->updateContent->companyStatusUpdate->share->comment, $options->textTrimLength, true));
+                            $feed->setImage($rawFeed->updateContent->companyStatusUpdate->share->content->thumbnailUrl);
+                            $link = self::linkedin_company_post_uri . array_reverse(explode('-', $rawFeed->updateKey))[0];
+                            $feed->setLink($link);
+                            $feed->setTimeStampTicks($rawFeed->timestamp);
+                            $feedItems[] = $feed;
+                            $i++;
+                        }
                     }
                 }
             }

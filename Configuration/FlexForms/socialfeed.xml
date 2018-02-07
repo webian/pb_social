@@ -44,30 +44,30 @@
                             </config>
                         </TCEforms>
                     </settings.textTrimLength>
-                    <settings.asynchRequest>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.general.asynchRequest</label>
-                            <config>
-                                <type>check</type>
-                            </config>
-                        </TCEforms>
-                    </settings.asynchRequest>
-                    <settings.asynchLimit>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.general.asynchLimit</label>
-                            <config>
-                                <type>input</type>
-                            </config>
-                        </TCEforms>
-                    </settings.asynchLimit>
-                    <settings.asynchShow>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.general.asynchShow</label>
-                            <config>
-                                <type>input</type>
-                            </config>
-                        </TCEforms>
-                    </settings.asynchShow>
+                    <!--<settings.asynchRequest>-->
+                        <!--<TCEforms>-->
+                            <!--<label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.general.asynchRequest</label>-->
+                            <!--<config>-->
+                                <!--<type>check</type>-->
+                            <!--</config>-->
+                        <!--</TCEforms>-->
+                    <!--</settings.asynchRequest>-->
+                    <!--<settings.asynchLimit>-->
+                        <!--<TCEforms>-->
+                            <!--<label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.general.asynchLimit</label>-->
+                            <!--<config>-->
+                                <!--<type>input</type>-->
+                            <!--</config>-->
+                        <!--</TCEforms>-->
+                    <!--</settings.asynchLimit>-->
+                    <!--<settings.asynchShow>-->
+                        <!--<TCEforms>-->
+                            <!--<label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.general.asynchShow</label>-->
+                            <!--<config>-->
+                                <!--<type>input</type>-->
+                            <!--</config>-->
+                        <!--</TCEforms>-->
+                    <!--</settings.asynchShow>-->
                 </el>
             </ROOT>
         </sDEF>

@@ -124,17 +124,20 @@ class TxNewsAdapter extends SocialMediaAdapter
             foreach ($result as $news_feed) {
                 $rawFeeds[self::TYPE . '_' . $news_feed->getCacheIdentifier() . '_raw'] = $news_feed->getResult();
                 # traverse each single news item
+                $i = 0;
                 foreach ($news_feed->getResult() as $rawFeed) {
-                    $feed = new Feed(self::TYPE, $rawFeed);
+                    if ($i < $options->feedRequestLimit)
+                    {
+                        $feed = new Feed(self::TYPE, $rawFeed);
 
-                    $feed->setId($rawFeed->id);
-                    $feed->setText($this->trim_text($rawFeed->name, $options->textTrimLength, true));
-                    $feed->setImage($rawFeed->image);
-                    $feed->setLink($rawFeed->link);
-                    $d = new \DateTime($rawFeed->created_time);
-
-                    $feed->setTimeStampTicks($d->getTimestamp());
-                    $feedItems[] = $feed;
+                        $feed->setId($rawFeed->id);
+                        $feed->setText($this->trim_text($rawFeed->name, $options->textTrimLength, true));
+                        $feed->setImage($rawFeed->image);
+                        $feed->setLink($rawFeed->link);
+                        $feed->setTimeStampTicks($rawFeed->crdate);
+                        $feedItems[] = $feed;
+                        $i++;
+                    }
                 }
             }
         }
@@ -159,7 +162,8 @@ class TxNewsAdapter extends SocialMediaAdapter
                 'id' => $news->getUid(),
                 'name' => $news->getTitle(),
                 'image' => $img_link,
-                'link' => $this->detailPageUid
+                'link' => $this->detailPageUid,
+                'crdate' => $news->getCrdate()->getTimestamp()
             );
 
             $mapped[] = $newsItem;

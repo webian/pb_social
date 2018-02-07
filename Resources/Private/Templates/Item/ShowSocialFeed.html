@@ -5,11 +5,11 @@
             <f:render partial="Feed/Provider-{feed.provider}" arguments="{feed: feed, fb_full_res: fb_full_res}"/>
         </f:for>
     </div>
-    <f:if condition="{asynch_request}">
-        <div class="button__wrap">
-            <div id="load_more_posts" class="button" data-limit="{asynch_show}" data-url="{f:uri.action(action: 'showSocialFeed', arguments: {ajax: 'true'}, noCacheHash: 1, absolute: 1)}">
-                <f:translate key="LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:general.asynchButtonText" />
-            </div>
-        </div>
-    </f:if>
+    <!--<f:if condition="{asynch_request}">-->
+        <!--<div class="button__wrap">-->
+            <!--<div id="load_more_posts" class="button" data-limit="{asynch_show}" data-url="{f:uri.action(action: 'showSocialFeed', arguments: {ajax: 'true'}, noCacheHash: 1, absolute: 1)}">-->
+                <!--<f:translate key="LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:general.asynchButtonText" />-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</f:if>-->
 </f:section>

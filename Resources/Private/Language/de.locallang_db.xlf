@@ -49,8 +49,8 @@
                 <target state="translated">Ausgabe aktiviert</target>
             </trans-unit>
             <trans-unit id="flexform.tab.facebook.searchID">
-                <source>Facebook search IDs (Page that helps to find the ID: http://findmyfacebookid.com/). Use commas to show more than one ID</source>
-                <target state="translated">Facebook IDs der Seiten, die angezeigt werden sollen (Hilfeseite zu den IDs: http://blog.niklaskoehler.de/facebook-tools/facebook-id-ermitteln). Verwende Kommas, um mehrere Seiten anzuzeigen</target>
+                <source>Facebook search IDs (Page that helps to find the ID: http://findmyfbid.com/). Use commas to show more than one ID</source>
+                <target state="translated">Facebook IDs der Seiten, die angezeigt werden sollen (Hilfeseite zu den IDs: http://findmyfbid.com/). Verwende Kommas, um mehrere Seiten anzuzeigen</target>
             </trans-unit>
              <trans-unit id="flexform.tab.facebook.edge">
                 <source>Facebook edge (feed shows everything incl. tagged posts and links, posts filters only posts)</source>
