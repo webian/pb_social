@@ -56,11 +56,11 @@ class FacebookAdapter extends SocialMediaAdapter
         $this->api = new Facebook([
             'app_id' => $apiId,
             'app_secret' => $apiSecret,
-            'default_graph_version' => 'v2.9',
+            'default_graph_version' => 'v3.0',
         ]);
 
         // Get access_token via grant_type=client_credentials
-        $url = 'https://graph.facebook.com/v2.8/oauth/access_token?client_id=' . $apiId . '&client_secret=' . $apiSecret . '&grant_type=client_credentials';
+        $url = 'https://graph.facebook.com/v3.0/oauth/access_token?client_id=' . $apiId . '&client_secret=' . $apiSecret . '&grant_type=client_credentials';
 
         $accessTokenResponse = $this->itemRepository->curl_download($url, $ignoreVerifySSL);
         if (($accessTokenJson = json_decode($accessTokenResponse)) != NULL) {
@@ -256,6 +256,8 @@ class FacebookAdapter extends SocialMediaAdapter
             }
             $raw_body->data[$c]->reactions_detail = $_reactions;
         }
+
+        error_log(json_encode($raw_body));
 
         return json_encode($raw_body);
     }
