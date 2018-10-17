@@ -3,6 +3,7 @@ namespace PlusB\PbSocial\Controller;
 
 use GeorgRinger\News\Domain\Model\Dto\NewsDemand;
 use PlusB\PbSocial\Adapter;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /***************************************************************
@@ -10,6 +11,7 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  *  Copyright notice
  *
  *  (c) 2014 Mikolaj Jedrzejewski <mj@plusb.de>, plusB
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
  *
  *  All rights reserved
  *
@@ -40,12 +42,30 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
     const TYPE_GOOGLE = 'googleplus';
     const TYPE_IMGUR = 'imgur';
     const TYPE_INSTAGRAM = 'instagram';
+    const TYPE_LINKEDIN = 'linkedin';
     const TYPE_PINTEREST = 'pinterest';
     const TYPE_TWITTER = 'twitter';
     const TYPE_TUMBLR = 'tumblr';
     const TYPE_YOUTUBE = 'youtube';
+    const TYPE_TX_NEWS = 'tx_news';
     const TYPE_VIMEO = 'vimeo';
     const TYPE_DUMMY = 'dummy';
+
+    const EXTKEY = 'pb_social';
+
+    /**
+     * @var \PlusB\PbSocial\Service\OptionService
+     * @inject
+     */
+    protected $optionService;
+
+    /**
+     * @var \PlusB\PbSocial\Service\CacheService
+     * @inject
+     */
+    protected $cacheService;
+
+
 
     /**
      * cacheManager
@@ -164,7 +184,8 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 
         # Get feeds #
         $feeds = array();
-        $results = $this->getFeeds($extConf, $this->settings, $this->itemRepository, $this->credentialRepository);
+
+        $results = $this->getFeeds($extConf, $this->settings);
 
         # Provide feeds to frontend #
         foreach ($results as $result) {
@@ -200,7 +221,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
      * @param string $id
      * @return array|void
      */
-    public function facebookReactionAction($id)
+    public function _facebookReactionAction($id)
     {
         $extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pb_social']); //TODO => search for a better way of accessing extconf
 
@@ -222,147 +243,140 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         return $reactions;
     }
 
-    public function getFeeds($extConf, $settings, $itemRepository, $credentialRepository)
+
+    /**
+     * @param $extConf array of extension configuration settings (in localconf, by extension configuration in admin tool)
+     * @param $settings array of typoscript settings
+     * @return array
+     */
+    public function getFeeds($extConf, $settings)
     {
-
         // Build configuration from plugin settings
-        $adapterOptions = $this->getAdapterOptions($settings);
-        $adapterOptions->devMod = $extConf['socialfeed.']['devmod'] == '1' ? true : false;
+        $adapterOptions = $this->optionService->getAdapterOptions($settings);
+        $adapterOptions->devMod = $extConf['socialfeed.']['devmod'] == '1' ? true : false; //todo: what is this, it is over written now
 
+        //result array, sorted and foreached in action method
         $results = array();
-
+        //cache specified by $identifier
         $cache = $this->cacheManager->getCache('pb_social_cache');
 
+
         if ($settings['facebookEnabled'] === '1') {
-            $cacheIdentifier = $this->calculateCacheIdentifier(array(
-                "facebook_".$adapterOptions->settings['facebookSearchIds'], // cache depends on the searchids
-            ));
-
-            if ($content = $cache->get($cacheIdentifier)) { // the cached content is available
-                $results[] = $content;
-            }
+            $results = $this->cacheService->getCacheContent(
+                self::TYPE_FACEBOOK,
+                $settings,
+                $this->configurationManager->getContentObject()->data['uid'],
+                $cache,
+                $results
+            );
         }
 
-        if ($settings['googleEnabled'] === '1') {
-            $cacheIdentifier = $this->calculateCacheIdentifier(array(
-                "googleplus_".$adapterOptions->settings['googleSearchIds'], // cache depends on the searchids
-            ));
-
-            if ($content = $cache->get($cacheIdentifier)) { // the cached content is available
-                $results[] = $content;
-            }
-        }
+        /*
+         *  Google+ has been shut down
+         * https://www.heise.de/newsticker/meldung/Soziale-Netzwerke-Google-stellt-Google-ein-4183950.html
+         *
+         * if ($settings['googleEnabled'] === '1') {
+            $results = $this->getCacheContent(
+                array(
+                    "googleplus_".$adapterOptions->settings['googleSearchIds']
+                ),
+                $this->configurationManager->getContentObject()->data['uid'],
+                $cache,
+                $results
+            );
+        }*/
 
         if ($settings['imgurEnabled'] === '1') {
-            $cacheIdentifier = $this->calculateCacheIdentifier(array(
-                "imgur_".$adapterOptions->settings['imgurTags'],
-                "imgur_".$adapterOptions->settings['imgurUsers']
-            ));
-
-            if ($content = $cache->get($cacheIdentifier)) { // the cached content is available
-                $results[] = $content;
-            }
+            $results = $this->cacheService->getCacheContent(
+                self::TYPE_IMGUR,
+                $settings,
+                $this->configurationManager->getContentObject()->data['uid'],
+                $cache,
+                $results
+            );
         }
 
         if ($settings['instagramEnabled'] === '1') {
-            $cacheIdentifier = $this->calculateCacheIdentifier(array(
-                "instagram_".$adapterOptions->settings['instagramSearchIds'],
-                "instagram_".$adapterOptions->settings['instagramHashTag'],
-                "instagram_".$adapterOptions->settings['instagramPostFilter']
-            ));
-
-            if ($content = $cache->get($cacheIdentifier)) { // the cached content is available
-                $results[] = $content;
-            }
+            $results = $this->cacheService->getCacheContent(
+                self::TYPE_INSTAGRAM,
+                $settings,
+                $this->configurationManager->getContentObject()->data['uid'],
+                $cache,
+                $results
+            );
         }
 
         if ($settings['linkedinEnabled'] === '1') {
-            $linkedInFeedFilters =
-                ($adapterOptions->settings['linkedinJobPostings']) .
-                ($adapterOptions->settings['linkedinNewProducts']) .
-                ($adapterOptions->settings['linkedinStatusUpdates']);
-            $cacheIdentifier = $this->calculateCacheIdentifier(array(
-                "linkedin_".$adapterOptions->settings['linkedinCompanyIds'],
-                "linkedin_".$linkedInFeedFilters
-            ));
-
-            if ($content = $cache->get($cacheIdentifier)) { // the cached content is available
-                $results[] = $content;
-            }
+            $results = $this->cacheService->getCacheContent(
+                self::TYPE_LINKEDIN,
+                $settings,
+                $this->configurationManager->getContentObject()->data['uid'],
+                $cache,
+                $results
+            );
         }
 
         if ($settings['pinterestEnabled'] === '1') {
-            $cacheIdentifier = $this->calculateCacheIdentifier(array(
-                "pinterest_".$adapterOptions->settings['username'],
-                "pinterest_".$adapterOptions->settings['boardname']
-            ));
-
-            if ($content = $cache->get($cacheIdentifier)) { // the cached content is available
-                $results[] = $content;
-            }
+            $results = $this->cacheService->getCacheContent(
+                self::TYPE_PINTEREST,
+                $settings,
+                $this->configurationManager->getContentObject()->data['uid'],
+                $cache,
+                $results
+            );
         }
 
         if ($settings['tumblrEnabled'] === '1') {
-            $cacheIdentifier = $this->calculateCacheIdentifier(array(
-                "tumblr_".$adapterOptions->settings['tumblrBlogNames']
-            ));
-
-            if ($content = $cache->get($cacheIdentifier)) { // the cached content is available
-                $results[] = $content;
-            }
+            $results = $this->cacheService->getCacheContent(
+                self::TYPE_TUMBLR,
+                 $settings,
+                $this->configurationManager->getContentObject()->data['uid'],
+                $cache,
+                $results
+            );
         }
 
         if ($settings['twitterEnabled'] === '1') {
-            $cacheIdentifier = $this->calculateCacheIdentifier(array(
-                "twitter_".$adapterOptions->settings['twitterSearchFieldValues'],
-                "twitter_".$adapterOptions->settings['twitterProfilePosts'],
-                "twitter_".$adapterOptions->settings['twitterLanguage'],
-                "twitter_".$adapterOptions->settings['twitterGeoCode'],
-                "twitter_".$adapterOptions->settings['twitterHideRetweets'],
-                "twitter_".$adapterOptions->settings['twitterShowOnlyImages']
-            ));
-
-            if ($content = $cache->get($cacheIdentifier)) { // the cached content is available
-                $results[] = $content;
-            }
+            $results = $this->cacheService->getCacheContent(
+                self::TYPE_TWITTER,
+                $settings,
+                $this->configurationManager->getContentObject()->data['uid'],
+                $cache,
+                $results
+            );
         }
 
         if ($settings['youtubeEnabled'] === '1') {
-            $cacheIdentifier = $this->calculateCacheIdentifier(array(
-                "youtube_".$adapterOptions->settings['youtubeSearch'],
-                "youtube_".$adapterOptions->settings['youtubePlaylist'],
-                "youtube_".$adapterOptions->settings['youtubeChannel'],
-                "youtube_".$adapterOptions->settings['youtubeType'],
-                "youtube_".$adapterOptions->settings['youtubeLanguage'],
-                "youtube_".$adapterOptions->settings['youtubeOrder']
-            ));
-
-            if ($content = $cache->get($cacheIdentifier)) { // the cached content is available
-                $results[] = $content;
-            }
+            $results = $this->cacheService->getCacheContent(
+                self::TYPE_YOUTUBE,
+                 $settings,
+                 $this->configurationManager->getContentObject()->data['uid'],
+                $cache,
+                $results
+            );
         }
 
         if ($settings['vimeoEnabled'] === '1') {
-            $cacheIdentifier = $this->calculateCacheIdentifier(array(
-                "vimeo_".$adapterOptions->settings['vimeoChannel']
-            ));
-
-            if ($content = $cache->get($cacheIdentifier)) { // the cached content is available
-                $results[] = $content;
-            }
+            $results = $this->cacheService->getCacheContent(
+                self::TYPE_VIMEO,
+                 $settings,
+                $this->configurationManager->getContentObject()->data['uid'],
+                $cache,
+                $results
+            );
         }
 
         if ($settings['newsEnabled'] === '1') {
-
-            $cacheIdentifier = $this->calculateCacheIdentifier(array(
-                "txnews_".$adapterOptions->settings['newsCategories']
-            ));
-
-            if ($content = $cache->get($cacheIdentifier)) { // the cached content is available
-                $results[] = $content;
-            }
+            $results = $this->cacheService->getCacheContent(
+                self::TYPE_TX_NEWS,
+                 $settings,
+                 $this->configurationManager->getContentObject()->data['uid'],
+                $cache,
+                $results
+            );
         }
 
+        //todo: need this?
         if ($settings['dummyEnabled'] === '1') {
 
             // TODO => set some configuration 'ext/pb_social/ext_conf_template.txt'
@@ -377,7 +391,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
                 $this->logger->warning(self::TYPE_DUMMY . ' no search term defined');
             } else {
                 # retrieve data from adapter #
-                $adapter = new Adapter\DummyAdapter($config_dummyKey, $itemRepository, $credentialRepository);
+                $adapter = new Adapter\DummyAdapter($config_dummyKey, $this->itemRepository, $this->credentialRepository);
                 try {
                     $results[] = $adapter->getResultFromApi($adapterOptions);
                 } catch (\Exception $e) {
@@ -407,39 +421,9 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         return false;
     }
 
-    public function getAdapterOptions($settings)
-    {
-        $options = (object)array();
 
-        $options->twitterHideRetweets = empty($settings['twitterHideRetweets']) ? false : ($settings['twitterHideRetweets'] == '1' ? true : false);
-        $options->twitterShowOnlyImages = empty($settings['twitterShowOnlyImages']) ? false : ($settings['twitterShowOnlyImages'] == '1' ? true : false);
-        $options->twitterHTTPS = empty($settings['twitterHTTPS']) ? false : ($settings['twitterHTTPS'] == '1' ? true : false);
-        $options->tumblrShowOnlyImages = empty($settings['tumblrShowOnlyImages']) ? false : ($settings['tumblrShowOnlyImages'] == '1' ? true : false);
-//        $options->facebookShowOnlyImages = empty($settings['facebookShowOnlyImages']) ? false : ($settings['facebookShowOnlyImages'] == '1' ? true : false);
-        $options->feedRequestLimit = intval(empty($settings['feedRequestLimit']) ? '10' : $settings['feedRequestLimit']);
 
-        $refreshTimeInMin = intval(empty($settings['refreshTimeInMin']) ? '10' : $settings['refreshTimeInMin']);
-        if ($refreshTimeInMin == 0) {
-            $refreshTimeInMin = 10;
-        } //reset to 10 if intval() cant convert
-        $options->refreshTimeInMin = $refreshTimeInMin;
 
-        $options->settings = $settings;
-        $options->onlyWithPicture = $settings['onlyWithPicture'] === '1' ? true : false;
-        $options->textTrimLength = intval($settings['textTrimLength']) > 0 ? intval($settings['textTrimLength']) : 130;
-        $options->feedRequestLimit = intval(empty($settings['feedRequestLimit']) ? 10 : $settings['feedRequestLimit']);
-
-        return $options;
-    }
-
-    /**
-     * Calculates the cache identifier
-     * @param \array $arr
-     * @return \string
-     */
-    public static function calculateCacheIdentifier($arr) {
-        return sha1(json_encode($arr)); // in average json_encode is four times faster than serialize()
-    }
 }
 
 /**

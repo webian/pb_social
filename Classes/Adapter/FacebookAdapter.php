@@ -100,6 +100,8 @@ class FacebookAdapter extends SocialMediaAdapter
             return null;
         }
 
+
+
         foreach (explode(',', $facebookSearchIds) as $searchId) {
             $searchId = trim($searchId);
             $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchId);
@@ -109,6 +111,7 @@ class FacebookAdapter extends SocialMediaAdapter
                     try
                     {
                         $posts = $this->getPosts($searchId, $options->feedRequestLimit, $options->settings['facebookEdge']);
+
                         if ($posts !== null)
                         {
                             $feed->setDate(new \DateTime('now'));
@@ -257,7 +260,7 @@ class FacebookAdapter extends SocialMediaAdapter
             $raw_body->data[$c]->reactions_detail = $_reactions;
         }
 
-        error_log(json_encode($raw_body));
+        #error_log(json_encode($raw_body));
 
         return json_encode($raw_body);
     }

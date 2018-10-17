@@ -15,6 +15,8 @@ if (!defined('TYPO3_MODE')) {
     'SocialFeed'
 );
 
+
+
 /**
  * Add Plugin SocialFeed to New Content Element Wizard
  */

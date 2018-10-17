@@ -2,6 +2,9 @@
 
 namespace PlusB\PbSocial\Adapter;
 
+$extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/';
+require $extensionPath . 'imgur/Imgur.php';
+
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
 
