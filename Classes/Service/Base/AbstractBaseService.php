@@ -8,8 +8,6 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /***************************************************************
  *
@@ -45,6 +43,13 @@ abstract class AbstractBaseService implements SingletonInterface
      * @var \TYPO3\CMS\Core\Log\Logger
      */
     protected $logger;
+
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Mvc\Controller\CommandController
+     * @inject
+     */
+    protected $commandController;
 
     /**
      * @var \TYPO3\CMS\Core\Log\LogManagerInterface
@@ -121,7 +126,6 @@ abstract class AbstractBaseService implements SingletonInterface
     {
         return $this->logger->log($level, $message, $data);
     }
-
     
     /**
      * @param $pid
@@ -141,5 +145,7 @@ abstract class AbstractBaseService implements SingletonInterface
         }
         return $url;
     }
+
+
     
 }

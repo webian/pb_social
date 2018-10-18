@@ -10,6 +10,7 @@ use PlusB\PbSocial\Domain\Model\Item;
  *  Copyright notice
  *
  *  (c) 2016 Ramon Mohi <rm@plusb.de>, plusB
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
  *
  *  All rights reserved
  *
@@ -45,19 +46,68 @@ class YoutubeAdapter extends SocialMediaAdapter
     // get items from channel api call
     const YT_SEARCH_CHANNEL = 'https://www.googleapis.com/youtube/v3/search?channelId=';
 
-    private $appKey;
+    public $isValid = false, $validationMessage = "";
+    private $appKey, $options;
 
-    public function __construct($appKey, $itemRepository)
+    /**
+     * @param mixed $appKey
+     */
+    public function setAppKey($appKey)
+    {
+        $this->appKey = $appKey;
+    }
+
+    /**
+     * @param mixed $options
+     */
+    public function setOptions($options)
+    {
+        $this->options = $options;
+    }
+
+
+
+    public function __construct($appKey, $itemRepository, $options)
     {
         parent::__construct($itemRepository);
+        /* validation - interrupt instanciating if invalid */
+        if($this->validateAdapterSettings(
+                array(
+                    'appKey' => $appKey,
+                    'options' => $options
+                )) === false)
+        {return $this;}
+        /* validated */
 
-        $this->appKey = $appKey;
 
         //todo: use google client
     }
 
-    public function getResultFromApi($options)
+    /**
+     * validates constructor input parameters in an individual way just for the adapter
+     *
+     * @param $parameter
+     * @return bool
+     */
+    public function validateAdapterSettings($parameter)
     {
+        $this->setAppKey($parameter['appKey']);
+        $this->setOptions($parameter['options']);
+
+        if (empty($this->appKey)) {
+            $this->validationMessage = self::TYPE . ' credentials not set';
+        } elseif (empty($this->options->youtubeSearch)  && empty($this->options->youtubePlaylist) && empty($this->options->youtubeChannel) ) {
+            $this->validationMessage = self::TYPE . ' no search term defined';
+        } else {
+            $this->isValid = true;
+        }
+
+        return $this->isValid;
+    }
+
+    public function getResultFromApi()
+    {
+        $options = $this->options;
         $result = array();
 
         $fields = array(

@@ -27,7 +27,7 @@ namespace PlusB\PbSocial\Adapter;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-abstract class SocialMediaAdapter
+abstract class SocialMediaAdapter implements SocialMediaAdapterInterface
 {
 
     const TYPE = 'socialMediaAdapter';
@@ -45,7 +45,8 @@ abstract class SocialMediaAdapter
         $this->type = static::TYPE;
     }
 
-    abstract public function getResultFromApi($options);
+    abstract public function validateAdapterSettings($parameter);
+    abstract public function getResultFromApi();
 
     abstract public function getFeedItemsFromApiRequest($result, $options);
 

@@ -18,6 +18,7 @@ use PlusB\PbSocial\Domain\Model\Item;
  *  Copyright notice
  *
  *  (c) 2018 Ramon Mohi <rm@plusb.de>, plusB
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
  *
  *  All rights reserved
  *
@@ -42,7 +43,51 @@ class LinkedInAdapter extends SocialMediaAdapter
 {
 
     const TYPE = 'linkedin';
+    const EXTKEY = 'pb_social';
     const linkedin_company_post_uri = "https://www.linkedin.com/feed/update/urn:li:activity:";
+
+    public $isValid = false, $validationMessage = "";
+    private $apiKey, $apiSecret, $apiCallback, $token, $options;
+
+    /**
+     * @param mixed $apiKey
+     */
+    public function setApiKey($apiKey)
+    {
+        $this->apiKey = $apiKey;
+    }
+
+    /**
+     * @param mixed $apiSecret
+     */
+    public function setApiSecret($apiSecret)
+    {
+        $this->apiSecret = $apiSecret;
+    }
+
+    /**
+     * @param mixed $apiCallback
+     */
+    public function setApiCallback($apiCallback)
+    {
+        $this->apiCallback = $apiCallback;
+    }
+
+    /**
+     * @param mixed $token
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+    }
+
+    /**
+     * @param mixed $options
+     */
+    public function setOptions($options)
+    {
+        $this->options = $options;
+    }
 
     private $api;
 
@@ -54,20 +99,57 @@ class LinkedInAdapter extends SocialMediaAdapter
      */
     protected $credentialRepository;
 
-    public function __construct($apiKey, $apiSecret, $apiCallback, $token, $itemRepository, $credentialRepository)
+    public function __construct($apiKey, $apiSecret, $apiCallback, $token, $itemRepository, $credentialRepository, $options)
     {
         parent::__construct($itemRepository);
+        /* validation - interrupt instanciating if invalid */
+        if($this->validateAdapterSettings(
+                array(
+                    'apiKey' => $apiKey,
+                    'apiSecret' => $apiSecret,
+                    'apiCallback' => $apiCallback,
+                    'token' => $token,
+                    'options' => $options
+                )) === false)
+        {return $this;}
+        /* validated */
 
-        $this->api =  new Client($apiKey,$apiSecret);
+        $this->api =  new Client($this->apiKey,$this->apiSecret);
 
         $this->credentialRepository = $credentialRepository;
 
         // get access token from database
-        $this->setAccessToken($token, $apiKey);
+        $this->setAccessToken($this->token, $this->apiKey);
     }
 
-    public function getResultFromApi($options)
+    /**
+     * validates constructor input parameters in an individual way just for the adapter
+     *
+     * @param $parameter
+     * @return bool
+     */
+    public function validateAdapterSettings($parameter)
     {
+        $this->setApiKey($parameter['apiKey']);
+        $this->setApiSecret($parameter['apiSecret']);
+        $this->setApiCallback($parameter['apiCallback']);
+        $this->setToken($parameter['token']);
+        $this->setOptions($parameter['options']);
+
+        if (empty($this->apiKey) || empty($this->apiSecret) ||  empty($this->token) ||  empty($this->apiCallback)) {
+            $this->validationMessage = self::TYPE . ' credentials not set';
+        } elseif (empty($this->options->companyIds)) {
+            $this->validationMessage = self::TYPE . ' no search term defined';
+        } else {
+            $this->isValid = true;
+        }
+
+        return $this->isValid;
+    }
+
+    public function getResultFromApi()
+    {
+        $options = $this->options;
         $result = array();
 
         # set filters

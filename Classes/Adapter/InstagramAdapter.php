@@ -11,6 +11,7 @@ use PlusB\PbSocial\Domain\Model\Item;
  *  Copyright notice
  *
  *  (c) 2016 Ramon Mohi <rm@plusb.de>, plusB
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
  *
  *  All rights reserved
  *
@@ -36,6 +37,42 @@ class InstagramAdapter extends SocialMediaAdapter
 
     const TYPE = 'instagram';
 
+    public $isValid = false, $validationMessage = "";
+    private $apiKey, $apiSecret, $apiCallback, $options;
+
+    /**
+     * @param mixed $apiKey
+     */
+    public function setApiKey($apiKey)
+    {
+        $this->apiKey = $apiKey;
+    }
+
+    /**
+     * @param mixed $apiSecret
+     */
+    public function setApiSecret($apiSecret)
+    {
+        $this->apiSecret = $apiSecret;
+    }
+
+    /**
+     * @param mixed $apiCallback
+     */
+    public function setApiCallback($apiCallback)
+    {
+        $this->apiCallback = $apiCallback;
+    }
+
+
+
+    /**
+     * @param mixed $options
+     */
+    public function setOptions($options)
+    {
+        $this->options = $options;
+    }
     private $api;
 
     /**
@@ -46,11 +83,22 @@ class InstagramAdapter extends SocialMediaAdapter
      */
     protected $credentialRepository;
 
-    public function __construct($apiKey, $apiSecret, $apiCallback, $code, $itemRepository, $credentialRepository)
+    public function __construct($apiKey, $apiSecret, $apiCallback, $code, $itemRepository, $credentialRepository, $options)
     {
         parent::__construct($itemRepository);
 
-        $this->api =  new \Instagram(array('apiKey' => $apiKey, 'apiSecret' => $apiSecret, 'apiCallback' => $apiCallback));
+        /* validation - interrupt instanciating if invalid */
+        if($this->validateAdapterSettings(
+                array(
+                    'apiKey' => $apiKey,
+                    'apiSecret' => $apiSecret,
+                    'apiCallback' => $apiCallback,
+                    'options' => $options
+                )) === false)
+        {return $this;}
+        /* validated */
+
+        $this->api =  new \Instagram(array('apiKey' => $this->apiKey, 'apiSecret' => $this->apiSecret, 'apiCallback' => $this->apiCallback));
 
         $this->credentialRepository = $credentialRepository;
 
@@ -58,8 +106,33 @@ class InstagramAdapter extends SocialMediaAdapter
         $this->getAccessToken($code);
     }
 
-    public function getResultFromApi($options)
+    /**
+     * validates constructor input parameters in an individual way just for the adapter
+     *
+     * @param $parameter
+     * @return bool
+     */
+    public function validateAdapterSettings($parameter)
     {
+        $this->setApiKey($parameter['apiKey']);
+        $this->setApiSecret($parameter['apiSecret']);
+        $this->setApiCallback($parameter['apiCallback']);
+        $this->setOptions($parameter['options']);
+
+        if (empty($this->apiKey) || empty($this->apiSecret) ||  empty($this->apiCallback)) {
+            $this->validationMessage = self::TYPE . ' credentials not set';
+        } elseif (empty($this->options->instagramSearchIds) && empty($this->options->instagramHashTags)) {
+            $this->validationMessage = self::TYPE . ' no search term defined';
+        } else {
+            $this->isValid = true;
+        }
+
+        return $this->isValid;
+    }
+
+    public function getResultFromApi()
+    {
+        $options = $this->options;
         $result = array();
 
         // If search ID is given and hashtag is given and filter is checked, only show posts with given hashtag

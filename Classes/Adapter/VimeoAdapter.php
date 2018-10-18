@@ -12,6 +12,7 @@ use PlusB\PbSocial\Domain\Model\Item;
  *  Copyright notice
  *
  *  (c) 2016 Ramon Mohi <rm@plusb.de>, plusB
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
  *
  *  All rights reserved
  *
@@ -39,17 +40,87 @@ class VimeoAdapter extends SocialMediaAdapter
 
     const VIMEO_LINK = 'https://player.vimeo.com';
 
-    private $appKey;
+    public $isValid = false, $validationMessage = "";
+    private $clientIdentifier, $clientSecret, $accessToken, $options;
 
-    public function __construct($clientIdentifier, $clientSecret, $accessToken, $itemRepository)
+    /**
+     * @param mixed $clientIdentifier
+     */
+    public function setClientIdentifier($clientIdentifier)
+    {
+        $this->clientIdentifier = $clientIdentifier;
+    }
+
+    /**
+     * @param mixed $clientSecret
+     */
+    public function setClientSecret($clientSecret)
+    {
+        $this->clientSecret = $clientSecret;
+    }
+
+    /**
+     * @param mixed $accessToken
+     */
+    public function setAccessToken($accessToken)
+    {
+        $this->accessToken = $accessToken;
+    }
+
+    /**
+     * @param mixed $options
+     */
+    public function setOptions($options)
+    {
+        $this->options = $options;
+    }
+
+
+
+    public function __construct($clientIdentifier, $clientSecret, $accessToken, $itemRepository, $options)
     {
         parent::__construct($itemRepository);
+        /* validation - interrupt instanciating if invalid */
+        if($this->validateAdapterSettings(
+                array(
+                    'clientIdentifier' => $clientIdentifier,
+                    'clientSecret' => $clientSecret,
+                    'accessToken' => $accessToken,
+                    'options' => $options
+                )) === false)
+        {return $this;}
+        /* validated */
 
         $this->api = new \Vimeo\Vimeo($clientIdentifier, $clientSecret, $accessToken);
     }
 
-    public function getResultFromApi($options)
+    /**
+     * validates constructor input parameters in an individual way just for the adapter
+     *
+     * @param $parameter
+     * @return bool
+     */
+    public function validateAdapterSettings($parameter)
     {
+        $this->setClientIdentifier($parameter['clientIdentifier']);
+        $this->setClientSecret($parameter['clientSecret']);
+        $this->setAccessToken($parameter['accessToken']);
+        $this->setOptions($parameter['options']);
+
+        if (empty($this->clientIdentifier) || empty($this->clientSecret) || empty($this->accessToken)) {
+            $this->validationMessage = self::TYPE . ' credentials not set';
+        } elseif (empty($this->options->youtubeSearch)  && empty($this->options->youtubePlaylist) && empty($this->options->youtubeChannel) ) {
+            $this->validationMessage = self::TYPE . ' no channel defined';
+        } else {
+            $this->isValid = true;
+        }
+
+        return $this->isValid;
+    }
+
+    public function getResultFromApi()
+    {
+        $options = $this->options;
         $result = array();
 
         $fields = array(

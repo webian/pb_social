@@ -7,6 +7,7 @@ use GeorgRinger\News\Domain\Repository\NewsRepository;
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
 use PlusB\PbSocial\Domain\Repository\ItemRepository;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -16,6 +17,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  *  Copyright notice
  *
  *  (c) 2016 Ramon Mohi <rm@plusb.de>, plusB
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
  *
  *  All rights reserved
  *
@@ -43,6 +45,17 @@ class TxNewsAdapter extends SocialMediaAdapter
 
     protected $cObj;
     protected $detailPageUid;
+    public $isValid = false, $validationMessage = "";
+    private $options;
+
+    /**
+     * @param mixed $options
+     */
+    public function setOptions($options)
+    {
+        $this->options = $options;
+    }
+
 
     /**
      * newsRepository
@@ -57,10 +70,19 @@ class TxNewsAdapter extends SocialMediaAdapter
      * TxNewsAdapter constructor.
      * @param NewsDemand $newsDemand
      * @param ItemRepository $itemRepository
+     * @param $options
      */
-    public function __construct($newsDemand, $itemRepository)
+    public function __construct($newsDemand, $itemRepository, $options)
     {
         parent::__construct($itemRepository);
+
+        /* validation - interrupt instanciating if invalid */
+        if($this->validateAdapterSettings(
+                array(
+                    'options' => $options
+                )) === false)
+        {return $this;}
+        /* validated */
 
         $this->cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $this->newsDemand = $newsDemand;
@@ -69,8 +91,31 @@ class TxNewsAdapter extends SocialMediaAdapter
         $this->newsRepository = $om->get(NewsRepository::class);
     }
 
-    public function getResultFromApi($options)
+    /**
+     * validates constructor input parameters in an individual way just for the adapter
+     *
+     * @param $parameter
+     * @return bool
+     */
+    public function validateAdapterSettings($parameter)
     {
+        $this->setOptions($parameter['options']);
+
+        if(!ExtensionManagementUtility::isLoaded('news')){
+            $this->validationMessage = self::TYPE . ' extension not loaded.';
+        }else{
+            if (empty($this->options->newsCategories)) {
+                $this->validationMessage = self::TYPE . ': no news category defined, will output all available news';
+            }
+            $this->isValid = true;
+        }
+
+        return $this->isValid;
+    }
+
+    public function getResultFromApi()
+    {
+        $options = $this->options;
         $result = array();
 
         $this->detailPageUid = $options->newsDetailPageUid;

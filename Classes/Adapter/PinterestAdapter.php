@@ -14,6 +14,7 @@ use PlusB\PbSocial\Domain\Model\Item;
  *  Copyright notice
  *
  *  (c) 2016 Ramon Mohi <rm@plusb.de>, plusB
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
  *
  *  All rights reserved
  *
@@ -43,25 +44,92 @@ class PinterestAdapter extends SocialMediaAdapter
 
     private $credentialRepository;
 
-    private $appId;
+    public $isValid = false, $validationMessage = "";
+    private $appId, $appSecret, $accessCode, $options;
 
-    public function __construct($appId, $appSecret, $accessCode, $itemRepository, $credentialRepository)
+    /**
+     * @param mixed $appId
+     */
+    public function setAppId($appId)
+    {
+        $this->appId = $appId;
+    }
+
+    /**
+     * @param mixed $appSecret
+     */
+    public function setAppSecret($appSecret)
+    {
+        $this->appSecret = $appSecret;
+    }
+
+    /**
+     * @param mixed $accessCode
+     */
+    public function setAccessCode($accessCode)
+    {
+        $this->accessCode = $accessCode;
+    }
+
+    /**
+     * @param mixed $options
+     */
+    public function setOptions($options)
+    {
+        $this->options = $options;
+    }
+
+    public function __construct($appId, $appSecret, $accessCode, $itemRepository, $credentialRepository, $options)
     {
         parent::__construct($itemRepository);
+        /* validation - interrupt instanciating if invalid */
+        if($this->validateAdapterSettings(
+                array(
+                    'appId' => $appId,
+                    'appSecret' => $appSecret,
+                    'accessCode' => $accessCode,
+                    'options' => $options
+                )) === false)
+        {return $this;}
+        /* validated */
 
-        $this->appId = $appId;
-
-        $this->api = new Pinterest\Pinterest($appId, $appSecret);
+        $this->api = new Pinterest\Pinterest($this->appId, $this->appSecret);
 
         $this->credentialRepository = $credentialRepository;
 
-        $code = $this->extractCode($accessCode);
+        $code = $this->extractCode($this->accessCode);
 
         $this->getAccessToken($code);
     }
 
-    public function getResultFromApi($options)
+
+    /**
+     * validates constructor input parameters in an individual way just for the adapter
+     *
+     * @param $parameter
+     * @return bool
+     */
+    public function validateAdapterSettings($parameter)
     {
+        $this->setAppId($parameter['appId']);
+        $this->setAppSecret($parameter['appSecret']);
+        $this->setAccessCode($parameter['accessCode']);
+        $this->setOptions($parameter['options']);
+
+        if (empty($this->appId) || empty($this->appSecret) ||  empty($this->accessCode)) {
+            $this->validationMessage = self::TYPE . ' credentials not set';
+        } elseif (empty($this->options->pinterest_username) || empty($this->options->pinterest_username)) {
+            $this->validationMessage = self::TYPE . ' username or boardname not defined';
+        } else {
+            $this->isValid = true;
+        }
+
+        return $this->isValid;
+    }
+
+    public function getResultFromApi()
+    {
+        $options = $this->options;
         $result = array();
 
         $boardname = $options->pinterest_username . '/' . $options->pinterest_boardname;

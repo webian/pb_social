@@ -13,6 +13,7 @@ use PlusB\PbSocial\Domain\Model\Item;
  *  Copyright notice
  *
  *  (c) 2016 Ramon Mohi <rm@plusb.de>, plusB
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
  *
  *  All rights reserved
  *
@@ -38,19 +39,80 @@ class ImgurAdapter extends SocialMediaAdapter
 
     const TYPE = 'imgur';
 
+    public $isValid = false, $validationMessage = "";
+    private $apiId, $apiSecret, $options;
+
+    /**
+     * @param mixed $apiId
+     */
+    public function setApiId($apiId)
+    {
+        $this->apiId = $apiId;
+    }
+
+    /**
+     * @param mixed $apiSecret
+     */
+    public function setApiSecret($apiSecret)
+    {
+        $this->apiSecret = $apiSecret;
+    }
+
+    /**
+     * @param mixed $options
+     */
+    public function setOptions($options)
+    {
+        $this->options = $options;
+    }
+
     private $api;
 
-    public function __construct($apiId, $apiSecret, $itemRepository)
+    public function __construct($apiId, $apiSecret, $itemRepository, $options)
     {
         parent::__construct($itemRepository);
 
-        $this->api =  new \Imgur($apiId, $apiSecret);
+        /* validation - interrupt instanciating if invalid */
+        if($this->validateAdapterSettings(
+                array(
+                    'apiId' => $apiId,
+                    'apiSecret' => $apiSecret,
+                    'options' => $options
+                )) === false)
+        {return $this;}
+        /* validated */
+
+        $this->api =  new \Imgur($this->apiId, $this->apiSecret);
 
         //TODO: Implement OAuth authentication (to get a user's images etc)
     }
 
-    public function getResultFromApi($options)
+    /**
+     * validates constructor input parameters in an individual way just for the adapter
+     *
+     * @param $parameter
+     * @return bool
+     */
+    public function validateAdapterSettings($parameter)
     {
+        $this->setApiId($parameter['apiId']);
+        $this->setApiSecret($parameter['apiSecret']);
+        $this->setOptions($parameter['options']);
+
+        if (empty($this->apiId) || empty($this->apiSecret)) {
+            $this->validationMessage = ' credentials not set';
+        } elseif (empty($this->options->imgSearchUsers) && empty($this->options->imgSearchTags)) {
+            $this->validationMessage = ' no search term defined';
+        } else {
+            $this->isValid = true;
+        }
+
+        return $this->isValid;
+    }
+
+    public function getResultFromApi()
+    {
+        $options = $this->options;
         $result = array();
 
         // search for users

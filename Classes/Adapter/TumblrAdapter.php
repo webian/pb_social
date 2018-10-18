@@ -11,6 +11,7 @@ use Tumblr\API\Client;
  *  Copyright notice
  *
  *  (c) 2016 Ramon Mohi <rm@plusb.de>, plusB
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
  *
  *  All rights reserved
  *
@@ -36,18 +37,102 @@ class TumblrAdapter extends SocialMediaAdapter
 
     const TYPE = 'tumblr';
 
+
+    public $isValid = false, $validationMessage = "";
+    private $apiId, $apiSecret, $token, $tokenSecret, $options;
+
+    /**
+     * @param mixed $apiId
+     */
+    public function setApiId($apiId)
+    {
+        $this->apiId = $apiId;
+    }
+
+    /**
+     * @param mixed $apiSecret
+     */
+    public function setApiSecret($apiSecret)
+    {
+        $this->apiSecret = $apiSecret;
+    }
+
+    /**
+     * @param mixed $token
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+    }
+
+    /**
+     * @param mixed $tokenSecret
+     */
+    public function setTokenSecret($tokenSecret)
+    {
+        $this->tokenSecret = $tokenSecret;
+    }
+
+    /**
+     * @param mixed $options
+     */
+    public function setOptions($options)
+    {
+        $this->options = $options;
+    }
+
     private $api;
 
-    public function __construct($apiId, $apiSecret, $token, $tokenSecret, $itemRepository)
+    public function __construct($apiId, $apiSecret, $token, $tokenSecret, $itemRepository, $options)
     {
         parent::__construct($itemRepository);
 
-        $this->api =  new Client($apiId, $apiSecret);
-        $this->api->setToken($token, $tokenSecret);
+        /* validation - interrupt instanciating if invalid */
+        if($this->validateAdapterSettings(
+                array(
+                    'apiId' => $apiId,
+                    'apiSecret' => $apiSecret,
+                    'token' => $token,
+                    'tokenSecret' => $tokenSecret,
+                    'options' => $options
+                )) === false)
+        {return $this;}
+        /* validated */
+
+
+        $this->api =  new Client($this->apiId, $this->apiSecret);
+        $this->api->setToken($this->token, $this->tokenSecret);
     }
 
-    public function getResultFromApi($options)
+    /**
+     * validates constructor input parameters in an individual way just for the adapter
+     *
+     * @param $parameter
+     * @return bool
+     */
+    public function validateAdapterSettings($parameter)
     {
+        $this->setApiId($parameter['appId']);
+        $this->setApiSecret($parameter['appSecret']);
+        $this->setToken($parameter['token']);
+        $this->setTokenSecret($parameter['tokenSecret']);
+        $this->setOptions($parameter['options']);
+
+        if (empty($this->apiId) || empty($this->apiSecret) ||  empty($this->token)||  empty($this->tokenSecret)) {
+            $this->validationMessage = self::TYPE . ' credentials not set';
+        } elseif (empty($this->options->tumblrBlogNames) ) {
+            $this->validationMessage = self::TYPE . ' - no blog names for search term defined';
+        } else {
+            $this->isValid = true;
+        }
+
+        return $this->isValid;
+    }
+
+
+    public function getResultFromApi()
+    {
+        $options = $this->options;
         $result = array();
 
         // search for users

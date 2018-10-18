@@ -1,10 +1,7 @@
 <?php
 namespace PlusB\PbSocial\Controller;
 
-use GeorgRinger\News\Domain\Model\Dto\NewsDemand;
 use PlusB\PbSocial\Adapter;
-use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /***************************************************************
  *
@@ -66,7 +63,6 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
     protected $cacheService;
 
 
-
     /**
      * cacheManager
      *
@@ -93,65 +89,6 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 
     protected $logger;
 
-    /**
-     * action list
-     *
-     * @return void
-     */
-    public function listAction()
-    {
-        $items = $this->itemRepository->findAll();
-        $this->view->assign('items', $items);
-    }
-
-    /**
-     * action show
-     *
-     * @param \PlusB\PbSocial\Domain\Model\Item $item
-     * @return void
-     */
-    public function showAction(\PlusB\PbSocial\Domain\Model\Item $item)
-    {
-        $this->view->assign('item', $item);
-    }
-
-    /**
-     * action edit
-     *
-     * @param \PlusB\PbSocial\Domain\Model\Item $item
-     * @ignorevalidation $item
-     * @return void
-     */
-    public function editAction(\PlusB\PbSocial\Domain\Model\Item $item)
-    {
-        $this->view->assign('item', $item);
-    }
-
-    /**
-     * action update
-     *
-     * @param \PlusB\PbSocial\Domain\Model\Item $item
-     * @return void
-     */
-    public function updateAction(\PlusB\PbSocial\Domain\Model\Item $item)
-    {
-        $this->addFlashMessage('The object was updated. Please be aware that this action is publicly accessible unless you implement an access check. See <a href=\'http://wiki.typo3.org/T3Doc/Extension_Builder/Using_the_Extension_Builder#1._Model_the_domain\' target=\'_blank\'>Wiki</a>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-        $this->itemRepository->updateFeed($item);
-        $this->redirect('list');
-    }
-
-    /**
-     * action delete
-     *
-     * @param \PlusB\PbSocial\Domain\Model\Item $item
-     * @return void
-     */
-    public function deleteAction(\PlusB\PbSocial\Domain\Model\Item $item)
-    {
-        $this->addFlashMessage('The object was deleted. Please be aware that this action is publicly accessible unless you implement an access check. See <a href=\'http://wiki.typo3.org/T3Doc/Extension_Builder/Using_the_Extension_Builder#1._Model_the_domain\' target=\'_blank\'>Wiki</a>', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
-        $this->itemRepository->remove($item);
-        $this->redirect('list');
-    }
 
     /**
      * action showSocialBarAction
@@ -171,9 +108,6 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
     public function showSocialFeedAction($ajax = false)
     {
 
-        $extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pb_social']); //TODO => search for a better way of accessing extconf
-        $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
-
         // update feedRequestLimit if request is asynchronous
         if ($ajax) {
             $this->settings['feedRequestLimit'] = $this->settings['asynchLimit'] > 0 ? $this->settings['asynchLimit'] : $this->settings['feedRequestLimit'];
@@ -185,7 +119,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         # Get feeds #
         $feeds = array();
 
-        $results = $this->getFeeds($extConf, $this->settings);
+        $results = $this->getFeedsFromCache($this->settings);
 
         # Provide feeds to frontend #
         foreach ($results as $result) {
@@ -223,6 +157,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
      */
     public function _facebookReactionAction($id)
     {
+        $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
         $extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pb_social']); //TODO => search for a better way of accessing extconf
 
         # check api key #
@@ -235,7 +170,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
             $this->logger->warning(self::TYPE_FACEBOOK . ' credentials not set');
         } else {
             # retrieve data from adapter #
-            $adapter = new Adapter\FacebookAdapter($config_apiId, $config_apiSecret, $this->itemRepository);
+            $adapter = new Adapter\FacebookAdapter($config_apiId, $config_apiSecret, $this->itemRepository, NULL);
             $reactions = $adapter->getReactions($id);
         }
 
@@ -245,159 +180,79 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 
 
     /**
-     * @param $extConf array of extension configuration settings (in localconf, by extension configuration in admin tool)
      * @param $settings array of typoscript settings
      * @return array
      */
-    public function getFeeds($extConf, $settings)
+    public function getFeedsFromCache($settings)
     {
-        // Build configuration from plugin settings
-        $adapterOptions = $this->optionService->getAdapterOptions($settings);
-        $adapterOptions->devMod = $extConf['socialfeed.']['devmod'] == '1' ? true : false; //todo: what is this, it is over written now
-
         //result array, sorted and foreached in action method
         $results = array();
         //cache specified by $identifier
-        $cache = $this->cacheManager->getCache('pb_social_cache');
+
 
 
         if ($settings['facebookEnabled'] === '1') {
+
             $results = $this->cacheService->getCacheContent(
-                self::TYPE_FACEBOOK,
-                $settings,
-                $this->configurationManager->getContentObject()->data['uid'],
-                $cache,
-                $results
+                self::TYPE_FACEBOOK, $settings, $this->configurationManager->getContentObject()->data['uid'], $results
             );
         }
 
-        /*
-         *  Google+ has been shut down
-         * https://www.heise.de/newsticker/meldung/Soziale-Netzwerke-Google-stellt-Google-ein-4183950.html
-         *
-         * if ($settings['googleEnabled'] === '1') {
-            $results = $this->getCacheContent(
-                array(
-                    "googleplus_".$adapterOptions->settings['googleSearchIds']
-                ),
-                $this->configurationManager->getContentObject()->data['uid'],
-                $cache,
-                $results
-            );
-        }*/
 
         if ($settings['imgurEnabled'] === '1') {
             $results = $this->cacheService->getCacheContent(
-                self::TYPE_IMGUR,
-                $settings,
-                $this->configurationManager->getContentObject()->data['uid'],
-                $cache,
-                $results
+                self::TYPE_IMGUR, $settings, $this->configurationManager->getContentObject()->data['uid'], $results
             );
         }
 
+
+
         if ($settings['instagramEnabled'] === '1') {
             $results = $this->cacheService->getCacheContent(
-                self::TYPE_INSTAGRAM,
-                $settings,
-                $this->configurationManager->getContentObject()->data['uid'],
-                $cache,
-                $results
+                self::TYPE_INSTAGRAM, $settings, $this->configurationManager->getContentObject()->data['uid'], $results
             );
         }
 
         if ($settings['linkedinEnabled'] === '1') {
             $results = $this->cacheService->getCacheContent(
-                self::TYPE_LINKEDIN,
-                $settings,
-                $this->configurationManager->getContentObject()->data['uid'],
-                $cache,
-                $results
+                self::TYPE_LINKEDIN, $settings, $this->configurationManager->getContentObject()->data['uid'], $results
             );
         }
 
         if ($settings['pinterestEnabled'] === '1') {
             $results = $this->cacheService->getCacheContent(
-                self::TYPE_PINTEREST,
-                $settings,
-                $this->configurationManager->getContentObject()->data['uid'],
-                $cache,
-                $results
+                self::TYPE_PINTEREST, $settings, $this->configurationManager->getContentObject()->data['uid'], $results
             );
         }
 
         if ($settings['tumblrEnabled'] === '1') {
             $results = $this->cacheService->getCacheContent(
-                self::TYPE_TUMBLR,
-                 $settings,
-                $this->configurationManager->getContentObject()->data['uid'],
-                $cache,
-                $results
+                self::TYPE_TUMBLR, $settings, $this->configurationManager->getContentObject()->data['uid'], $results
             );
         }
 
         if ($settings['twitterEnabled'] === '1') {
             $results = $this->cacheService->getCacheContent(
-                self::TYPE_TWITTER,
-                $settings,
-                $this->configurationManager->getContentObject()->data['uid'],
-                $cache,
-                $results
+                self::TYPE_TWITTER, $settings, $this->configurationManager->getContentObject()->data['uid'], $results
             );
         }
 
         if ($settings['youtubeEnabled'] === '1') {
             $results = $this->cacheService->getCacheContent(
-                self::TYPE_YOUTUBE,
-                 $settings,
-                 $this->configurationManager->getContentObject()->data['uid'],
-                $cache,
-                $results
+                self::TYPE_YOUTUBE, $settings, $this->configurationManager->getContentObject()->data['uid'], $results
             );
         }
 
         if ($settings['vimeoEnabled'] === '1') {
             $results = $this->cacheService->getCacheContent(
-                self::TYPE_VIMEO,
-                 $settings,
-                $this->configurationManager->getContentObject()->data['uid'],
-                $cache,
-                $results
+                self::TYPE_VIMEO, $settings, $this->configurationManager->getContentObject()->data['uid'], $results
             );
         }
 
         if ($settings['newsEnabled'] === '1') {
             $results = $this->cacheService->getCacheContent(
-                self::TYPE_TX_NEWS,
-                 $settings,
-                 $this->configurationManager->getContentObject()->data['uid'],
-                $cache,
-                $results
+                self::TYPE_TX_NEWS, $settings, $this->configurationManager->getContentObject()->data['uid'], $results
             );
-        }
-
-        //todo: need this?
-        if ($settings['dummyEnabled'] === '1') {
-
-            // TODO => set some configuration 'ext/pb_social/ext_conf_template.txt'
-            $config_dummyKey = $extConf['socialfeed.']['youtube.']['apikey'];
-
-            // TODO => move search params to flexform for usability
-            $adapterOptions->dummySearchValues = $settings['dummySearchValues'];
-
-            if (empty($config_dummyKey)) {
-                $this->logger->warning(self::TYPE_DUMMY . ' credentials not set');
-            } elseif (empty($adapterOptions->dummySearchValue)) {
-                $this->logger->warning(self::TYPE_DUMMY . ' no search term defined');
-            } else {
-                # retrieve data from adapter #
-                $adapter = new Adapter\DummyAdapter($config_dummyKey, $this->itemRepository, $this->credentialRepository);
-                try {
-                    $results[] = $adapter->getResultFromApi($adapterOptions);
-                } catch (\Exception $e) {
-                    $this->logger->warning($e->getMessage());
-                }
-            }
         }
 
         return $results;
@@ -420,44 +275,4 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         }
         return false;
     }
-
-
-
-
-}
-
-/**
- * trims text to a space then adds ellipses if desired
- * @param string $input text to trim
- * @param int $length in characters to trim to
- * @param bool $ellipses if ellipses (...) are to be added
- * @param bool $strip_html if html tags are to be stripped
- * @return string
- */
-function trim_text($input, $length, $ellipses = true, $strip_html = true)
-{
-    if (empty($input)) {
-        return '';
-    }
-
-    //strip tags, if desired
-    if ($strip_html) {
-        $input = strip_tags($input);
-    }
-
-    //no need to trim, already shorter than trim length
-    if (strlen($input) <= $length) {
-        return $input;
-    }
-
-    //find last space within length
-    $last_space = strrpos(substr($input, 0, $length), ' ');
-    $trimmed_text = substr($input, 0, $last_space);
-
-    //add ellipses (...)
-    if ($ellipses) {
-        $trimmed_text .= '...';
-    }
-
-    return $trimmed_text;
 }

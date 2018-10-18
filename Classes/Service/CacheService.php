@@ -4,7 +4,6 @@ namespace PlusB\PbSocial\Service;
 
 use PlusB\PbSocial\Service\Base\AbstractBaseService;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /***************************************************************
  *
@@ -44,6 +43,31 @@ class CacheService extends AbstractBaseService
 
 
     /**
+     * @var \PlusB\PbSocial\Service\FeedSyncService
+     * @inject
+     */
+    protected $feedSyncService;
+
+
+    /**
+     * @var \TYPO3\CMS\Core\Cache\CacheManager
+     * @inject
+     */
+    protected $cacheManager = null;
+
+    /**
+     * @var FrontendInterface $cache
+     */
+    private $cache;
+
+    protected function initializeConfiguration(){
+        parent::initializeConfiguration();
+
+        //get caching backend
+        $this->cache = $this->cacheManager->getCache('pb_social_cache');
+    }
+
+    /**
      * combines array of strings which are different by their configuration issues
      * - calculating a crypted string to be able to find this again in cache for FE
      *
@@ -66,7 +90,6 @@ class CacheService extends AbstractBaseService
      * @param $socialNetworkTypeString string
      * @param $settings array
      * @param $ttContentUid int
-     * @param $cacheObject FrontendInterface
      * @param $results array - getting results, appending results if success
      * @return array
      */
@@ -74,7 +97,6 @@ class CacheService extends AbstractBaseService
         $socialNetworkTypeString,
         $settings,
         $ttContentUid,
-        $cacheObject,
         &$results
     ){
 
@@ -82,44 +104,45 @@ class CacheService extends AbstractBaseService
 
             $cacheIdentifierElementsArray = $this->optionService->getCacheIdentifierElementsArray($socialNetworkTypeString, $settings);
 
-            if ($content = $cacheObject->get($this->calculateCacheIdentifier($cacheIdentifierElementsArray, $ttContentUid))) { // the cached content is available, appending results if success
+            $cacheIdentifier = $this->calculateCacheIdentifier($cacheIdentifierElementsArray, $ttContentUid);
+
+            //if there is not already a cache, try to get a api sync and get a filled cache, but it only gets this requested network type
+            if($this->cache->has($cacheIdentifier) === false){
+                $this->feedSyncService->syncFeed($socialNetworkTypeString, $settings, $ttContentUid, $isVerbose = false);
+            }
+            if($content = $this->cache->get($cacheIdentifier)){
                 $results[] = $content;
             }
+
             return $results;
         } catch (\Exception $e) {
-            $GLOBALS['BE_USER']->simplelog(var_export($socialNetworkTypeString) . ': ' . $e->getMessage(), self::EXTKEY, 1);
+            $GLOBALS['BE_USER']->simplelog($socialNetworkTypeString . ' flexform {$ttContentUid}: ' . $e->getMessage(), self::EXTKEY, 1);
             return $results;
         }
     }
 
     /**
-     * aölksdkjf öasldk jföalsdk jfölasdk jfölaskd jfölaskd jfölaskdj fölasdkj
+     * Sets given content to cache by calculated cacheIdentifier
      *
      * @param $socialNetworkTypeString string
      * @param $settings array
      * @param $ttContentUid int
-     * @param $cacheObject FrontendInterface
      * @param $content
      */
     public function setCacheContent(
         $socialNetworkTypeString,
         $settings,
         $ttContentUid,
-        $cacheObject,
         $content
     ){
         $cacheIdentifierElementsArray = $this->optionService->getCacheIdentifierElementsArray($socialNetworkTypeString, $settings);
 
         //todo set($entryIdentifier, $data, array $tags = [], $lifetime = null);
-        $cacheObject->set($this->calculateCacheIdentifier(
-            $entryIdentifier = $cacheIdentifierElementsArray, $ttContentUid),
+        $this->cache->set(
+            $this->calculateCacheIdentifier($cacheIdentifierElementsArray, $ttContentUid),
             $data = $content,
             $tags = array(self::EXTKEY),
             $lifetime = null
         );
     }
-
-
-
-
 }

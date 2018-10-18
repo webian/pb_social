@@ -8,13 +8,13 @@ use Facebook\Facebook;
 use FluidTYPO3\Flux\Outlet\Pipe\Exception;
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /***************************************************************
  *
  *  Copyright notice
  *
  *  (c) 2016 Ramon Mohi <rm@plusb.de>, plusB
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
  *
  *  All rights reserved
  *
@@ -45,22 +45,58 @@ class FacebookAdapter extends SocialMediaAdapter
 
     private $access_token;
 
-    public function __construct($apiId, $apiSecret, $itemRepository)
+    public $isValid = false, $validationMessage = "";
+    private $apiId, $apiSecret, $options;
+
+    /**
+     * @param mixed $apiId
+     */
+    public function setApiId($apiId)
+    {
+        $this->apiId = $apiId;
+    }
+
+    /**
+     * @param mixed $apiSecret
+     */
+    public function setApiSecret($apiSecret)
+    {
+        $this->apiSecret = $apiSecret;
+    }
+
+    /**
+     * @param mixed $options
+     */
+    public function setOptions($options)
+    {
+        $this->options = $options;
+    }
+
+    public function __construct($apiId, $apiSecret, $itemRepository, $options)
     {
         parent::__construct($itemRepository);
 
+        /* validation - interrupt instanciating if invalid */
+        if($this->validateAdapterSettings(
+            array(
+                'apiId' => $apiId,
+                'apiSecret' => $apiSecret,
+                'options' => $options
+            )) === false)
+        {return $this;}
+        /* validated */
 
         $extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pb_social']);
         $ignoreVerifySSL = $extConf['socialfeed.']['ignoreVerifySSL'] == '1' ? true : false;
 
         $this->api = new Facebook([
-            'app_id' => $apiId,
-            'app_secret' => $apiSecret,
+            'app_id' => $this->apiId,
+            'app_secret' => $this->apiSecret,
             'default_graph_version' => 'v3.0',
         ]);
 
         // Get access_token via grant_type=client_credentials
-        $url = 'https://graph.facebook.com/v3.0/oauth/access_token?client_id=' . $apiId . '&client_secret=' . $apiSecret . '&grant_type=client_credentials';
+        $url = 'https://graph.facebook.com/v3.0/oauth/access_token?client_id=' . $this->apiId . '&client_secret=' . $this->apiSecret . '&grant_type=client_credentials';
 
         $accessTokenResponse = $this->itemRepository->curl_download($url, $ignoreVerifySSL);
         if (($accessTokenJson = json_decode($accessTokenResponse)) != NULL) {
@@ -90,9 +126,35 @@ class FacebookAdapter extends SocialMediaAdapter
 //        $this->api->setDefaultAccessToken($this->access_token);
     }
 
-    public function getResultFromApi($options)
+    /**
+     * validates constructor input parameters in an individual way just for the adapter
+     *
+     * @param $parameter
+     * @return bool
+     */
+    public function validateAdapterSettings($parameter)
     {
+        $this->setApiId($parameter['apiId']);
+        $this->setApiSecret($parameter['apiSecret']);
+        $this->setOptions($parameter['options']);
+
+        if (empty($this->apiId) || empty($this->apiSecret)) {
+            $this->validationMessage = ' credentials not set';
+        } elseif (empty($this->options->settings['facebookSearchIds'])) {
+            $this->validationMessage = ' no search term defined';
+        } else {
+            $this->isValid = true;
+        }
+
+        return $this->isValid;
+    }
+
+    public function getResultFromApi()
+    {
+        $options = $this->options;
         $result = array();
+
+
 
         $facebookSearchIds = $options->settings['facebookSearchIds'];
         if (empty($facebookSearchIds)) {

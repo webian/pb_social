@@ -13,6 +13,7 @@ use PlusB\PbSocial\Domain\Model\Item;
  *  Copyright notice
  *
  *  (c) 2016 Ramon Mohi <rm@plusb.de>, plusB
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
  *
  *  All rights reserved
  *
@@ -37,21 +38,100 @@ class TwitterAdapter extends SocialMediaAdapter
 {
 
     const TYPE = 'twitter';
+    public $isValid = false, $validationMessage = "";
+    private $consumerKey, $consumerSecret, $accessToken, $accessTokenSecret, $options;
+
+    /**
+     * @param mixed $consumerKey
+     */
+    public function setConsumerKey($consumerKey)
+    {
+        $this->consumerKey = $consumerKey;
+    }
+
+    /**
+     * @param mixed $consumerSecret
+     */
+    public function setConsumerSecret($consumerSecret)
+    {
+        $this->consumerSecret = $consumerSecret;
+    }
+
+    /**
+     * @param mixed $accessToken
+     */
+    public function setAccessToken($accessToken)
+    {
+        $this->accessToken = $accessToken;
+    }
+
+    /**
+     * @param mixed $accessTokenSecret
+     */
+    public function setAccessTokenSecret($accessTokenSecret)
+    {
+        $this->accessTokenSecret = $accessTokenSecret;
+    }
+
+    /**
+     * @param mixed $options
+     */
+    public function setOptions($options)
+    {
+        $this->options = $options;
+    }
 
     private $api;
 
     //private $api_url = 'statuses/user_timeline';
 
-    public function __construct($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret, $itemRepository)
+    public function __construct($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret, $itemRepository, $options)
     {
         parent::__construct($itemRepository);
+        /* validation - interrupt instanciating if invalid */
+        if($this->validateAdapterSettings(
+                array(
+                    'consumerKey' => $consumerKey,
+                    'consumerSecret' => $consumerSecret,
+                    'accessToken' => $accessToken,
+                    'accessTokenSecret' => $accessTokenSecret,
+                    'options' => $options
+                )) === false)
+        {return $this;}
+        /* validated */
 
-        $this->api =  new TwitterOAuth($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret);
+        $this->api =  new TwitterOAuth($this->consumerKey, $this->consumerSecret, $this->accessToken, $this->accessTokenSecret);
         $this->api->setTimeouts(10, 10);
     }
 
-    public function getResultFromApi($options)
+    /**
+     * validates constructor input parameters in an individual way just for the adapter
+     *
+     * @param $parameter
+     * @return bool
+     */
+    public function validateAdapterSettings($parameter)
     {
+        $this->setConsumerKey($parameter['consumerKey']);
+        $this->setConsumerSecret($parameter['consumerSecret']);
+        $this->setAccessToken($parameter['accessToken']);
+        $this->setAccessTokenSecret($parameter['accessTokenSecret']);
+        $this->setOptions($parameter['options']);
+
+        if (empty($this->consumerKey) || empty($this->consumerSecret) ||  empty($this->accessToken)||  empty($this->accessTokenSecret)) {
+            $this->validationMessage = self::TYPE . ' credentials not set';
+        } elseif (empty($this->options->twitterSearchFieldValues)  && empty($this->options->twitterProfilePosts) ) {
+            $this->validationMessage = self::TYPE . ' no search term defined';
+        } else {
+            $this->isValid = true;
+        }
+
+        return $this->isValid;
+    }
+
+    public function getResultFromApi()
+    {
+        $options = $this->options;
         $result = array();
         $apiMethod = '';
 
