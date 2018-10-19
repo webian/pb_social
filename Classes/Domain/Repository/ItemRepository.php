@@ -42,7 +42,15 @@ class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     public function findByTypeAndCacheIdentifier($type, $cacheIdentifier)
     {
         $query = $this->createQuery();
-        $query->matching($query->logicalAnd($query->like('type', $type), $query->equals('cacheIdentifier', $cacheIdentifier)));
+        $query->matching(
+            $query->logicalAnd(
+                array(
+                    $query->like('type', $type),
+                    $query->equals('cacheIdentifier', $cacheIdentifier
+                    )
+                )
+            )
+        );
         return $query->execute();
     }
 
