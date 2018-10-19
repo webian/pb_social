@@ -1,6 +1,6 @@
 <?php
 
-//namespace MetzWeb\Instagram;
+namespace MetzWeb\Instagram;
 require_once 'InstagramException.php';
 
 /**

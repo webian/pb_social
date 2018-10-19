@@ -40,7 +40,15 @@ class CredentialRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     public function findByTypeAndAppId($type, $appId)
     {
         $query = $this->createQuery();
-        $query->matching($query->logicalAnd($query->like('type', $type), $query->equals('appId', $appId)));
+        $query->matching(
+            $query->logicalAnd(
+                array(
+                    $query->like('type', $type),
+                    $query->equals('appId', $appId)
+                )
+            )
+        );
+
         return $query->execute();
     }
 

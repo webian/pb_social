@@ -89,11 +89,7 @@ class FacebookAdapter extends SocialMediaAdapter
         $extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pb_social']);
         $ignoreVerifySSL = $extConf['socialfeed.']['ignoreVerifySSL'] == '1' ? true : false;
 
-        $this->api = new Facebook([
-            'app_id' => $this->apiId,
-            'app_secret' => $this->apiSecret,
-            'default_graph_version' => 'v3.0',
-        ]);
+        $this->api = new Facebook(['app_id' => $this->apiId,'app_secret' => $this->apiSecret,'default_graph_version' => 'v3.0']);
 
         // Get access_token via grant_type=client_credentials
         $url = 'https://graph.facebook.com/v3.0/oauth/access_token?client_id=' . $this->apiId . '&client_secret=' . $this->apiSecret . '&grant_type=client_credentials';

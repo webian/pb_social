@@ -83,6 +83,11 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
     protected $silent = false;
 
     /**
+     * @var string $callnetwork string that contains social network constant string, default is all - or just one network
+     */
+    protected $callnetwork = 'all';
+
+    /**
      * @var string $sysLogWarnings String collected for syslog
      */
     private $sysLogWarnings = "";
@@ -142,6 +147,24 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
         $this->silent = $silent;
     }
 
+    /**
+     * @return string
+     */
+    public function getCallnetwork()
+    {
+        return $this->callnetwork;
+    }
+
+    /**
+     * @param string $callnetwork
+     */
+    public function setCallnetwork($callnetwork)
+    {
+        $this->callnetwork = $callnetwork;
+    }
+
+
+
     /** @var $logger \TYPO3\CMS\Core\Log\Logger */
     protected $logger;
 
@@ -166,7 +189,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
     /**
      * initializing
      */
-    private function initializeUpdateFeedDataCommand($verbose, $silent) {
+    private function initializeUpdateFeedDataCommand($verbose, $silent, $callnetwork) {
 
         $this->setTyposcriptSettings($this->configurationManager->getConfiguration(
             \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS
@@ -191,6 +214,11 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
 
         if($this->isVerbose() === true){
             $this->outputConsoleInfo("entering verbose output");
+        }
+
+        $this->setCallnetwork($callnetwork);
+        if($this->getCallnetwork() !== 'all'){
+            $this->outputConsoleInfo("just calling one network: {$this->getCallnetwork()}");
         }
 
         # Initialize logger
@@ -234,10 +262,11 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
      *
      * @param bool $verbose Enter verbose output
      * @param bool $silent Silent mode outputs nothing, but logs still into general typo3 log file
+     * @param string $callnetwork - just call one network - default is all
      */
-    public function updateFeedDataCommand($verbose = false, $silent = false)
+    public function updateFeedDataCommand($verbose = false, $silent = false, $callnetwork = 'all')
     {
-        $this->initializeUpdateFeedDataCommand($verbose, $silent);
+        $this->initializeUpdateFeedDataCommand($verbose, $silent, $callnetwork);
 
         # Setup database connection and fetch all flexform settings #
         /*
@@ -256,8 +285,9 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
 
                 $this->setSysLogWarnings("Flexform: ".$xml_string['uid']);
 
+
                 /* starting procedural list of requrests */
-                if ($flexformSettings['facebookEnabled'] === '1') {
+                if ($flexformSettings['facebookEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_FACEBOOK)) {
 
                     $this->outputLogInformation(
                         $this->feedSyncService->syncFeed(self::TYPE_FACEBOOK, $flexformSettings, $xml_string['uid'], $this->isVerbose())
@@ -265,7 +295,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
 
                 }
 
-                if ($flexformSettings['imgurEnabled'] === '1') {
+                if ($flexformSettings['imgurEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_IMGUR)) {
 
                     $this->outputLogInformation(
                         $this->feedSyncService->syncFeed(self::TYPE_IMGUR, $flexformSettings, $xml_string['uid'], $this->isVerbose())
@@ -273,7 +303,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
 
                 }
 
-                if ($flexformSettings['instagramEnabled'] === '1') {
+                if ($flexformSettings['instagramEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_INSTAGRAM)) {
 
                     $this->outputLogInformation(
                         $this->feedSyncService->syncFeed(self::TYPE_INSTAGRAM, $flexformSettings, $xml_string['uid'], $this->isVerbose())
@@ -281,7 +311,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
 
                 }
 
-                if ($flexformSettings['linkedinEnabled'] === '1') {
+                if ($flexformSettings['linkedinEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_LINKEDIN)) {
 
                     $this->outputLogInformation(
                         $this->feedSyncService->syncFeed(self::TYPE_LINKEDIN, $flexformSettings, $xml_string['uid'], $this->isVerbose())
@@ -289,14 +319,14 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
 
                 }
 
-                if ($flexformSettings['pinterestEnabled'] === '1') {
+                if ($flexformSettings['pinterestEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_PINTEREST)) {
 
                     $this->outputLogInformation(
                         $this->feedSyncService->syncFeed(self::TYPE_PINTEREST, $flexformSettings, $xml_string['uid'], $this->isVerbose())
                     );
                 }
 
-                if ($flexformSettings['tumblrEnabled'] === '1') {
+                if ($flexformSettings['tumblrEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_TUMBLR)) {
 
                     $this->outputLogInformation(
                         $this->feedSyncService->syncFeed(self::TYPE_TUMBLR, $flexformSettings, $xml_string['uid'], $this->isVerbose())
@@ -304,7 +334,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
 
                 }
 
-                if ($flexformSettings['twitterEnabled'] === '1') {
+                if ($flexformSettings['twitterEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_TWITTER)) {
 
                     $this->outputLogInformation(
                         $this->feedSyncService->syncFeed(self::TYPE_TWITTER, $flexformSettings, $xml_string['uid'], $this->isVerbose())
@@ -312,7 +342,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
 
                 }
 
-                if ($flexformSettings['youtubeEnabled'] === '1') {
+                if ($flexformSettings['youtubeEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_YOUTUBE)) {
 
                     $this->outputLogInformation(
                         $this->feedSyncService->syncFeed(self::TYPE_YOUTUBE, $flexformSettings, $xml_string['uid'], $this->isVerbose())
@@ -320,14 +350,14 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
 
                 }
 
-                if ($flexformSettings['vimeoEnabled'] === '1') {
+                if ($flexformSettings['vimeoEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_VIMEO)) {
 
                     $this->outputLogInformation(
                         $this->feedSyncService->syncFeed(self::TYPE_VIMEO, $flexformSettings, $xml_string['uid'], $this->isVerbose())
                     );
                 }
 
-                if ($flexformSettings['newsEnabled'] === '1') {
+                if ($flexformSettings['newsEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_TX_NEWS)) {
 
                     $this->outputLogInformation(
                         $this->feedSyncService->syncFeed(self::TYPE_TX_NEWS, $flexformSettings, $xml_string['uid'], $this->isVerbose())

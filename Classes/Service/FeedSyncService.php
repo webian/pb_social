@@ -213,8 +213,6 @@ class FeedSyncService extends AbstractBaseService
         $flexformOptions->instagramSearchIds = $flexformSettings['instagramSearchIds'];
         $flexformOptions->instagramPostFilter = $flexformSettings['instagramPostFilter'];
 
-        // TODO: not yet implemented in backend configuration
-        $flexformOptions->imgSearchUsers = $flexformSettings['imgurUsers'];
 
         # retrieve data from adapter #
         $adapter = new Adapter\InstagramAdapter($config_clientId, $config_clientSecret, $config_clientCallback, $config_access_code, $this->itemRepository, $this->credentialRepository, $flexformOptions);
