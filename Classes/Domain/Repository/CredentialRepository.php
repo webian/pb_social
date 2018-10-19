@@ -6,6 +6,7 @@ namespace PlusB\PbSocial\Domain\Repository;
  *  Copyright notice
  *
  *  (c) 2016 Ramon Mohi <rm@plusb.de>, plusB
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
  *
  *  All rights reserved
  *

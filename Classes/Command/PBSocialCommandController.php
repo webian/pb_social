@@ -381,39 +381,6 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
         }
     }
 
-    /** Converts some complex flexform xml structure into an easy to use array.
-     * todo replace by typo3 core function
-     *
-     * @param $xml_string
-     * @return array
-     */
-    public function flexform2SettingsArray($xml_string)
-    {
-        $xml_obj = simplexml_load_string($xml_string['pi_flexform']);
-        $settings = array();
-        $extract = 'settings.';
-
-        # Traverse all sheet nodes #
-        /** @var \SimpleXMLElement $sheet */
-        foreach ($xml_obj->children()->children() as $sheet) {
-
-            # Get data from field nodes #
-            /** @var \SimpleXMLElement $field */
-            foreach ($sheet->children()->children() as $field) {
-
-                # if index is settings.xyzabcdef* #
-                if (strpos($field['index'], $extract) == 0) {
-                    $index = str_replace($extract, '', $field['index']);
-                    $settings[$index] = (string) $field->children();
-                }
-            }
-        }
-
-        return $settings;
-    }
-
-
-
     /**
      * @param $message object
      */
