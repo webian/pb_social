@@ -1,6 +1,11 @@
 <?php
 namespace PlusB\PbSocial\Command;
 
+use PlusB\PbSocial\Domain\Model\Content;
+use PlusB\PbSocial\Domain\Repository\ContentRepository;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+
+
 /***************************************************************
  *
  *  Copyright notice
@@ -57,13 +62,19 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
      */
     protected $cacheManager = null;
 
-
-
      /**
      * @var \PlusB\PbSocial\Domain\Repository\CredentialRepository
      * @inject
      */
     protected $credentialRepository;
+
+    /**
+     * @var \PlusB\PbSocial\Domain\Repository\ContentRepository
+     * @inject
+     */
+    protected $contentRepository;
+
+
 
     /**
      * @var \TYPO3\CMS\Core\Database\DatabaseConnection
@@ -269,28 +280,28 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
         $this->initializeUpdateFeedDataCommand($verbose, $silent, $callnetwork);
 
         # Setup database connection and fetch all flexform settings #
-        /*
-         * todo: read flexform in BE mode but clean
+        /**
+         * @var $xmlStr Content
          */
-        $this->db = $this->getDB();
-        $xml_settings = $this->db->exec_SELECTgetRows('pi_flexform, uid', 'tt_content', 'CType = "list" AND list_type = "pbsocial_socialfeed" AND deleted = 0');
+        $xml_settings = $this->contentRepository->findFlexforms("list", "pbsocial_socialfeed")->toArray();
 
         # Convert flexform settings into usable array structure #
         if (!empty($xml_settings)) {
 
             # Update feeds #
-            foreach ($xml_settings as $xml_string) {
+            foreach ($xml_settings as $xmlStr) {
                 /* initializing procedural request */
-                $flexformSettings = $this->flexform2SettingsArray($xml_string);
+                $flexformSettings = $this->flexformService->convertFlexFormContentToArray($xmlStr->getPiFlexform());
+                $flexformSettings = $flexformSettings['settings'];
 
-                $this->setSysLogWarnings("Flexform: ".$xml_string['uid']);
+                $this->setSysLogWarnings("Flexform: ".$xmlStr->getUid());
 
 
                 /* starting procedural list of requrests */
                 if ($flexformSettings['facebookEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_FACEBOOK)) {
 
                     $this->outputLogInformation(
-                        $this->feedSyncService->syncFeed(self::TYPE_FACEBOOK, $flexformSettings, $xml_string['uid'], $this->isVerbose())
+                        $this->feedSyncService->syncFeed(self::TYPE_FACEBOOK, $flexformSettings, $xmlStr->getUid(), $this->isVerbose())
                     );
 
                 }
@@ -298,7 +309,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
                 if ($flexformSettings['imgurEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_IMGUR)) {
 
                     $this->outputLogInformation(
-                        $this->feedSyncService->syncFeed(self::TYPE_IMGUR, $flexformSettings, $xml_string['uid'], $this->isVerbose())
+                        $this->feedSyncService->syncFeed(self::TYPE_IMGUR, $flexformSettings, $xmlStr->getUid(), $this->isVerbose())
                     );
 
                 }
@@ -306,7 +317,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
                 if ($flexformSettings['instagramEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_INSTAGRAM)) {
 
                     $this->outputLogInformation(
-                        $this->feedSyncService->syncFeed(self::TYPE_INSTAGRAM, $flexformSettings, $xml_string['uid'], $this->isVerbose())
+                        $this->feedSyncService->syncFeed(self::TYPE_INSTAGRAM, $flexformSettings, $xmlStr->getUid(), $this->isVerbose())
                     );
 
                 }
@@ -314,7 +325,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
                 if ($flexformSettings['linkedinEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_LINKEDIN)) {
 
                     $this->outputLogInformation(
-                        $this->feedSyncService->syncFeed(self::TYPE_LINKEDIN, $flexformSettings, $xml_string['uid'], $this->isVerbose())
+                        $this->feedSyncService->syncFeed(self::TYPE_LINKEDIN, $flexformSettings, $xmlStr->getUid(), $this->isVerbose())
                     );
 
                 }
@@ -322,14 +333,14 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
                 if ($flexformSettings['pinterestEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_PINTEREST)) {
 
                     $this->outputLogInformation(
-                        $this->feedSyncService->syncFeed(self::TYPE_PINTEREST, $flexformSettings, $xml_string['uid'], $this->isVerbose())
+                        $this->feedSyncService->syncFeed(self::TYPE_PINTEREST, $flexformSettings, $xmlStr->getUid(), $this->isVerbose())
                     );
                 }
 
                 if ($flexformSettings['tumblrEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_TUMBLR)) {
 
                     $this->outputLogInformation(
-                        $this->feedSyncService->syncFeed(self::TYPE_TUMBLR, $flexformSettings, $xml_string['uid'], $this->isVerbose())
+                        $this->feedSyncService->syncFeed(self::TYPE_TUMBLR, $flexformSettings, $xmlStr->getUid(), $this->isVerbose())
                     );
 
                 }
@@ -337,7 +348,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
                 if ($flexformSettings['twitterEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_TWITTER)) {
 
                     $this->outputLogInformation(
-                        $this->feedSyncService->syncFeed(self::TYPE_TWITTER, $flexformSettings, $xml_string['uid'], $this->isVerbose())
+                        $this->feedSyncService->syncFeed(self::TYPE_TWITTER, $flexformSettings, $xmlStr->getUid(), $this->isVerbose())
                     );
 
                 }
@@ -345,7 +356,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
                 if ($flexformSettings['youtubeEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_YOUTUBE)) {
 
                     $this->outputLogInformation(
-                        $this->feedSyncService->syncFeed(self::TYPE_YOUTUBE, $flexformSettings, $xml_string['uid'], $this->isVerbose())
+                        $this->feedSyncService->syncFeed(self::TYPE_YOUTUBE, $flexformSettings, $xmlStr->getUid(), $this->isVerbose())
                     );
 
                 }
@@ -353,14 +364,14 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
                 if ($flexformSettings['vimeoEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_VIMEO)) {
 
                     $this->outputLogInformation(
-                        $this->feedSyncService->syncFeed(self::TYPE_VIMEO, $flexformSettings, $xml_string['uid'], $this->isVerbose())
+                        $this->feedSyncService->syncFeed(self::TYPE_VIMEO, $flexformSettings, $xmlStr->getUid(), $this->isVerbose())
                     );
                 }
 
                 if ($flexformSettings['newsEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_TX_NEWS)) {
 
                     $this->outputLogInformation(
-                        $this->feedSyncService->syncFeed(self::TYPE_TX_NEWS, $flexformSettings, $xml_string['uid'], $this->isVerbose())
+                        $this->feedSyncService->syncFeed(self::TYPE_TX_NEWS, $flexformSettings, $xmlStr->getUid(), $this->isVerbose())
                     );
 
                 }

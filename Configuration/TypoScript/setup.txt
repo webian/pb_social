@@ -1,4 +1,3 @@
-
 plugin.tx_pbsocial {
 	view {
 		templateRootPaths.0 = EXT:pb_social/Resources/Private/Templates/
@@ -10,6 +9,13 @@ plugin.tx_pbsocial {
 	}
 	persistence {
 		storagePid = {$plugin.tx_pbsocial.persistence.storagePid}
+		classes {
+			PlusB\PbSocial\Domain\Model\Content {
+				mapping {
+					tableName = tt_content
+				}
+			}
+		}
 	}
 	features {
 		# uncomment the following line to enable the new Property Mapper.
