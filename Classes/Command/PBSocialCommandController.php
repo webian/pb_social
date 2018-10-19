@@ -3,7 +3,6 @@ namespace PlusB\PbSocial\Command;
 
 use PlusB\PbSocial\Domain\Model\Content;
 use PlusB\PbSocial\Domain\Repository\ContentRepository;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 
 /***************************************************************
@@ -74,14 +73,6 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
      */
     protected $contentRepository;
 
-
-
-    /**
-     * @var \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected $db;
-
-
     /**
      * @var bool Verbose output
      */
@@ -123,7 +114,6 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
     {
         $this->sysLogWarnings .= ", ". $sysLogWarnings;
     }
-
 
 
     /**
@@ -174,17 +164,8 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
         $this->callnetwork = $callnetwork;
     }
 
-
-
     /** @var $logger \TYPO3\CMS\Core\Log\Logger */
     protected $logger;
-
-    private function getDB()
-    {
-        return $GLOBALS['TYPO3_DB'];
-    }
-
-
 
     /**
      * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
