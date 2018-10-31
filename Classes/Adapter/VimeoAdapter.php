@@ -112,7 +112,7 @@ class VimeoAdapter extends SocialMediaAdapter
 
         if (empty($this->clientIdentifier) || empty($this->clientSecret) || empty($this->accessToken)) {
             $this->validationMessage = self::TYPE . ' credentials not set';
-        } elseif (empty($this->options->youtubeSearch)  && empty($this->options->youtubePlaylist) && empty($this->options->youtubeChannel) ) {
+        } elseif (empty($this->options->vimeoChannel)) {
             $this->validationMessage = self::TYPE . ' no channel defined';
         } else {
             $this->isValid = true;
@@ -133,7 +133,7 @@ class VimeoAdapter extends SocialMediaAdapter
         );
 
         /*
-         * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
+         * todo: duplicate cache writing, must be erazed here - searchString is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
          */
         $searchTerms = explode(',', $options->settings['vimeoChannel']);
 
@@ -182,6 +182,9 @@ class VimeoAdapter extends SocialMediaAdapter
 
         if (!empty($result)) {
             foreach ($result as $vimeo_feed) {
+                /**
+                 * todo: invalid cache identifier
+                 */
                 $rawFeeds[self::TYPE . '_' . $vimeo_feed->getCacheIdentifier() . '_raw'] = $vimeo_feed->getResult();
                 foreach ($vimeo_feed->getResult()->body->data as $rawFeed) {
                     $feed = new Feed(self::TYPE, $rawFeed);
@@ -207,6 +210,7 @@ class VimeoAdapter extends SocialMediaAdapter
         } else {
             $url = '/channels/' . $searchString . '/videos';
         }
+
         $response = $this->api->request($url, array('per_page' => $options->feedRequestLimit), 'GET');
         return json_encode($response);
     }
