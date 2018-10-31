@@ -212,6 +212,9 @@ class PinterestAdapter extends SocialMediaAdapter
             'fields' => 'id,link,counts,note,created_at,image[small],url'
         );
 
+        /**
+         * todo: throw in Request.php line 220 stops script... stop stopping, please (AM)
+         */
         return json_encode($this->api->pins->fromBoard($boardname, $fields));
     }
 
