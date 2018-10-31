@@ -44,7 +44,10 @@ abstract class SocialMediaAdapter implements SocialMediaAdapterInterface
 
         $this->type = static::TYPE;
     }
-
+    
+    /**
+     * todo: quickfix - but we better add a layer for adapter inbetween, here after "return $this" intance is not completet but existend (AM)
+     */
     abstract public function validateAdapterSettings($parameter);
     abstract public function getResultFromApi();
 

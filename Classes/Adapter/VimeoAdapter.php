@@ -80,6 +80,9 @@ class VimeoAdapter extends SocialMediaAdapter
     public function __construct($clientIdentifier, $clientSecret, $accessToken, $itemRepository, $options)
     {
         parent::__construct($itemRepository);
+        /**
+         * todo: quickfix - but we better add a layer for adapter inbetween, here after "return $this" intance is not completet but existend (AM)
+         */
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
                 array(
@@ -129,9 +132,13 @@ class VimeoAdapter extends SocialMediaAdapter
             // 'part' => 'snippet'
         );
 
+        /*
+         * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
+         */
         $searchTerms = explode(',', $options->settings['vimeoChannel']);
 
         foreach ($searchTerms as $searchString) {
+
             $searchString = trim($searchString);
             $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchString);
             if ($feeds && $feeds->count() > 0) {

@@ -82,6 +82,9 @@ class PinterestAdapter extends SocialMediaAdapter
     public function __construct($appId, $appSecret, $accessCode, $itemRepository, $credentialRepository, $options)
     {
         parent::__construct($itemRepository);
+        /**
+         * todo: quickfix - but we better add a layer for adapter inbetween, here after "return $this" intance is not completet but existend (AM)
+         */
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
                 array(
@@ -133,7 +136,9 @@ class PinterestAdapter extends SocialMediaAdapter
         $result = array();
 
         $boardname = $options->pinterest_username . '/' . $options->pinterest_boardname;
-
+        /*
+        * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
+        */
         foreach (explode(',', $options->username) as $searchId) {
             $searchId = trim($searchId);
             $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchId);

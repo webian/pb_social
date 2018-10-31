@@ -75,7 +75,9 @@ class FacebookAdapter extends SocialMediaAdapter
     public function __construct($apiId, $apiSecret, $itemRepository, $options)
     {
         parent::__construct($itemRepository);
-
+        /**
+         * todo: quickfix - but we better add a layer for adapter inbetween, here after "return $this" intance is not completet but existend (AM)
+         */
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
             array(
@@ -162,6 +164,11 @@ class FacebookAdapter extends SocialMediaAdapter
 
         foreach (explode(',', $facebookSearchIds) as $searchId) {
             $searchId = trim($searchId);
+
+            /*
+             * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
+             */
+
             $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchId);
             if ($feeds && $feeds->count() > 0) {
                 $feed = $feeds->getFirst();

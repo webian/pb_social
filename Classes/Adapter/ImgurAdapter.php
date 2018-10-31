@@ -71,7 +71,9 @@ class ImgurAdapter extends SocialMediaAdapter
     public function __construct($apiId, $apiSecret, $itemRepository, $options)
     {
         parent::__construct($itemRepository);
-
+        /**
+         * todo: quickfix - but we better add a layer for adapter inbetween, here after "return $this" intance is not completet but existend (AM)
+         */
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
                 array(
@@ -114,7 +116,9 @@ class ImgurAdapter extends SocialMediaAdapter
     {
         $options = $this->options;
         $result = array();
-
+        /*
+        * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
+        */
         // search for users
         foreach (explode(',', $options->imgSearchUsers) as $searchId) {
             $searchId = trim($searchId);

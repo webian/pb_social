@@ -76,6 +76,9 @@ class TxNewsAdapter extends SocialMediaAdapter
     {
         parent::__construct($itemRepository);
 
+        /**
+         * todo: quickfix - but we better add a layer for adapter inbetween, here after "return $this" intance is not completet but existend (AM)
+         */
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
                 array(
@@ -120,7 +123,9 @@ class TxNewsAdapter extends SocialMediaAdapter
 
         $this->detailPageUid = $options->newsDetailPageUid;
         $newsCategories = GeneralUtility::trimExplode(',', $options->newsCategories);
-
+        /*
+         * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
+         */
         foreach ($newsCategories as $newsCategory) {
             $searchString = trim($newsCategory);
             $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchString);

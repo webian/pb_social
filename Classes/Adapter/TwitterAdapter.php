@@ -88,6 +88,9 @@ class TwitterAdapter extends SocialMediaAdapter
     public function __construct($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret, $itemRepository, $options)
     {
         parent::__construct($itemRepository);
+        /**
+         * todo: quickfix - but we better add a layer for adapter inbetween, here after "return $this" intance is not completet but existend (AM)
+         */
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
                 array(
@@ -134,7 +137,9 @@ class TwitterAdapter extends SocialMediaAdapter
         $options = $this->options;
         $result = array();
         $apiMethod = '';
-
+        /*
+         * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
+         */
         // because of the amount of data twitter is sending, the database can only carry 20 tweets.
         // 20 Tweets = ~86000 Character
         $apiParameters = array();

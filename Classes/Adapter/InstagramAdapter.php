@@ -111,6 +111,9 @@ class InstagramAdapter extends SocialMediaAdapter
     {
         parent::__construct($itemRepository);
 
+        /**
+         * todo: quickfix - but we better add a layer for adapter inbetween, here after "return $this" intance is not completet but existend (AM)
+         */
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
                 array(
@@ -165,7 +168,9 @@ class InstagramAdapter extends SocialMediaAdapter
 
         // If search ID is given and hashtag is given and filter is checked, only show posts with given hashtag
         $filterByHastags = $options->instagramPostFilter && $options->instagramSearchIds && $options->instagramHashTags;
-
+        /*
+         * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
+        */
         if (!$filterByHastags) {
             foreach (explode(',', $options->instagramSearchIds) as $searchId) {
                 $searchId = trim($searchId);

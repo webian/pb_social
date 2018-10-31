@@ -70,6 +70,9 @@ class YoutubeAdapter extends SocialMediaAdapter
     public function __construct($appKey, $itemRepository, $options)
     {
         parent::__construct($itemRepository);
+        /**
+         * todo: quickfix - but we better add a layer for adapter inbetween, here after "return $this" intance is not completet but existend (AM)
+         */
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
                 array(
@@ -115,6 +118,9 @@ class YoutubeAdapter extends SocialMediaAdapter
             'maxResults' => $options->feedRequestLimit,
             'part' => 'snippet'
         );
+        /*
+        * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
+        */
 
         if ($options->youtubeType != '') {
             $fields['type'] = $options->youtubeType;

@@ -102,6 +102,9 @@ class LinkedInAdapter extends SocialMediaAdapter
     public function __construct($apiKey, $apiSecret, $apiCallback, $token, $itemRepository, $credentialRepository, $options)
     {
         parent::__construct($itemRepository);
+        /**
+         * todo: quickfix - but we better add a layer for adapter inbetween, here after "return $this" intance is not completet but existend (AM)
+         */
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
                 array(
@@ -180,9 +183,12 @@ class LinkedInAdapter extends SocialMediaAdapter
         foreach (explode(',', $options->companyIds) as $searchId) {
 
             $searchId = trim($searchId);
-
+            /*
+            * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
+            */
             if ($searchId != ""){
                 $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchId);
+
                 if ($feeds && $feeds->count() > 0) {
                     $feed = $feeds->getFirst();
                     if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
@@ -202,6 +208,7 @@ class LinkedInAdapter extends SocialMediaAdapter
                 }
 
                 try {
+
                     # api call
                     $companyUpdates = $this->api->get('companies/' . $searchId .'/updates?format=json' . $filters);
                     $feed = new Item(self::TYPE);
@@ -213,6 +220,7 @@ class LinkedInAdapter extends SocialMediaAdapter
                     $result[] = $feed;
                 } catch (\Exception $e) {
                     $this->logError("get_updates failed - " . $e->getMessage());
+                    throw $e;
                 }
             }
         }

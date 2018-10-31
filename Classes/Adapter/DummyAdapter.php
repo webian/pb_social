@@ -7,7 +7,9 @@ $extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb
 use PlusB\PbSocial\Domain\Model\Credential;
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
-
+/*
+* todo: must be erazed (AM)
+*/
 /***************************************************************
  *
  *  Copyright notice
@@ -68,7 +70,19 @@ class DummyAdapter extends SocialMediaAdapter
         }
     }
 
-    public function getResultFromApi($options)
+
+    /**
+     * validates constructor input parameters in an individual way just for the adapter
+     *
+     * @param $parameter
+     * @return bool
+     */
+    public function validateAdapterSettings($parameter)
+    {
+        return true;
+    }
+
+    public function getResultFromApi($options = "")
     {
 
         // Store Item objects in this array and pass it to $this->getFeedItemsFromApiRequest()
