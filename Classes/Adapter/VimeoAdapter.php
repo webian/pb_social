@@ -143,6 +143,10 @@ class VimeoAdapter extends SocialMediaAdapter
             $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchString);
             if ($feeds && $feeds->count() > 0) {
                 $feed = $feeds->getFirst();
+                /**
+                 * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to bee free, so... change!
+                 * todo: try to get rid of duplicate code
+                 */
                 if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
                     try {
                         $feed->setDate(new \DateTime('now'));

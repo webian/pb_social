@@ -134,9 +134,10 @@ class TumblrAdapter extends SocialMediaAdapter
     {
         $options = $this->options;
         $result = array();
-        /*
-        * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
-        */
+        /**
+         * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to bee free, so... change!
+         * todo: try to get rid of duplicate code
+         */
         // search for users
         foreach (explode(',', $options->tumblrBlogNames) as $blogName) {
             $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $blogName);

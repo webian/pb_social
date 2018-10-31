@@ -429,6 +429,10 @@ class FeedSyncService extends AbstractBaseService
         $config_clientIdentifier = $this->extConf['socialfeed.']['vimeo.']['client.']['identifier'];
         $config_clientSecret = $this->extConf['socialfeed.']['vimeo.']['client.']['secret'];
         $config_token = $this->extConf['socialfeed.']['vimeo.']['token'];
+
+        /**
+         * todo: vimeo Channel as member of flexformOptions - is not included if somebody enters $flexformOptions->settings (!) - we will change it (AM)
+         */
         $flexformOptions->vimeoChannel = $flexformSettings['vimeoChannel'];
 
         # retrieve data from adapter #

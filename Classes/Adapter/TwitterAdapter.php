@@ -89,7 +89,8 @@ class TwitterAdapter extends SocialMediaAdapter
     {
         parent::__construct($itemRepository);
         /**
-         * todo: quickfix - but we better add a layer for adapter inbetween, here after "return $this" intance is not completet but existend (AM)
+         * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to bee free, so... change!
+         * todo: try to get rid of duplicate code
          */
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
