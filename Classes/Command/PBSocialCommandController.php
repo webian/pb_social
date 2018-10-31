@@ -95,9 +95,25 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
     private $sysLogWarnings = "";
 
     /**
-     * @var bool $isSyslogWarning Bool whether syslogs are to be pullte out or not
+     * @var bool $isSyslogWarning Bool whether syslogs are to be pulled out or not
      */
     private $isSyslogWarning = false;
+
+    /**
+     * @return bool
+     */
+    public function isSyslogWarning()
+    {
+        return $this->isSyslogWarning;
+    }
+
+    /**
+     * @param bool $isSyslogWarning
+     */
+    public function setIsSyslogWarning($isSyslogWarning)
+    {
+        $this->isSyslogWarning = $isSyslogWarning;
+    }
 
     /**
      * @return string
@@ -113,6 +129,15 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
     public function setSysLogWarnings($sysLogWarnings)
     {
         $this->sysLogWarnings .= ", ". $sysLogWarnings;
+    }
+
+    /**
+     *
+     */
+    public function resetSysLogWarnings()
+    {
+        $this->sysLogWarnings = "";
+        $this->setIsSyslogWarning(false);
     }
 
 
@@ -275,8 +300,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
                 $flexformSettings = $this->flexformService->convertFlexFormContentToArray($xmlStr->getPiFlexform());
                 $flexformSettings = $flexformSettings['settings'];
 
-                $this->setSysLogWarnings("Flexform: ".$xmlStr->getUid());
-
+                $this->setSysLogWarnings("Flexform on Plugin Uid ".$xmlStr->getUid() ." on Page Uid ". $xmlStr->getPid() . "says: ");
 
                 /* starting procedural list of requrests */
                 if ($flexformSettings['facebookEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_FACEBOOK)) {
@@ -380,13 +404,14 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
     }
 
     private function collectSyslogWarnings($message){
-        $this->isSyslogWarning = true;
+        $this->setIsSyslogWarning(true);
         $this->setSysLogWarnings($message);
     }
 
     private function outputSysLog(){
-        if($this->isSyslogWarning === true){
+        if($this->isSyslogWarning() === true){
             $GLOBALS['BE_USER']->simplelog($this->getSysLogWarnings(), self::EXTKEY, 1);
+            $this->resetSysLogWarnings();
         }
     }
 

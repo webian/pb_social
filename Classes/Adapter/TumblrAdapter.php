@@ -112,8 +112,8 @@ class TumblrAdapter extends SocialMediaAdapter
      */
     public function validateAdapterSettings($parameter)
     {
-        $this->setApiId($parameter['appId']);
-        $this->setApiSecret($parameter['appSecret']);
+        $this->setApiId($parameter['apiId']);
+        $this->setApiSecret($parameter['apiSecret']);
         $this->setToken($parameter['token']);
         $this->setTokenSecret($parameter['tokenSecret']);
         $this->setOptions($parameter['options']);
@@ -134,7 +134,9 @@ class TumblrAdapter extends SocialMediaAdapter
     {
         $options = $this->options;
         $result = array();
-
+        /*
+        * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
+        */
         // search for users
         foreach (explode(',', $options->tumblrBlogNames) as $blogName) {
             $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $blogName);
