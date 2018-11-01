@@ -4,6 +4,7 @@ namespace PlusB\PbSocial\Service;
 
 use PlusB\PbSocial\Service\Base\AbstractBaseService;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /***************************************************************
  *
@@ -56,12 +57,42 @@ class CacheService extends AbstractBaseService
     protected $cacheManager = null;
 
     /**
+     * @var int
+     */
+    protected $cacheLifetime = 3600;
+
+    /**
+     * @param int $cacheLifetime
+     */
+    public function setCacheLifetime($cacheLifetime)
+    {
+        $this->cacheLifetime = intval($cacheLifetime);
+    }
+
+    /**
+     * @return int
+     */
+    public function getCacheLifetime()
+    {
+        return $this->cacheLifetime;
+    }
+
+
+
+    /**
      * @var FrontendInterface $cache
      */
     private $cache;
 
     protected function initializeConfiguration(){
         parent::initializeConfiguration();
+
+        //merge cache lifetime settings
+        $this->setCacheLifetime(
+            intval(
+                $this->settings['cacheLifetime']?:$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['pb_social_cache']['options']['defaultLifetime']?:0
+            )
+        );
 
         //get caching backend
         $this->cache = $this->cacheManager->getCache('pb_social_cache');
@@ -110,6 +141,7 @@ class CacheService extends AbstractBaseService
             if($this->cache->has($cacheIdentifier) === false){
                 $this->feedSyncService->syncFeed($socialNetworkTypeString, $settings, $ttContentUid, $isVerbose = false);
             }
+
             if($content = $this->cache->get($cacheIdentifier)){
                 $results[] = $content;
             }
@@ -136,13 +168,14 @@ class CacheService extends AbstractBaseService
         $content
     ){
         $cacheIdentifierElementsArray = $this->optionService->getCacheIdentifierElementsArray($socialNetworkTypeString, $settings);
+        $cacheIdentifier = $this->calculateCacheIdentifier($cacheIdentifierElementsArray, $ttContentUid);
 
-        //todo set($entryIdentifier, $data, array $tags = [], $lifetime = null);
+        //todo set(, , array $tags = [], );
         $this->cache->set(
-            $this->calculateCacheIdentifier($cacheIdentifierElementsArray, $ttContentUid),
+            $cacheIdentifier,
             $data = $content,
             $tags = array(self::EXTKEY),
-            $lifetime = null
+            $lifetime = $this->getCacheLifetime()
         );
     }
 }

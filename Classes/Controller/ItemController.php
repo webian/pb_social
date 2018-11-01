@@ -89,33 +89,12 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 
     protected $logger;
 
-
-    /**
-     * action showSocialBarAction
-     * @return void
-     */
-    public function showSocialBarAction()
-    {
-        // function has nothing to do with database => only as template ref dummy
-        // the magic is located only in the template and main.js :)
-    }
-
     /**
      * action showSocialFeedAction
-     * @param bool $ajax is true, when the request is coming from an ajax request
      * @return void
      */
-    public function showSocialFeedAction($ajax = false)
+    public function showSocialFeedAction()
     {
-
-        // update feedRequestLimit if request is asynchronous
-        if ($ajax) {
-            $this->settings['feedRequestLimit'] = $this->settings['asynchLimit'] > 0 ? $this->settings['asynchLimit'] : $this->settings['feedRequestLimit'];
-        }
-        if ($this->settings['asynchRequest']) {
-            $extConf['socialfeed.']['devmod'] = 1;
-        }
-
         # Get feeds #
         $feeds = array();
 
@@ -150,46 +129,13 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         }
     }
 
-    /** Returns Facebook recations (wow, love, sad..) for post with given id
-     *
-     * @param string $id
-     * @return array|void
-     */
-    public function _facebookReactionAction($id)
-    {
-        $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
-        $extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pb_social']); //TODO => search for a better way of accessing extconf
-
-        # check api key #
-        $config_apiId = $extConf['socialfeed.']['facebook.']['api.']['id'];
-        $config_apiSecret = $extConf['socialfeed.']['facebook.']['api.']['secret'];
-
-        $reactions = array();
-
-        if (empty($config_apiId) || empty($config_apiSecret)) {
-            $this->logger->warning(self::TYPE_FACEBOOK . ' credentials not set');
-        } else {
-            # retrieve data from adapter #
-            $adapter = new Adapter\FacebookAdapter($config_apiId, $config_apiSecret, $this->itemRepository, NULL);
-            $reactions = $adapter->getReactions($id);
-        }
-
-        $this->view->assign('reactions', $reactions);
-        return $reactions;
-    }
-
-
     /**
      * @param $settings array of typoscript settings
      * @return array
      */
     public function getFeedsFromCache($settings)
     {
-        //result array, sorted and foreached in action method
         $results = array();
-        //cache specified by $identifier
-
-
 
         if ($settings['facebookEnabled'] === '1') {
 

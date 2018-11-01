@@ -23,11 +23,21 @@ plugin.tx_pbsocial {
 	}
     settings{
         load-jquery = {$plugin.tx_pbsocial.settings.load-jquery}
+		cacheLifetime = {$plugin.tx_pbsocial.settings.cacheLifetime}
+		facebook {
+			# Only use in case you know, what you are doing.
+			# Comma separated List for Facebook request. Please consider change in Partials\Feed\Provider-facebook.html as well!
+			# Important: "id", "link" and "message" are always prepended in this list (so do not repeat).
+			# To pull out your own parameter according to https://developers.facebook.com/docs/workplace/integrations/custom-integrations/reference/,
+			# please fill in Resources/Private/Partials/Feed/Provider-facebook.html as well, always prepending "feed.raw": {feed.raw.my_facebook_parameter_i_desire}
+			# Hint: you as well can add a parameter by using "addToList()" in TypoScript Setup e.g.: plugin.tx_pbsocial.settings.facebook.requestParameterList := addToList(status_type)
+			requestParameterList = {$plugin.tx_pbsocial.settings.facebook.requestParameterList}
+		}
     }
 }
 
 [globalVar = LIT:1 = {$plugin.tx_pbsocial.settings.load-jquery}]
-    page.includeJS.pbjquery = EXT:pb_social/Resources/Public/Js/jquery-2.1.1.min.js
+    page.includeJS.pbjquery = EXT:pb_social/Resources/Public/Js/jquery-3.3.1.min.js
 [END]
 
 

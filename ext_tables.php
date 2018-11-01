@@ -3,12 +3,6 @@ if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
 
-//\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-//	$_EXTKEY,
-//	'Socialbar',
-//	'SocialBar'
-//);
-
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'PlusB.' .$_EXTKEY,
     'Socialfeed',
@@ -42,9 +36,3 @@ $pluginSignature_feed = $extensionName . '_' . $pluginName_feed;
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$pluginSignature_feed] = 'layout,select_key,pages,recursive';
 $TCA['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature_feed] = 'pi_flexform';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($pluginSignature_feed, 'FILE:EXT:' . $_EXTKEY . '/Configuration/FlexForms/socialfeed.xml');
-
-//$pluginName_bar = strtolower('SocialBar');
-//$pluginSignature_bar = $extensionName.'_'.$pluginName_bar;
-//$TCA['tt_content']['types']['list']['subtypes_excludelist'][$pluginSignature_bar] = 'layout,select_key,pages';
-//$TCA['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature_bar] = 'pi_flexform';
-//\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($pluginSignature_bar, 'FILE:EXT:'.$_EXTKEY . '/Configuration/FlexForms/socialbar.xml');

@@ -8,6 +8,7 @@ use Facebook\Facebook;
 use FluidTYPO3\Flux\Outlet\Pipe\Exception;
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /***************************************************************
  *
@@ -200,6 +201,8 @@ class FacebookAdapter extends SocialMediaAdapter
             try {
                 $feed = new Item(self::TYPE);
                 $feed->setCacheIdentifier($searchId);
+
+
                 $feed->setResult($this->getPosts($searchId, $options->feedRequestLimit, $options->settings['facebookEdge']));
 
                 // save to DB and return current feed
@@ -266,16 +269,9 @@ class FacebookAdapter extends SocialMediaAdapter
         }
 
         try {
-            /** @var \Facebook\FacebookResponse $resp */
-            $resp = $this->api->sendRequest(
-                'GET',
-                '/' . $searchId . '/' . $request,
-                array(
-                    'fields' => '
-                        id,
-                        link,
-                        message,
-                        picture,
+            //set default parameter list in case s.b messes up with TypoScript
+            $faceBookRequestParameter =
+                        'picture,
                         comments.summary(total_count).limit(0).as(comments),
                         created_time,
                         full_picture,
@@ -287,8 +283,23 @@ class FacebookAdapter extends SocialMediaAdapter
                         reactions.type(HAHA).summary(total_count).limit(0).as(haha),
                         reactions.type(SAD).summary(total_count).limit(0).as(sad),
                         reactions.type(ANGRY).summary(total_count).limit(0).as(angry),
-                        reactions.type(THANKFUL).summary(total_count).limit(0).as(thankful)
-                        ',
+                        reactions.type(THANKFUL).summary(total_count).limit(0).as(thankful)';
+
+
+            //overwritten by Typoscript
+            if(isset($this->options->settings['facebook']['requestParameterList']) && is_string($this->options->settings['facebook']['requestParameterList'])){
+                $faceBookRequestParameter =  $this->options->settings['facebook']['requestParameterList'];
+            }
+
+            //always prepending id, link and message
+            $faceBookRequestParameter = 'id,link,message,' . $faceBookRequestParameter;
+
+            /** @var \Facebook\FacebookResponse $resp */
+            $resp = $this->api->sendRequest(
+                'GET',
+                '/' . $searchId . '/' . $request,
+                array(
+                    'fields' => $faceBookRequestParameter,
                     'limit' => $limit
                     // 'include_hidden' => false,
                     // 'is_published' => true
@@ -305,33 +316,7 @@ class FacebookAdapter extends SocialMediaAdapter
             return null;
         }
 
-        // count reaction types
-        $raw_body = json_decode($resp->getBody());
-        for ($c = 0; $c < count($raw_body->data); $c++) {
-            $reactions = $raw_body->data[$c]->reactions->data;
-            $_reactions = array(
-                'NONE' => $raw_body->data[$c]->none->summary->total_count,
-                'LIKE' => $raw_body->data[$c]->like->summary->total_count,
-                'LOVE' => $raw_body->data[$c]->love->summary->total_count,
-                'WOW' => $raw_body->data[$c]->wow->summary->total_count,
-                'HAHA' => $raw_body->data[$c]->haha->summary->total_count,
-                'SAD' => $raw_body->data[$c]->sad->summary->total_count,
-                'ANGRY' => $raw_body->data[$c]->angry->summary->total_count,
-                'THANKFUL' => $raw_body->data[$c]->thankful->summary->total_count
-            );
-            if (is_array($reactions)) {
-                foreach ($reactions as $reaction) {
-                    if (in_array($reaction->type, $_reactions)) {
-                        $_reactions[$reaction->type]++;
-                    }
-                }
-            }
-            $raw_body->data[$c]->reactions_detail = $_reactions;
-        }
-
-        #error_log(json_encode($raw_body));
-
-        return json_encode($raw_body);
+        return $resp->getBody();
     }
 
     public function getReactions($post_id)

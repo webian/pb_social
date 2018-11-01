@@ -3,6 +3,7 @@ namespace PlusB\PbSocial\Command;
 
 use PlusB\PbSocial\Domain\Model\Content;
 use PlusB\PbSocial\Domain\Repository\ContentRepository;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 
 /***************************************************************

@@ -8,21 +8,16 @@ if (!defined('TYPO3_MODE')) {
     'Socialfeed',
     array(
         'Item' => 'showSocialFeed',
-
     ),
     // non-cacheable actions
     array(
-        'Item' => 'showSocialFeed,facebookReaction',
-
+        'Item' => 'showSocialFeed',
     )
 );
 
-
 if(TYPO3_MODE === 'BE') {
-
     // Constants
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript($_EXTKEY,'constants',' <INCLUDE_TYPOSCRIPT: source="FILE:EXT:'. $_EXTKEY .'/Configuration/TypoScript/constants.txt">');
-
     // Setup
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript($_EXTKEY,'setup',' <INCLUDE_TYPOSCRIPT: source="FILE:EXT:'. $_EXTKEY .'/Configuration/TypoScript/setup.txt">');
 
@@ -32,9 +27,12 @@ if(TYPO3_MODE === 'BE') {
 /**
  * register cache
  */
-if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['pb_social_cache'])) {
-    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['pb_social_cache'] = array();
-}
-if( !isset($TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['pb_social_cache']['groups'] ) ) {
-    $TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['pb_social_cache']['groups'] = array( 'system' );
-}
+// Register cache frontend for proxy class generation
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['pb_social_cache'] = array(
+    'groups' => array(
+        'system'
+    ),
+    'options' => array(
+        'defaultLifetime' => 3600,
+    )
+);
