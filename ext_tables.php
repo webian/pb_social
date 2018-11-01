@@ -9,17 +9,6 @@ if (!defined('TYPO3_MODE')) {
     'SocialFeed'
 );
 
-
-
-/**
- * Add Plugin SocialFeed to New Content Element Wizard
- */
-if (TYPO3_MODE === 'BE') {
-    // Add Plugin to CE Wizard
-    $pluginSignature = str_replace('_', '', $_EXTKEY) . '_socialfeed';
-    $TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses'][$pluginSignature . '_wizicon'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Resources/Private/Php/class.socialfeed_wizicon.php';
-}
-
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'Social Media Stream');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('tx_pbsocial_domain_model_item', 'EXT:pb_social/Resources/Private/Language/locallang_csh_tx_pbsocial_domain_model_item.xlf');

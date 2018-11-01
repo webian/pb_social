@@ -22,6 +22,35 @@ if(TYPO3_MODE === 'BE') {
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript($_EXTKEY,'setup',' <INCLUDE_TYPOSCRIPT: source="FILE:EXT:'. $_EXTKEY .'/Configuration/TypoScript/setup.txt">');
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = 'PlusB\\PbSocial\\Command\\PBSocialCommandController';
+
+
+    // wizards
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
+        'mod {
+                wizards.newContentElement.wizardItems.plugins {
+                    elements {
+                        socialfeed {
+                            iconIdentifier = pb_social-plugin-socialfeed
+                            title = LLL:EXT:'. $_EXTKEY .'/Resources/Private/Language/de.locallang_db.xlf:socialfeed_wizard.title
+                            description = LLL:EXT:'. $_EXTKEY .'/Resources/Private/Language/de.locallang_db.xlf:socialfeed_wizard.description
+                            tt_content_defValues {
+                                CType = list
+                                list_type = pbsocial_socialfeed
+                            }
+                        }
+                    }
+                    show = *
+                }
+           }'
+    );
+
+    $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
+    $iconRegistry->registerIcon(
+            'pb_social-plugin-socialfeed',
+            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+            ['source' => 'EXT:'. $_EXTKEY .'/Resources/Public/Icons/pb_social_wizicon.png']
+        );
+
 }
 
 /**
