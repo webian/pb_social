@@ -209,13 +209,14 @@ class FeedSyncService extends AbstractBaseService
         $config_clientSecret = $this->extConf['socialfeed.']['instagram.']['client.']['secret'];
         $config_clientCallback = $this->extConf['socialfeed.']['instagram.']['client.']['callback'];
         $config_access_code = $this->extConf['socialfeed.']['instagram.']['client.']['access_code'];
+        $config_access_token = $this->extConf['socialfeed.']['instagram.']['client.']['access_token'];
         $flexformOptions->instagramHashTags = $flexformSettings['instagramHashTag'];
         $flexformOptions->instagramSearchIds = $flexformSettings['instagramSearchIds'];
         $flexformOptions->instagramPostFilter = $flexformSettings['instagramPostFilter'];
 
 
         # retrieve data from adapter #
-        $adapter = new Adapter\InstagramAdapter($config_clientId, $config_clientSecret, $config_clientCallback, $config_access_code, $this->itemRepository, $this->credentialRepository, $flexformOptions);
+        $adapter = new Adapter\InstagramAdapter($config_clientId, $config_clientSecret, $config_clientCallback, $config_access_code, $config_access_token, $this->itemRepository, $this->credentialRepository, $flexformOptions);
 
         if($adapter->isValid === true){
             $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString ,$ttContentUid, $return, $isVerbose);

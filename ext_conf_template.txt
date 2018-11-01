@@ -83,6 +83,8 @@ socialfeed{
     instagram.client.callback=
     # cat=instagram/instagram/0040; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:instagram.client.access_code
     instagram.client.access_code=
+    # cat=instagram/instagram/0050; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:instagram.client.access_token
+    instagram.client.access_token=
 
     # cat=imgur/imgur/0010; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:imgur.client.id
     imgur.client.id=

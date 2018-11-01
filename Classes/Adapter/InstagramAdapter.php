@@ -10,6 +10,7 @@ use MetzWeb\Instagram\Instagram;
 use PlusB\PbSocial\Domain\Model\Credential;
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /***************************************************************
  *
@@ -43,7 +44,7 @@ class InstagramAdapter extends SocialMediaAdapter
     const TYPE = 'instagram';
 
     public $isValid = false, $validationMessage = "";
-    private $apiKey, $apiSecret, $apiCallback, $code, $options;
+    private $apiKey, $apiSecret, $apiCallback, $code, $token, $options;
 
     /**
      * @param mixed $apiKey
@@ -77,6 +78,15 @@ class InstagramAdapter extends SocialMediaAdapter
         $this->code = $code;
     }
 
+    /**
+     * @param mixed $token
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+    }
+
+
 
 
     /**
@@ -89,25 +99,18 @@ class InstagramAdapter extends SocialMediaAdapter
     private $api;
 
     /**
-     * credentialRepository
-     *
-     * @var \PlusB\PbSocial\Domain\Repository\CredentialRepository
-     * @inject
-     */
-    protected $credentialRepository;
-
-
-    /**
      * InstagramAdapter constructor.
      * @param $apiKey
      * @param $apiSecret
      * @param $apiCallback
      * @param $code
+     * @param $token
      * @param $itemRepository
      * @param $credentialRepository
      * @param $options
+     * @throws \MetzWeb\Instagram\InstagramException
      */
-    public function __construct($apiKey, $apiSecret, $apiCallback, $code, $itemRepository, $credentialRepository, $options)
+    public function __construct($apiKey, $apiSecret, $apiCallback, $code, $token, $itemRepository, $credentialRepository, $options)
     {
         parent::__construct($itemRepository);
 
@@ -121,6 +124,7 @@ class InstagramAdapter extends SocialMediaAdapter
                     'apiSecret' => $apiSecret,
                     'apiCallback' => $apiCallback,
                     'code' => $code,
+                    'token' => $token,
                     'options' => $options
                 )) === false)
         {return $this;}
@@ -128,12 +132,7 @@ class InstagramAdapter extends SocialMediaAdapter
 
         $this->api =  new Instagram(array('apiKey' => $this->apiKey, 'apiSecret' => $this->apiSecret, 'apiCallback' => $this->apiCallback));
 
-        $this->credentialRepository = $credentialRepository;
-
-
-
-        // get access token from database
-        $this->getAccessToken($this->code);
+        $this->api->setAccessToken($this->token);
     }
 
     /**
@@ -148,9 +147,10 @@ class InstagramAdapter extends SocialMediaAdapter
         $this->setApiSecret($parameter['apiSecret']);
         $this->setApiCallback($parameter['apiCallback']);
         $this->setCode($parameter['code']);
+        $this->setToken($parameter['token']);
         $this->setOptions($parameter['options']);
 
-        if (empty($this->apiKey) || empty($this->apiSecret) ||  empty($this->apiCallback)||  empty($this->code)) {
+        if (empty($this->apiKey) || empty($this->apiSecret) ||  empty($this->apiCallback)||  empty($this->code)||  empty($this->token)) {
             $this->validationMessage = self::TYPE . ': credentials not set';
         } elseif (empty($this->options->instagramSearchIds) && empty($this->options->instagramHashTags)) {
             $this->validationMessage = self::TYPE . ': no search term defined';
@@ -291,57 +291,5 @@ class InstagramAdapter extends SocialMediaAdapter
         }
 
         return array('rawFeeds' => $rawFeeds, 'feedItems' => $feedItems);
-    }
-
-    private function getAccessToken($code)
-    {
-        $apiKey = $this->api->getApiKey();
-
-        # get access token from database #
-        $credentials = $this->credentialRepository->findByTypeAndAppId(self::TYPE, $apiKey);
-
-
-        /**
-         * @var $credentialsItem Credential
-         */
-        if($credentials->count()){
-            foreach ($credentials as $credentialsItem){
-                if($credentialsItem->getAccessToken() === "" || $credentialsItem->isValid() === false){
-                    $this->credentialRepository->deleteCredential($credentialsItem);
-                }else{
-                    $credential = $credentialsItem;
-                }
-            }
-        }
-
-        if (!isset($credential) || !$credential->isValid()) {
-            # validate code to get access token #
-            $access_token = $this->api->getOAuthToken($code, true);
-            if ($access_token) {
-                if (isset($credential)) {
-                    $credential->setAccessToken($access_token);
-                    $this->credentialRepository->update($credential);
-                } else {
-                    # create new credential #
-                    $credential = new Credential(self::TYPE, $apiKey);
-                    $credential->setAccessToken($access_token);
-                    $this->credentialRepository->saveCredential($credential);
-                }
-            } else {
-                $this->logError('access code expired. Please provide new code in pb_social extension configuration.');
-                return null;
-            }
-        }
-
-        $this->api->setAccessToken($credential->getAccessToken());
-
-
-        // test request
-        $testRequest = $this->api->getUserMedia('self');
-        if ($testRequest->meta->code == 400) {
-            $this->logError('access code expired. Please provide new code in pb_social extension configuration.');
-        }
-
-        return $credential->getAccessToken();
     }
 }

@@ -116,7 +116,10 @@
                 <source>redirect uri</source>
             </trans-unit>
             <trans-unit id="instagram.client.access_code">
-                <source><![CDATA[Instagram access code - Retrieve code with following URL (all characters after "code"): https://api.instagram.com/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=public_content]]></source>
+                <source><![CDATA[Instagram code: Retrieve code with following URL (all characters after "code"): https://api.instagram.com/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=public_content]]></source>
+            </trans-unit>
+            <trans-unit id="instagram.client.access_token">
+                <source><![CDATA[Instagram access token: Retrieve access token with following URL (all characters after "token"): https://api.instagram.com/oauth/authorize/?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=token Hint: You need to check "Disable implicit OAuth" in instagram manage client web console.]]></source>
             </trans-unit>
 
 			<trans-unit id="imgur">
