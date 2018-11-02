@@ -11,13 +11,6 @@
                 <source>Facebook Settings</source>
             </trans-unit>
 
-            <trans-unit id="flexform.tab.google.caption">
-                <source>Google Settings</source>
-            </trans-unit>
-            <trans-unit id="flexform.tab.google.active">
-                <source>Active</source>
-            </trans-unit>
-
             <trans-unit id="flexform.tab.instagram.caption">
                 <source>Instagram Settings</source>
             </trans-unit>

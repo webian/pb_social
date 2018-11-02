@@ -244,8 +244,6 @@ class TwitterAdapter extends SocialMediaAdapter
         $rawFeeds = array();
         $feedItems = array();
 
-        $placeholder = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('pb_social') . 'Resources/Public/Icons/Placeholder/twitter.jpg';
-
         if (!empty($result)) {
             foreach ($result as $twt_feed) {
                 if ($this->api_url == 'search/tweets') {
@@ -266,7 +264,7 @@ class TwitterAdapter extends SocialMediaAdapter
                     $feed = new Feed($twt_feed->getType(), $rawFeed);
                     $feed->setId($rawFeed->id);
                     $feed->setText($this->trim_text($rawFeed->full_text, $options->textTrimLength, true));
-//                    $feed->setImage($placeholder);
+
                     if ($rawFeed->entities->media[0]->type == 'photo') {
                         if ($options->twitterHTTPS) {
                             $feed->setImage($rawFeed->entities->media[0]->media_url_https);

@@ -1,14 +1,12 @@
 ## Custom categories
 # customcategory=general=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:general
+# customsubcategory=general=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:general.external_link
 
 # customcategory=facebook=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:facebook
 # customsubcategory=facebook=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:facebook.intro
 
 # customcategory=twitter=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:twitter
 # customsubcategory=twitter=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:twitter.intro
-
-# customcategory=googleplus=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:googleplus
-# customsubcategory=googleplus=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:googleplus.intro
 
 # customcategory=youtube=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:youtube
 # customsubcategory=youtube=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:youtube.intro
@@ -32,13 +30,10 @@
 # customsubcategory=linkedin=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:linkedin.intro
 
 socialfeed{
-    # cat=general/0001; type=user[EXT:pb_social/lib/class.pb_social_extmanager.php:pb_social_extmanager->getLogoAndLink]; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:general.external_link
-    external_link=0
-
-    # cat=general/0010; type=boolean; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:general.devmod
+    # cat=general/general/0010; type=boolean; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:general.devmod
     devmod=0
 
-    # cat=general/0020; type=boolean; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:general.ignoreVerifySSL
+    # cat=general/general/0020; type=boolean; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:general.ignoreVerifySSL
     ignoreVerifySSL =
 
     # cat=facebook/facebook/0010; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:facebook.api.id
@@ -54,9 +49,6 @@ socialfeed{
     twitter.oauth.access.token=
     # cat=twitter/twitter/0040; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:twitter.oauth.access.token_secret
     twitter.oauth.access.token_secret=
-
-    # cat=googleplus/googleplus/0010; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:googleplus.app.key
-    googleplus.app.key=
 
     # cat=youtube/youtube/0010; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/Configuration.xlf:youtube.apikey
     youtube.apikey=

@@ -2,7 +2,6 @@
 namespace PlusB\PbSocial\Domain\Repository;
 
 require_once \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/tumblr/vendor/autoload.php';
-require_once \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/google/src/Google/autoload.php';
 
 /***************************************************************
  *

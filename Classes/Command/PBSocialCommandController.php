@@ -35,7 +35,6 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandController
 {
     const TYPE_FACEBOOK = 'facebook';
-    const TYPE_GOOGLE = 'googleplus';
     const TYPE_IMGUR = 'imgur';
     const TYPE_INSTAGRAM = 'instagram';
     const TYPE_LINKEDIN = 'linkedin';
