@@ -1,18 +1,21 @@
 {
   "name": "plusb/pb_social",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "type": "typo3-cms-extension",
   "description": "Social Media Streams",
-  "homepage": "http://www.plusb.de",
+  "homepage": "https://www.plusb.de",
   "license": [
     "GPL-2.0-or-later"
   ],
   "keywords": [
     "TYPO3 CMS",
-    "Social Media Streams"
+    "Social Media Streams",
+	"plus B",
+	"plusB",
+	"pb_social",
   ],
   "require": {
-    "typo3/cms-core": "^7.6.0 || ^8.7.0",
+    "typo3/cms-core": "^7.6.0 || ^9.7.99",
     "php": ">=5.6"
   },
   "autoload": {
