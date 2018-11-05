@@ -12,7 +12,7 @@
     "Social Media Streams",
 	"plus B",
 	"plusB",
-	"pb_social",
+	"pb_social"
   ],
   "require": {
     "typo3/cms-core": "^7.6.0 || ^9.7.99",
