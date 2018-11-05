@@ -13,7 +13,7 @@ plugin.tx_pbsocial {
 		storagePid =
 	}
     settings{
-        load-jquery = 0
+        load-jquery = 1
 		cacheLifetime = 3600
 		facebook {
 			# cat=plugin.tx_pbsocial.settings.facebook//a; type)string; label=Comma separated List for Facebook request. Please consider change in Partials\Feed\Provider-facebook.html as well! Only use in case you know, what you are doing.
