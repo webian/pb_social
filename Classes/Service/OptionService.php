@@ -106,13 +106,9 @@ class OptionService extends AbstractBaseService
                 );
                 break;
             case self::TYPE_LINKEDIN:
-                $linkedInFeedFilters =
-                    ($this->convertFlexformSettings($settings)->settings['linkedinJobPostings']) .
-                    ($this->convertFlexformSettings($settings)->settings['linkedinNewProducts']) .
-                    ($this->convertFlexformSettings($settings)->settings['linkedinStatusUpdates']);
                 $array =  array(
                     "linkedin_" . $this->convertFlexformSettings($settings)->settings['linkedinCompanyIds'],
-                    "linkedin_" . $linkedInFeedFilters
+                    "linkedin_" . $this->convertFlexformSettings($settings)->settings['linkedinFilterChoice']
                 );
                 break;
             case self::TYPE_PINTEREST:

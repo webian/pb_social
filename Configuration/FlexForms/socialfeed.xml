@@ -253,33 +253,34 @@
                             </config>
                         </TCEforms>
                     </settings.linkedinCompanyIds>
-                    <settings.linkedinJobPostings>
+
+
+                    <settings.linkedinFilterChoice>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.linkedin.jobPostings</label>
-                            <!--<displayCond>FIELD:settings.instagramEnabled:=:1</displayCond>-->
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.linkedin.linkedinFilterChoice</label>
                             <config>
-                                <type>check</type>
+                                <type>radio</type>
+                                <items type="array">
+                                    <numIndex index="0" type="array">
+                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.linkedin.linkedinFilterChoiceNone</numIndex>
+                                        <numIndex index="1"></numIndex>
+                                    </numIndex>
+                                    <numIndex index="1" type="array">
+                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.linkedin.jobPostings</numIndex>
+                                        <numIndex index="1">job-posting</numIndex>
+                                    </numIndex>
+                                    <numIndex index="2" type="array">
+                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.linkedin.newProducts</numIndex>
+                                        <numIndex index="1">new-product</numIndex>
+                                    </numIndex>
+                                    <numIndex index="3" type="array">
+                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.linkedin.statusUpdates</numIndex>
+                                        <numIndex index="1">status-update</numIndex>
+                                    </numIndex>
+                                </items>
                             </config>
                         </TCEforms>
-                    </settings.linkedinJobPostings>
-                    <settings.linkedinNewProducts>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.linkedin.newProducts</label>
-                            <!--<onChange>reload</onChange>-->
-                            <config>
-                                <type>check</type>
-                            </config>
-                        </TCEforms>
-                    </settings.linkedinNewProducts>
-                    <settings.linkedinStatusUpdates>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.linkedin.statusUpdates</label>
-                            <!--<onChange>reload</onChange>-->
-                            <config>
-                                <type>check</type>
-                            </config>
-                        </TCEforms>
-                    </settings.linkedinStatusUpdates>
+                    </settings.linkedinFilterChoice>
                 </el>
             </ROOT>
         </display_linkedin>

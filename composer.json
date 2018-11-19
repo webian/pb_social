@@ -12,7 +12,24 @@
     "Social Media Streams",
 	"plus B",
 	"plusB",
-	"pb_social"
+	"pb_social",
+    "facebook",
+    "imgur",
+    "instagram",
+    "linkedin",
+    "pinterest",
+    "tumblr",
+    "twitter",
+    "youtube",
+    "vimeo",
+    "tx_news"
+  ],
+  "authors": [
+    {
+      "name": "Mikolaj Jedrzejewski, Ramon Mohi, Kai Lorenz, Robert Becker, Arend Maubach",
+      "role": "Developer",
+      "homepage": "https://www.plusb.de"
+    }
   ],
   "require": {
     "typo3/cms-core": "^7.6 || ^8.7 || ^9.5",

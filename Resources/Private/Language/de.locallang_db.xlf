@@ -117,6 +117,18 @@
                 <source>LinkedIn company ID. !! you need to be administrator of the given company page(s) !!</source>
                 <target state="translated">LinkedIn Unternehmens-ID. !! Sie müssen Administrator der LinkedIn-Unternehmensseite(n) sein !!</target>
             </trans-unit>
+
+            <trans-unit id="flexform.tab.linkedin.linkedinFilterChoice">
+                <source>Filter settings</source>
+                <target state="translated">Filter</target>
+            </trans-unit>
+             <trans-unit id="flexform.tab.linkedin.linkedinFilterChoiceNone">
+                <source>None</source>
+                <target state="translated">None</target>
+            </trans-unit>
+
+
+
             <trans-unit id="flexform.tab.linkedin.jobPostings">
                 <source>Show job postings</source>
                 <target state="translated">Job-Postings anzeigen</target>

@@ -156,27 +156,7 @@ class LinkedInAdapter extends SocialMediaAdapter
         $result = array();
 
         # set filters
-        $filters = "";
-
-        if ($options->showJobPostings || $options->showNewProducts || $options->showStatusUpdates)
-        {
-            $filters = "&event-type=";
-            $filtered = false;
-            if ($options->showJobPostings)
-            {
-                $filters .= 'job-posting';
-                $filtered = true;
-            }
-            if ($options->showNewProducts)
-            {
-                $filters .= $filtered ? ',new-product' : 'new-product';
-                $filtered = true;
-            }
-            if ($options->showStatusUpdates)
-            {
-                $filters .= $filtered ? ',status-update' : 'status-update';
-            }
-        }
+        $filters = (@$options->settings['linkedinFilterChoice'] != '')?'&'.$options->settings['linkedinFilterChoice']:'';
 
         # get company updates
         # additional filters for job postings, new products and status updates may be applied
@@ -212,6 +192,8 @@ class LinkedInAdapter extends SocialMediaAdapter
                 }
 
                 try {
+
+
 
                     # api call
                     $companyUpdates = $this->api->get('companies/' . $searchId .'/updates?format=json' . $filters);

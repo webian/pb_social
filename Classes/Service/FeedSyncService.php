@@ -281,9 +281,8 @@ class FeedSyncService extends AbstractBaseService
         $config_clientCallback = $this->extConf['socialfeed.']['linkedin.']['client.']['callback_url'];
         $config_access_code = $this->extConf['socialfeed.']['linkedin.']['access_token'];
         $flexformOptions->companyIds = $flexformSettings['linkedinCompanyIds'];
-        $flexformOptions->showJobPostings = $flexformSettings['linkedinJobPostings'];
-        $flexformOptions->showNewProducts = $flexformSettings['linkedinNewProducts'];
-        $flexformOptions->showStatusUpdates = $flexformSettings['linkedinStatusUpdates'];
+        $flexformOptions->linkedinFilterChoice = $flexformSettings['linkedinFilterChoice'];
+
 
         # retrieve data from adapter #
         $adapter = new Adapter\LinkedInAdapter($config_clientId, $config_clientSecret, $config_clientCallback, $config_access_code, $this->itemRepository, $this->credentialRepository, $flexformOptions);

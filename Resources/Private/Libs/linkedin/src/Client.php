@@ -496,6 +496,7 @@ class Client
         if (!empty($params) && Method::GET === $method) {
             $endpoint .= '?' . build_query($params);
         }
+
         try {
             $response = $guzzle->request($method, $endpoint, $options);
         } catch (RequestException $requestException) {
