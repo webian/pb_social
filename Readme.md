@@ -98,14 +98,14 @@ Just make sure tx_news is installed and running and you have some news to displa
 
 ##3. How To Migrate
 
-###3.1 Migration from `1.3.1` to `1.3.3`: Instagram access token
+###3.1 Migration from `1.3.1` to `1.3.4`: Instagram access token
 * Instagram changed its access token procedure. You seemingly would need a logged in browser session to get the access token. 
 So automatic generation by our code will not longer work. To get it, please log in into your instagram and refer to 
 information of [instagram developer information](http://instagram.com/developer/clients/manage/). But please notice, you would need
 to check "Disable implicit OAuth:" for this time (pleas uncheck after having done successfully). 
 
 After having received the access token, fill in this long string into `pb_scoial extension configuration` in tab `"Instagram"` / `"Instagram access token"` and hit "Save". 
-
+* If you did not already have done this, leaving version 1.3.1: Please do this to all of your pb_scoial - plugins: Open, save it again. We changed flexform in tab "LinkedIn". (If you do not use LinkedIn, nothing have to be done)
 
 ##4. Known Issues
 
