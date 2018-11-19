@@ -50,65 +50,37 @@ Download and install the extension with the extension manager module.
 
 ###2.3 Detailed Setup 
 
-1. Enter all your available social media account data into the respective input fields. 
-   If you're new to this or don't have the data, the following links will give you a 
-   base direction where to get these credentials.
-   
-   
-    developers.facebook.com/apps
-   
-    code.google.com/apis/console/ (Public Api-Access -> Generate New Key -> Server Key)
-   
-    instagram.com/developer/clients/manage/
-   
-    dev.twitter.com/apps/
-   
-    tumblr.com/oauth/apps
-   
-    developers.pinterest.com/apps/
-   
-    api.imgur.com/
-   
-    linkedin.com/developer/apps
-    
-
-   You might need to grant special permissions and add users to your app etc.
-   All the details should be documented on the pages above.
-   If you encounter any difficulties, check the FAQ section or contact us at hello@plusb.de
-   With version 1.2.7 you will be able to integrate tx_news posts into the feed.
-   It is possible to display news by category. The plugin needs a news plugin running on any other site to generate detail view links.
-   Just make sure tx_news is installed and running and you have some news to display.
+1. Enter all your available social media account data into the respective input fields. If you're new to this or don't have the data, the following links will give you a base direction where to get these credentials. [developers.facebook.com/apps](developers.facebook.com/apps), 
+    [instagram.com/developer/clients/manage/](instagram.com/developer/clients/manage/), 
+    [dev.twitter.com/apps/](dev.twitter.com/apps/), 
+    [tumblr.com/oauth/apps](tumblr.com/oauth/apps), 
+    [developers.pinterest.com/apps/](developers.pinterest.com/apps/), 
+    [api.imgur.com/](api.imgur.com/), 
+    [linkedin.com/developer/apps](linkedin.com/developer/apps)
+You might need to grant special permissions and add users to your app etc. 
+All the details should be documented on the pages above. If you encounter any difficulties, check the FAQ section or contact us at hello@plusb.de
+With version 1.2.7 you will be able to integrate tx_news posts into the feed.
+It is possible to display news by category. The plugin needs a news plugin running on any other site to generate detail view links.
+Just make sure tx_news is installed and running and you have some news to display.
 1. Include the extension typoscript
 1. Navigate to an empty page and insert the "Socialfeed"-Plugin
 1. Open the flexform and navigate through the Provider-Tabs you want to activate.
 1. You can use multiple search values by making a comma separated string
 1. Add the Scheduler Task "Extbase CommandController Task" and choose "PbSocial PbSocial: updateFeedData" (Note: the frequency should be set to a relatively small value, because of the flexform property "Feed update interval" that is controlling the refresh rate, too. On the other hand most APIs restrict requests to every 10-15 minutes. Be sure to respect those request limits. A scheduler task that runs every minute will only fill your error_log.)
-
-
-    check that you have a backend user called "_cli_scheduler"
     
-    check that you have a cron-job, that calls "./TYPO3/cli_dispatch.phpsh scheduler" from your project's root directory
+    `check that you have a backend user called "_cli_scheduler"`
     
-    
-    
+    `check that you have a cron-job, that calls "./TYPO3/cli_dispatch.phpsh scheduler" from your project's root directory`
+          
 1. Clear all caches and enjoy the result.
    * Feed-Caching by the CommandController is saved in the system-cache. Clearing the System cache will also clear your posts. Be sure to run your scheduler task again after every system cache clear command.
 1. If you get the following error in the PHP error log: "Error: SSL certificate problem: unable to get local issuer certificate". 
    This happens due to an outdated root certification authority file (cacert.pem).
    Check these links for further details:
-   
-   
-    https://curl.haxx.se/docs/sslcerts.html
-    
-    https://curl.haxx.se/ca/cacert.pem
-    
-    TL:DR http://flwebsites.biz/posts/how-fix-curl-error-60-ssl-issue
-    
-    add/upload a valid cacert.pem file to your php root directory and add the following line to the php.ini file
-    
-    curl.cainfo="PATH TO\php\cacert.pem"
-
-
+    [https://curl.haxx.se/docs/sslcerts.html](https://curl.haxx.se/docs/sslcerts.html)
+    [ttps://curl.haxx.se/ca/cacert.pem](https://curl.haxx.se/ca/cacert.pem)  
+    [TL:DR http://flwebsites.biz/posts/how-fix-curl-error-60-ssl-issue](http://flwebsites.biz/posts/how-fix-curl-error-60-ssl-issue)
+    add/upload a valid cacert.pem file to your php root directory and add the following line to the `php.ini` file `curl.cainfo="PATH TO\php\cacert.pem"`
    For a quick an dirty solution we included a checkbox in the extension configuration that turns off ssl verification for all pb_social requests
    ATTENTION: Activating this checkbox might be a potential security risk!
 1. Testing the Scheduler Task
