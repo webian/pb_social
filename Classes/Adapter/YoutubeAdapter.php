@@ -71,7 +71,7 @@ class YoutubeAdapter extends SocialMediaAdapter
     {
         parent::__construct($itemRepository);
         /**
-         * todo: quickfix - but we better add a layer for adapter inbetween, here after "return $this" intance is not completet but existend (AM)
+         * todo: quick fix - but we'd better add a layer for adapter in between, here after "return $this" instance is not completed but existing (AM)
          */
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
