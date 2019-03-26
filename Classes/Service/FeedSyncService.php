@@ -150,6 +150,7 @@ class FeedSyncService extends AbstractBaseService
             $return->message = $adapter->validationMessage;
         }
 
+        //todo do something with that return value set: isSuccessfull, and message or remove
         return $return;
     }
 

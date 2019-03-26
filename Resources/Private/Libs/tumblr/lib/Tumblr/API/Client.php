@@ -1,7 +1,6 @@
 <?php
 
 namespace Tumblr\API;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * A client to access the Tumblr API

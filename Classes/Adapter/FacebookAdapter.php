@@ -4,11 +4,12 @@ namespace PlusB\PbSocial\Adapter;
 
 $extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/';
 require $extensionPath . 'facebook/src/Facebook/autoload.php';
+
 use Facebook\Facebook;
-use FluidTYPO3\Flux\Outlet\Pipe\Exception;
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+
 
 /***************************************************************
  *
@@ -40,7 +41,7 @@ class FacebookAdapter extends SocialMediaAdapter
 
     const TYPE = 'facebook';
 
-    const api_url = 'https://graph.facebook.com';
+    const api_url = 'https://graph.facebook.com', api_version = "v3.2";
 
     private $api;
 
@@ -87,42 +88,13 @@ class FacebookAdapter extends SocialMediaAdapter
                 'options' => $options
             )) === false)
         {return $this;}
-        /* validated */
+        /* partly validated, but not valid object, open task */
 
-        $extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pb_social']);
-        $ignoreVerifySSL = $extConf['socialfeed.']['ignoreVerifySSL'] == '1' ? true : false;
+        $this->api = new Facebook(['app_id' => $this->apiId,'app_secret' => $this->apiSecret,'default_graph_version' => self::api_version]);
 
-        $this->api = new Facebook(['app_id' => $this->apiId,'app_secret' => $this->apiSecret,'default_graph_version' => 'v3.0']);
-
-        // Get access_token via grant_type=client_credentials
-        $url = 'https://graph.facebook.com/v3.0/oauth/access_token?client_id=' . $this->apiId . '&client_secret=' . $this->apiSecret . '&grant_type=client_credentials';
-
-        $accessTokenResponse = $this->itemRepository->curl_download($url, $ignoreVerifySSL);
-        if (($accessTokenJson = json_decode($accessTokenResponse)) != NULL) {
-            $this->access_token = $accessTokenJson->access_token;
-        }
-
+        $this->access_token =  $this->api->getApp()->getAccessToken();
         $this->api->setDefaultAccessToken($this->access_token);
 
-//
-//        $this->oAuth2Client = $this->api->getOAuth2Client();
-//
-//        $this->oAuth2Client->getLongLivedAccessToken($this->access_token);
-//        $accessTokenMetadata = $this->oAuth2Client->debugToken($this->access_token);
-//
-//        if ($accessTokenMetadata->getExpiresAt() < new \DateTime()) {
-//
-//            error_log('facebook access token expired');
-//            error_log(json_encode($accessTokenMetadata));
-//            /**
-//             * todo: we have to do something here if page access token has expired!
-//             *
-//             * the user should visit this page: https://developers.facebook.com/tools/explorer
-//             * and generator new long lived page access token
-//             */
-//        }
-//
-//        $this->api->setDefaultAccessToken($this->access_token);
     }
 
     /**
@@ -153,64 +125,59 @@ class FacebookAdapter extends SocialMediaAdapter
         $options = $this->options;
         $result = array();
 
-
-
         $facebookSearchIds = $options->settings['facebookSearchIds'];
         if (empty($facebookSearchIds)) {
             $this->logWarning('- no search term defined');
             return null;
         }
 
-
-
         foreach (explode(',', $facebookSearchIds) as $searchId) {
             $searchId = trim($searchId);
+            $posts = null;
 
             /*
-             * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
+             * todo: invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
              */
-
             $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchId);
+
+            try {
+                $posts = $this->getPosts($searchId, $options->feedRequestLimit, $options->settings['facebookEdge']);
+
+            }
+            catch (\Exception $e) {
+                $this->logError("feeds can't be requested - " . $e->getMessage());
+            }
+
             if ($feeds && $feeds->count() > 0) {
                 $feed = $feeds->getFirst();
                 /**
-                 * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to bee free, so... change!
-                 * todo: try to get rid of duplicate code
+                 * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to be free, so... change by conf
                  */
                 if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
-                    try
-                    {
-                        $posts = $this->getPosts($searchId, $options->feedRequestLimit, $options->settings['facebookEdge']);
 
-                        if ($posts !== null)
-                        {
-                            $feed->setDate(new \DateTime('now'));
-                            $feed->setResult($posts);
-                            $this->itemRepository->updateFeed($feed);
-                        }
+                    //update feed
+                    if ($posts !== null) {
+                        $feed->setDate(new \DateTime('now'));
+                        $feed->setResult($posts);
+                        $this->itemRepository->updateFeed($feed);
                     }
-                    catch (\FacebookApiException $e)
-                    {
-                        $this->logError("feeds can't be updated - " . $e->getMessage());
-                    }
+
                 }
                 $result[] = $feed;
+
+                //after having updated, roll over in foreach
                 continue;
             }
 
-            try {
+            //insert new feed
+            if ($posts !== null) {
                 $feed = new Item(self::TYPE);
                 $feed->setCacheIdentifier($searchId);
-
-
-                $feed->setResult($this->getPosts($searchId, $options->feedRequestLimit, $options->settings['facebookEdge']));
-
+                $feed->setResult($posts);
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
-                $result[] = $feed;
-            } catch (\FacebookApiException $e) {
-                $this->logError('initial load for feed failed - ' . $e->getMessage());
             }
+            $result[] = $feed;
 
         }
 
@@ -261,30 +228,34 @@ class FacebookAdapter extends SocialMediaAdapter
      */
     public function getPosts($searchId, $limit, $edge)
     {
-        // only posts or feed possible
-        if ($edge == 'posts') {
-            $request = 'posts';
-        } else {
-            $request = 'feed';
-        }
+        //endpoint
+            switch ($edge){
+                case 'feed': $request = 'feed'; break;
+                case 'posts': $request = 'posts'; break;
+                default: $request = 'feed';
+            }
 
-        try {
+        $endpoint = '/' . $searchId . '/' . $request;
+
+        //limit
+        $limit = $limit;
+
+        //params
             //set default parameter list in case s.b messes up with TypoScript
             $faceBookRequestParameter =
-                        'picture,
-                        comments.summary(total_count).limit(0).as(comments),
-                        created_time,
-                        full_picture,
-                        reactions.summary(total_count).limit(0).as(reactions),
-                        reactions.type(NONE).summary(total_count).limit(0).as(none),
-                        reactions.type(LIKE).summary(total_count).limit(0).as(like),
-                        reactions.type(LOVE).summary(total_count).limit(0).as(love),
-                        reactions.type(WOW).summary(total_count).limit(0).as(wow),
-                        reactions.type(HAHA).summary(total_count).limit(0).as(haha),
-                        reactions.type(SAD).summary(total_count).limit(0).as(sad),
-                        reactions.type(ANGRY).summary(total_count).limit(0).as(angry),
-                        reactions.type(THANKFUL).summary(total_count).limit(0).as(thankful)';
-
+                'picture,
+                comments.summary(total_count).limit(0).as(comments),
+                created_time,
+                full_picture,
+                reactions.summary(total_count).limit(0).as(reactions),
+                reactions.type(NONE).summary(total_count).limit(0).as(none),
+                reactions.type(LIKE).summary(total_count).limit(0).as(like),
+                reactions.type(LOVE).summary(total_count).limit(0).as(love),
+                reactions.type(WOW).summary(total_count).limit(0).as(wow),
+                reactions.type(HAHA).summary(total_count).limit(0).as(haha),
+                reactions.type(SAD).summary(total_count).limit(0).as(sad),
+                reactions.type(ANGRY).summary(total_count).limit(0).as(angry),
+                reactions.type(THANKFUL).summary(total_count).limit(0).as(thankful)';
 
             //overwritten by Typoscript
             if(isset($this->options->settings['facebook']['requestParameterList']) && is_string($this->options->settings['facebook']['requestParameterList'])){
@@ -294,19 +265,19 @@ class FacebookAdapter extends SocialMediaAdapter
             //always prepending id, link and message
             $faceBookRequestParameter = 'id,link,message,' . $faceBookRequestParameter;
 
+        $params = [
+            'fields' => $faceBookRequestParameter,
+            'limit' => $limit
+        ];
+
+        try {
             /** @var \Facebook\FacebookResponse $resp */
             $resp = $this->api->sendRequest(
                 'GET',
-                '/' . $searchId . '/' . $request,
-                array(
-                    'fields' => $faceBookRequestParameter,
-                    'limit' => $limit
-                    // 'include_hidden' => false,
-                    // 'is_published' => true
-                ),
-                $this->access_token
+                $endpoint,
+                $params
             );
-        } catch (\Exception $e) {
+        } catch (\Facebook\Exceptions\FacebookSDKException $e) {
             $this->logWarning('request failed: ' . $e->getMessage());
             return null;
         }
@@ -314,25 +285,6 @@ class FacebookAdapter extends SocialMediaAdapter
         if (empty(json_decode($resp->getBody())->data) || json_encode($resp->getBody()->data) == null) {
             $this->logWarning('no posts found for ' . $searchId);
             return null;
-        }
-
-        return $resp->getBody();
-    }
-
-    public function getReactions($post_id)
-    {
-        /** @var \Facebook\FacebookResponse $resp */
-        $resp = $this->api->sendRequest(
-            'GET',
-            '/' . $post_id . '/reactions',
-            array(
-                'limit' => 999
-            ),
-            $this->access_token
-        );
-
-        if (empty(json_decode($resp->getBody())->data)) {
-            $this->logWarning('failed to get reactions for post ' . $post_id);
         }
 
         return $resp->getBody();

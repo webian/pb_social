@@ -10,7 +10,7 @@ use MetzWeb\Instagram\Instagram;
 use PlusB\PbSocial\Domain\Model\Credential;
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+
 
 /***************************************************************
  *

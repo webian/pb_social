@@ -4,7 +4,6 @@ namespace PlusB\PbSocial\Service;
 
 use PlusB\PbSocial\Service\Base\AbstractBaseService;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /***************************************************************
  *
