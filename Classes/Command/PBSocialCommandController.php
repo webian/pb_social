@@ -73,6 +73,16 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
     protected $contentRepository;
 
     /**
+     * Reference to a scheduler object, just for having ->log()
+     *
+     * @var \TYPO3\CMS\Scheduler\Scheduler
+     * @inject
+     */
+    protected $scheduler;
+
+
+
+    /**
      * @var bool Verbose output
      */
     protected $verbose = false;
@@ -409,7 +419,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
 
     private function outputSysLog(){
         if($this->isSyslogWarning() === true){
-            $GLOBALS['BE_USER']->simplelog($this->getSysLogWarnings(), self::EXTKEY, 1);
+            $this->scheduler->log($this->getSysLogWarnings(), 1, "scheduler pb_social");
             $this->resetSysLogWarnings();
         }
     }

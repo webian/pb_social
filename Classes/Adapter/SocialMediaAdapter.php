@@ -31,9 +31,10 @@ abstract class SocialMediaAdapter implements SocialMediaAdapterInterface
 {
 
     const TYPE = 'socialMediaAdapter';
+    const EXTKEY = 'pb_social';
 
     public $type;
-    public $logger;
+    protected $logger;
     public $itemRepository;
 
     public function __construct($itemRepository)
@@ -109,13 +110,19 @@ abstract class SocialMediaAdapter implements SocialMediaAdapterInterface
 
     public function logError($message)
     {
-        $GLOBALS["BE_USER"]->simplelog($this->type . ": " . $message, "pb_social", 1);
+        if(isset($GLOBALS["BE_USER"])){
+            $GLOBALS['BE_USER']->simplelog( $this->type . ": " . $message , $extKey = self::EXTKEY, $error = 1);
+        }
+
         $this->logger->error($this->type . " " . $message, array("data" => $this->type . " " . $message));
     }
 
     public function logWarning($message)
     {
-        $GLOBALS["BE_USER"]->simplelog($this->type . ": " . $message, "pb_social", 0);
+        if(isset($GLOBALS["BE_USER"])){
+            $GLOBALS['BE_USER']->simplelog( $this->type . ": " . $message , $extKey = self::EXTKEY, $error =01);
+        }
+
         $this->logger->warning($this->type . " " . $message, array("data" => $this->type . " " . $message));
     }
 }

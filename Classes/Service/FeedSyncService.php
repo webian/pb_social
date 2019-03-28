@@ -81,7 +81,7 @@ class FeedSyncService extends AbstractBaseService
      * @param $flexformSettings
      * @param $ttContentUid
      * @param bool $isVerbose
-     * @return object of message->isSuccessfull and message->message
+     * @return object of message->isSuccessfull and message->message for loggin in scheduler
      */
     public function syncFeed($socialNetworkTypeString, $flexformSettings, $ttContentUid, $isVerbose = false){
         $return = (object)array();
