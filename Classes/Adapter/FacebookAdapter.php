@@ -124,6 +124,7 @@ class FacebookAdapter extends SocialMediaAdapter
     {
         $options = $this->options;
         $result = array();
+        $feed = null;
 
         $facebookSearchIds = $options->settings['facebookSearchIds'];
         if (empty($facebookSearchIds)) {
@@ -176,9 +177,8 @@ class FacebookAdapter extends SocialMediaAdapter
                 $feed->setResult($posts);
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
+                $result[] = $feed;
             }
-            $result[] = $feed;
-
         }
 
         return $this->getFeedItemsFromApiRequest($result, $options);
