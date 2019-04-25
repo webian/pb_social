@@ -8,7 +8,6 @@ require $extensionPath . 'facebook/src/Facebook/autoload.php';
 use Facebook\Facebook;
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 
 /***************************************************************
@@ -244,9 +243,14 @@ class FacebookAdapter extends SocialMediaAdapter
             //set default parameter list in case s.b messes up with TypoScript
             $faceBookRequestParameter =
                 'picture,
-                comments.summary(total_count).limit(0).as(comments),
+               
                 created_time,
-                full_picture,
+                full_picture';
+
+            /*, Private developed API Keys are NO LONGER ALLOWED TO FETCH COMMENTS AND REACTIONS
+
+                comments.summary(total_count).limit(0).as(comments),
+
                 reactions.summary(total_count).limit(0).as(reactions),
                 reactions.type(NONE).summary(total_count).limit(0).as(none),
                 reactions.type(LIKE).summary(total_count).limit(0).as(like),
@@ -255,7 +259,7 @@ class FacebookAdapter extends SocialMediaAdapter
                 reactions.type(HAHA).summary(total_count).limit(0).as(haha),
                 reactions.type(SAD).summary(total_count).limit(0).as(sad),
                 reactions.type(ANGRY).summary(total_count).limit(0).as(angry),
-                reactions.type(THANKFUL).summary(total_count).limit(0).as(thankful)';
+                reactions.type(THANKFUL).summary(total_count).limit(0).as(thankful)';*/
 
             //overwritten by Typoscript
             if(isset($this->options->settings['facebook']['requestParameterList']) && is_string($this->options->settings['facebook']['requestParameterList'])){

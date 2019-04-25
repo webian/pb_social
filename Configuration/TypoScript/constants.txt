@@ -17,7 +17,7 @@ plugin.tx_pbsocial {
 		cacheLifetime = 3600
 		facebook {
 			# cat=plugin.tx_pbsocial.settings.facebook//a; type)string; label=Comma separated List for Facebook request. Please consider change in Partials\Feed\Provider-facebook.html as well! Only use in case you know, what you are doing.
-			requestParameterList = picture,comments.summary(total_count).limit(0).as(comments),created_time,full_picture,reactions.summary(total_count).limit(0).as(reactions),reactions.type(NONE).summary(total_count).limit(0).as(none),reactions.type(LIKE).summary(total_count).limit(0).as(like),reactions.type(LOVE).summary(total_count).limit(0).as(love),reactions.type(WOW).summary(total_count).limit(0).as(wow),reactions.type(HAHA).summary(total_count).limit(0).as(haha),reactions.type(SAD).summary(total_count).limit(0).as(sad),reactions.type(ANGRY).summary(total_count).limit(0).as(angry),reactions.type(THANKFUL).summary(total_count).limit(0).as(thankful)
+			requestParameterList = picture, created_time, full_picture
 		}
 	}
 }

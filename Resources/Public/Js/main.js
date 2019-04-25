@@ -23,16 +23,6 @@ function documentReady(){
         window.open(_Url,'_blank','width=1200,height=800');
         return false;
     });
-
-    // facebook reactions on hover
-    jQuery('.pb-list-item-facebook').each(function(){
-        var thiz = jQuery(this);
-        thiz.find('.info-1').hover(
-            function(){ thiz.find('.fb-like-details').addClass('active'); },
-            function(){ thiz.find('.fb-like-details').removeClass('active'); }
-        );
-    });
-
 }
 
 function initBindings(){

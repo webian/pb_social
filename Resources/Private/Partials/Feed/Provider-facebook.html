@@ -39,22 +39,7 @@
 		</f:if>
 
 		<div class="icon"></div>
-        <div class="fb-like-detail-wrap">
-			<div class="fb-like-details">
-            	<span><i class="fb-like-detail__like"></i>{feed.raw.like.summary.total_count}</span>
-            	<span><i class="fb-like-detail__love"></i>{feed.raw.love.summary.total_count}</span>
-            	<span><i class="fb-like-detail__haha"></i>{feed.raw.haha.summary.total_count}</span>
-            	<span><i class="fb-like-detail__wow" ></i>{feed.raw.wow.summary.total_count}</span>
-            	<span><i class="fb-like-detail__sad" ></i>{feed.raw.sad.summary.total_count}</span>
-            	<span><i class="fb-like-detail__angry"></i>{feed.raw.angry.summary.total_count}</span>
-        	</div>
-		</div>
-		<a class="additional-info info-1" href="{feed.link}" target="_blank">
-			{feed.raw.reactions.summary.total_count}
-		</a>
-		<a class="additional-info info-2" href="{feed.link}" target="_blank">
-			{feed.raw.comments.summary.total_count}
-		</a>
+
 		<f:if condition="{0:feed.raw.type}=={0:'video'}">
 			<img class="video-overlay" src="/typo3conf/ext/pb_social/Resources/Public/Icons/play_icon.png"/>
 		</f:if>
