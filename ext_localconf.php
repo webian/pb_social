@@ -47,10 +47,9 @@ if(TYPO3_MODE === 'BE') {
     $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
     $iconRegistry->registerIcon(
             'pb_social-plugin-socialfeed',
-            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
-            ['source' => 'EXT:'. $_EXTKEY .'/Resources/Public/Icons/pb_social_wizicon.png']
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:'. $_EXTKEY .'/Resources/Public/Icons/Extension.svg']
         );
-
 }
 
 /**
