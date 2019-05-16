@@ -137,7 +137,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
      */
     public function setSysLogWarnings($sysLogWarnings)
     {
-        $this->sysLogWarnings .= ", ". $sysLogWarnings;
+        $this->sysLogWarnings .= $sysLogWarnings;
     }
 
     /**
@@ -309,7 +309,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
                 $flexformSettings = $this->flexformService->convertFlexFormContentToArray($xmlStr->getPiFlexform());
                 $flexformSettings = $flexformSettings['settings'];
 
-                $this->setSysLogWarnings("Flexform on Plugin Uid ".$xmlStr->getUid() ." on Page Uid ". $xmlStr->getPid() . "says: ");
+                $this->setSysLogWarnings("Flexform on Plugin tt_content.uid ".$xmlStr->getUid() ." on pages.uid ". $xmlStr->getPid() . " says: ");
 
                 /* starting procedural list of requrests */
                 if ($flexformSettings['facebookEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_FACEBOOK)) {
@@ -419,7 +419,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
 
     private function outputSysLog(){
         if($this->isSyslogWarning() === true){
-            $this->scheduler->log($this->getSysLogWarnings(), 1, "scheduler pb_social");
+            $this->scheduler->log($this->getSysLogWarnings(), 1, self::EXTKEY);
             $this->resetSysLogWarnings();
         }
     }

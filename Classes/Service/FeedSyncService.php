@@ -142,15 +142,19 @@ class FeedSyncService extends AbstractBaseService
         $config_apiId = $this->extConf['socialfeed.']['facebook.']['api.']['id'];
         $config_apiSecret = $this->extConf['socialfeed.']['facebook.']['api.']['secret'];
 
-        //adapter
-        $adapter = new Adapter\FacebookAdapter($config_apiId, $config_apiSecret, $this->itemRepository, $flexformOptions);
-        if($adapter->isValid === true){
+        try {
+            //adapter
+            $adapter = new Adapter\FacebookAdapter($config_apiId, $config_apiSecret, $this->itemRepository, $flexformOptions);
+            // if you get here, all is fine and you can use object
+
             $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString,$ttContentUid, $return, $isVerbose);
-        }else{
-            $return->message = $adapter->validationMessage;
+        }
+        catch( \Exception $e ) {
+            // if you get here, something went terribly wrong.
+            // also, object is undefined because the object was not created
+            $return->message = $e->getMessage();
         }
 
-        //todo do something with that return value set: isSuccessfull, and message or remove
         return $return;
     }
 
@@ -498,9 +502,9 @@ class FeedSyncService extends AbstractBaseService
         $success,
         $isVerbose = false
     ){
-
-       $success->isSuccessfull = false;
+        $success->isSuccessfull = false;
         try {
+
             $content = $adapterObj->getResultFromApi();
 
             //writing to cache
@@ -516,7 +520,7 @@ class FeedSyncService extends AbstractBaseService
             }
 
         } catch (\Exception $e) {
-            $success->message = $socialNetworkTypeString . ": " . $e->getMessage();
+            $success->message = "|".$socialNetworkTypeString . ": " . $e->getMessage()."|";
         }
         return $success;
     }

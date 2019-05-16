@@ -76,9 +76,7 @@ class FacebookAdapter extends SocialMediaAdapter
     public function __construct($apiId, $apiSecret, $itemRepository, $options)
     {
         parent::__construct($itemRepository);
-        /**
-         * todo: quickfix - but we better add a layer for adapter inbetween, here after "return $this" intance is not completet but existend (AM)
-         */
+
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
             array(
@@ -86,8 +84,9 @@ class FacebookAdapter extends SocialMediaAdapter
                 'apiSecret' => $apiSecret,
                 'options' => $options
             )) === false)
-        {return $this;}
-        /* partly validated, but not valid object, open task */
+        {
+            throw new \Exception( self::TYPE . $this->validationMessage );
+        }
 
         $this->api = new Facebook(['app_id' => $this->apiId,'app_secret' => $this->apiSecret,'default_graph_version' => self::api_version]);
 
@@ -109,9 +108,9 @@ class FacebookAdapter extends SocialMediaAdapter
         $this->setOptions($parameter['options']);
 
         if (empty($this->apiId) || empty($this->apiSecret)) {
-            $this->validationMessage = ' credentials not set';
+            $this->validationMessage = 'credentials not set: ' . (empty($this->apiId)?'apiId':''). (empty($this->apiSecret)?'apiSecret':'');
         } elseif (empty($this->options->settings['facebookSearchIds'])) {
-            $this->validationMessage = ' no search term defined';
+            $this->validationMessage = 'no search term defined';
         } else {
             $this->isValid = true;
         }
@@ -142,10 +141,9 @@ class FacebookAdapter extends SocialMediaAdapter
 
             try {
                 $posts = $this->getPosts($searchId, $options->feedRequestLimit, $options->settings['facebookEdge']);
-
             }
             catch (\Exception $e) {
-                $this->logError("feeds can't be requested - " . $e->getMessage());
+                throw new \Exception( $e->getMessage() );
             }
 
             if ($feeds && $feeds->count() > 0) {
@@ -281,14 +279,13 @@ class FacebookAdapter extends SocialMediaAdapter
                 $endpoint,
                 $params
             );
+
         } catch (\Facebook\Exceptions\FacebookSDKException $e) {
-            $this->logWarning('request failed: ' . $e->getMessage());
-            return null;
+            throw new \Exception( '1558011840 ' . $e->getMessage() );
         }
 
         if (empty(json_decode($resp->getBody())->data) || json_encode($resp->getBody()->data) == null) {
-            $this->logWarning('no posts found for ' . $searchId);
-            return null;
+            throw new \Exception( '1558011842 no posts found for ' . $searchId );
         }
 
         return $resp->getBody();
