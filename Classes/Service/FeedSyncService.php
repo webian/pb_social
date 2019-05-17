@@ -80,8 +80,8 @@ class FeedSyncService extends AbstractBaseService
     /**
      * @param $socialNetworkTypeString
      * @param $flexformSettings
-     * @param $ttContentUid
-     * @param $ttContenPid
+     * @param $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
+     * @param $ttContenPid int page uid in which plugin is located, for logging purpose, only
      * @param bool $isVerbose
      * @return object of message->isSuccessfull and message->message for loggin in scheduler
      */
@@ -135,8 +135,8 @@ class FeedSyncService extends AbstractBaseService
     /**
      * @param $flexformSettings
      * @param $socialNetworkTypeString
-     * @param $ttContentUid
-     * @param $ttContentPid
+     * @param $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
+     * @param $ttContentPid int page uid in which plugin is located, for logging purpose, only
      * @param bool $isVerbose
      * @return object of message->isSuccessfull and message->message
      */
@@ -154,14 +154,25 @@ class FeedSyncService extends AbstractBaseService
         $flexformOptions = $this->optionService->convertFlexformSettings($flexformSettings);
         $flexformOptions->devMod = $this->extConf['socialfeed.']['devmod'];
 
-        //api key
-        $config_apiId = ($flexformOptions->settings['facebookPluginKeyfieldEnabled'] === '1')?$flexformOptions->settings['facebookApiId']:$this->extConf['socialfeed.']['facebook.']['api.']['id'];
-        $config_apiSecret = ($flexformOptions->settings['facebookPluginKeyfieldEnabled'] === '1')?$flexformOptions->settings['facebookApiSecret']:$this->extConf['socialfeed.']['facebook.']['api.']['secret'];
+        //facebook credentials - from extension manager gobally, or from plugin overridden
+        $config_apiId =
+            ($flexformOptions->settings['facebookPluginKeyfieldEnabled'] === '1')
+                ?
+                $flexformOptions->settings['facebookApiId']
+                :
+                $this->extConf['socialfeed.']['facebook.']['api.']['id'];
+
+        $config_apiSecret =
+            ($flexformOptions->settings['facebookPluginKeyfieldEnabled'] === '1')
+                ?
+                $flexformOptions->settings['facebookApiSecret']
+                :
+                $this->extConf['socialfeed.']['facebook.']['api.']['secret'];
 
         /*
          * var_dump($config_apiId);
          * var_dump($config_apiSecret);
-         */
+        */
 
         try {
             //adapter
@@ -183,7 +194,7 @@ class FeedSyncService extends AbstractBaseService
     /**
      * @param $flexformSettings
      * @param $socialNetworkTypeString
-     * @param $ttContentUid
+     * @param $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
      * @param bool $isVerbose
      * @return object of message->isSuccessfull and message->message
      */
@@ -219,7 +230,7 @@ class FeedSyncService extends AbstractBaseService
     /**
      * @param $flexformSettings
      * @param $socialNetworkTypeString
-     * @param $ttContentUid
+     * @param $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
      * @param bool $isVerbose
      * @return object of message->isSuccessfull and message->message
      */
@@ -258,7 +269,7 @@ class FeedSyncService extends AbstractBaseService
     /**
      * @param $flexformSettings
      * @param $socialNetworkTypeString
-     * @param $ttContentUid
+     * @param $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
      * @param bool $isVerbose
      * @return object of message->isSuccessfull and message->message
      */
@@ -293,7 +304,7 @@ class FeedSyncService extends AbstractBaseService
     /**
      * @param $flexformSettings array
      * @param $socialNetworkTypeString string
-     * @param $ttContentUid int
+     * @param $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
      * @param bool $isVerbose
      * @return object of message->isSuccessfull and message->message
      */
@@ -330,7 +341,7 @@ class FeedSyncService extends AbstractBaseService
     /**
      * @param $flexformSettings
      * @param $socialNetworkTypeString
-     * @param $ttContentUid
+     * @param $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
      * @param bool $isVerbose
      * @return object of message->isSuccessfull and message->message
      */
@@ -446,7 +457,7 @@ class FeedSyncService extends AbstractBaseService
     /**
      * @param $flexformSettings
      * @param $socialNetworkTypeString
-     * @param $ttContentUid
+     * @param $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
      * @param bool $isVerbose
      * @return object of message->isSuccessfull and message->message
      */
@@ -520,8 +531,8 @@ class FeedSyncService extends AbstractBaseService
      * @param $adapterObj Object reference of adapter
      * @param $flexformOptions Object of Optionsettings  of specific adapter
      * @param $socialNetworkTypeString String name of social network, set from class constant
-     * @param $ttContentUid int uid of flexform
-     * @param $ttContentPid
+     * @param $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
+     * @param $ttContentPid int page uid in which plugin is located, for logging purpose, only
      * @param $success Object of Successmessage and status
      * @param bool $isVerbose bool for verbose mode in command line
      * @return object of success information

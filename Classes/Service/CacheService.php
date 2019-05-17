@@ -102,7 +102,7 @@ class CacheService extends AbstractBaseService
      * - calculating a crypted string to be able to find this again in cache for FE
      *
      * @param $cacheIdentifierElementsArray
-     * @param $ttContentUid
+     * @param $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
      * @return string
      */
     private function calculateCacheIdentifier($cacheIdentifierElementsArray, $ttContentUid){
@@ -119,8 +119,8 @@ class CacheService extends AbstractBaseService
      *
      * @param $socialNetworkTypeString string
      * @param $flexformAndTyposcriptSettings array
-     * @param $ttContentUid int
-     * @param $ttContentPid int
+     * @param $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
+     * @param $ttContentPid int page uid in which plugin is located, for logging purpose, only
      * @param $results array - getting results, appending results if success
      * @return array
      */
@@ -165,7 +165,7 @@ class CacheService extends AbstractBaseService
      *
      * @param $socialNetworkTypeString string
      * @param $settings array
-     * @param $ttContentUid int
+     * @param $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
      * @param $content
      */
     public function setCacheContent(
