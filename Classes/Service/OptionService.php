@@ -89,7 +89,9 @@ class OptionService extends AbstractBaseService
         switch ($socialNetworkTypeString){
             case self::TYPE_FACEBOOK:
                 $array =  array(
-                    "facebook_" . $this->convertFlexformSettings($settings)->settings['facebookSearchIds']
+                    "facebook_" . $this->convertFlexformSettings($settings)->settings['facebookSearchIds'],
+                    "facebook_" . $this->convertFlexformSettings($settings)->settings['facebookEdge'],
+                    "facebook_" . $this->convertFlexformSettings($settings)->settings['facebookPluginKeyfieldEnabled'],
                 );
                 break;
             case self::TYPE_IMGUR:

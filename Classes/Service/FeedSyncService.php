@@ -4,6 +4,7 @@ namespace PlusB\PbSocial\Service;
 
 use PlusB\PbSocial\Adapter;
 use PlusB\PbSocial\Service\Base\AbstractBaseService;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 
 /***************************************************************
@@ -80,15 +81,23 @@ class FeedSyncService extends AbstractBaseService
      * @param $socialNetworkTypeString
      * @param $flexformSettings
      * @param $ttContentUid
+     * @param $ttContenPid
      * @param bool $isVerbose
      * @return object of message->isSuccessfull and message->message for loggin in scheduler
      */
-    public function syncFeed($socialNetworkTypeString, $flexformSettings, $ttContentUid, $isVerbose = false){
+    public function syncFeed(
+        $socialNetworkTypeString,
+        $flexformSettings,
+        $ttContentUid,
+        $ttContenPid,
+        $isVerbose = false
+    ){
         $return = (object)array();
 
         switch ($socialNetworkTypeString){
             case self::TYPE_FACEBOOK:
-                $return = $this->syncFacebookFeed($flexformSettings, $socialNetworkTypeString, $ttContentUid, $isVerbose);
+                $return = $this->syncFacebookFeed($flexformSettings, $socialNetworkTypeString, $ttContentUid, $ttContenPid,
+                    $isVerbose);
                 break;
             case self::TYPE_IMGUR:
                 $return = $this->syncImgurFeed($flexformSettings, $socialNetworkTypeString, $ttContentUid, $isVerbose);
@@ -127,10 +136,17 @@ class FeedSyncService extends AbstractBaseService
      * @param $flexformSettings
      * @param $socialNetworkTypeString
      * @param $ttContentUid
+     * @param $ttContentPid
      * @param bool $isVerbose
      * @return object of message->isSuccessfull and message->message
      */
-    public function syncFacebookFeed($flexformSettings, $socialNetworkTypeString, $ttContentUid, $isVerbose = false){
+    public function syncFacebookFeed(
+        $flexformSettings,
+        $socialNetworkTypeString,
+        $ttContentUid,
+        $ttContentPid,
+        $isVerbose = false
+    ){
         $return = (object)array();
         $return->isSuccessfull = false;
         $return->message = "";
@@ -139,20 +155,26 @@ class FeedSyncService extends AbstractBaseService
         $flexformOptions->devMod = $this->extConf['socialfeed.']['devmod'];
 
         //api key
-        $config_apiId = $this->extConf['socialfeed.']['facebook.']['api.']['id'];
-        $config_apiSecret = $this->extConf['socialfeed.']['facebook.']['api.']['secret'];
+        $config_apiId = ($flexformOptions->settings['facebookPluginKeyfieldEnabled'] === '1')?$flexformOptions->settings['facebookApiId']:$this->extConf['socialfeed.']['facebook.']['api.']['id'];
+        $config_apiSecret = ($flexformOptions->settings['facebookPluginKeyfieldEnabled'] === '1')?$flexformOptions->settings['facebookApiSecret']:$this->extConf['socialfeed.']['facebook.']['api.']['secret'];
+
+        /*
+         * var_dump($config_apiId);
+         * var_dump($config_apiSecret);
+         */
 
         try {
             //adapter
             $adapter = new Adapter\FacebookAdapter($config_apiId, $config_apiSecret, $this->itemRepository, $flexformOptions);
             // if you get here, all is fine and you can use object
 
-            $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString,$ttContentUid, $return, $isVerbose);
+            $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString,
+                $ttContentUid, $ttContentPid, $return, $isVerbose);
         }
         catch( \Exception $e ) {
             // if you get here, something went terribly wrong.
             // also, object is undefined because the object was not created
-            $return->message = $e->getMessage();
+            $return->message = "flexform $ttContentUid on page $ttContentPid tab ".self::TYPE_FACEBOOK. ": 1558101905 " . $e->getMessage();
         }
 
         return $return;
@@ -185,7 +207,8 @@ class FeedSyncService extends AbstractBaseService
         $adapter = new Adapter\ImgurAdapter($config_apiId, $config_apiSecret, $this->itemRepository, $flexformOptions);
 
         if($adapter->isValid === true){
-            $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString ,$ttContentUid, $return, $isVerbose);
+            $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString,
+                $ttContentUid, $ttContentPid, $return, $isVerbose);
         }else{
             $return->message = $adapter->validationMessage;
         }
@@ -223,7 +246,8 @@ class FeedSyncService extends AbstractBaseService
         $adapter = new Adapter\InstagramAdapter($config_clientId, $config_clientSecret, $config_clientCallback, $config_access_code, $config_access_token, $this->itemRepository, $this->credentialRepository, $flexformOptions);
 
         if($adapter->isValid === true){
-            $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString ,$ttContentUid, $return, $isVerbose);
+            $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString,
+                $ttContentUid, $ttContentPid, $return, $isVerbose);
         }else{
             $return->message = $adapter->validationMessage;
         }
@@ -257,7 +281,8 @@ class FeedSyncService extends AbstractBaseService
         $adapter = new Adapter\PinterestAdapter($config_appId, $config_appSecret, $config_accessCode, $this->itemRepository, $this->credentialRepository, $flexformOptions);
 
         if($adapter->isValid === true){
-            $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString ,$ttContentUid, $return, $isVerbose);
+            $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString,
+                $ttContentUid, $ttContentPid, $return, $isVerbose);
         }else{
             $return->message = $adapter->validationMessage;
         }
@@ -293,7 +318,8 @@ class FeedSyncService extends AbstractBaseService
         $adapter = new Adapter\LinkedInAdapter($config_clientId, $config_clientSecret, $config_clientCallback, $config_access_code, $this->itemRepository, $this->credentialRepository, $flexformOptions);
 
         if($adapter->isValid === true){
-            $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString ,$ttContentUid, $return, $isVerbose);
+            $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString,
+                $ttContentUid, $ttContentPid, $return, $isVerbose);
         }else{
             $return->message = $adapter->validationMessage;
         }
@@ -330,7 +356,8 @@ class FeedSyncService extends AbstractBaseService
         $adapter = new Adapter\TumblrAdapter($config_consumerKey, $config_consumerSecret, $config_Token, $config_TokenSecret, $this->itemRepository, $flexformOptions);
 
         if($adapter->isValid === true){
-            $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString ,$ttContentUid, $return, $isVerbose);
+            $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString,
+                $ttContentUid, $ttContentPid, $return, $isVerbose);
         }else{
             $return->message = $adapter->validationMessage;
         }
@@ -370,7 +397,8 @@ class FeedSyncService extends AbstractBaseService
         $adapter = new Adapter\TwitterAdapter($config_consumerKey, $config_consumerSecret, $config_accessToken, $config_accessTokenSecret, $this->itemRepository, $flexformOptions);
 
         if($adapter->isValid === true){
-            $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString ,$ttContentUid, $return, $isVerbose);
+            $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString,
+                $ttContentUid, $ttContentPid, $return, $isVerbose);
         }else{
             $return->message = $adapter->validationMessage;
         }
@@ -406,7 +434,8 @@ class FeedSyncService extends AbstractBaseService
         $adapter = new Adapter\YoutubeAdapter($config_apiKey, $this->itemRepository, $flexformOptions);
 
         if($adapter->isValid === true){
-            $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString ,$ttContentUid, $return, $isVerbose);
+            $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString,
+                $ttContentUid, $ttContentPid, $return, $isVerbose);
         }else{
             $return->message = $adapter->validationMessage;
         }
@@ -443,7 +472,8 @@ class FeedSyncService extends AbstractBaseService
         $adapter = new Adapter\VimeoAdapter($config_clientIdentifier, $config_clientSecret, $config_token, $this->itemRepository, $flexformOptions);
 
         if($adapter->isValid === true){
-            $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString ,$ttContentUid, $return, $isVerbose);
+            $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString,
+                $ttContentUid, $ttContentPid, $return, $isVerbose);
         }else{
             $return->message = $adapter->validationMessage;
         }
@@ -474,7 +504,8 @@ class FeedSyncService extends AbstractBaseService
         $adapter = new Adapter\TxNewsAdapter(new \GeorgRinger\News\Domain\Model\Dto\NewsDemand(), $this->itemRepository, $flexformOptions);
 
         if($adapter->isValid === true){
-            $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString ,$ttContentUid, $return, $isVerbose);
+            $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString,
+                $ttContentUid, $ttContentPid, $return, $isVerbose);
         }else{
             $return->message = $adapter->validationMessage;
         }
@@ -490,6 +521,7 @@ class FeedSyncService extends AbstractBaseService
      * @param $flexformOptions Object of Optionsettings  of specific adapter
      * @param $socialNetworkTypeString String name of social network, set from class constant
      * @param $ttContentUid int uid of flexform
+     * @param $ttContentPid
      * @param $success Object of Successmessage and status
      * @param bool $isVerbose bool for verbose mode in command line
      * @return object of success information
@@ -499,6 +531,7 @@ class FeedSyncService extends AbstractBaseService
         $flexformOptions,
         $socialNetworkTypeString,
         $ttContentUid,
+        $ttContentPid,
         $success,
         $isVerbose = false
     ){
@@ -513,14 +546,14 @@ class FeedSyncService extends AbstractBaseService
             );
 
             $success->isSuccessfull = true;
-            $success->message = $socialNetworkTypeString . " flexform {$ttContentUid}: update feed successfull";
+            $success->message = " flexform $ttContentUid on page $ttContentPid tab ".$socialNetworkTypeString . ": update feed successfull";
 
             if($isVerbose === true){
                 $success->message .= "\n". var_export($content, true);
             }
 
         } catch (\Exception $e) {
-            $success->message = "|".$socialNetworkTypeString . ": " . $e->getMessage()."|";
+            $success->message = "flexform $ttContentUid on page $ttContentPid tab ".$socialNetworkTypeString . ": " . $e->getMessage()."; ";
         }
         return $success;
     }

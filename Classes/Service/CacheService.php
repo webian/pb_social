@@ -118,27 +118,30 @@ class CacheService extends AbstractBaseService
      * getCacheContent - reads cache content by calculated cacheIdentifier
      *
      * @param $socialNetworkTypeString string
-     * @param $settings array
+     * @param $flexformAndTyposcriptSettings array
      * @param $ttContentUid int
+     * @param $ttContentPid int
      * @param $results array - getting results, appending results if success
      * @return array
      */
     public function getCacheContent(
         $socialNetworkTypeString,
-        $settings,
+        $flexformAndTyposcriptSettings,
         $ttContentUid,
+        $ttContentPid,
         &$results
     ){
 
         try {
 
-            $cacheIdentifierElementsArray = $this->optionService->getCacheIdentifierElementsArray($socialNetworkTypeString, $settings);
+            $cacheIdentifierElementsArray = $this->optionService->getCacheIdentifierElementsArray($socialNetworkTypeString, $flexformAndTyposcriptSettings);
 
             $cacheIdentifier = $this->calculateCacheIdentifier($cacheIdentifierElementsArray, $ttContentUid);
 
             //if there is not already a cache, try to get a api sync and get a filled cache, but it only gets this requested network type
             if($this->cache->has($cacheIdentifier) === false){
-                $this->feedSyncService->syncFeed($socialNetworkTypeString, $settings, $ttContentUid, $isVerbose = false);
+                $this->feedSyncService->syncFeed($socialNetworkTypeString, $flexformAndTyposcriptSettings,
+                    $ttContentUid, $ttContentPid, $isVerbose = false);
             }
 
             if($content = $this->cache->get($cacheIdentifier)){

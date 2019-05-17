@@ -85,7 +85,7 @@ class FacebookAdapter extends SocialMediaAdapter
                 'options' => $options
             )) === false)
         {
-            throw new \Exception( self::TYPE . $this->validationMessage );
+            throw new \Exception( self::TYPE . ' ' . $this->validationMessage );
         }
 
         $this->api = new Facebook(['app_id' => $this->apiId,'app_secret' => $this->apiSecret,'default_graph_version' => self::api_version]);
@@ -108,9 +108,9 @@ class FacebookAdapter extends SocialMediaAdapter
         $this->setOptions($parameter['options']);
 
         if (empty($this->apiId) || empty($this->apiSecret)) {
-            $this->validationMessage = 'credentials not set: ' . (empty($this->apiId)?'apiId':''). (empty($this->apiSecret)?'apiSecret':'');
+            $this->validationMessage = 'credentials not set: ' . (empty($this->apiId)?'apiId ':''). (empty($this->apiSecret)?'apiSecret ':'');
         } elseif (empty($this->options->settings['facebookSearchIds'])) {
-            $this->validationMessage = 'no search term defined';
+            $this->validationMessage = 'no search term defined ("Facebook search IDs" in flexform settings) ';
         } else {
             $this->isValid = true;
         }
@@ -200,6 +200,7 @@ class FacebookAdapter extends SocialMediaAdapter
                     if (property_exists($rawFeed, 'picture')) {
                         $feed->setImage(urldecode($rawFeed->picture));
                     }
+
                     // ouput link to facebook post instead of article
                     if ($options->settings['facebookLinktopost']) {
                         $feed->setLink('https://facebook.com/' . $rawFeed->id);

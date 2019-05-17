@@ -2,6 +2,7 @@
 namespace PlusB\PbSocial\Controller;
 
 use PlusB\PbSocial\Adapter;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /***************************************************************
  *
@@ -129,74 +130,82 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
     }
 
     /**
-     * @param $settings array of typoscript settings
+     * @param $flexformAndTyposcriptSettings array of flexform typoscript settings
      * @return array
      */
-    public function getFeedsFromCache($settings)
+    public function getFeedsFromCache($flexformAndTyposcriptSettings)
     {
         $results = array();
 
-        if ($settings['facebookEnabled'] === '1') {
+
+        if ($flexformAndTyposcriptSettings['facebookEnabled'] === '1') {
 
             $results = $this->cacheService->getCacheContent(
-                self::TYPE_FACEBOOK, $settings, $this->configurationManager->getContentObject()->data['uid'], $results
+                self::TYPE_FACEBOOK, $flexformAndTyposcriptSettings,
+                $this->configurationManager->getContentObject()->data['uid'], $this->configurationManager->getContentObject()->data['pid'], $results
             );
         }
 
-
-        if ($settings['imgurEnabled'] === '1') {
+        if ($flexformAndTyposcriptSettings['imgurEnabled'] === '1') {
             $results = $this->cacheService->getCacheContent(
-                self::TYPE_IMGUR, $settings, $this->configurationManager->getContentObject()->data['uid'], $results
+                self::TYPE_IMGUR, $flexformAndTyposcriptSettings,
+                $this->configurationManager->getContentObject()->data['uid'], $this->configurationManager->getContentObject()->data['pid'], $results
             );
         }
 
-
-
-        if ($settings['instagramEnabled'] === '1') {
+        if ($flexformAndTyposcriptSettings['instagramEnabled'] === '1') {
             $results = $this->cacheService->getCacheContent(
-                self::TYPE_INSTAGRAM, $settings, $this->configurationManager->getContentObject()->data['uid'], $results
+                self::TYPE_INSTAGRAM, $flexformAndTyposcriptSettings,
+                $this->configurationManager->getContentObject()->data['uid'], $this->configurationManager->getContentObject()->data['pid'], $results
             );
         }
 
-        if ($settings['linkedinEnabled'] === '1') {
+        if ($flexformAndTyposcriptSettings['linkedinEnabled'] === '1') {
             $results = $this->cacheService->getCacheContent(
-                self::TYPE_LINKEDIN, $settings, $this->configurationManager->getContentObject()->data['uid'], $results
+                self::TYPE_LINKEDIN, $flexformAndTyposcriptSettings,
+                $this->configurationManager->getContentObject()->data['uid'], $this->configurationManager->getContentObject()->data['pid'], $results
             );
         }
 
-        if ($settings['pinterestEnabled'] === '1') {
+        if ($flexformAndTyposcriptSettings['pinterestEnabled'] === '1') {
             $results = $this->cacheService->getCacheContent(
-                self::TYPE_PINTEREST, $settings, $this->configurationManager->getContentObject()->data['uid'], $results
+                self::TYPE_PINTEREST, $flexformAndTyposcriptSettings,
+                $this->configurationManager->getContentObject()->data['uid'], $this->configurationManager->getContentObject()->data['pid'], $results
             );
         }
 
-        if ($settings['tumblrEnabled'] === '1') {
+        if ($flexformAndTyposcriptSettings['tumblrEnabled'] === '1') {
             $results = $this->cacheService->getCacheContent(
-                self::TYPE_TUMBLR, $settings, $this->configurationManager->getContentObject()->data['uid'], $results
+                self::TYPE_TUMBLR, $flexformAndTyposcriptSettings,
+                $this->configurationManager->getContentObject()->data['uid'], $this->configurationManager->getContentObject()->data['pid'], $results
             );
         }
 
-        if ($settings['twitterEnabled'] === '1') {
+        if ($flexformAndTyposcriptSettings['twitterEnabled'] === '1') {
             $results = $this->cacheService->getCacheContent(
-                self::TYPE_TWITTER, $settings, $this->configurationManager->getContentObject()->data['uid'], $results
+                self::TYPE_TWITTER, $flexformAndTyposcriptSettings,
+                $this->configurationManager->getContentObject()->data['uid'], $this->configurationManager->getContentObject()->data['pid'], $results
             );
         }
 
-        if ($settings['youtubeEnabled'] === '1') {
+        if ($flexformAndTyposcriptSettings['youtubeEnabled'] === '1') {
             $results = $this->cacheService->getCacheContent(
-                self::TYPE_YOUTUBE, $settings, $this->configurationManager->getContentObject()->data['uid'], $results
+                self::TYPE_YOUTUBE, $flexformAndTyposcriptSettings,
+                $this->configurationManager->getContentObject()->data['uid'], $this->configurationManager->getContentObject()->data['pid'], $results
             );
         }
 
-        if ($settings['vimeoEnabled'] === '1') {
+        if ($flexformAndTyposcriptSettings['vimeoEnabled'] === '1') {
             $results = $this->cacheService->getCacheContent(
-                self::TYPE_VIMEO, $settings, $this->configurationManager->getContentObject()->data['uid'], $results
+                self::TYPE_VIMEO, $flexformAndTyposcriptSettings,
+                $this->configurationManager->getContentObject()->data['uid'], $this->configurationManager->getContentObject()->data['pid'], $results
             );
         }
 
-        if ($settings['newsEnabled'] === '1') {
+        if ($flexformAndTyposcriptSettings['newsEnabled'] === '1') {
             $results = $this->cacheService->getCacheContent(
-                self::TYPE_TX_NEWS, $settings, $this->configurationManager->getContentObject()->data['uid'], $results
+                self::TYPE_TX_NEWS, $flexformAndTyposcriptSettings,
+                $this->configurationManager->getContentObject()->data['uid'], $this->configurationManager->getContentObject()->data['pid'], $results
             );
         }
 

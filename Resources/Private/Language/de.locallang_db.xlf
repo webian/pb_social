@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-    <file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2014-11-28T16:13:07Z" product-name="pb_social">
+    <file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2019-05-17T13:19:00Z" product-name="pb_social">
         <header/>
         <body>
             <trans-unit id="flexform.tab.general.caption">
@@ -57,8 +57,8 @@
                 <target state="translated">Facebook edge (feed zeigt alles an inkl. getaggte Beiträge und Links, posts zeigt nur die eigenen Beiträge)</target>
             </trans-unit>
             <trans-unit id="flexform.tab.facebook.linktopost">
-                <source>Link to the facebook post instead of article</source>
-                <target state="translated">Verlinkung auf den facebook post, anstatt auf den Artikel</target>
+                <source>Link to the facebook post (post id) instead of article (humand readable link)</source>
+                <target state="translated">Verlinkung auf den facebook post (post id), anstatt auf den Artikel (humand readable link)</target>
             </trans-unit>
             <trans-unit id="flexform.tab.facebook.fullpicture">
                 <source>Load full sized picture</source>
