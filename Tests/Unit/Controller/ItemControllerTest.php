@@ -4,7 +4,7 @@ namespace PlusB\PbSocial\Tests\Unit\Controller;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2014 Mikolaj Jedrzejewski <mj@plusb.de>, plusB
+ *  (c) 2014 Mikolaj Jedrzejewski <mj@plusb.de>, plus B
  *  			
  *  All rights reserved
  *

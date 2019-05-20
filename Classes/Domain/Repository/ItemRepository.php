@@ -7,8 +7,8 @@ require_once \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_soc
  *
  *  Copyright notice
  *
- *  (c) 2014 Mikolaj Jedrzejewski <mj@plusb.de>, plusB
- *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
+ *  (c) 2014 Mikolaj Jedrzejewski <mj@plusb.de>, plus B
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *

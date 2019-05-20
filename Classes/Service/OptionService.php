@@ -9,7 +9,7 @@ use PlusB\PbSocial\Service\Base\AbstractBaseService;
  *
  *  Copyright notice
  *
- *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -47,8 +47,9 @@ class OptionService extends AbstractBaseService
 
     /**
      * Takes settings and returns options
+     * 2014 Mikolaj Jedrzejewski <mj@plusb.de>, plus B
      *
-     * @param $settings
+     * @param array $settings
      * @return object
      */
     public function convertFlexformSettings($settings)
@@ -59,9 +60,8 @@ class OptionService extends AbstractBaseService
         $options->twitterShowOnlyImages = empty($settings['twitterShowOnlyImages']) ? false : ($settings['twitterShowOnlyImages'] == '1' ? true : false);
         $options->twitterHTTPS = empty($settings['twitterHTTPS']) ? false : ($settings['twitterHTTPS'] == '1' ? true : false);
         $options->tumblrShowOnlyImages = empty($settings['tumblrShowOnlyImages']) ? false : ($settings['tumblrShowOnlyImages'] == '1' ? true : false);
-//        $options->facebookShowOnlyImages = empty($settings['facebookShowOnlyImages']) ? false : ($settings['facebookShowOnlyImages'] == '1' ? true : false);
-        $options->feedRequestLimit = intval(empty($settings['feedRequestLimit']) ? '10' : $settings['feedRequestLimit']);
 
+        $options->feedRequestLimit = intval(empty($settings['feedRequestLimit']) ? '10' : $settings['feedRequestLimit']);
         $refreshTimeInMin = intval(empty($settings['refreshTimeInMin']) ? '10' : $settings['refreshTimeInMin']);
         if ($refreshTimeInMin == 0) {
             $refreshTimeInMin = 10;
@@ -73,6 +73,7 @@ class OptionService extends AbstractBaseService
         $options->textTrimLength = intval($settings['textTrimLength']) > 0 ? intval($settings['textTrimLength']) : 130;
         $options->feedRequestLimit = intval(empty($settings['feedRequestLimit']) ? 10 : $settings['feedRequestLimit']);
 
+        $options->devMod = $this->extConf['socialfeed.']['devmod']; //enable devmode: database cache will refresh every pageload
         return $options;
     }
 

@@ -11,7 +11,7 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  *
  *  Copyright notice
  *
- *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -78,10 +78,10 @@ class FeedSyncService extends AbstractBaseService
 
 
     /**
-     * @param $socialNetworkTypeString
-     * @param $flexformSettings
-     * @param $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
-     * @param $ttContenPid int page uid in which plugin is located, for logging purpose, only
+     * @param string $socialNetworkTypeString
+     * @param array $flexformSettings Settings from flexform
+     * @param integer $ttContentUid uid of plugin, for logging purpose - and for registering in cache identifier
+     * @param integer $ttContenPid page uid in which plugin is located, for logging purpose, only
      * @param bool $isVerbose
      * @return object of message->isSuccessfull and message->message for loggin in scheduler
      */
@@ -92,12 +92,16 @@ class FeedSyncService extends AbstractBaseService
         $ttContenPid,
         $isVerbose = false
     ){
+
         $return = (object)array();
+        $return->isSuccessfull = false;
+        $return->message = "";
+
+        $flexformOptions = $this->optionService->convertFlexformSettings($flexformSettings);
 
         switch ($socialNetworkTypeString){
             case self::TYPE_FACEBOOK:
-                $return = $this->syncFacebookFeed($flexformSettings, $socialNetworkTypeString, $ttContentUid, $ttContenPid,
-                    $isVerbose);
+                $return = $this->syncFacebookFeed($socialNetworkTypeString, $flexformOptions, $ttContentUid, $ttContenPid, $return, $isVerbose);
                 break;
             case self::TYPE_IMGUR:
                 $return = $this->syncImgurFeed($flexformSettings, $socialNetworkTypeString, $ttContentUid, $isVerbose);
@@ -133,26 +137,22 @@ class FeedSyncService extends AbstractBaseService
 
 
     /**
-     * @param $flexformSettings
-     * @param $socialNetworkTypeString
-     * @param $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
-     * @param $ttContentPid int page uid in which plugin is located, for logging purpose, only
+     * @param string $socialNetworkTypeString
+     * @param object $flexformOptions converted flexform options by convertFlexformSettings()
+     * @param integer $ttContentUid uid of plugin, for logging purpose - and for registering in cache identifier
+     * @param integer $ttContentPid page uid in which plugin is located, for logging purpose, only
+     * @param object $return
      * @param bool $isVerbose
      * @return object of message->isSuccessfull and message->message
      */
     public function syncFacebookFeed(
-        $flexformSettings,
         $socialNetworkTypeString,
+        $flexformOptions,
         $ttContentUid,
         $ttContentPid,
+        $return,
         $isVerbose = false
     ){
-        $return = (object)array();
-        $return->isSuccessfull = false;
-        $return->message = "";
-
-        $flexformOptions = $this->optionService->convertFlexformSettings($flexformSettings);
-        $flexformOptions->devMod = $this->extConf['socialfeed.']['devmod'];
 
         //facebook credentials - from extension manager gobally, or from plugin overridden
         $config_apiId =
@@ -173,14 +173,20 @@ class FeedSyncService extends AbstractBaseService
          * var_dump($config_apiId);
          * var_dump($config_apiSecret);
         */
-
         try {
             //adapter
             $adapter = new Adapter\FacebookAdapter($config_apiId, $config_apiSecret, $this->itemRepository, $flexformOptions);
             // if you get here, all is fine and you can use object
 
-            $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString,
-                $ttContentUid, $ttContentPid, $return, $isVerbose);
+            $return = $this->doRequestAndSetContentToCache(
+                $adapter,
+                $flexformOptions,
+                $socialNetworkTypeString,
+                $ttContentUid,
+                $ttContentPid,
+                $return,
+                $isVerbose
+            );
         }
         catch( \Exception $e ) {
             // if you get here, something went terribly wrong.
@@ -204,7 +210,6 @@ class FeedSyncService extends AbstractBaseService
         $return->message = "";
 
         $flexformOptions = $this->optionService->convertFlexformSettings($flexformSettings);
-        $flexformOptions->devMod = $this->extConf['socialfeed.']['devmod'];
 
         # check api key #
         $config_apiId = $this->extConf['socialfeed.']['imgur.']['client.']['id'];
@@ -528,12 +533,12 @@ class FeedSyncService extends AbstractBaseService
     /**
      * setResultToCache gets Result from Api setting it to caching framework
      *
-     * @param $adapterObj Object reference of adapter
-     * @param $flexformOptions Object of Optionsettings  of specific adapter
-     * @param $socialNetworkTypeString String name of social network, set from class constant
-     * @param $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
-     * @param $ttContentPid int page uid in which plugin is located, for logging purpose, only
-     * @param $success Object of Successmessage and status
+     * @param object $adapterObj Object reference of adapter
+     * @param mixed $flexformOptions Object of Optionsettings  of specific adapter
+     * @param string $socialNetworkTypeString String name of social network, set from class constant
+     * @param integer $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
+     * @param integer $ttContentPid int page uid in which plugin is located, for logging purpose, only
+     * @param object $success Object of success message and status
      * @param bool $isVerbose bool for verbose mode in command line
      * @return object of success information
      */

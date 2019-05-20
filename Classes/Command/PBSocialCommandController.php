@@ -11,8 +11,8 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  *
  *  Copyright notice
  *
- *  (c) 2014 Mikolaj Jedrzejewski <mj@plusb.de>, plusB
- *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
+ *  (c) 2014 Mikolaj Jedrzejewski <mj@plusb.de>, plus B
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -216,6 +216,10 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
 
     /**
      * initializing
+     *
+     * @param string $verbose
+     * @param string $silent
+     * @param string $callnetwork
      */
     private function initializeUpdateFeedDataCommand($verbose, $silent, $callnetwork) {
 

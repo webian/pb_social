@@ -13,7 +13,7 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
  *
  *  Copyright notice
  *
- *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *

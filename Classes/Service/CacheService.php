@@ -9,7 +9,7 @@ use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
  *
  *  Copyright notice
  *
- *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -140,8 +140,13 @@ class CacheService extends AbstractBaseService
 
             //if there is not already a cache, try to get a api sync and get a filled cache, but it only gets this requested network type
             if($this->cache->has($cacheIdentifier) === false){
-                $this->feedSyncService->syncFeed($socialNetworkTypeString, $flexformAndTyposcriptSettings,
-                    $ttContentUid, $ttContentPid, $isVerbose = false);
+                $this->feedSyncService->syncFeed(
+                    $socialNetworkTypeString,
+                    $flexformAndTyposcriptSettings,
+                    $ttContentUid,
+                    $ttContentPid,
+                    $isVerbose = false
+                );
             }
 
             if($content = $this->cache->get($cacheIdentifier)){
@@ -163,9 +168,9 @@ class CacheService extends AbstractBaseService
     /**
      * Sets given content to cache by calculated cacheIdentifier
      *
-     * @param $socialNetworkTypeString string
-     * @param $settings array
-     * @param $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
+     * @param string $socialNetworkTypeString
+     * @param array $settings
+     * @param integer $ttContentUid uid of plugin, for logging purpose - and for registering in cache identifier
      * @param $content
      */
     public function setCacheContent(

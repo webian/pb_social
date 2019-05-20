@@ -1,15 +1,12 @@
 <?php
 namespace PlusB\PbSocial\Controller;
 
-use PlusB\PbSocial\Adapter;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
-
 /***************************************************************
  *
  *  Copyright notice
  *
- *  (c) 2014 Mikolaj Jedrzejewski <mj@plusb.de>, plusB
- *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
+ * (c) 2014 Mikolaj Jedrzejewski <mj@plusb.de>, plus B
+ * (c) 2018 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
