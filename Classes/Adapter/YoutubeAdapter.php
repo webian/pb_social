@@ -156,7 +156,7 @@ class YoutubeAdapter extends SocialMediaAdapter
                         $this->itemRepository->updateFeed($feed);
                         $result[] = $feed;
                     } catch (\Exception $e) {
-                        $this->logError("feeds can't be updated - " . $e->getMessage());
+                        $this->logAdapterError("feeds can't be updated - " . $e->getMessage(), 1558435668);
                     }
                 }
                 continue;
@@ -170,7 +170,7 @@ class YoutubeAdapter extends SocialMediaAdapter
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
             } catch (\Exception $e) {
-                $this->logError('initial load for feed failed - ' . $e->getMessage());
+                $this->logAdapterError('initial load for feed failed - ' . $e->getMessage(), 1558435673);
             }
         }
 

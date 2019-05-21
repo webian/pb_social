@@ -20,7 +20,7 @@
                 <source>Facebook</source>
             </trans-unit>
             <trans-unit id="facebook.intro">
-                <source>Facebook: https://developers.facebook.com/apps</source>
+                <source>Facebook</source>
             </trans-unit>
             <trans-unit id="facebook.api.id">
                 <source>app id</source>
@@ -29,11 +29,33 @@
                 <source>app secret</source>
             </trans-unit>
 
+            <trans-unit id="instagram">
+                <source>Instagram</source>
+            </trans-unit>
+            <trans-unit id="instagram.intro">
+                <source>Instagram</source>
+            </trans-unit>
+            <trans-unit id="instagram.client.id">
+                <source>client id</source>
+            </trans-unit>
+            <trans-unit id="instagram.client.secret">
+                <source>client secret</source>
+            </trans-unit>
+            <trans-unit id="instagram.client.callback">
+                <source>redirect uri</source>
+            </trans-unit>
+            <trans-unit id="instagram.client.access_code">
+                <source>Instagram code: please see Readme.md</source>
+            </trans-unit>
+            <trans-unit id="instagram.client.access_token">
+                <source>Instagram access token: please see Readme.md</source>
+            </trans-unit>
+
             <trans-unit id="twitter">
                 <source>Twitter</source>
             </trans-unit>
             <trans-unit id="twitter.intro">
-                <source>Twitter: https://dev.twitter.com/apps/</source>
+                <source>Twitter</source>
             </trans-unit>
             <trans-unit id="twitter.consumer.key">
                 <source>consumer key</source>
@@ -52,7 +74,7 @@
                 <source>Youtube</source>
             </trans-unit>
             <trans-unit id="youtube.intro">
-                <source>Youtube: https://code.google.com/apis/console/</source>
+                <source>Youtube</source>
             </trans-unit>
             <trans-unit id="youtube.apikey">
                 <source>access token</source>
@@ -62,7 +84,7 @@
                 <source>Vimeo</source>
             </trans-unit>
             <trans-unit id="vimeo.intro">
-                <source>Vimeo: https://developer.vimeo.com/api</source>
+                <source>Vimeo</source>
             </trans-unit>
             <trans-unit id="vimeo.client.identifier">
                 <source>client identifier</source>
@@ -78,7 +100,7 @@
                 <source>Pinterest</source>
             </trans-unit>
             <trans-unit id="pinterest.intro">
-                <source>Pinterest: https://developers.pinterest.com/apps/</source>
+                <source>Pinterest</source>
             </trans-unit>
             <trans-unit id="pinterest.app.id">
                 <source>app id</source>
@@ -87,36 +109,14 @@
                 <source>app secret</source>
             </trans-unit>
             <trans-unit id="pinterest.app.code">
-                <source><![CDATA[auth code (all characters after "code"): https://api.pinterest.com/oauth/?response_type=code&redirect_uri=YOUR_REDIRECT_URI&client_id=YOUR_APP_ID&scope=read_public]]></source>
-            </trans-unit>
-
-            <trans-unit id="instagram">
-                <source>Instagram</source>
-            </trans-unit>
-            <trans-unit id="instagram.intro">
-                <source>Instagram: http://instagram.com/developer/clients/manage/</source>
-            </trans-unit>
-            <trans-unit id="instagram.client.id">
-                <source>client id</source>
-            </trans-unit>
-            <trans-unit id="instagram.client.secret">
-                <source>client secret</source>
-            </trans-unit>
-            <trans-unit id="instagram.client.callback">
-                <source>redirect uri</source>
-            </trans-unit>
-            <trans-unit id="instagram.client.access_code">
-                <source><![CDATA[Instagram code: Retrieve code with following URL (all characters after "code"): https://api.instagram.com/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=public_content]]></source>
-            </trans-unit>
-            <trans-unit id="instagram.client.access_token">
-                <source><![CDATA[Instagram access token: Retrieve access token with following URL (all characters after "token"): https://api.instagram.com/oauth/authorize/?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=token Hint: You need to check "Disable implicit OAuth" in instagram manage client web console.]]></source>
+                <source>auth code (all characters after "code")</source>
             </trans-unit>
 
             <trans-unit id="imgur">
                 <source>Imgur</source>
             </trans-unit>
             <trans-unit id="imgur.intro">
-                <source>Imgur: https://api.imgur.com/</source>
+                <source>Imgur</source>
             </trans-unit>
             <trans-unit id="imgur.client.id">
                 <source>client id</source>
@@ -129,7 +129,7 @@
                 <source>Tumblr</source>
             </trans-unit>
             <trans-unit id="tumblr.intro">
-                <source>Tumblr: http://www.tumblr.com/oauth/apps</source>
+                <source>Tumblr</source>
             </trans-unit>
             <trans-unit id="tumblr.consumer.key">
                 <source>consumer key</source>
@@ -148,7 +148,7 @@
                 <source>LinkedIn</source>
             </trans-unit>
             <trans-unit id="linkedin.intro">
-                <source>LinkedIn: https://www.linkedin.com/developer/apps</source>
+                <source>LinkedIn</source>
             </trans-unit>
             <trans-unit id="linkedin.client.key">
                 <source>client key</source>
@@ -160,12 +160,7 @@
                 <source>callback url</source>
             </trans-unit>
             <trans-unit id="linkedin.access_token">
-                <source><![CDATA[LinkedIn: access token - Retrieve code and token with following URLs: Access code (all characters after "code"): https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&scope=rw_company_admin,r_basicprofile]]>
-                    You'll need to activate "rw_company_admin" and "r_basicprofile" scopes first (LinkedIn developer backend).
-                    Please have in mind that the access code is only valid for approxametely 20 seconds. Immediately after generating the code you need to retrieve an access token via:
-                    <![CDATA[ https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&code=GENERATED_CODE&redirect_uri=YOUR_REDIRECT_URI&client_id=YOUR_CLIENT_ID&client_secret=YOUR_CLIENT_SECRET ]]>
-                    Paste your access_token here.
-                </source>
+                <source>access token: please see Readme.md</source>
             </trans-unit>
         </body>
     </file>

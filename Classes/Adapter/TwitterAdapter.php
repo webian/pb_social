@@ -171,7 +171,7 @@ class TwitterAdapter extends SocialMediaAdapter
                             $feed->setResult($tweets);
                             $this->itemRepository->updateFeed($feed);
                         } catch (\Exception $e) {
-                            $this->logError("feeds can't be updated - " . $e->getMessage());
+                            $this->logAdapterError("feeds can't be updated - " . $e->getMessage(), 1558435620);
                         }
                     }
                     $result[] = $feed;
@@ -188,7 +188,7 @@ class TwitterAdapter extends SocialMediaAdapter
                     $this->itemRepository->saveFeed($feed);
                     $result[] = $feed;
                 } catch (\Exception $e) {
-                    $this->logError('initial load for feed failed - ' . $e->getMessage());
+                    $this->logAdapterError('initial load for feed failed - ' . $e->getMessage(), 1558435624);
                 }
             }
         }
@@ -214,7 +214,7 @@ class TwitterAdapter extends SocialMediaAdapter
                             $feed->setResult($tweets);
                             $this->itemRepository->updateFeed($feed);
                         } catch (\Exception $e) {
-                            $this->logError("feeds can't be updated - " . $e->getMessage());
+                            $this->logAdapterError("feeds can't be updated - " . $e->getMessage(), 1558435632);
                         }
                     }
                     $result[] = $feed;
@@ -231,7 +231,7 @@ class TwitterAdapter extends SocialMediaAdapter
                     $this->itemRepository->saveFeed($feed);
                     $result[] = $feed;
                 } catch (\Exception $e) {
-                    $this->logError('initial load for feed failed - ' . $e->getMessage());
+                    $this->logAdapterError('initial load for feed failed - ' . $e->getMessage(), 1558435639);
                 }
             }
         }
@@ -253,7 +253,7 @@ class TwitterAdapter extends SocialMediaAdapter
                 }
 
                 if (empty($twitterResult)) {
-                    $this->logError("status empty");
+                    $this->logAdapterError("status empty", 1558435615);
                     break;
                 }
                 $rawFeeds[self::TYPE . '_' . $twt_feed->getCacheIdentifier() . '_raw'] = $twt_feed->getResult();

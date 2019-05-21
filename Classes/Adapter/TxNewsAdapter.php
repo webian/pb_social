@@ -143,7 +143,7 @@ class TxNewsAdapter extends SocialMediaAdapter
                         $this->itemRepository->updateFeed($feed);
                         $result[] = $feed;
                     } catch (\Exception $e) {
-                        $this->logError("feeds can't be updated " . $e->getMessage());
+                        $this->logAdapterError("feeds can't be updated " . $e->getMessage(), 1558435645);
                     }
                 }
                 continue;
@@ -159,7 +159,7 @@ class TxNewsAdapter extends SocialMediaAdapter
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
             } catch (\Exception $e) {
-                $this->logError('initial load for ' . self::TYPE . ' feeds failed. ' . $e->getMessage());
+                $this->logAdapterError('initial load for ' . self::TYPE . ' feeds failed. ' . $e->getMessage(), 1558435651);
             }
         }
 

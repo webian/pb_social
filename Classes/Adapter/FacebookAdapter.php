@@ -8,6 +8,7 @@ require $extensionPath . 'facebook/src/Facebook/autoload.php';
 use Facebook\Facebook;
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 
 /***************************************************************
@@ -15,7 +16,7 @@ use PlusB\PbSocial\Domain\Model\Item;
  *  Copyright notice
  *
  *  (c) 2016 Ramon Mohi <rm@plusb.de>, plus B
- *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
  *
  *  All rights reserved
  *
@@ -73,9 +74,13 @@ class FacebookAdapter extends SocialMediaAdapter
         $this->options = $options;
     }
 
-    public function __construct($apiId, $apiSecret, $itemRepository, $options)
+    public function __construct($apiId, $apiSecret, $itemRepository, $options,
+        $ttContentUid,
+        $ttContentPid,
+        $cacheIdentifier)
     {
-        parent::__construct($itemRepository);
+        parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid,
+            $ttContentPid);
 
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
@@ -92,7 +97,6 @@ class FacebookAdapter extends SocialMediaAdapter
 
         $this->access_token =  $this->api->getApp()->getAccessToken();
         $this->api->setDefaultAccessToken($this->access_token);
-
     }
 
     /**
@@ -126,7 +130,7 @@ class FacebookAdapter extends SocialMediaAdapter
 
         $facebookSearchIds = $options->settings['facebookSearchIds'];
         if (empty($facebookSearchIds)) {
-            $this->logWarning('- no search term defined');
+            $this->logAdapterWarning('- no search term defined', 1558435713);
             return null;
         }
 
@@ -134,10 +138,7 @@ class FacebookAdapter extends SocialMediaAdapter
             $searchId = trim($searchId);
             $posts = null;
 
-            /*
-             * todo: invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
-             */
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchId);
+            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->cacheIdentifier);
 
             try {
                 $posts = $this->getPosts($searchId, $options->feedRequestLimit, $options->settings['facebookEdge']);
@@ -170,7 +171,7 @@ class FacebookAdapter extends SocialMediaAdapter
             //insert new feed
             if ($posts !== null) {
                 $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($searchId);
+                $feed->setCacheIdentifier($this->cacheIdentifier);
                 $feed->setResult($posts);
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
@@ -235,9 +236,6 @@ class FacebookAdapter extends SocialMediaAdapter
 
         $endpoint = '/' . $searchId . '/' . $request;
 
-        //limit
-        $limit = $limit;
-
         //params
             //set default parameter list in case s.b messes up with TypoScript
             $faceBookRequestParameter =
@@ -245,20 +243,6 @@ class FacebookAdapter extends SocialMediaAdapter
                
                 created_time,
                 full_picture';
-
-            /*, Private developed API Keys are NO LONGER ALLOWED TO FETCH COMMENTS AND REACTIONS
-
-                comments.summary(total_count).limit(0).as(comments),
-
-                reactions.summary(total_count).limit(0).as(reactions),
-                reactions.type(NONE).summary(total_count).limit(0).as(none),
-                reactions.type(LIKE).summary(total_count).limit(0).as(like),
-                reactions.type(LOVE).summary(total_count).limit(0).as(love),
-                reactions.type(WOW).summary(total_count).limit(0).as(wow),
-                reactions.type(HAHA).summary(total_count).limit(0).as(haha),
-                reactions.type(SAD).summary(total_count).limit(0).as(sad),
-                reactions.type(ANGRY).summary(total_count).limit(0).as(angry),
-                reactions.type(THANKFUL).summary(total_count).limit(0).as(thankful)';*/
 
             //overwritten by Typoscript
             if(isset($this->options->settings['facebook']['requestParameterList']) && is_string($this->options->settings['facebook']['requestParameterList'])){

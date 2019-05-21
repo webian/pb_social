@@ -183,7 +183,7 @@ class LinkedInAdapter extends SocialMediaAdapter
                             $feed->setResult(json_encode($companyUpdates));
                             $this->itemRepository->updateFeed($feed);
                         } catch (\Exception $e) {
-                            $this->logError("feeds cannot be updated  - " . $e->getMessage());
+                            $this->logAdapterError("feeds cannot be updated  - " . $e->getMessage(), 1558435552);
                             continue;
                         }
                     }
@@ -205,7 +205,7 @@ class LinkedInAdapter extends SocialMediaAdapter
                     $this->itemRepository->saveFeed($feed);
                     $result[] = $feed;
                 } catch (\Exception $e) {
-                    $this->logError("get_updates failed - " . $e->getMessage());
+                    $this->logAdapterError("get_updates failed - " . $e->getMessage(), 1558435546);
                     throw $e;
                 }
             }
@@ -249,12 +249,12 @@ class LinkedInAdapter extends SocialMediaAdapter
     {
         if (empty($token))
         {
-            $this->logError('Access token empty.');
+            $this->logAdapterError('Access token empty.', 1558435558);
             return null;
         }
         if (empty($apiKey))
         {
-            $this->logError('Client ID empty.');
+            $this->logAdapterError('Client ID empty.', 1558435560);
             return null;
         }
         # generate AccessToken class
@@ -265,7 +265,7 @@ class LinkedInAdapter extends SocialMediaAdapter
         }
         catch (\Exception $e)
         {
-            $this->logError('failed to setup AccessToken - ' . $e->getMessage());
+            $this->logAdapterError('failed to setup AccessToken - ' . $e->getMessage(), 1558435565);
             return null;
         }
         # get access token from database #

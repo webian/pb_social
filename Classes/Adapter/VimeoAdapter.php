@@ -154,7 +154,7 @@ class VimeoAdapter extends SocialMediaAdapter
                         $this->itemRepository->updateFeed($feed);
                         $result[] = $feed;
                     } catch (\Exception $e) {
-                        $this->logError("feeds can't be updated - " . $e->getMessage());
+                        $this->logAdapterError("feeds can't be updated - " . $e->getMessage(), 1558435657);
                     }
                 }
                 continue;
@@ -168,7 +168,7 @@ class VimeoAdapter extends SocialMediaAdapter
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
             } catch (\Exception $e) {
-                $this->logError('initial load for feed failed - ' . $e->getMessage());
+                $this->logAdapterError('initial load for feed failed - ' . $e->getMessage(), 1558435662);
             }
         }
 

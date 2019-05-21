@@ -2,8 +2,8 @@
 
 namespace PlusB\PbSocial\Service\Base;
 
+use PlusB\PbSocial\Service\LogTrait;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
@@ -36,26 +36,27 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 abstract class AbstractBaseService implements SingletonInterface
 {
+    use LogTrait;
 
     const EXTKEY = 'pb_social';
 
-    /**
-     * @var \TYPO3\CMS\Core\Log\Logger
-     */
-    protected $logger;
-
+    const TYPE_FACEBOOK = 'facebook';
+    const TYPE_IMGUR = 'imgur';
+    const TYPE_INSTAGRAM = 'instagram';
+    const TYPE_LINKEDIN = 'linkedin';
+    const TYPE_PINTEREST = 'pinterest';
+    const TYPE_TWITTER = 'twitter';
+    const TYPE_TUMBLR = 'tumblr';
+    const TYPE_YOUTUBE = 'youtube';
+    const TYPE_TX_NEWS = 'tx_news';
+    const TYPE_VIMEO = 'vimeo';
+    const TYPE_DUMMY = 'dummy';
 
     /**
      * @var \TYPO3\CMS\Extbase\Mvc\Controller\CommandController
      * @inject
      */
     protected $commandController;
-
-    /**
-     * @var \TYPO3\CMS\Core\Log\LogManagerInterface
-     * @inject
-     */
-    protected $logManager;
 
     /**
      * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
@@ -89,7 +90,6 @@ abstract class AbstractBaseService implements SingletonInterface
     public function initializeObject()
     {
         $this->initializeConfiguration();
-        $this->initializeLogger();
     }
 
     protected function initializeConfiguration()
@@ -105,27 +105,37 @@ abstract class AbstractBaseService implements SingletonInterface
     }
 
     /**
-     * Initialize the logger
+     * Takes settings and returns options
+     * 2014 Mikolaj Jedrzejewski <mj@plusb.de>, plus B
+     *
+     * @param array $settings
+     * @return object
      */
-    protected function initializeLogger()
+    public function convertFlexformSettings($settings)
     {
-        $r = new \ReflectionClass($this);
-        $this->logger = $this->logManager->getLogger($r->getName());
+        $options = (object)array();
+
+        $options->twitterHideRetweets = empty($settings['twitterHideRetweets']) ? false : ($settings['twitterHideRetweets'] == '1' ? true : false);
+        $options->twitterShowOnlyImages = empty($settings['twitterShowOnlyImages']) ? false : ($settings['twitterShowOnlyImages'] == '1' ? true : false);
+        $options->twitterHTTPS = empty($settings['twitterHTTPS']) ? false : ($settings['twitterHTTPS'] == '1' ? true : false);
+        $options->tumblrShowOnlyImages = empty($settings['tumblrShowOnlyImages']) ? false : ($settings['tumblrShowOnlyImages'] == '1' ? true : false);
+
+        $options->feedRequestLimit = intval(empty($settings['feedRequestLimit']) ? '10' : $settings['feedRequestLimit']);
+        $refreshTimeInMin = intval(empty($settings['refreshTimeInMin']) ? '10' : $settings['refreshTimeInMin']);
+        if ($refreshTimeInMin == 0) {
+            $refreshTimeInMin = 10;
+        } //reset to 10 if intval() cant convert
+        $options->refreshTimeInMin = $refreshTimeInMin;
+
+        $options->settings = $settings;
+        $options->onlyWithPicture = $settings['onlyWithPicture'] === '1' ? true : false;
+        $options->textTrimLength = intval($settings['textTrimLength']) > 0 ? intval($settings['textTrimLength']) : 130;
+        $options->feedRequestLimit = intval(empty($settings['feedRequestLimit']) ? 10 : $settings['feedRequestLimit']);
+
+        $options->devMod = $this->extConf['socialfeed.']['devmod']; //enable devmode: database cache will refresh every pageload
+        return $options;
     }
 
-    /**
-     * Logs a message
-     *
-     * @param $message
-     * @param array $data
-     * @param int $level
-     *
-     * @return mixed
-     */
-    protected function log($message, array $data, $level = LogLevel::INFO)
-    {
-        return $this->logger->log($level, $message, $data);
-    }
     
     /**
      * @param $pid
@@ -145,7 +155,6 @@ abstract class AbstractBaseService implements SingletonInterface
         }
         return $url;
     }
-
 
     
 }

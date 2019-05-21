@@ -98,14 +98,99 @@ class CacheService extends AbstractBaseService
     }
 
     /**
+     * Gets name of social network, returns cacheIdentifierElementsArray by its options
+     *
+     * @param $socialNetworkTypeString
+     * @return array
+     */
+    private function getCacheIdentifierElementsArray($socialNetworkTypeString, $settings){
+        $array = array();
+
+        switch ($socialNetworkTypeString){
+            case self::TYPE_FACEBOOK:
+                $array =  array(
+                    "facebook_" . $this->convertFlexformSettings($settings)->settings['facebookSearchIds'],
+                    "facebook_" . $this->convertFlexformSettings($settings)->settings['facebookEdge'],
+                    "facebook_" . $this->convertFlexformSettings($settings)->settings['facebookPluginKeyfieldEnabled'],
+                );
+                break;
+            case self::TYPE_IMGUR:
+                $array =  array(
+                    "imgur_" . $this->convertFlexformSettings($settings)->settings['imgurTags'],
+                    "imgur_" . $this->convertFlexformSettings($settings)->settings['imgurUsers']
+                );
+                break;
+            case self::TYPE_INSTAGRAM:
+                $array =  array(
+                    "instagram_" . $this->convertFlexformSettings($settings)->settings['instagramSearchIds'],
+                    "instagram_" . $this->convertFlexformSettings($settings)->settings['instagramHashTag'],
+                    "instagram_" . $this->convertFlexformSettings($settings)->settings['instagramPostFilter']
+                );
+                break;
+            case self::TYPE_LINKEDIN:
+                $array =  array(
+                    "linkedin_" . $this->convertFlexformSettings($settings)->settings['linkedinCompanyIds'],
+                    "linkedin_" . $this->convertFlexformSettings($settings)->settings['linkedinFilterChoice']
+                );
+                break;
+            case self::TYPE_PINTEREST:
+                $array =  array(
+                    "pinterest_" . $this->convertFlexformSettings($settings)->settings['username'],
+                    "pinterest_" . $this->convertFlexformSettings($settings)->settings['boardname']
+                );
+                break;
+            case self::TYPE_TUMBLR:
+                $array =  array(
+                    "tumblr_" . $this->convertFlexformSettings($settings)->settings['tumblrBlogNames']
+                );
+                break;
+            case self::TYPE_TWITTER:
+                $array =  array(
+                    "twitter_" . $this->convertFlexformSettings($settings)->settings['twitterSearchFieldValues'],
+                    "twitter_" . $this->convertFlexformSettings($settings)->settings['twitterProfilePosts'],
+                    "twitter_" . $this->convertFlexformSettings($settings)->settings['twitterLanguage'],
+                    "twitter_" . $this->convertFlexformSettings($settings)->settings['twitterGeoCode'],
+                    "twitter_" . $this->convertFlexformSettings($settings)->settings['twitterHideRetweets'],
+                    "twitter_" . $this->convertFlexformSettings($settings)->settings['twitterShowOnlyImages']
+                );
+                break;
+            case self::TYPE_YOUTUBE:
+                $array =  array(
+                    "youtube_" . $this->convertFlexformSettings($settings)->settings['youtubeSearch'],
+                    "youtube_" . $this->convertFlexformSettings($settings)->settings['youtubePlaylist'],
+                    "youtube_" . $this->convertFlexformSettings($settings)->settings['youtubeChannel'],
+                    "youtube_" . $this->convertFlexformSettings($settings)->settings['youtubeType'],
+                    "youtube_" . $this->convertFlexformSettings($settings)->settings['youtubeLanguage'],
+                    "youtube_" . $this->convertFlexformSettings($settings)->settings['youtubeOrder']
+                );
+                break;
+            case self::TYPE_VIMEO:
+                $array =  array(
+                    "vimeo_" . $this->convertFlexformSettings($settings)->settings['vimeoChannel']
+                );
+                break;
+            case self::TYPE_TX_NEWS:
+                $array =  array(
+                    "txnews_" . $this->convertFlexformSettings($settings)->settings['newsCategories']
+                );
+                break;
+        }
+
+        return $array;
+    }
+
+    /**
      * combines array of strings which are different by their configuration issues
      * - calculating a crypted string to be able to find this again in cache for FE
      *
-     * @param $cacheIdentifierElementsArray
-     * @param $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
+     * @param $socialNetworkTypeString
+     * @param $settings
+     * @param integer $ttContentUid uid of plugin, for logging purpose - and for registering in cache identifier
      * @return string
      */
-    private function calculateCacheIdentifier($cacheIdentifierElementsArray, $ttContentUid){
+    public function calculateCacheIdentifier($socialNetworkTypeString, $settings, $ttContentUid){
+        $cacheIdentifierElementsArray =  $this->getCacheIdentifierElementsArray($socialNetworkTypeString, $settings);
+
         array_walk($cacheIdentifierElementsArray, function (&$item, $key, $ttContentUid) {
             $item .= "_tt_content_uid". $ttContentUid ;
         }, $ttContentUid);
@@ -134,17 +219,12 @@ class CacheService extends AbstractBaseService
 
         try {
 
-            $cacheIdentifierElementsArray = $this->optionService->getCacheIdentifierElementsArray($socialNetworkTypeString, $flexformAndTyposcriptSettings);
-
-            $cacheIdentifier = $this->calculateCacheIdentifier($cacheIdentifierElementsArray, $ttContentUid);
+            $cacheIdentifier = $this->calculateCacheIdentifier($socialNetworkTypeString, $flexformAndTyposcriptSettings, $ttContentUid);
 
             //if there is not already a cache, try to get a api sync and get a filled cache, but it only gets this requested network type
             if($this->cache->has($cacheIdentifier) === false){
                 $this->feedSyncService->syncFeed(
-                    $socialNetworkTypeString,
-                    $flexformAndTyposcriptSettings,
-                    $ttContentUid,
-                    $ttContentPid,
+                    $socialNetworkTypeString, $flexformAndTyposcriptSettings, $ttContentUid, $ttContentPid,
                     $isVerbose = false
                 );
             }
@@ -155,12 +235,7 @@ class CacheService extends AbstractBaseService
 
             return $results;
         } catch (\Exception $e) {
-
-            if(isset($GLOBALS["BE_USER"])){
-                $GLOBALS['BE_USER']->simplelog('[pb_social] ' .$socialNetworkTypeString . ' flexform '. $ttContentUid.': ' . $e->getMessage(), $extKey = self::EXTKEY, $error = 1);
-            }else {
-                $this->logger->warning('[pb_social] ' .$socialNetworkTypeString . ' flexform '. $ttContentUid.': ' . $e->getMessage());
-            }
+            $this->logWarning($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString, 1558440503);
             return $results;
         }
     }
@@ -179,14 +254,12 @@ class CacheService extends AbstractBaseService
         $ttContentUid,
         $content
     ){
-        $cacheIdentifierElementsArray = $this->optionService->getCacheIdentifierElementsArray($socialNetworkTypeString, $settings);
-        $cacheIdentifier = $this->calculateCacheIdentifier($cacheIdentifierElementsArray, $ttContentUid);
+        $cacheIdentifier = $this->calculateCacheIdentifier($socialNetworkTypeString, $settings, $ttContentUid);
 
-        //todo set(, , array $tags = [], );
         $this->cache->set(
             $cacheIdentifier,
             $data = $content,
-            $tags = array(self::EXTKEY),
+            $tags = [self::EXTKEY],
             $lifetime = $this->getCacheLifetime()
         );
     }

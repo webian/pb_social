@@ -4,7 +4,6 @@ namespace PlusB\PbSocial\Service;
 
 use PlusB\PbSocial\Adapter;
 use PlusB\PbSocial\Service\Base\AbstractBaseService;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 
 /***************************************************************
@@ -83,7 +82,6 @@ class FeedSyncService extends AbstractBaseService
      * @param integer $ttContentUid uid of plugin, for logging purpose - and for registering in cache identifier
      * @param integer $ttContenPid page uid in which plugin is located, for logging purpose, only
      * @param bool $isVerbose
-     * @return object of message->isSuccessfull and message->message for loggin in scheduler
      */
     public function syncFeed(
         $socialNetworkTypeString,
@@ -93,46 +91,47 @@ class FeedSyncService extends AbstractBaseService
         $isVerbose = false
     ){
 
-        $return = (object)array();
-        $return->isSuccessfull = false;
-        $return->message = "";
-
         $flexformOptions = $this->optionService->convertFlexformSettings($flexformSettings);
 
         switch ($socialNetworkTypeString){
             case self::TYPE_FACEBOOK:
-                $return = $this->syncFacebookFeed($socialNetworkTypeString, $flexformOptions, $ttContentUid, $ttContenPid, $return, $isVerbose);
-                break;
-            case self::TYPE_IMGUR:
-                $return = $this->syncImgurFeed($flexformSettings, $socialNetworkTypeString, $ttContentUid, $isVerbose);
+                $this->syncFacebookFeed($socialNetworkTypeString, $flexformOptions, $ttContentUid, $ttContenPid, $isVerbose);
                 break;
             case self::TYPE_INSTAGRAM:
-                $return = $this->syncInstagramFeed($flexformSettings, $socialNetworkTypeString, $ttContentUid, $isVerbose);
+                $return = $this->syncInstagramFeed($socialNetworkTypeString, $flexformOptions, $ttContentUid, $ttContenPid, $isVerbose);
                 break;
+
+
+
+
+
             case self::TYPE_LINKEDIN:
-                $return = $this->syncLinkedInFeed($flexformSettings, $socialNetworkTypeString, $ttContentUid, $isVerbose);
+                $return = $this->syncLinkedInFeed($socialNetworkTypeString, $flexformOptions, $ttContentUid, $ttContenPid, $return, $isVerbose);
                 break;
             case self::TYPE_PINTEREST:
-                $return = $this->syncPinterestFeed($flexformSettings, $socialNetworkTypeString, $ttContentUid, $isVerbose);
+                $return = $this->syncPinterestFeed($socialNetworkTypeString, $flexformOptions, $ttContentUid, $ttContenPid, $return, $isVerbose);
                 break;
             case self::TYPE_TUMBLR:
-                $return = $this->syncTumblrFeed($flexformSettings, $socialNetworkTypeString, $ttContentUid, $isVerbose);
+                $return = $this->syncTumblrFeed($socialNetworkTypeString, $flexformOptions, $ttContentUid, $ttContenPid, $return, $isVerbose);
                 break;
             case self::TYPE_TWITTER:
-                $return = $this->syncTwitterFeed($flexformSettings, $socialNetworkTypeString, $ttContentUid, $isVerbose);
+                $return = $this->syncTwitterFeed($socialNetworkTypeString, $flexformOptions, $ttContentUid, $ttContenPid, $return, $isVerbose);
                 break;
             case self::TYPE_YOUTUBE:
-                $return = $this->syncYoutubeFeed($flexformSettings, $socialNetworkTypeString, $ttContentUid, $isVerbose);
+                $return = $this->syncYoutubeFeed($socialNetworkTypeString, $flexformOptions, $ttContentUid, $ttContenPid, $return, $isVerbose);
                 break;
             case self::TYPE_VIMEO:
-                $return = $this->syncVimeoFeed($flexformSettings, $socialNetworkTypeString, $ttContentUid, $isVerbose);
+                $return = $this->syncVimeoFeed($socialNetworkTypeString, $flexformOptions, $ttContentUid, $ttContenPid, $return, $isVerbose);
                 break;
+
+            case self::TYPE_IMGUR:
+                $return = $this->syncImgurFeed($socialNetworkTypeString, $flexformOptions, $ttContentUid, $ttContenPid, $return, $isVerbose);
+                break;
+
             case self::TYPE_TX_NEWS:
-                $return = $this->syncNewsFeed($flexformSettings, $socialNetworkTypeString, $ttContentUid, $isVerbose);
+                $return = $this->syncNewsFeed($socialNetworkTypeString, $flexformOptions, $ttContentUid, $ttContenPid, $return, $isVerbose);
                 break;
         }
-
-        return $return;
     }
 
 
@@ -141,20 +140,17 @@ class FeedSyncService extends AbstractBaseService
      * @param object $flexformOptions converted flexform options by convertFlexformSettings()
      * @param integer $ttContentUid uid of plugin, for logging purpose - and for registering in cache identifier
      * @param integer $ttContentPid page uid in which plugin is located, for logging purpose, only
-     * @param object $return
      * @param bool $isVerbose
-     * @return object of message->isSuccessfull and message->message
      */
     public function syncFacebookFeed(
         $socialNetworkTypeString,
         $flexformOptions,
         $ttContentUid,
         $ttContentPid,
-        $return,
         $isVerbose = false
     ){
 
-        //facebook credentials - from extension manager gobally, or from plugin overridden
+        //facebook credentials - from extension manager globally, or from plugin overridden
         $config_apiId =
             ($flexformOptions->settings['facebookPluginKeyfieldEnabled'] === '1')
                 ?
@@ -169,15 +165,105 @@ class FeedSyncService extends AbstractBaseService
                 :
                 $this->extConf['socialfeed.']['facebook.']['api.']['secret'];
 
-        /*
-         * var_dump($config_apiId);
-         * var_dump($config_apiSecret);
-        */
         try {
             //adapter
-            $adapter = new Adapter\FacebookAdapter($config_apiId, $config_apiSecret, $this->itemRepository, $flexformOptions);
+            $adapter = new Adapter\FacebookAdapter(
+                $config_apiId, $config_apiSecret, $this->itemRepository, $flexformOptions,
+                $ttContentUid,
+                $ttContentPid,
+                $this->cacheService->calculateCacheIdentifier($socialNetworkTypeString, $flexformOptions->settings, $ttContentUid)
+            );
             // if you get here, all is fine and you can use object
 
+            $this->doRequestAndSetContentToCache(
+                $adapter,
+                $flexformOptions,
+                $socialNetworkTypeString,
+                $ttContentUid,
+                $ttContentPid,
+                $isVerbose
+            );
+        }
+        catch( \Exception $e ) {
+            // if you get here, something went terribly wrong.
+            // also, object is undefined because the object was not created
+            $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, self::TYPE_FACEBOOK, 1558101905);
+        }
+    }
+
+
+    /**
+     * @param string $socialNetworkTypeString
+     * @param object $flexformOptions converted flexform options by convertFlexformSettings()
+     * @param integer $ttContentUid uid of plugin, for logging purpose - and for registering in cache identifier
+     * @param integer $ttContentPid page uid in which plugin is located, for logging purpose, only
+     * @param object $return
+     * @param bool $isVerbose
+     * @return object of message->isSuccessfull and message->message
+     */
+    public function syncInstagramFeed(
+        $socialNetworkTypeString,
+        $flexformOptions,
+        $ttContentUid,
+        $ttContentPid,
+        $return,
+        $isVerbose = false
+    ){
+
+        //facebook credentials - from extension manager globally, or from plugin overridden
+        $config_clientId =
+            ($flexformOptions->settings['instagramPluginKeyfieldEnabled'] === '1')
+                ?
+                $flexformOptions->settings['instagramClientId']
+                :
+                $this->extConf['socialfeed.']['instagram.']['client.']['id'];
+
+        $config_clientSecret =
+            ($flexformOptions->settings['instagramPluginKeyfieldEnabled'] === '1')
+                ?
+                $flexformOptions->settings['instagramClientSecret']
+                :
+                $this->extConf['socialfeed.']['instagram.']['client.']['secret'];
+
+        $config_clientCallback =
+            ($flexformOptions->settings['instagramPluginKeyfieldEnabled'] === '1')
+                ?
+                $flexformOptions->settings['instagramClientCallback']
+                :
+                $this->extConf['socialfeed.']['instagram.']['client.']['callback'];
+
+        $config_access_code =
+            ($flexformOptions->settings['instagramPluginKeyfieldEnabled'] === '1')
+                ?
+                $flexformOptions->settings['instagramClientAccess_code']
+                :
+                $this->extConf['socialfeed.']['instagram.']['client.']['access_code'];
+
+        $config_access_token =
+            ($flexformOptions->settings['instagramPluginKeyfieldEnabled'] === '1')
+                ?
+                $flexformOptions->settings['instagramClientAaccess_token']
+                :
+                $this->extConf['socialfeed.']['instagram.']['client.']['access_token'];
+
+        $flexformOptions->instagramHashTags = $flexformOptions->settings['instagramHashTag'];
+        $flexformOptions->instagramSearchIds = $flexformOptions->settings['instagramSearchIds'];
+        $flexformOptions->instagramPostFilter = $flexformOptions->settings['instagramPostFilter'];
+
+        try {
+            # retrieve data from adapter #
+            $adapter = new Adapter\InstagramAdapter(
+                $config_clientId,
+                $config_clientSecret,
+                $config_clientCallback,
+                $config_access_code,
+                $config_access_token,
+                $this->itemRepository,
+                $flexformOptions,
+                $ttContentUid,
+                $ttContentPid,
+                $this->cacheService->calculateCacheIdentifier($socialNetworkTypeString, $flexformOptions->settings, $ttContentUid));
+            // if you get here, all is fine and you can use object
             $return = $this->doRequestAndSetContentToCache(
                 $adapter,
                 $flexformOptions,
@@ -191,100 +277,28 @@ class FeedSyncService extends AbstractBaseService
         catch( \Exception $e ) {
             // if you get here, something went terribly wrong.
             // also, object is undefined because the object was not created
-            $return->message = "flexform $ttContentUid on page $ttContentPid tab ".self::TYPE_FACEBOOK. ": 1558101905 " . $e->getMessage();
+            $return->message = "flexform $ttContentUid on page $ttContentPid tab ".self::TYPE_FACEBOOK. ": 1558354940 " . $e->getMessage();
         }
-
         return $return;
     }
 
     /**
-     * @param $flexformSettings
-     * @param $socialNetworkTypeString
-     * @param $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
+     * @param string $socialNetworkTypeString
+     * @param object $flexformOptions converted flexform options by convertFlexformSettings()
+     * @param integer $ttContentUid uid of plugin, for logging purpose - and for registering in cache identifier
+     * @param integer $ttContentPid page uid in which plugin is located, for logging purpose, only
+     * @param object $return
      * @param bool $isVerbose
      * @return object of message->isSuccessfull and message->message
      */
-    public function syncImgurFeed($flexformSettings, $socialNetworkTypeString, $ttContentUid, $isVerbose = false){
-        $return = (object)array();
-        $return->isSuccessfull = false;
-        $return->message = "";
-
-        $flexformOptions = $this->optionService->convertFlexformSettings($flexformSettings);
-
-        # check api key #
-        $config_apiId = $this->extConf['socialfeed.']['imgur.']['client.']['id'];
-        $config_apiSecret = $this->extConf['socialfeed.']['imgur.']['client.']['secret'];
-        $flexformOptions->imgSearchTags = $flexformSettings['imgurTags'];
-
-        // TODO: not yet implemented in backend configuration
-        $flexformOptions->imgSearchUsers = $flexformSettings['imgurUsers'];
-
-        # retrieve data from adapter #
-        $adapter = new Adapter\ImgurAdapter($config_apiId, $config_apiSecret, $this->itemRepository, $flexformOptions);
-
-        if($adapter->isValid === true){
-            $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString,
-                $ttContentUid, $ttContentPid, $return, $isVerbose);
-        }else{
-            $return->message = $adapter->validationMessage;
-        }
-
-        return $return;
-    }
-
-    /**
-     * @param $flexformSettings
-     * @param $socialNetworkTypeString
-     * @param $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
-     * @param bool $isVerbose
-     * @return object of message->isSuccessfull and message->message
-     */
-    public function syncInstagramFeed($flexformSettings, $socialNetworkTypeString, $ttContentUid, $isVerbose = false){
-        $return = (object)array();
-        $return->isSuccessfull = false;
-        $return->message = "";
-
-        $flexformOptions = $this->optionService->convertFlexformSettings($flexformSettings);
-        $flexformOptions->devMod = $this->extConf['socialfeed.']['devmod'];
-
-        # check api key #
-        $config_clientId = $this->extConf['socialfeed.']['instagram.']['client.']['id'];
-        $config_clientSecret = $this->extConf['socialfeed.']['instagram.']['client.']['secret'];
-        $config_clientCallback = $this->extConf['socialfeed.']['instagram.']['client.']['callback'];
-        $config_access_code = $this->extConf['socialfeed.']['instagram.']['client.']['access_code'];
-        $config_access_token = $this->extConf['socialfeed.']['instagram.']['client.']['access_token'];
-        $flexformOptions->instagramHashTags = $flexformSettings['instagramHashTag'];
-        $flexformOptions->instagramSearchIds = $flexformSettings['instagramSearchIds'];
-        $flexformOptions->instagramPostFilter = $flexformSettings['instagramPostFilter'];
-
-
-        # retrieve data from adapter #
-        $adapter = new Adapter\InstagramAdapter($config_clientId, $config_clientSecret, $config_clientCallback, $config_access_code, $config_access_token, $this->itemRepository, $this->credentialRepository, $flexformOptions);
-
-        if($adapter->isValid === true){
-            $return = $this->doRequestAndSetContentToCache($adapter, $flexformOptions, $socialNetworkTypeString,
-                $ttContentUid, $ttContentPid, $return, $isVerbose);
-        }else{
-            $return->message = $adapter->validationMessage;
-        }
-
-        return $return;
-    }
-
-    /**
-     * @param $flexformSettings
-     * @param $socialNetworkTypeString
-     * @param $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
-     * @param bool $isVerbose
-     * @return object of message->isSuccessfull and message->message
-     */
-    public function syncPinterestFeed($flexformSettings, $socialNetworkTypeString, $ttContentUid, $isVerbose = false){
-        $return = (object)array();
-        $return->isSuccessfull = false;
-        $return->message = "";
-
-        $flexformOptions = $this->optionService->convertFlexformSettings($flexformSettings);
-        $flexformOptions->devMod = $this->extConf['socialfeed.']['devmod'];
+    public function syncPinterestFeed(
+        $socialNetworkTypeString,
+        $flexformOptions,
+        $ttContentUid,
+        $ttContentPid,
+        $return,
+        $isVerbose = false
+    ){
 
         # check api key #
         $config_appId = $this->extConf['socialfeed.']['pinterest.']['app.']['id'];
@@ -307,19 +321,22 @@ class FeedSyncService extends AbstractBaseService
     }
 
     /**
-     * @param $flexformSettings array
-     * @param $socialNetworkTypeString string
-     * @param $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
+     * @param string $socialNetworkTypeString
+     * @param object $flexformOptions converted flexform options by convertFlexformSettings()
+     * @param integer $ttContentUid uid of plugin, for logging purpose - and for registering in cache identifier
+     * @param integer $ttContentPid page uid in which plugin is located, for logging purpose, only
+     * @param object $return
      * @param bool $isVerbose
      * @return object of message->isSuccessfull and message->message
      */
-    public function syncLinkedInFeed($flexformSettings, $socialNetworkTypeString, $ttContentUid, $isVerbose = false){
-        $return = (object)array();
-        $return->isSuccessfull = false;
-        $return->message = "";
-
-        $flexformOptions = $this->optionService->convertFlexformSettings($flexformSettings);
-        $flexformOptions->devMod = $this->extConf['socialfeed.']['devmod'];
+    public function syncLinkedInFeed(
+        $socialNetworkTypeString,
+        $flexformOptions,
+        $ttContentUid,
+        $ttContentPid,
+        $return,
+        $isVerbose = false
+    ){
 
         # check api key #
         $config_clientId = $this->extConf['socialfeed.']['linkedin.']['client.']['key'];
@@ -344,19 +361,22 @@ class FeedSyncService extends AbstractBaseService
     }
 
     /**
-     * @param $flexformSettings
-     * @param $socialNetworkTypeString
-     * @param $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
+     * @param string $socialNetworkTypeString
+     * @param object $flexformOptions converted flexform options by convertFlexformSettings()
+     * @param integer $ttContentUid uid of plugin, for logging purpose - and for registering in cache identifier
+     * @param integer $ttContentPid page uid in which plugin is located, for logging purpose, only
+     * @param object $return
      * @param bool $isVerbose
      * @return object of message->isSuccessfull and message->message
      */
-    public function syncTumblrFeed($flexformSettings, $socialNetworkTypeString, $ttContentUid, $isVerbose = false){
-        $return = (object)array();
-        $return->isSuccessfull = false;
-        $return->message = "";
-
-        $flexformOptions = $this->optionService->convertFlexformSettings($flexformSettings);
-        $flexformOptions->devMod = $this->extConf['socialfeed.']['devmod'];
+    public function syncTumblrFeed(
+        $socialNetworkTypeString,
+        $flexformOptions,
+        $ttContentUid,
+        $ttContentPid,
+        $return,
+        $isVerbose = false
+    ){
 
         # check api key #
         $config_consumerKey = $this->extConf['socialfeed.']['tumblr.']['consumer.']['key'];
@@ -382,19 +402,23 @@ class FeedSyncService extends AbstractBaseService
     }
 
     /**
-     * @param $flexformSettings
-     * @param $socialNetworkTypeString
-     * @param $ttContentUid
+     * @param string $socialNetworkTypeString
+     * @param object $flexformOptions converted flexform options by convertFlexformSettings()
+     * @param integer $ttContentUid uid of plugin, for logging purpose - and for registering in cache identifier
+     * @param integer $ttContentPid page uid in which plugin is located, for logging purpose, only
+     * @param object $return
      * @param bool $isVerbose
      * @return object of message->isSuccessfull and message->message
      */
-    public function syncTwitterFeed($flexformSettings, $socialNetworkTypeString, $ttContentUid, $isVerbose = false){
-        $return = (object)array();
-        $return->isSuccessfull = false;
-        $return->message = "";
+    public function syncTwitterFeed(
+        $socialNetworkTypeString,
+        $flexformOptions,
+        $ttContentUid,
+        $ttContentPid,
+        $return,
+        $isVerbose = false
+    ){
 
-        $flexformOptions = $this->optionService->convertFlexformSettings($flexformSettings);
-        $flexformOptions->devMod = $this->extConf['socialfeed.']['devmod'];
 
         # check api key #
         $config_consumerKey = $this->extConf['socialfeed.']['twitter.']['consumer.']['key'];
@@ -423,19 +447,22 @@ class FeedSyncService extends AbstractBaseService
     }
 
     /**
-     * @param $flexformSettings
-     * @param $socialNetworkTypeString
-     * @param $ttContentUid
+     * @param string $socialNetworkTypeString
+     * @param object $flexformOptions converted flexform options by convertFlexformSettings()
+     * @param integer $ttContentUid uid of plugin, for logging purpose - and for registering in cache identifier
+     * @param integer $ttContentPid page uid in which plugin is located, for logging purpose, only
+     * @param object $return
      * @param bool $isVerbose
      * @return object of message->isSuccessfull and message->message
      */
-    public function syncYoutubeFeed($flexformSettings, $socialNetworkTypeString, $ttContentUid, $isVerbose = false){
-        $return = (object)array();
-        $return->isSuccessfull = false;
-        $return->message = "";
-
-        $flexformOptions = $this->optionService->convertFlexformSettings($flexformSettings);
-        $flexformOptions->devMod = $this->extConf['socialfeed.']['devmod'];
+    public function syncYoutubeFeed(
+        $socialNetworkTypeString,
+        $flexformOptions,
+        $ttContentUid,
+        $ttContentPid,
+        $return,
+        $isVerbose = false
+    ){
 
         # check api key #
         $config_apiKey = $this->extConf['socialfeed.']['youtube.']['apikey'];
@@ -460,19 +487,22 @@ class FeedSyncService extends AbstractBaseService
     }
 
     /**
-     * @param $flexformSettings
-     * @param $socialNetworkTypeString
-     * @param $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
+     * @param string $socialNetworkTypeString
+     * @param object $flexformOptions converted flexform options by convertFlexformSettings()
+     * @param integer $ttContentUid uid of plugin, for logging purpose - and for registering in cache identifier
+     * @param integer $ttContentPid page uid in which plugin is located, for logging purpose, only
+     * @param object $return
      * @param bool $isVerbose
      * @return object of message->isSuccessfull and message->message
      */
-    public function syncVimeoFeed($flexformSettings, $socialNetworkTypeString, $ttContentUid, $isVerbose = false){
-        $return = (object)array();
-        $return->isSuccessfull = false;
-        $return->message = "";
-
-        $flexformOptions = $this->optionService->convertFlexformSettings($flexformSettings);
-        $flexformOptions->devMod = $this->extConf['socialfeed.']['devmod'];
+    public function syncVimeoFeed(
+        $socialNetworkTypeString,
+        $flexformOptions,
+        $ttContentUid,
+        $ttContentPid,
+        $return,
+        $isVerbose = false
+    ){
 
         # check api key #
         $config_clientIdentifier = $this->extConf['socialfeed.']['vimeo.']['client.']['identifier'];
@@ -498,19 +528,86 @@ class FeedSyncService extends AbstractBaseService
     }
 
     /**
-     * @param $flexformSettings
-     * @param $socialNetworkTypeString
-     * @param $ttContentUid
+     * @param string $socialNetworkTypeString
+     * @param object $flexformOptions converted flexform options by convertFlexformSettings()
+     * @param integer $ttContentUid uid of plugin, for logging purpose - and for registering in cache identifier
+     * @param integer $ttContentPid page uid in which plugin is located, for logging purpose, only
+     * @param object $return
      * @param bool $isVerbose
      * @return object of message->isSuccessfull and message->message
      */
-    public function syncNewsFeed($flexformSettings, $socialNetworkTypeString, $ttContentUid, $isVerbose = false){
-        $return = (object)array();
-        $return->isSuccessfull = false;
-        $return->message = "";
+    public function syncImgurFeed(
+        $socialNetworkTypeString,
+        $flexformOptions,
+        $ttContentUid,
+        $ttContentPid,
+        $return,
+        $isVerbose = false
+    ){
 
-        $flexformOptions = $this->optionService->convertFlexformSettings($flexformSettings);
-        $flexformOptions->devMod = $this->extConf['socialfeed.']['devmod'];
+        //imgur credentials - from extension manager gobally, or from plugin overridden
+        $config_apiId =
+            ($flexformOptions->settings['imgurPluginKeyfieldEnabled'] === '1')
+                ?
+                $flexformOptions->settings['imgurClientId']
+                :
+                $this->extConf['socialfeed.']['imgur.']['client.']['id'];
+
+        $config_apiSecret =
+            ($flexformOptions->settings['imgurPluginKeyfieldEnabled'] === '1')
+                ?
+                $flexformOptions->settings['imgurClientSecret']
+                :
+                $this->extConf['socialfeed.']['imgur.']['client.']['secret'];
+
+        $flexformOptions->imgSearchTags = $flexformOptions->settings['imgurTags'];
+        // TODO: not yet implemented in backend configuration
+        $flexformOptions->imgSearchUsers = $flexformOptions->settings['imgurUsers'];
+
+        try{
+            # retrieve data from adapter #
+            $adapter = new Adapter\ImgurAdapter($config_apiId, $config_apiSecret, $this->itemRepository, $flexformOptions,
+                $this->cacheService->calculateCacheIdentifier($socialNetworkTypeString, $flexformOptions->settings, $ttContentUid));
+            // if you get here, all is fine and you can use object
+
+            $return = $this->doRequestAndSetContentToCache(
+                $adapter,
+                $flexformOptions,
+                $socialNetworkTypeString,
+                $ttContentUid,
+                $ttContentPid,
+                $return,
+                $isVerbose
+            );
+        }
+        catch( \Exception $e ) {
+            // if you get here, something went terribly wrong.
+            // also, object is undefined because the object was not created
+            $return->message = "imgur $ttContentUid on page $ttContentPid tab ".self::TYPE_FACEBOOK. ": 1558348310 " . $e->getMessage();
+        }
+
+
+        return $return;
+    }
+
+    /**
+     * @param string $socialNetworkTypeString
+     * @param object $flexformOptions converted flexform options by convertFlexformSettings()
+     * @param integer $ttContentUid uid of plugin, for logging purpose - and for registering in cache identifier
+     * @param integer $ttContentPid page uid in which plugin is located, for logging purpose, only
+     * @param object $return
+     * @param bool $isVerbose
+     * @return object of message->isSuccessfull and message->message
+     */
+    public function syncNewsFeed(
+        $socialNetworkTypeString,
+        $flexformOptions,
+        $ttContentUid,
+        $ttContentPid,
+        $return,
+        $isVerbose = false
+    ){
+
 
         $flexformOptions->newsCategories = $flexformSettings['newsCategories'];
         $flexformOptions->newsDetailPageUid = $flexformSettings['newsDetailPageUid'];
@@ -534,13 +631,11 @@ class FeedSyncService extends AbstractBaseService
      * setResultToCache gets Result from Api setting it to caching framework
      *
      * @param object $adapterObj Object reference of adapter
-     * @param mixed $flexformOptions Object of Optionsettings  of specific adapter
+     * @param mixed $flexformOptions Object of option settings  of specific adapter
      * @param string $socialNetworkTypeString String name of social network, set from class constant
      * @param integer $ttContentUid int uid of plugin, for logging purpose - and for registering in cache identifier
      * @param integer $ttContentPid int page uid in which plugin is located, for logging purpose, only
-     * @param object $success Object of success message and status
      * @param bool $isVerbose bool for verbose mode in command line
-     * @return object of success information
      */
     private function doRequestAndSetContentToCache(
         $adapterObj,
@@ -548,10 +643,8 @@ class FeedSyncService extends AbstractBaseService
         $socialNetworkTypeString,
         $ttContentUid,
         $ttContentPid,
-        $success,
         $isVerbose = false
     ){
-        $success->isSuccessfull = false;
         try {
 
             $content = $adapterObj->getResultFromApi();
@@ -561,17 +654,12 @@ class FeedSyncService extends AbstractBaseService
                 $socialNetworkTypeString, $flexformOptions->settings, $ttContentUid, $content
             );
 
-            $success->isSuccessfull = true;
-            $success->message = " flexform $ttContentUid on page $ttContentPid tab ".$socialNetworkTypeString . ": update feed successfull";
-
-            if($isVerbose === true){
-                $success->message .= "\n". var_export($content, true);
-            }
+            $this->logInfo("update feed successfull" . ($isVerbose?"\n". var_export($content, true):""),
+                $ttContentUid, $ttContentPid, $socialNetworkTypeString, 1558441967);
 
         } catch (\Exception $e) {
-            $success->message = "flexform $ttContentUid on page $ttContentPid tab ".$socialNetworkTypeString . ": " . $e->getMessage()."; ";
+            $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString, 1558441962);
         }
-        return $success;
     }
 
 }

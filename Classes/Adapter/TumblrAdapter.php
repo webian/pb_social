@@ -150,7 +150,7 @@ class TumblrAdapter extends SocialMediaAdapter
                         $feed->setResult($posts);
                         $this->itemRepository->updateFeed($feed);
                     } catch (\Exception $e) {
-                        $this->logError("feeds can't be updated - " . $e->getMessage());
+                        $this->logAdapterError("feeds can't be updated - " . $e->getMessage(), 1558435601);
                     }
                 }
                 $result[] = $feed;
@@ -168,7 +168,7 @@ class TumblrAdapter extends SocialMediaAdapter
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
             } catch (\Exception $e) {
-                $this->logError('initial load for feed failed - ' . $e->getMessage());
+                $this->logAdapterError('initial load for feed failed - ' . $e->getMessage(), 1558435608);
             }
         }
 

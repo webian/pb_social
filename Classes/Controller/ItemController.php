@@ -84,8 +84,6 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
      */
     protected $credentialRepository = null;
 
-    protected $logger;
-
     /**
      * action showSocialFeedAction
      * @return void

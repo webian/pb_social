@@ -38,7 +38,7 @@
                 <source>Active</source>
             </trans-unit>
             <trans-unit id="flexform.tab.facebook.searchID">
-                <source>Facebook search IDs (Page that helps to find the ID: http://findmyfbid.com/). Use commas to show more than one ID</source>
+                <source>Facebook search IDs. Use commas to show more than one ID</source>
             </trans-unit>
             <trans-unit id="flexform.tab.facebook.edge">
                 <source>Facebook edge (feed shows everything incl. tagged posts and links, posts filters only posts)</source>
@@ -49,26 +49,8 @@
             <trans-unit id="flexform.tab.facebook.fullpicture">
                 <source>Load full sized picture</source>
             </trans-unit>
-
             <trans-unit id="flexform.tab.facebook.facebookPluginKeyfieldEnabled">
-                <source>Use individual facebook credentials instead of global extension configuration</source>
-            </trans-unit>
-
-
-
-
-
-            <trans-unit id="flexform.tab.imgur.caption">
-                <source>Imgur</source>
-            </trans-unit>
-            <trans-unit id="flexform.tab.imgur.active">
-                <source>Active</source>
-            </trans-unit>
-            <trans-unit id="flexform.tab.imgur.User">
-                <source>Show Images of specific Users. Use commas to show more than one</source>
-            </trans-unit>
-            <trans-unit id="flexform.tab.imgur.tag">
-                <source>Show Images with a specific Tag. Use commas for more than one tag </source>
+                <source>Use individual credentials instead of global extension configuration</source>
             </trans-unit>
 
             <trans-unit id="flexform.tab.instagram.caption">
@@ -81,11 +63,16 @@
                 <source>Filter posts by given hashtag - if you specify search ID and hashtags, check this box to show only posts with the given hashtag(s)</source>
             </trans-unit>
             <trans-unit id="flexform.tab.instagram.searchID">
-                <source>Instagram search IDs (Page that helps to find the ID: http://www.otzberg.net/iguserid/). Use commas to show more than one ID</source>
+                <source>Instagram search IDs. Use commas to show more than one ID</source>
             </trans-unit>
             <trans-unit id="flexform.tab.instagram.hashtag">
                 <source>Output most up to date Images with a specific hashtag. Use commas to show more than one.</source>
             </trans-unit>
+            <trans-unit id="flexform.tab.instagram.instagramPluginKeyfieldEnabled">
+                <source>Use individual credentials instead of global extension configuration</source>
+            </trans-unit>
+
+
 
             <trans-unit id="flexform.tab.linkedin.caption">
                 <source>LinkedIn</source>
@@ -94,7 +81,7 @@
                 <source>Active</source>
             </trans-unit>
             <trans-unit id="flexform.tab.linkedin.companyIds">
-                <source>LinkedIn company ID. !! you need to be administrator of the given company page(s) !!</source>
+                <source>LinkedIn company ID. You need to be administrator of the given company page(s)!</source>
             </trans-unit>
 
             <trans-unit id="flexform.tab.linkedin.linkedinFilterChoice">
@@ -223,9 +210,6 @@
                 <source>rating</source>
             </trans-unit>
 
-
-
-            <!-- vimeo -->
             <trans-unit id="flexform.tab.vimeo.caption">
                 <source>Vimeo</source>
             </trans-unit>
@@ -236,14 +220,22 @@
                 <source>Channel ID to display. Show all your videos with "me".</source>
             </trans-unit>
 
-            <!-- <trans-unit id="flexform.tab.vimeo.url">
-                <source>Channel url. Use commas to show more than one</source>
-
+            <trans-unit id="flexform.tab.imgur.caption">
+                <source>Imgur</source>
             </trans-unit>
-            <trans-unit id="flexform.tab.vimeo.filter">
-                <source>Filter</source>
+            <trans-unit id="flexform.tab.imgur.active">
+                <source>Active</source>
+            </trans-unit>
+            <trans-unit id="flexform.tab.imgur.User">
+                <source>Show Images of specific Users. Use commas to show more than one</source>
+            </trans-unit>
+            <trans-unit id="flexform.tab.imgur.tag">
+                <source>Show Images with a specific Tag. Use commas for more than one tag </source>
+            </trans-unit>
 
-            </trans-unit> -->
+            <trans-unit id="flexform.tab.imgur.imgurPluginKeyfieldEnabled">
+                <source>Use individual credentials instead of global extension configuration</source>
+            </trans-unit>
 
             <!-- tx_news -->
             <trans-unit id="flexform.tab.news.caption">

@@ -23,22 +23,6 @@
                 <source>Trim text after reaching this letter limit</source>
                 <target state="translated">Den Text nach einer bestimmten Anzahl von Zeichen abschneiden</target>
             </trans-unit>
-            <trans-unit id="flexform.tab.general.asynchRequest">
-                <source>Display "load more posts" button. Loads post in the background and shows a specified number on click.</source>
-                <target state="translated">Zeige "weitere Posts laden"-Button. Posts werden im Hintergrund geladen, bei Klick auf den Button wird die hier definierte Anzahl angezeigt.</target>
-            </trans-unit>
-            <trans-unit id="flexform.tab.general.asynchLimit">
-                <source>Limit for request in background</source>
-                <target state="translated">Anzahl der Posts (pro Anbieter) die im Hintergrund geladen werden sollen</target>
-            </trans-unit>
-            <trans-unit id="flexform.tab.general.asynchShow">
-                <source>Show how many posts on click?</source>
-                <target state="translated">Wie viele Posts per Klick anzeigen?</target>
-            </trans-unit>
-            <trans-unit id="general.asynchButtonText">
-                <source>show more posts</source>
-                <target state="translated">weitere Posts anzeigen</target>
-            </trans-unit>
 
             <trans-unit id="flexform.tab.facebook.caption">
                 <source>Facebook</source>
@@ -49,8 +33,8 @@
                 <target state="translated">Ausgabe aktiviert</target>
             </trans-unit>
             <trans-unit id="flexform.tab.facebook.searchID">
-                <source>Facebook search IDs (Page that helps to find the ID: http://findmyfbid.com/). Use commas to show more than one ID</source>
-                <target state="translated">Facebook IDs der Seiten, die angezeigt werden sollen (Hilfeseite zu den IDs: http://findmyfbid.com/). Verwende Kommas, um mehrere Seiten anzuzeigen</target>
+                <source>Facebook search IDs. Use commas to show more than one ID</source>
+                <target state="translated">Facebook IDs der Seiten. Verwenden Sie Kommas, um mehrere Seiten anzuzeigen</target>
             </trans-unit>
              <trans-unit id="flexform.tab.facebook.edge">
                 <source>Facebook edge (feed shows everything incl. tagged posts and links, posts filters only posts)</source>
@@ -64,24 +48,9 @@
                 <source>Load full sized picture</source>
                 <target state="translated">Bilder in voller Größe laden</target>
             </trans-unit>
-
-
-
-            <trans-unit id="flexform.tab.imgur.caption">
-                <source>Imgur</source>
-                <target state="translated">Imgur</target>
-            </trans-unit>
-            <trans-unit id="flexform.tab.imgur.active">
-                <source>Active</source>
-                <target state="translated">Ausgabe aktiviert</target>
-            </trans-unit>
-            <trans-unit id="flexform.tab.imgur.User">
-                <source>Show Images of specific Users. Use commas to show more than one</source>
-                <target state="translated">Bilder von bestimmten Nutzern anzeigen. Verwende Kommas, um Bilder mehrerer Nutzer anzuzeigen</target>
-            </trans-unit>
-            <trans-unit id="flexform.tab.imgur.tag">
-                <source>Show Images with a specific Tag. Use commas for more than one tag </source>
-                <target state="translated">Bilder mit einem bestimmten Tag anzeigen. Verwende Kommas für mehrere Tags</target>
+            <trans-unit id="flexform.tab.facebook.facebookPluginKeyfieldEnabled">
+                <source>Use individual credentials instead of global extension configuration</source>
+                <target>Eigene Schlüssel für dieses Plugin anstatt der globalen Schlüssel in der Extension Konfiguration</target>
             </trans-unit>
 
             <trans-unit id="flexform.tab.instagram.caption">
@@ -97,13 +66,20 @@
                 <target state="translated">Posts nach Hashtag filtern - wenn search ID und Hashtag angegeben wurden, werden nur die Posts mit dem angegebenen Hashtag ausgegeben</target>
             </trans-unit>
             <trans-unit id="flexform.tab.instagram.searchID">
-                <source>Instagram search IDs (Page that helps to find the ID: http://www.otzberg.net/iguserid/). Use commas to show more than one ID</source>
-                <target state="translated">Instagram IDs der Seiten, die angezeigt werden sollen (Hilfeseite zu den IDs: http://www.otzberg.net/iguserid/). Verwende Kommas, um mehrere Seiten anzuzeigen</target>
+                <source>Instagram search IDs. Use commas to show more than one ID</source>
+                <target state="translated">Instagram IDs der Seiten, die angezeigt werden sollen. Verwenden Sie Kommas, um mehrere Seiten anzuzeigen</target>
             </trans-unit>
             <trans-unit id="flexform.tab.instagram.hashtag">
                 <source>Output most up to date Images with a specific hashtag. Use commas to show more than one.</source>
-                <target state="translated">Die aktuellsten Bilder mit einem bestimmten Hashtag anzeigen. Verwende Kommas, um mehrere anzuzeigen</target>
+                <target state="translated">Die aktuellsten Bilder mit einem bestimmten Hashtag anzeigen. Verwenden Sie Kommas, um mehrere anzuzeigen</target>
             </trans-unit>
+            <trans-unit id="flexform.tab.instagram.instagramPluginKeyfieldEnabled">
+                <source>Use individual credentials instead of global extension configuration</source>
+                <target>Eigene Schlüssel für dieses Plugin anstatt der globalen Schlüssel in der Extension Konfiguration</target>
+            </trans-unit>
+
+
+
 
             <trans-unit id="flexform.tab.linkedin.caption">
                 <source>LinkedIn</source>
@@ -114,8 +90,8 @@
                 <target state="translated">Ausgabe aktiviert</target>
             </trans-unit>
             <trans-unit id="flexform.tab.linkedin.companyIds">
-                <source>LinkedIn company ID. !! you need to be administrator of the given company page(s) !!</source>
-                <target state="translated">LinkedIn Unternehmens-ID. !! Sie müssen Administrator der LinkedIn-Unternehmensseite(n) sein !!</target>
+                <source>LinkedIn company ID. You need to be administrator of the given company page(s)!</source>
+                <target state="translated">LinkedIn Unternehmens-ID. Sie müssen Administrator der LinkedIn-Unternehmensseite(n) sein!</target>
             </trans-unit>
 
             <trans-unit id="flexform.tab.linkedin.linkedinFilterChoice">
@@ -152,11 +128,11 @@
             </trans-unit>
             <trans-unit id="flexform.tab.pinterest.username">
                 <source>Show pins of Pinterest user (please add the board at the bottom field)</source>
-                <target state="translated">Zeige Pins vom folgenden User an (unten bitte noch die Pinnwand angeben)</target>
+                <target state="translated">Pins vom folgenden User anzeigen (unten bitte noch die Pinnwand angeben)</target>
             </trans-unit>
             <trans-unit id="flexform.tab.pinterest.boardname">
                 <source>Show pins of a specific Pinterest board of a user (needs username input at the upper field)</source>
-                <target state="translated">Zeige Pins von einer Pinnwand eines Users an (das Feld des Nutzernamens muss ausgefüllt sein)</target>
+                <target state="translated">Pins von einer Pinnwand eines Users anzeigen (das Feld des Nutzernamens muss ausgefüllt sein)</target>
             </trans-unit>
 
             <trans-unit id="flexform.tab.tumblr.caption">
@@ -169,7 +145,7 @@
             </trans-unit>
             <trans-unit id="flexform.tab.tumblr.searchID">
                 <source>Tumblr blog names. For your own Dashboard use "MYDASHBOARD" as value. Use commas to show more than one blog</source>
-                <target state="translated">Tumblr Blognamen, die angezeigt werden sollen. Für das eigene Dashboard "MYDASHBOARD" eingeben. Verwende Kommas, um mehrere Blogs anzuzeigen</target>
+                <target state="translated">Tumblr Blognamen, die angezeigt werden sollen. Für das eigene Dashboard "MYDASHBOARD" eingeben. Verwenden Sie Kommas, um mehrere Blogs anzuzeigen</target>
             </trans-unit>
             <trans-unit id="flexform.tab.tumblr.hashTag">
                 <source>Search the above-mentioned Tumblr blog names for a specific hashtag</source>
@@ -198,11 +174,11 @@
             </trans-unit>
             <trans-unit id="flexform.tab.twitter.searchID">
                 <source>Twitter search field values (e.g. #plusB,@plusB,...). Use commas to show tweets from more than one page</source>
-                <target state="translated">Tweets anzeigen, die bestimmte Wörter beinhalten (z.b. plusB). Verwende Kommas, um Tweets mehrerer Seiten anzuzeigen</target>
+                <target state="translated">Tweets anzeigen, die bestimmte Wörter beinhalten (z.b. plusB). Verwenden Sie Kommas, um Tweets mehrerer Seiten anzuzeigen</target>
             </trans-unit>
             <trans-unit id="flexform.tab.twitter.profilePosts">
                 <source>Show tweets of specific profiles. Use commas to show more than one</source>
-                <target state="translated">Zeige Tweets von bestimmten Twitter-Profilen. Verwende Kommas, um Tweets mehrerer Profile anzuzeigen</target>
+                <target state="translated">Zeige Tweets von bestimmten Twitter-Profilen. Verwenden Sie Kommas, um Tweets mehrerer Profile anzuzeigen</target>
             </trans-unit>
             <trans-unit id="flexform.tab.twitter.language">
                 <source>(Optional) Show tweets in a specific language (for example: use "de" for tweets in german language). For a list look at the ISO 639-1 codes on http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes</source>
@@ -236,7 +212,7 @@
             </trans-unit>
             <trans-unit id="flexform.tab.youtube.searchword">
                 <source>Youtube searchword. Use commas to show more than one</source>
-                <target state="translated">Youtube Suchwort. Verwende Kommas, um mehrere Seiten anzuzeigen</target>
+                <target state="translated">Youtube Suchwort. Verwenden Sie Kommas, um mehrere Seiten anzuzeigen</target>
             </trans-unit>
             <trans-unit id="flexform.tab.youtube.playlist">
                 <source>Youtube playlist. If set, searchword will be ignored</source>
@@ -282,10 +258,7 @@
                 <source>rating</source>
                 <target state="translated">Bewertung</target>
             </trans-unit>
-            
-            
 
-            <!-- vimeo -->
             <trans-unit id="flexform.tab.vimeo.caption">
                 <source>Vimeo</source>
                 <target state="translated">Vimeo</target>
@@ -298,15 +271,28 @@
                 <source>Channel ID to display. Show all your videos with "me".</source>
                 <target state="translated">Channel ID, die angezeigt werden soll. Alle eigenen Videos können durch Eingabe von "me" ausgegeben werden.</target>
             </trans-unit>
-            
-            <!-- <trans-unit id="flexform.tab.vimeo.url">
-                <source>Channel url. Use commas to show more than one</source>
-                <target state="translated">Url des Kanals. Verwende Kommas, um mehrere anzuzeigen</target>
+
+            <trans-unit id="flexform.tab.imgur.caption">
+                <source>Imgur</source>
+                <target state="translated">Imgur</target>
             </trans-unit>
-            <trans-unit id="flexform.tab.vimeo.filter">
-                <source>Filter</source>
-                <target state="translated">Filter</target>
-            </trans-unit> -->
+            <trans-unit id="flexform.tab.imgur.active">
+                <source>Active</source>
+                <target state="translated">Ausgabe aktiviert</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.imgur.User">
+                <source>Show Images of specific Users. Use commas to show more than one</source>
+                <target state="translated">Bilder von bestimmten Nutzern anzeigen. Verwenden Sie Kommas, um Bilder mehrerer Nutzer anzuzeigen</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.imgur.tag">
+                <source>Show Images with a specific Tag. Use commas for more than one tag </source>
+                <target state="translated">Bilder mit einem bestimmten Tag anzeigen. Verwenden Sie Kommas für mehrere Tags</target>
+            </trans-unit>
+
+            <trans-unit id="flexform.tab.imgur.imgurPluginKeyfieldEnabled">
+                <source>Use individual credentials instead of global extension configuration</source>
+                <target>Eigene Schlüssel für dieses Plugin anstatt der globalen Schlüssel in der Extension Konfiguration</target>
+            </trans-unit>
 
             <!-- tx_news -->
             <trans-unit id="flexform.tab.news.caption">

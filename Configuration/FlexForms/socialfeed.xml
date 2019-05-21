@@ -109,9 +109,6 @@
                         </TCEforms>
                     </settings.facebookLinktopost>
 
-
-
-
                     <settings.facebookPluginKeyfieldEnabled>
                         <TCEforms>
                             <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.facebook.facebookPluginKeyfieldEnabled</label>
@@ -130,7 +127,6 @@
                             </config>
                         </TCEforms>
                     </settings.facebookApiId>
-
                     <settings.facebookApiSecret>
                         <TCEforms>
                             <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:facebook.api.secret</label>
@@ -140,80 +136,106 @@
                             </config>
                         </TCEforms>
                     </settings.facebookApiSecret>
-
-
                 </el>
             </ROOT>
         </display_facebook>
-        <display_imgur>
-            <ROOT>
-                <TCEforms>
-                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.imgur.caption</sheetTitle>
-                </TCEforms>
-                <type>array</type>
-                <el>
-                    <settings.imgurEnabled>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.imgur.active</label>
-
-                            <config>
-                                <type>check</type>
-                            </config>
-                        </TCEforms>
-                    </settings.imgurEnabled>
-                    <settings.imgurTags>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.imgur.tag</label>
-                            <config>
-                                <type>input</type>
-                            </config>
-                        </TCEforms>
-                    </settings.imgurTags>
-                </el>
-            </ROOT>
-        </display_imgur>
         <display_instagram>
             <ROOT>
-                <TCEforms>
-                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.instagram.caption</sheetTitle>
-                </TCEforms>
-                <type>array</type>
-                <el>
-                    <settings.instagramEnabled>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.instagram.active</label>
+            <TCEforms>
+                <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.instagram.caption</sheetTitle>
+            </TCEforms>
+            <type>array</type>
+            <el>
+                <settings.instagramEnabled>
+                    <TCEforms>
+                        <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.instagram.active</label>
 
-                            <config>
-                                <type>check</type>
-                            </config>
-                        </TCEforms>
-                    </settings.instagramEnabled>
-                    <settings.instagramSearchIds>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.instagram.searchID</label>
-                            <config>
-                                <type>input</type>
-                            </config>
-                        </TCEforms>
-                    </settings.instagramSearchIds>
-                    <settings.instagramHashTag>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.instagram.hashtag</label>
-                            <config>
-                                <type>input</type>
-                            </config>
-                        </TCEforms>
-                    </settings.instagramHashTag>
-                    <settings.instagramPostFilter>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.instagram.postfilter</label>
-                            <config>
-                                <type>check</type>
-                            </config>
-                        </TCEforms>
-                    </settings.instagramPostFilter>
-                </el>
-            </ROOT>
+                        <config>
+                            <type>check</type>
+                        </config>
+                    </TCEforms>
+                </settings.instagramEnabled>
+                <settings.instagramSearchIds>
+                    <TCEforms>
+                        <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.instagram.searchID</label>
+                        <config>
+                            <type>input</type>
+                        </config>
+                    </TCEforms>
+                </settings.instagramSearchIds>
+                <settings.instagramHashTag>
+                    <TCEforms>
+                        <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.instagram.hashtag</label>
+                        <config>
+                            <type>input</type>
+                        </config>
+                    </TCEforms>
+                </settings.instagramHashTag>
+                <settings.instagramPostFilter>
+                    <TCEforms>
+                        <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.instagram.postfilter</label>
+                        <config>
+                            <type>check</type>
+                        </config>
+                    </TCEforms>
+                </settings.instagramPostFilter>
+
+                <settings.instagramPluginKeyfieldEnabled>
+                    <TCEforms>
+                        <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.instagram.instagramPluginKeyfieldEnabled</label>
+                        <onChange>reload</onChange>
+                        <config>
+                            <type>check</type>
+                        </config>
+                    </TCEforms>
+                </settings.instagramPluginKeyfieldEnabled>
+                <settings.instagramClientId>
+                    <TCEforms>
+                        <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:instagram.client.id</label>
+                        <displayCond>FIELD:settings.instagramPluginKeyfieldEnabled:=:1</displayCond>
+                        <config>
+                            <type>input</type>
+                        </config>
+                    </TCEforms>
+                </settings.instagramClientId>
+                <settings.instagramClientSecret>
+                    <TCEforms>
+                        <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:instagram.client.secret</label>
+                        <displayCond>FIELD:settings.instagramPluginKeyfieldEnabled:=:1</displayCond>
+                        <config>
+                            <type>input</type>
+                        </config>
+                    </TCEforms>
+                </settings.instagramClientSecret>
+                 <settings.instagramClientCallback>
+                    <TCEforms>
+                        <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:instagram.client.callback</label>
+                        <displayCond>FIELD:settings.instagramPluginKeyfieldEnabled:=:1</displayCond>
+                        <config>
+                            <type>input</type>
+                        </config>
+                    </TCEforms>
+                </settings.instagramClientCallback>
+                <settings.instagramClientAccess_code>
+                    <TCEforms>
+                        <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:instagram.client.access_code</label>
+                        <displayCond>FIELD:settings.instagramPluginKeyfieldEnabled:=:1</displayCond>
+                        <config>
+                            <type>input</type>
+                        </config>
+                    </TCEforms>
+                </settings.instagramClientAccess_code>
+                <settings.instagramClientAaccess_token>
+                    <TCEforms>
+                        <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:instagram.client.access_token</label>
+                        <displayCond>FIELD:settings.instagramPluginKeyfieldEnabled:=:1</displayCond>
+                        <config>
+                            <type>input</type>
+                        </config>
+                    </TCEforms>
+                </settings.instagramClientAaccess_token>
+            </el>
+        </ROOT>
         </display_instagram>
         <display_linkedin>
             <ROOT>
@@ -302,49 +324,6 @@
                 </el>
             </ROOT>
         </display_pinterest>
-        <display_tumblr>
-            <ROOT>
-                <TCEforms>
-                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.tumblr.caption</sheetTitle>
-                </TCEforms>
-                <type>array</type>
-                <el>
-                    <settings.tumblrEnabled>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.tumblr.active</label>
-
-                            <config>
-                                <type>check</type>
-                            </config>
-                        </TCEforms>
-                    </settings.tumblrEnabled>
-                    <settings.tumblrShowOnlyImages>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.tumblr.showOnlyImages</label>
-                            <config>
-                                <type>check</type>
-                            </config>
-                        </TCEforms>
-                    </settings.tumblrShowOnlyImages>
-                    <settings.tumblrBlogNames>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.tumblr.searchID</label>
-                            <config>
-                                <type>input</type>
-                            </config>
-                        </TCEforms>
-                    </settings.tumblrBlogNames>
-                    <settings.tumblrHashTag>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.tumblr.hashTag</label>
-                            <config>
-                                <type>input</type>
-                            </config>
-                        </TCEforms>
-                    </settings.tumblrHashTag>
-                </el>
-            </ROOT>
-        </display_tumblr>
         <display_twitter>
             <ROOT>
                 <TCEforms>
@@ -543,6 +522,103 @@
                 </el>
             </ROOT>
         </display_vimeo>
+        <display_tumblr>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.tumblr.caption</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <settings.tumblrEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.tumblr.active</label>
+
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.tumblrEnabled>
+                    <settings.tumblrShowOnlyImages>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.tumblr.showOnlyImages</label>
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.tumblrShowOnlyImages>
+                    <settings.tumblrBlogNames>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.tumblr.searchID</label>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.tumblrBlogNames>
+                    <settings.tumblrHashTag>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.tumblr.hashTag</label>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.tumblrHashTag>
+                </el>
+            </ROOT>
+        </display_tumblr>
+        <display_imgur>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.imgur.caption</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <settings.imgurEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.imgur.active</label>
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.imgurEnabled>
+                    <settings.imgurTags>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.imgur.tag</label>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.imgurTags>
+
+                    <settings.imgurPluginKeyfieldEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.imgur.imgurPluginKeyfieldEnabled</label>
+                            <onChange>reload</onChange>
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.imgurPluginKeyfieldEnabled>
+                    <settings.imgurClientId>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:imgur.client.id</label>
+                            <displayCond>FIELD:settings.imgurPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.imgurClientId>
+                    <settings.imgurClientSecret>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:imgur.client.secret</label>
+                            <displayCond>FIELD:settings.imgurPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.imgurClientSecret>
+                </el>
+            </ROOT>
+        </display_imgur>
         <display_news>
             <ROOT>
                 <TCEforms>

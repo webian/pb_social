@@ -2,11 +2,13 @@
 
 namespace PlusB\PbSocial\Adapter;
 
+use PlusB\PbSocial\Service\LogTrait;
+
 /***************************************************************
  *
  *  Copyright notice
  *
- *  (c) 2016 Ramon Mohi <rm@plusb.de>, plus B
+ *  (c) 2016 Ramon Mohi <rm@plusb.de>, plusB
  *
  *  All rights reserved
  *
@@ -29,21 +31,32 @@ namespace PlusB\PbSocial\Adapter;
 
 abstract class SocialMediaAdapter implements SocialMediaAdapterInterface
 {
+    use LogTrait;
 
     const TYPE = 'socialMediaAdapter';
     const EXTKEY = 'pb_social';
 
     public $type;
-    protected $logger;
-    public $itemRepository;
 
-    public function __construct($itemRepository)
+
+    public $itemRepository;
+    protected $cacheIdentifier;
+
+    protected $ttContentUid, $ttContentPid;
+
+    public function __construct(
+        $itemRepository,
+        $cacheIdentifier,
+        $ttContentUid,
+        $ttContentPid)
     {
-        $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
 
         $this->itemRepository = $itemRepository;
-
         $this->type = static::TYPE;
+        $this->cacheIdentifier = $cacheIdentifier;
+
+        $this->ttContentUid = $ttContentUid;
+        $this->ttContentPid = $ttContentPid;
     }
 
     /**
@@ -108,21 +121,21 @@ abstract class SocialMediaAdapter implements SocialMediaAdapterInterface
         return false;
     }
 
-    public function logError($message)
+    /**
+     * @param string $message
+     * @param integer $locationInCode timestamp to find in code
+     */
+    public function logAdapterError($message, $locationInCode)
     {
-        if(isset($GLOBALS["BE_USER"])){
-            $GLOBALS['BE_USER']->simplelog( $this->type . ": " . $message , $extKey = self::EXTKEY, $error = 1);
-        }
-
-        $this->logger->error($this->type . " " . $message, array("data" => $this->type . " " . $message));
+        $this->logError($message, $this->ttContentUid, $this->ttContentPid, $this->type, $locationInCode);
     }
 
-    public function logWarning($message)
+    /**
+     * @param string $message
+     * @param integer $locationInCode timestamp to find in code
+     */
+    public function logAdapterWarning($message, $locationInCode)
     {
-        if(isset($GLOBALS["BE_USER"])){
-            $GLOBALS['BE_USER']->simplelog( $this->type . ": " . $message , $extKey = self::EXTKEY, $error =01);
-        }
-
-        $this->logger->warning($this->type . " " . $message, array("data" => $this->type . " " . $message));
+        $this->logWarning($message, $this->ttContentUid, $this->ttContentPid, $this->type, $locationInCode);
     }
 }

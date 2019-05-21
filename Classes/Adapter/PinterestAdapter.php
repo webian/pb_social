@@ -155,7 +155,7 @@ class PinterestAdapter extends SocialMediaAdapter
                         $feed->setResult($this->getPosts($boardname));
                         $this->itemRepository->updateFeed($feed);
                     } catch (\Exception $e) {
-                        $this->logError("feeds can't be updated - " . $e->getMessage());
+                        $this->logAdapterError("feeds can't be updated - " . $e->getMessage(), 1558435591);
                     }
                 }
                 $result[] = $feed;
@@ -171,7 +171,7 @@ class PinterestAdapter extends SocialMediaAdapter
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
             } catch (\Exception $e) {
-                $this->logError('initial load for feed failed - ' . $e->getMessage());
+                $this->logAdapterError('initial load for feed failed - ' . $e->getMessage(), 1558435595);
             }
         }
 
@@ -252,7 +252,8 @@ class PinterestAdapter extends SocialMediaAdapter
                     $this->credentialRepository->saveCredential($credential);
                 }
             } else {
-                $this->logError('access code expired. Please provide new code in pb_social extension configuration.');
+                $this->logAdapterError('access code expired. Please provide new code in pb_social extension configuration.',
+                    1558435580);
                 return null;
             }
         }
@@ -264,8 +265,7 @@ class PinterestAdapter extends SocialMediaAdapter
             $this->api->request->get('me');
         } catch (\Exception $e) {
             $this->credentialRepository->deleteCredential($credential);
-            $this->logError('exception: ' . $e->getMessage());
-            $this->logWarning(': Please provide new access code');
+            $this->logAdapterError('exception: ' . $e->getMessage(), 1558435586);
         }
     }
 
