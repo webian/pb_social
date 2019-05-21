@@ -89,7 +89,6 @@ abstract class AbstractBaseService implements SingletonInterface
     public function initializeObject()
     {
         $this->initializeConfiguration();
-        $this->initializeLogger();
     }
 
     protected function initializeConfiguration()
@@ -98,33 +97,13 @@ abstract class AbstractBaseService implements SingletonInterface
             ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT
         );
 
+        /** @var $logger \TYPO3\CMS\Core\Log\Logger */
+        $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
+
         $this->tsConfig = $configFull['plugin.']['tx_pbsocial.'];
         $this->settings = $this->tsConfig['settings.'];
 
         $this->extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::EXTKEY]);
-    }
-
-    /**
-     * Initialize the logger
-     */
-    protected function initializeLogger()
-    {
-        $r = new \ReflectionClass($this);
-        $this->logger = $this->logManager->getLogger($r->getName());
-    }
-
-    /**
-     * Logs a message
-     *
-     * @param $message
-     * @param array $data
-     * @param int $level
-     *
-     * @return mixed
-     */
-    protected function log($message, array $data, $level = LogLevel::INFO)
-    {
-        return $this->logger->log($level, $message, $data);
     }
     
     /**

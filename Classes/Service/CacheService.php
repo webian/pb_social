@@ -147,10 +147,9 @@ class CacheService extends AbstractBaseService
 
             return $results;
         } catch (\Exception $e) {
-
             if(isset($GLOBALS["BE_USER"])){
-                $GLOBALS['BE_USER']->simplelog('[pb_social] ' .$socialNetworkTypeString . ' flexform '. $ttContentUid.': ' . $e->getMessage(), $extKey = self::EXTKEY, $error = 1);
-            }else {
+                $GLOBALS['BE_USER']->writelog($type = 4, $action = 0,  $error = 1, $details_nr = 1558354948, $details = '[pb_social] ' .$socialNetworkTypeString . ' flexform '. $ttContentUid.': ' . $e->getMessage(), $data = []);
+            }else{
                 $this->logger->warning('[pb_social] ' .$socialNetworkTypeString . ' flexform '. $ttContentUid.': ' . $e->getMessage());
             }
             return $results;

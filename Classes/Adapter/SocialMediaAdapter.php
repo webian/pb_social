@@ -39,7 +39,8 @@ abstract class SocialMediaAdapter implements SocialMediaAdapterInterface
 
     public function __construct($itemRepository)
     {
-        $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
+        /** @var $logger \TYPO3\CMS\Core\Log\Logger */
+        $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
 
         $this->itemRepository = $itemRepository;
 
@@ -111,18 +112,13 @@ abstract class SocialMediaAdapter implements SocialMediaAdapterInterface
     public function logError($message)
     {
         if(isset($GLOBALS["BE_USER"])){
-            $GLOBALS['BE_USER']->simplelog( $this->type . ": " . $message , $extKey = self::EXTKEY, $error = 1);
+            $GLOBALS['BE_USER']->writelog($type = 4, $action = 0,  $error = 1, $details_nr = 1558354848, $details = $this->type . ": " . $message, $data = []);
         }
-
-        $this->logger->error($this->type . " " . $message, array("data" => $this->type . " " . $message));
+        $this->logger->error($this->type . " " . $message);
     }
 
     public function logWarning($message)
     {
-        if(isset($GLOBALS["BE_USER"])){
-            $GLOBALS['BE_USER']->simplelog( $this->type . ": " . $message , $extKey = self::EXTKEY, $error =01);
-        }
-
-        $this->logger->warning($this->type . " " . $message, array("data" => $this->type . " " . $message));
+        $this->logger->warning($this->type . " " . $message);
     }
 }
