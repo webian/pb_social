@@ -87,7 +87,7 @@ call_user_func(function () {
         If "4: fatal error" is set, filewriter is defined for {DEBUG(7)-1-warning(4)=2} CRITICAL = 2 and worse.
          */
         $loglevel = call_user_func(function ($systemLoglevel) {
-            $systemLoglevel = $systemLoglevel?:2;
+            $systemLoglevel = $systemLoglevel!==""?$systemLoglevel:2;
             $minimumLogLevel = \TYPO3\CMS\Core\Log\LogLevel::DEBUG - 1 - $systemLoglevel; //{DEBUG(7)-1-warning(2) = 4}
                 return
                     TYPO3\CMS\Core\Utility\MathUtility::isIntegerInRange($minimumLogLevel,\TYPO3\CMS\Core\Log\LogLevel::EMERGENCY,\TYPO3\CMS\Core\Log\LogLevel::DEBUG)

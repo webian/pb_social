@@ -241,14 +241,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
             $this->setVerbose(false);
         }
 
-        if($this->isVerbose() === true){
-            $this->outputConsoleInfo("entering verbose output");
-        }
-
         $this->setCallnetwork($callnetwork);
-        if($this->getCallnetwork() !== 'all'){
-            $this->outputConsoleInfo("just calling one network: {$this->getCallnetwork()}");
-        }
 
         # Initialize logger
         $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
@@ -310,18 +303,15 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
                 /* starting procedural list of requests */
                 if ($flexformSettings['facebookEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_FACEBOOK)) {
 
-                    $this->outputLogInformation(
-                        $this->feedSyncService->syncFeed(self::TYPE_FACEBOOK, $flexformSettings, $xmlStr->getUid(),
-                            $xmlStr->getPid(), $this->isVerbose())
-                    );
+                    $this->feedSyncService->syncFeed(self::TYPE_FACEBOOK, $flexformSettings, $xmlStr->getUid(),
+                        $xmlStr->getPid(), $this->isVerbose());
 
                 }
                 if ($flexformSettings['instagramEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_INSTAGRAM)) {
 
-                    $this->outputLogInformation(
+
                         $this->feedSyncService->syncFeed(self::TYPE_INSTAGRAM, $flexformSettings, $xmlStr->getUid(),
-                            $xmlStr->getPid(), $this->isVerbose())
-                    );
+                            $xmlStr->getPid(), $this->isVerbose());
 
                 }
 
@@ -330,10 +320,10 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
 
                 if ($flexformSettings['imgurEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_IMGUR)) {
 
-                    $this->outputLogInformation(
+
                         $this->feedSyncService->syncFeed(self::TYPE_IMGUR, $flexformSettings, $xmlStr->getUid(),
                             $xmlStr->getPid(), $this->isVerbose())
-                    );
+                    ;
 
                 }
 
@@ -341,45 +331,45 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
 
                 if ($flexformSettings['linkedinEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_LINKEDIN)) {
 
-                    $this->outputLogInformation(
+
                         $this->feedSyncService->syncFeed(self::TYPE_LINKEDIN, $flexformSettings, $xmlStr->getUid(),
                             $xmlStr->getPid(), $this->isVerbose())
-                    );
+                    ;
 
                 }
 
                 if ($flexformSettings['pinterestEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_PINTEREST)) {
 
-                    $this->outputLogInformation(
+
                         $this->feedSyncService->syncFeed(self::TYPE_PINTEREST, $flexformSettings, $xmlStr->getUid(),
                             $xmlStr->getPid(), $this->isVerbose())
-                    );
+                    ;
                 }
 
                 if ($flexformSettings['tumblrEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_TUMBLR)) {
 
-                    $this->outputLogInformation(
+
                         $this->feedSyncService->syncFeed(self::TYPE_TUMBLR, $flexformSettings, $xmlStr->getUid(),
                             $xmlStr->getPid(), $this->isVerbose())
-                    );
+                    ;
 
                 }
 
                 if ($flexformSettings['twitterEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_TWITTER)) {
 
-                    $this->outputLogInformation(
+
                         $this->feedSyncService->syncFeed(self::TYPE_TWITTER, $flexformSettings, $xmlStr->getUid(),
                             $xmlStr->getPid(), $this->isVerbose())
-                    );
+                    ;
 
                 }
 
                 if ($flexformSettings['youtubeEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_YOUTUBE)) {
 
-                    $this->outputLogInformation(
+
                         $this->feedSyncService->syncFeed(self::TYPE_YOUTUBE, $flexformSettings, $xmlStr->getUid(),
                             $xmlStr->getPid(), $this->isVerbose())
-                    );
+                    ;
 
                 }
 
@@ -393,70 +383,15 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
 
                 if ($flexformSettings['newsEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_TX_NEWS)) {
 
-                    $this->outputLogInformation(
+
                         $this->feedSyncService->syncFeed(self::TYPE_TX_NEWS, $flexformSettings, $xmlStr->getUid(),
                             $xmlStr->getPid(), $this->isVerbose())
-                    );
+                    ;
 
                 }
 
-                #$this->outputSysLog();
+
             }
-        }
-    }
-
-    /**
-     * @param $message object
-     */
-    /**
-     * @param $messageObject object of message->isSuccessfull and message->message
-     */
-    private function outputLogInformation($messageObject){
-        if($messageObject->isSuccessfull === true){
-            $this->outputLogInfo($messageObject->message);
-        }else{
-            $this->outputLogWarning($messageObject->message);
-            $this->collectSyslogWarnings($messageObject->message);
-        }
-        $this->outputConsoleInfo($messageObject->message);
-
-    }
-
-    private function collectSyslogWarnings($message){
-        $this->setIsSyslogWarning(true);
-        $this->setSysLogWarnings($message);
-    }
-
-    private function outputSysLog(){
-        if($this->isSyslogWarning() === true){
-            $this->scheduler->log($this->getSysLogWarnings(), 1, self::EXTKEY);
-            $this->resetSysLogWarnings();
-        }
-    }
-
-    /**
-     * Output in Logfile
-     * @param $message string
-     */
-    private function outputLogInfo($message){
-        #$this->logger->info($message);
-    }
-
-    /**
-     * Output in Logfile
-     * @param $message string
-     */
-    private function outputLogWarning($message){
-        #$this->logger->warning($message);
-    }
-
-    /**
-     * Output in command line console
-     * @param $message
-     */
-    private function outputConsoleInfo($message){
-        if($this->isSilent() !== true){
-           # $this->outputFormatted($message);
         }
     }
 }
