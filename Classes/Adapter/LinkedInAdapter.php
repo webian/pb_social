@@ -99,12 +99,19 @@ class LinkedInAdapter extends SocialMediaAdapter
      */
     protected $credentialRepository;
 
-    public function __construct($apiKey, $apiSecret, $apiCallback, $token, $itemRepository, $credentialRepository, $options)
+    public function __construct($apiKey,
+        $apiSecret,
+        $apiCallback,
+        $token,
+        $itemRepository,
+        $credentialRepository,
+        $options,
+        $ttContentUid,
+        $ttContentPid,
+        $cacheIdentifier)
     {
-        parent::__construct($itemRepository);
-        /**
-         * todo: quick fix - but we'd better add a layer for adapter in between, here after "return $this" instance is not completed but existing (AM)
-         */
+        parent::__construct($itemRepository,  $cacheIdentifier, $ttContentUid, $ttContentPid);
+
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
                 array(
@@ -114,13 +121,13 @@ class LinkedInAdapter extends SocialMediaAdapter
                     'token' => $token,
                     'options' => $options
                 )) === false)
-        {return $this;}
+        {
+            throw new \Exception( self::TYPE . ' ' . $this->validationMessage );
+        }
         /* validated */
 
         $this->api =  new Client($this->apiKey,$this->apiSecret);
-
         $this->credentialRepository = $credentialRepository;
-
         // get access token from database
         $this->setAccessToken($this->token, $this->apiKey);
     }
@@ -140,9 +147,9 @@ class LinkedInAdapter extends SocialMediaAdapter
         $this->setOptions($parameter['options']);
 
         if (empty($this->apiKey) || empty($this->apiSecret) ||  empty($this->token) ||  empty($this->apiCallback)) {
-            $this->validationMessage = self::TYPE . ' credentials not set';
+            $this->validationMessage = self::TYPE . ' credentials not set ' . (empty($this->apiKey)?'apiKey ':''). (empty($this->apiSecret)?'apiSecret ':''). (empty($this->token)?'token ':''). (empty($this->apiCallback)?'apiCallback ':'');
         } elseif (empty($this->options->companyIds)) {
-            $this->validationMessage = self::TYPE . ' no search term defined';
+            $this->validationMessage = self::TYPE . ' no search term defined ' . (empty($this->companyIds)?'companyIds ':'');
         } else {
             $this->isValid = true;
         }
@@ -167,13 +174,12 @@ class LinkedInAdapter extends SocialMediaAdapter
             * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
             */
             if ($searchId != ""){
-                $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchId);
+                $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->cacheIdentifier);
 
                 if ($feeds && $feeds->count() > 0) {
                     $feed = $feeds->getFirst();
                     /**
                      * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to bee free, so... change!
-                     * todo: try to get rid of duplicate code
                      */
                     if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
                         try {
@@ -183,7 +189,7 @@ class LinkedInAdapter extends SocialMediaAdapter
                             $feed->setResult(json_encode($companyUpdates));
                             $this->itemRepository->updateFeed($feed);
                         } catch (\Exception $e) {
-                            $this->logAdapterError("feeds cannot be updated  - " . $e->getMessage(), 1558435552);
+                            throw new \Exception( "feeds cannot be updated  - " . $e->getMessage());
                             continue;
                         }
                     }
@@ -192,21 +198,17 @@ class LinkedInAdapter extends SocialMediaAdapter
                 }
 
                 try {
-
-
-
                     # api call
                     $companyUpdates = $this->api->get('companies/' . $searchId .'/updates?format=json' . $filters);
                     $feed = new Item(self::TYPE);
-                    $feed->setCacheIdentifier($searchId);
+                    $feed->setCacheIdentifier($this->cacheIdentifier);
                     $feed->setResult(json_encode($companyUpdates));
 
                     // save to DB and return current feed
                     $this->itemRepository->saveFeed($feed);
                     $result[] = $feed;
                 } catch (\Exception $e) {
-                    $this->logAdapterError("get_updates failed - " . $e->getMessage(), 1558435546);
-                    throw $e;
+                    throw new \Exception("get_updates failed. " . $e->getMessage(), 1558516424);
                 }
             }
         }
@@ -247,14 +249,15 @@ class LinkedInAdapter extends SocialMediaAdapter
 
     private function setAccessToken($token, $apiKey)
     {
-        if (empty($token))
+        if (empty(!$token))
         {
-            $this->logAdapterError('Access token empty.', 1558435558);
-            return null;
+            $this->logAdapterError('Access token empty', 1558435558);
+            throw new \Exception('Access token empty', 1558515214);
+            #return null;
         }
         if (empty($apiKey))
         {
-            $this->logAdapterError('Client ID empty.', 1558435560);
+            $this->logAdapterError('Client ID empty', 1558435560);
             return null;
         }
         # generate AccessToken class
@@ -265,7 +268,7 @@ class LinkedInAdapter extends SocialMediaAdapter
         }
         catch (\Exception $e)
         {
-            $this->logAdapterError('failed to setup AccessToken - ' . $e->getMessage(), 1558435565);
+            $this->logAdapterError('failed to setup AccessToken' . $e->getMessage(), 1558435565);
             return null;
         }
         # get access token from database #

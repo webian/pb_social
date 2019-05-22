@@ -104,16 +104,24 @@ class InstagramAdapter extends SocialMediaAdapter
      * @param $token
      * @param $itemRepository
      * @param $options
+     * @param $ttContentUid
+     * @param $ttContentPid
+     * @param $cacheIdentifier
      * @throws \MetzWeb\Instagram\InstagramException
      */
-    public function __construct($apiKey, $apiSecret, $apiCallback, $code, $token, $itemRepository, $options,
+    public function __construct(
+        $apiKey,
+        $apiSecret,
+        $apiCallback,
+        $code,
+        $token,
+        $itemRepository,
+        $options,
         $ttContentUid,
         $ttContentPid,
         $cacheIdentifier)
     {
-        parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid,
-            $ttContentPid);
-
+        parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
 
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
@@ -126,11 +134,11 @@ class InstagramAdapter extends SocialMediaAdapter
                     'options' => $options
                 )) === false)
         {
-            throw new \Exception( self::TYPE . ' ' . $this->validationMessage );
+            throw new \Exception(self::TYPE . ' ' . $this->validationMessage,  1558515732);
         }
+        /* validated */
 
         $this->api =  new Instagram(array('apiKey' => $this->apiKey, 'apiSecret' => $this->apiSecret, 'apiCallback' => $this->apiCallback));
-
         $this->api->setAccessToken($this->token);
     }
 
@@ -171,8 +179,6 @@ class InstagramAdapter extends SocialMediaAdapter
 
     public function getResultFromApi()
     {
-        $this->logAdapterError('haspel saspel gaspel', 1558435717);
-
         $options = $this->options;
         $result = array();
 
@@ -193,14 +199,14 @@ class InstagramAdapter extends SocialMediaAdapter
                             try {
                                 $userPosts = $this->api->getUserMedia($searchId, $options->feedRequestLimit);
                                 if ($userPosts->meta->code >= 400) {
-                                    $this->logAdapterWarning('error: ' . json_encode($userPosts->meta),1558435723);
+                                    $this->logAdapterWarning('warning: ' . json_encode($userPosts->meta),1558435723);
                                     continue;
                                 }
                                 $feed->setDate(new \DateTime('now'));
                                 $feed->setResult(json_encode($userPosts));
                                 $this->itemRepository->updateFeed($feed);
                             } catch (\Exception $e) {
-                                throw new \Exception("feeds can't be updated - " . $e->getMessage());
+                                throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1558515755);
                                 continue;
                             }
                         }
@@ -211,7 +217,7 @@ class InstagramAdapter extends SocialMediaAdapter
                     try {
                         $userPosts = $this->api->getUserMedia($searchId, $options->feedRequestLimit);
                         if ($userPosts->meta->code >= 400) {
-                            $this->logAdapterWarning('error: ' . json_encode($userPosts->meta),1558435728);
+                            $this->logAdapterWarning('warning: ' . json_encode($userPosts->meta),1558435728);
                         }
                         $feed = new Item(self::TYPE);
                         $feed->setCacheIdentifier($this->cacheIdentifier);
@@ -221,7 +227,7 @@ class InstagramAdapter extends SocialMediaAdapter
                         $this->itemRepository->saveFeed($feed);
                         $result[] = $feed;
                     } catch (\Exception $e) {
-                        throw new \Exception('initial load for feed failed - ' . $e->getMessage());
+                        throw new \Exception('initial load for feed failed' . $e->getMessage(), 1558515800);
                     }
                 }
             }
@@ -239,13 +245,13 @@ class InstagramAdapter extends SocialMediaAdapter
                         try {
                             $tagPosts = $this->api->getTagMedia($searchId, $options->feedRequestLimit);
                             if ($tagPosts->meta->code >= 400) {
-                                $this->logAdapterWarning('error: ' . json_encode($tagPosts->meta),1558435751);
+                                $this->logAdapterWarning('warning: ' . json_encode($tagPosts->meta),1558435751);
                             }
                             $feed->setDate(new \DateTime('now'));
                             $feed->setResult(json_encode($tagPosts));
                             $this->itemRepository->updateFeed($feed);
                         } catch (\Exception $e) {
-                            throw new \Exception("feeds can't be updated - " . $e->getMessage());
+                            throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1558515771);
                         }
                     }
                     $result[] = $feed;
@@ -255,7 +261,7 @@ class InstagramAdapter extends SocialMediaAdapter
                 try {
                     $tagPosts = $this->api->getTagMedia($searchId, $options->feedRequestLimit);
                     if ($tagPosts->meta->code >= 400) {
-                        $this->logAdapterWarning('error: ' . json_encode($tagPosts->meta),1558435756);
+                        $this->logAdapterWarning('warning: ' . json_encode($tagPosts->meta),1558435756);
                     }
                     $feed = new Item(self::TYPE);
                     $feed->setCacheIdentifier($this->cacheIdentifier);
@@ -264,7 +270,7 @@ class InstagramAdapter extends SocialMediaAdapter
                     $this->itemRepository->saveFeed($feed);
                     $result[] = $feed;
                 } catch (\Exception $e) {
-                    throw new \Exception('initial load for feed failed - ' . $e->getMessage());
+                    throw new \Exception('initial load for feed failed' . $e->getMessage(), 1558515784);
                 }
             }
         }

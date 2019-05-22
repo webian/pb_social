@@ -79,9 +79,19 @@ class PinterestAdapter extends SocialMediaAdapter
         $this->options = $options;
     }
 
-    public function __construct($appId, $appSecret, $accessCode, $itemRepository, $credentialRepository, $options)
+    public function __construct(
+        $appId,
+        $appSecret,
+        $accessCode,
+        $itemRepository,
+        $credentialRepository,
+        $options,
+        $ttContentUid,
+        $ttContentPid,
+        $cacheIdentifier
+    )
     {
-        parent::__construct($itemRepository);
+        parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
         /**
          * todo: quick fix - but we'd better add a layer for adapter in between, here after "return $this" instance is not completed but existing (AM)
          */
@@ -93,15 +103,14 @@ class PinterestAdapter extends SocialMediaAdapter
                     'accessCode' => $accessCode,
                     'options' => $options
                 )) === false)
-        {return $this;}
+        {
+            throw new \Exception( self::TYPE . ' ' . $this->validationMessage, 1558515175);
+        }
+
         /* validated */
-
         $this->api = new Pinterest\Pinterest($this->appId, $this->appSecret);
-
         $this->credentialRepository = $credentialRepository;
-
         $code = $this->extractCode($this->accessCode);
-
         $this->getAccessToken($code);
     }
 
@@ -120,9 +129,9 @@ class PinterestAdapter extends SocialMediaAdapter
         $this->setOptions($parameter['options']);
 
         if (empty($this->appId) || empty($this->appSecret) ||  empty($this->accessCode)) {
-            $this->validationMessage = self::TYPE . ' credentials not set';
+            $this->validationMessage = self::TYPE . ' credentials not set: '. (empty($this->appId)?'appId ':''). (empty($this->appSecret)?'appSecret ':''). (empty($this->accessCode)?'accessCode ':'');
         } elseif (empty($this->options->pinterest_username) || empty($this->options->pinterest_username)) {
-            $this->validationMessage = self::TYPE . ' username or boardname not defined';
+            $this->validationMessage = self::TYPE . ' username or board name not defined in flexform settings';
         } else {
             $this->isValid = true;
         }
@@ -136,18 +145,15 @@ class PinterestAdapter extends SocialMediaAdapter
         $result = array();
 
         $boardname = $options->pinterest_username . '/' . $options->pinterest_boardname;
-        /*
-        * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
-        */
+
         foreach (explode(',', $options->username) as $searchId) {
             $searchId = trim($searchId);
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchId);
+            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->cacheIdentifier);
 
             if ($feeds && $feeds->count() > 0) {
                 $feed = $feeds->getFirst();
                 /**
                  * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to bee free, so... change!
-                 * todo: try to get rid of duplicate code
                  */
                 if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
                     try {
@@ -155,7 +161,7 @@ class PinterestAdapter extends SocialMediaAdapter
                         $feed->setResult($this->getPosts($boardname));
                         $this->itemRepository->updateFeed($feed);
                     } catch (\Exception $e) {
-                        $this->logAdapterError("feeds can't be updated - " . $e->getMessage(), 1558435591);
+                        throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1558435591);
                     }
                 }
                 $result[] = $feed;
@@ -164,14 +170,14 @@ class PinterestAdapter extends SocialMediaAdapter
 
             try {
                 $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($searchId);
+                $feed->setCacheIdentifier($this->cacheIdentifier);
                 $feed->setResult($this->getPosts($boardname));
 
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
             } catch (\Exception $e) {
-                $this->logAdapterError('initial load for feed failed - ' . $e->getMessage(), 1558435595);
+                throw new \Exception('initial load for feed failed' . $e->getMessage(), 1558435595);
             }
         }
 
@@ -265,7 +271,7 @@ class PinterestAdapter extends SocialMediaAdapter
             $this->api->request->get('me');
         } catch (\Exception $e) {
             $this->credentialRepository->deleteCredential($credential);
-            $this->logAdapterError('exception: ' . $e->getMessage(), 1558435586);
+            throw new \Exception('exception: ' . $e->getMessage(), 1558435586);
         }
     }
 

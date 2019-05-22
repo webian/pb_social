@@ -67,23 +67,27 @@ class YoutubeAdapter extends SocialMediaAdapter
 
 
 
-    public function __construct($appKey, $itemRepository, $options)
+    public function __construct(
+        $appKey,
+        $itemRepository,
+        $options,
+        $ttContentUid,
+        $ttContentPid,
+        $cacheIdentifier
+    )
     {
-        parent::__construct($itemRepository);
-        /**
-         * todo: quick fix - but we'd better add a layer for adapter in between, here after "return $this" instance is not completed but existing (AM)
-         */
+        parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
+
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
                 array(
                     'appKey' => $appKey,
                     'options' => $options
                 )) === false)
-        {return $this;}
+        {
+            throw new \Exception( self::TYPE . ' ' . $this->validationMessage, 1558521003);
+        }
         /* validated */
-
-
-        //todo: use google client
     }
 
     /**
@@ -118,9 +122,6 @@ class YoutubeAdapter extends SocialMediaAdapter
             'maxResults' => $options->feedRequestLimit,
             'part' => 'snippet'
         );
-        /*
-        * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
-        */
 
         if ($options->youtubeType != '') {
             $fields['type'] = $options->youtubeType;
@@ -142,7 +143,7 @@ class YoutubeAdapter extends SocialMediaAdapter
 
         foreach ($searchTerms as $searchString) {
             $searchString = trim(urlencode($searchString));
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchString);
+            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->cacheIdentifier);
             if ($feeds && $feeds->count() > 0) {
                 $feed = $feeds->getFirst();
                 /**
@@ -156,7 +157,7 @@ class YoutubeAdapter extends SocialMediaAdapter
                         $this->itemRepository->updateFeed($feed);
                         $result[] = $feed;
                     } catch (\Exception $e) {
-                        $this->logAdapterError("feeds can't be updated - " . $e->getMessage(), 1558435668);
+                        throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1558435668);
                     }
                 }
                 continue;
@@ -164,13 +165,13 @@ class YoutubeAdapter extends SocialMediaAdapter
 
             try {
                 $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($searchString);
+                $feed->setCacheIdentifier($this->cacheIdentifier);
                 $feed->setResult($this->getPosts($searchString, $fields, $options));
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
             } catch (\Exception $e) {
-                $this->logAdapterError('initial load for feed failed - ' . $e->getMessage(), 1558435673);
+                throw new \Exception('initial load for feed failed' . $e->getMessage(), 1558435673);
             }
         }
 
@@ -236,7 +237,7 @@ class YoutubeAdapter extends SocialMediaAdapter
         $curl_response = curl_exec($ch);
 
         if (property_exists(json_decode($curl_response), 'error')) {
-            throw new \Exception($curl_response);
+            throw new \Exception($curl_response, 1558521095);
         }
 
         return $curl_response;

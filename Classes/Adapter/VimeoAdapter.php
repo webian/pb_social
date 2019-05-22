@@ -77,12 +77,20 @@ class VimeoAdapter extends SocialMediaAdapter
 
 
 
-    public function __construct($clientIdentifier, $clientSecret, $accessToken, $itemRepository, $options)
+    public function __construct(
+        $clientIdentifier,
+        $clientSecret,
+        $accessToken,
+        $itemRepository,
+        $options,
+        $ttContentUid,
+        $ttContentPid,
+        $cacheIdentifier
+    )
     {
-        parent::__construct($itemRepository);
-        /**
-         * todo: quick fix - but we'd better add a layer for adapter in between, here after "return $this" instance is not completed but existing (AM)
-         */
+        parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
+
+
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
                 array(
@@ -91,7 +99,9 @@ class VimeoAdapter extends SocialMediaAdapter
                     'accessToken' => $accessToken,
                     'options' => $options
                 )) === false)
-        {return $this;}
+        {
+            throw new \Exception( self::TYPE . ' ' . $this->validationMessage, 1558521262);
+        }
         /* validated */
 
         $this->api = new \Vimeo\Vimeo($clientIdentifier, $clientSecret, $accessToken);
@@ -132,15 +142,12 @@ class VimeoAdapter extends SocialMediaAdapter
             // 'part' => 'snippet'
         );
 
-        /*
-         * todo: duplicate cache writing, must be erazed here - searchString is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
-         */
         $searchTerms = explode(',', $options->settings['vimeoChannel']);
 
         foreach ($searchTerms as $searchString) {
 
             $searchString = trim($searchString);
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchString);
+            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->cacheIdentifier);
             if ($feeds && $feeds->count() > 0) {
                 $feed = $feeds->getFirst();
                 /**
@@ -154,7 +161,7 @@ class VimeoAdapter extends SocialMediaAdapter
                         $this->itemRepository->updateFeed($feed);
                         $result[] = $feed;
                     } catch (\Exception $e) {
-                        $this->logAdapterError("feeds can't be updated - " . $e->getMessage(), 1558435657);
+                        throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1558435657);
                     }
                 }
                 continue;
@@ -168,7 +175,7 @@ class VimeoAdapter extends SocialMediaAdapter
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
             } catch (\Exception $e) {
-                $this->logAdapterError('initial load for feed failed - ' . $e->getMessage(), 1558435662);
+                throw new \Exception('initial load for feed failed' . $e->getMessage(), 1558435662);
             }
         }
 

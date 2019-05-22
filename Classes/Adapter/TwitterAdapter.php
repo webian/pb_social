@@ -85,13 +85,20 @@ class TwitterAdapter extends SocialMediaAdapter
 
     //private $api_url = 'statuses/user_timeline';
 
-    public function __construct($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret, $itemRepository, $options)
+    public function __construct(
+        $consumerKey,
+        $consumerSecret,
+        $accessToken,
+        $accessTokenSecret,
+        $itemRepository,
+        $options,
+        $ttContentUid,
+        $ttContentPid,
+        $cacheIdentifier
+    )
     {
-        parent::__construct($itemRepository);
-        /**
-         * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to bee free, so... change!
-         * todo: try to get rid of duplicate code
-         */
+        parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
+
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
                 array(
@@ -101,7 +108,9 @@ class TwitterAdapter extends SocialMediaAdapter
                     'accessTokenSecret' => $accessTokenSecret,
                     'options' => $options
                 )) === false)
-        {return $this;}
+        {
+            throw new \Exception( self::TYPE . ' ' . $this->validationMessage, 1558520359);
+        }
         /* validated */
 
         $this->api =  new TwitterOAuth($this->consumerKey, $this->consumerSecret, $this->accessToken, $this->accessTokenSecret);
@@ -159,7 +168,7 @@ class TwitterAdapter extends SocialMediaAdapter
 
             foreach (explode(',', $options->twitterSearchFieldValues) as $searchValue) {
                 $searchValue = trim($searchValue);
-                $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchValue);
+                $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->cacheIdentifier);
 
 
                 if ($feeds && $feeds->count() > 0) {
@@ -171,7 +180,7 @@ class TwitterAdapter extends SocialMediaAdapter
                             $feed->setResult($tweets);
                             $this->itemRepository->updateFeed($feed);
                         } catch (\Exception $e) {
-                            $this->logAdapterError("feeds can't be updated - " . $e->getMessage(), 1558435620);
+                            throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1558435620);
                         }
                     }
                     $result[] = $feed;
@@ -181,14 +190,14 @@ class TwitterAdapter extends SocialMediaAdapter
                 try {
                     $tweets = $this->getPosts($apiParameters, $options, $searchValue);
                     $feed = new Item(self::TYPE);
-                    $feed->setCacheIdentifier($searchValue);
+                    $feed->setCacheIdentifier($this->cacheIdentifier);
                     $feed->setResult($tweets);
 
                     // save to DB and return current feed
                     $this->itemRepository->saveFeed($feed);
                     $result[] = $feed;
                 } catch (\Exception $e) {
-                    $this->logAdapterError('initial load for feed failed - ' . $e->getMessage(), 1558435624);
+                    throw new \Exception('initial load for feed failed. ' . $e->getMessage(), 1558435624);
                 }
             }
         }
@@ -214,7 +223,7 @@ class TwitterAdapter extends SocialMediaAdapter
                             $feed->setResult($tweets);
                             $this->itemRepository->updateFeed($feed);
                         } catch (\Exception $e) {
-                            $this->logAdapterError("feeds can't be updated - " . $e->getMessage(), 1558435632);
+                            throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1558435632);
                         }
                     }
                     $result[] = $feed;
@@ -231,7 +240,7 @@ class TwitterAdapter extends SocialMediaAdapter
                     $this->itemRepository->saveFeed($feed);
                     $result[] = $feed;
                 } catch (\Exception $e) {
-                    $this->logAdapterError('initial load for feed failed - ' . $e->getMessage(), 1558435639);
+                    throw new \Exception('initial load for feed failed ' . $e->getMessage(), 1558435639);
                 }
             }
         }

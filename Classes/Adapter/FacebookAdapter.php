@@ -74,13 +74,17 @@ class FacebookAdapter extends SocialMediaAdapter
         $this->options = $options;
     }
 
-    public function __construct($apiId, $apiSecret, $itemRepository, $options,
+    public function __construct(
+        $apiId,
+        $apiSecret,
+        $itemRepository,
+        $options,
         $ttContentUid,
         $ttContentPid,
-        $cacheIdentifier)
+        $cacheIdentifier
+    )
     {
-        parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid,
-            $ttContentPid);
+        parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
 
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
@@ -90,11 +94,11 @@ class FacebookAdapter extends SocialMediaAdapter
                 'options' => $options
             )) === false)
         {
-            throw new \Exception( self::TYPE . ' ' . $this->validationMessage );
+            throw new \Exception( self::TYPE . ' ' . $this->validationMessage, 1558515175);
         }
+        /* validated */
 
         $this->api = new Facebook(['app_id' => $this->apiId,'app_secret' => $this->apiSecret,'default_graph_version' => self::api_version]);
-
         $this->access_token =  $this->api->getApp()->getAccessToken();
         $this->api->setDefaultAccessToken($this->access_token);
     }
@@ -130,7 +134,7 @@ class FacebookAdapter extends SocialMediaAdapter
 
         $facebookSearchIds = $options->settings['facebookSearchIds'];
         if (empty($facebookSearchIds)) {
-            $this->logAdapterWarning('- no search term defined', 1558435713);
+            $this->logAdapterWarning('no search term defined', 1558435713);
             return null;
         }
 
@@ -144,7 +148,7 @@ class FacebookAdapter extends SocialMediaAdapter
                 $posts = $this->getPosts($searchId, $options->feedRequestLimit, $options->settings['facebookEdge']);
             }
             catch (\Exception $e) {
-                throw new \Exception( $e->getMessage() );
+                throw new \Exception($e->getMessage(), 1558515175);
             }
 
             if ($feeds && $feeds->count() > 0) {
@@ -266,11 +270,11 @@ class FacebookAdapter extends SocialMediaAdapter
             );
 
         } catch (\Facebook\Exceptions\FacebookSDKException $e) {
-            throw new \Exception( '1558011840 ' . $e->getMessage() );
+            throw new \Exception($e->getMessage(), 1558515214);
         }
 
         if (empty(json_decode($resp->getBody())->data) || json_encode($resp->getBody()->data) == null) {
-            throw new \Exception( '1558011842 no posts found for ' . $searchId );
+            throw new \Exception( 'no posts found for ' . $searchId, 1558515218);
         }
 
         return $resp->getBody();

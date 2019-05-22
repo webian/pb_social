@@ -11,7 +11,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  *  Copyright notice
  *
- *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
+ *  (c) 2019 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -34,7 +34,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 trait LogTrait
 {
+    /**
+     * @var Logger $logger instance
+     */
     protected $logger;
+
+    /**
+     * @var string $extkey Extension key for loggin information
+     */
     private $extkey = 'pb_social';
 
     private function initializeTrait()
@@ -62,17 +69,19 @@ trait LogTrait
      * @param integer $ttContentPid actual uid of page, plugin is located
      * @param string $type Name of social media network
      * @param integer $locationInCode timestamp to find in code
+     * @return string message
      */
-    public function logError($message, $ttContentUid, $ttContentPid, $type, $locationInCode = 0)
+    public function logError($message, $ttContentUid, $ttContentPid, $type, $locationInCode)
     {
         $this->initializeTrait();
         if(isset($GLOBALS["BE_USER"])){
             $GLOBALS['BE_USER']->writelog(
-                $type = 4, $action = 0,  $error = 1, $details_nr = $locationInCode,
-                $details = $this->initializeMessage($message, $ttContentUid, $ttContentPid, $type, $locationInCode),
-                $data = []);
+                $syslog_type = 4, $syslog_action = 0, $syslog_error = 1, $syslog_details_nr = $locationInCode,
+                $syslog_details = $this->initializeMessage($message, $ttContentUid, $ttContentPid, $type, $locationInCode),
+                $syslog_data = []);
         }
-        $this->logger->error($this->initializeMessage($message, $ttContentUid, $ttContentPid, $type, $locationInCode));
+        $this->logger->error($return = $this->initializeMessage($message, $ttContentUid, $ttContentPid, $type, $locationInCode));
+        return $return;
     }
 
     /**
@@ -81,11 +90,13 @@ trait LogTrait
      * @param integer $ttContentPid actual uid of page, plugin is located
      * @param string $type Name of social media network
      * @param integer $locationInCode timestamp to find in code
+     * @return string message
      */
-    public function logWarning($message, $ttContentUid, $ttContentPid, $type, $locationInCode = 0)
+    public function logWarning($message, $ttContentUid, $ttContentPid, $type, $locationInCode)
     {
         $this->initializeTrait();
-        $this->logger->warning($this->initializeMessage($message, $ttContentUid, $ttContentPid, $type, $locationInCode));
+        $this->logger->warning($return = $this->initializeMessage($message, $ttContentUid, $ttContentPid, $type, $locationInCode));
+        return $return;
     }
 
 
@@ -96,11 +107,13 @@ trait LogTrait
      * @param integer $ttContentPid actual uid of page, plugin is located
      * @param string $type Name of social media network
      * @param integer $locationInCode timestamp to find in code
+     * @return string message
      */
-    public function logInfo($message, $ttContentUid, $ttContentPid, $type, $locationInCode = 0)
+    public function logInfo($message, $ttContentUid, $ttContentPid, $type, $locationInCode)
     {
         $this->initializeTrait();
-        $this->logger->info($this->initializeMessage($message, $ttContentUid, $ttContentPid, $type, $locationInCode));
+        $this->logger->info($return = $this->initializeMessage($return = $message, $ttContentUid, $ttContentPid, $type, $locationInCode));
+        return $return;
     }
 
 

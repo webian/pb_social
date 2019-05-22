@@ -36,13 +36,6 @@ class CacheService extends AbstractBaseService
     const EXTKEY = 'pb_social';
 
     /**
-     * @var \PlusB\PbSocial\Service\OptionService
-     * @inject
-     */
-    protected $optionService;
-
-
-    /**
      * @var \PlusB\PbSocial\Service\FeedSyncService
      * @inject
      */
@@ -58,7 +51,7 @@ class CacheService extends AbstractBaseService
     /**
      * @var int
      */
-    protected $cacheLifetime = 3600;
+    protected $cacheLifetime = 0;
 
     /**
      * @param int $cacheLifetime
@@ -224,7 +217,10 @@ class CacheService extends AbstractBaseService
             //if there is not already a cache, try to get a api sync and get a filled cache, but it only gets this requested network type
             if($this->cache->has($cacheIdentifier) === false){
                 $this->feedSyncService->syncFeed(
-                    $socialNetworkTypeString, $flexformAndTyposcriptSettings, $ttContentUid, $ttContentPid,
+                    $socialNetworkTypeString,
+                    $flexformAndTyposcriptSettings,
+                    $ttContentUid,
+                    $ttContentPid,
                     $isVerbose = false
                 );
             }
@@ -235,7 +231,7 @@ class CacheService extends AbstractBaseService
 
             return $results;
         } catch (\Exception $e) {
-            $this->logWarning($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString, 1558440503);
+            $this->logWarning($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString, $e->getCode());
             return $results;
         }
     }

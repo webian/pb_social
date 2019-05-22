@@ -278,7 +278,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
      * @param bool $verbose Enter verbose output
      * @param bool $silent Silent mode outputs nothing, but logs still into general typo3 log file
      * @param string $callnetwork - just call one network - default is all, according to flexform settings
-     * @param $return
+     * @return string message
      */
     public function updateFeedDataCommand($verbose = false, $silent = false, $callnetwork = 'all')
     {
@@ -289,6 +289,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
          * @var $xmlStr Content
          */
         $xml_settings = $this->contentRepository->findFlexforms("list", "pbsocial_socialfeed")->toArray();
+        $message = "";
 
         # Convert flexform settings into usable array structure #
         if (!empty($xml_settings)) {
@@ -299,99 +300,52 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
                 $flexformSettings = $this->flexformService->convertFlexFormContentToArray($xmlStr->getPiFlexform());
                 $flexformSettings = $flexformSettings['settings'];
 
-
                 /* starting procedural list of requests */
                 if ($flexformSettings['facebookEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_FACEBOOK)) {
-
-                    $this->feedSyncService->syncFeed(self::TYPE_FACEBOOK, $flexformSettings, $xmlStr->getUid(),
+                    $message .= $this->feedSyncService->syncFeed(self::TYPE_FACEBOOK, $flexformSettings, $xmlStr->getUid(),
                         $xmlStr->getPid(), $this->isVerbose());
-
                 }
                 if ($flexformSettings['instagramEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_INSTAGRAM)) {
-
-
-                        $this->feedSyncService->syncFeed(self::TYPE_INSTAGRAM, $flexformSettings, $xmlStr->getUid(),
-                            $xmlStr->getPid(), $this->isVerbose());
-
+                    $message .= $this->feedSyncService->syncFeed(self::TYPE_INSTAGRAM, $flexformSettings, $xmlStr->getUid(),
+                        $xmlStr->getPid(), $this->isVerbose());
                 }
-
-
-
-
-                if ($flexformSettings['imgurEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_IMGUR)) {
-
-
-                        $this->feedSyncService->syncFeed(self::TYPE_IMGUR, $flexformSettings, $xmlStr->getUid(),
-                            $xmlStr->getPid(), $this->isVerbose())
-                    ;
-
-                }
-
-
-
                 if ($flexformSettings['linkedinEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_LINKEDIN)) {
-
-
-                        $this->feedSyncService->syncFeed(self::TYPE_LINKEDIN, $flexformSettings, $xmlStr->getUid(),
-                            $xmlStr->getPid(), $this->isVerbose())
-                    ;
-
+                    $message .= $this->feedSyncService->syncFeed(self::TYPE_LINKEDIN, $flexformSettings, $xmlStr->getUid(),
+                        $xmlStr->getPid(), $this->isVerbose());
                 }
-
                 if ($flexformSettings['pinterestEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_PINTEREST)) {
-
-
-                        $this->feedSyncService->syncFeed(self::TYPE_PINTEREST, $flexformSettings, $xmlStr->getUid(),
-                            $xmlStr->getPid(), $this->isVerbose())
-                    ;
+                    $message .= $this->feedSyncService->syncFeed(self::TYPE_PINTEREST, $flexformSettings, $xmlStr->getUid(),
+                        $xmlStr->getPid(), $this->isVerbose());
                 }
-
-                if ($flexformSettings['tumblrEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_TUMBLR)) {
-
-
-                        $this->feedSyncService->syncFeed(self::TYPE_TUMBLR, $flexformSettings, $xmlStr->getUid(),
-                            $xmlStr->getPid(), $this->isVerbose())
-                    ;
-
-                }
-
                 if ($flexformSettings['twitterEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_TWITTER)) {
-
-
-                        $this->feedSyncService->syncFeed(self::TYPE_TWITTER, $flexformSettings, $xmlStr->getUid(),
-                            $xmlStr->getPid(), $this->isVerbose())
-                    ;
-
+                    $message .= $this->feedSyncService->syncFeed(self::TYPE_TWITTER, $flexformSettings, $xmlStr->getUid(),
+                        $xmlStr->getPid(), $this->isVerbose());
                 }
-
                 if ($flexformSettings['youtubeEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_YOUTUBE)) {
-
-
-                        $this->feedSyncService->syncFeed(self::TYPE_YOUTUBE, $flexformSettings, $xmlStr->getUid(),
-                            $xmlStr->getPid(), $this->isVerbose())
-                    ;
-
+                    $message .= $this->feedSyncService->syncFeed(self::TYPE_YOUTUBE, $flexformSettings, $xmlStr->getUid(),
+                        $xmlStr->getPid(), $this->isVerbose());
                 }
-
                 if ($flexformSettings['vimeoEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_VIMEO)) {
-
-                    $this->outputLogInformation(
-                        $this->feedSyncService->syncFeed(self::TYPE_VIMEO, $flexformSettings, $xmlStr->getUid(),
-                            $xmlStr->getPid(), $this->isVerbose())
-                    );
+                    $message .= $this->feedSyncService->syncFeed(self::TYPE_VIMEO, $flexformSettings, $xmlStr->getUid(),
+                        $xmlStr->getPid(), $this->isVerbose());
                 }
-
+                if ($flexformSettings['tumblrEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_TUMBLR)) {
+                    $message .= $this->feedSyncService->syncFeed(self::TYPE_TUMBLR, $flexformSettings, $xmlStr->getUid(),
+                        $xmlStr->getPid(), $this->isVerbose());
+                }
+                if ($flexformSettings['imgurEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_IMGUR)) {
+                    $message .= $this->feedSyncService->syncFeed(self::TYPE_IMGUR, $flexformSettings, $xmlStr->getUid(),
+                        $xmlStr->getPid(), $this->isVerbose());
+                }
                 if ($flexformSettings['newsEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_TX_NEWS)) {
-
-
-                        $this->feedSyncService->syncFeed(self::TYPE_TX_NEWS, $flexformSettings, $xmlStr->getUid(),
-                            $xmlStr->getPid(), $this->isVerbose())
-                    ;
-
+                    $message .= $this->feedSyncService->syncFeed(self::TYPE_TX_NEWS, $flexformSettings, $xmlStr->getUid(),
+                        $xmlStr->getPid(), $this->isVerbose());
                 }
 
-
-            }
-        }
+            }//foreach
+        }//if
+        return "\e[1;33;40m".$message ."\e[0m\n";
     }
+
+
 }

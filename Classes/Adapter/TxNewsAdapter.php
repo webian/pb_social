@@ -72,20 +72,26 @@ class TxNewsAdapter extends SocialMediaAdapter
      * @param ItemRepository $itemRepository
      * @param $options
      */
-    public function __construct($newsDemand, $itemRepository, $options)
+    public function __construct(
+        $newsDemand,
+        $itemRepository,
+        $options,
+        $ttContentUid,
+        $ttContentPid,
+        $cacheIdentifier
+    )
     {
-        parent::__construct($itemRepository);
+        parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
 
-        /**
-         * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to bee free, so... change!
-         * todo: try to get rid of duplicate code
-         */
+
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
                 array(
                     'options' => $options
                 )) === false)
-        {return $this;}
+        {
+            throw new \Exception( self::TYPE . ' ' . $this->validationMessage, 1558515175);
+        }
         /* validated */
 
         $this->cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
@@ -128,8 +134,8 @@ class TxNewsAdapter extends SocialMediaAdapter
          * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
          */
         foreach ($newsCategories as $newsCategory) {
-            $searchString = trim($newsCategory);
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchString);
+            $newsCategory = trim($newsCategory);
+            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->cacheIdentifier);
             $this->newsDemand->setCategories(array($newsCategory));
             if(!empty($newsCategory)) $this->newsDemand->setCategoryConjunction('or');
             if ($feeds && $feeds->count() > 0) {
@@ -143,7 +149,7 @@ class TxNewsAdapter extends SocialMediaAdapter
                         $this->itemRepository->updateFeed($feed);
                         $result[] = $feed;
                     } catch (\Exception $e) {
-                        $this->logAdapterError("feeds can't be updated " . $e->getMessage(), 1558435645);
+                        throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1558435645);
                     }
                 }
                 continue;
@@ -151,7 +157,7 @@ class TxNewsAdapter extends SocialMediaAdapter
 
             try {
                 $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($searchString);
+                $feed->setCacheIdentifier($this->cacheIdentifier);
                 $demanded = $this->newsRepository->findDemanded($this->newsDemand)->toArray();
                 $mapped = empty($demanded) ? array() : $this->demandedNewsToString($demanded, $options->useHttps);
                 $feed->setResult($mapped);
@@ -159,7 +165,7 @@ class TxNewsAdapter extends SocialMediaAdapter
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
             } catch (\Exception $e) {
-                $this->logAdapterError('initial load for ' . self::TYPE . ' feeds failed. ' . $e->getMessage(), 1558435651);
+                throw new \Exception('initial load for ' . self::TYPE . ' feeds failed. ' . $e->getMessage(), 1558435651);
             }
         }
 

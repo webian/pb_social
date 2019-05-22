@@ -68,9 +68,17 @@ class ImgurAdapter extends SocialMediaAdapter
 
     private $api;
 
-    public function __construct($apiId, $apiSecret, $itemRepository, $options, $cacheIdentifier)
+    public function __construct(
+        $apiId,
+        $apiSecret,
+        $itemRepository,
+        $options,
+        $ttContentUid,
+        $ttContentPid,
+        $cacheIdentifier
+    )
     {
-        parent::__construct($itemRepository, $cacheIdentifier);
+        parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
 
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
@@ -80,11 +88,11 @@ class ImgurAdapter extends SocialMediaAdapter
                     'options' => $options
                 )) === false)
         {
-            throw new \Exception( self::TYPE . ' ' . $this->validationMessage );
+            throw new \Exception( self::TYPE . ' ' . $this->validationMessage, 1558521767);
         }
+        /* validated */
 
         $this->api =  new \Imgur($this->apiId, $this->apiSecret);
-
         //TODO: Implement OAuth authentication (to get a user's images etc)
     }
 
@@ -132,7 +140,7 @@ class ImgurAdapter extends SocialMediaAdapter
                         $feed->setResult($posts);
                         $this->itemRepository->updateFeed($feed);
                     } catch (\Exception $e) {
-                        throw new \Exception("feeds can't be updated - " .  $e->getMessage() );
+                        throw new \Exception("feeds can't be updated." .  $e->getMessage(),1558521819);
                     }
                 }
                 $result[] = $feed;
@@ -149,7 +157,7 @@ class ImgurAdapter extends SocialMediaAdapter
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
             } catch (\Exception $e) {
-                throw new \Exception("initial load for feed failed - " .  $e->getMessage() );
+                throw new \Exception("initial load for feed failed." .  $e->getMessage(),1558521847);
             }
         }
 
@@ -169,7 +177,7 @@ class ImgurAdapter extends SocialMediaAdapter
                         $feed->setResult($posts);
                         $this->itemRepository->updateFeed($feed);
                     } catch (\Exception $e) {
-                        throw new \Exception( $e->getMessage() );
+                        throw new \Exception( $e->getMessage(),1558521850);
                     }
                 }
                 $result[] = $feed;
@@ -186,7 +194,7 @@ class ImgurAdapter extends SocialMediaAdapter
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
             } catch (\Exception $e) {
-                throw new \Exception('initial load for feed failed - ' . $e->getMessage() );
+                throw new \Exception('initial load for feed failed. ' . $e->getMessage(),1558521850);
             }
         }
 

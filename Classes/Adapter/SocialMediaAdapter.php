@@ -8,7 +8,8 @@ use PlusB\PbSocial\Service\LogTrait;
  *
  *  Copyright notice
  *
- *  (c) 2016 Ramon Mohi <rm@plusb.de>, plusB
+ *  (c) 2016 Ramon Mohi <rm@plusb.de>, plus B
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -36,32 +37,44 @@ abstract class SocialMediaAdapter implements SocialMediaAdapterInterface
     const TYPE = 'socialMediaAdapter';
     const EXTKEY = 'pb_social';
 
+    /**
+     * @var string $type name of social network
+     */
     public $type;
 
-
+    /**
+     * @var object $itemRepository object reference
+     */
     public $itemRepository;
+
+    /**
+     * @var object $cacheIdentifier object reference
+     */
     protected $cacheIdentifier;
 
-    protected $ttContentUid, $ttContentPid;
+    /**
+     * @var integer uid of plugin for logging information
+     */
+    protected $ttContentUid;
+    /**
+     * @var integer page uid of plugin for logging information
+     */
+    protected $ttContentPid;
 
     public function __construct(
         $itemRepository,
         $cacheIdentifier,
         $ttContentUid,
-        $ttContentPid)
+        $ttContentPid
+    )
     {
-
+        $this->type = static::TYPE; //set default, adapter plays its game
         $this->itemRepository = $itemRepository;
-        $this->type = static::TYPE;
         $this->cacheIdentifier = $cacheIdentifier;
-
         $this->ttContentUid = $ttContentUid;
         $this->ttContentPid = $ttContentPid;
     }
 
-    /**
-     * todo: quick fix - but we'd better add a layer for adapter in between, here after "return $this" instance is not completed but existing (AM)
-     */
     abstract public function validateAdapterSettings($parameter);
     abstract public function getResultFromApi();
 
@@ -103,14 +116,6 @@ abstract class SocialMediaAdapter implements SocialMediaAdapterInterface
         return $trimmed_text;
     }
 
-    public function cmp($a, $b)
-    {
-        if ($a == $b) {
-            return 0;
-        }
-        return ($a->getTimeStampTicks() > $b->getTimeStampTicks()) ? -1 : 1;
-    }
-
     public function check_end($str, $ends)
     {
         foreach ($ends as $try) {
@@ -122,6 +127,8 @@ abstract class SocialMediaAdapter implements SocialMediaAdapterInterface
     }
 
     /**
+     * Abstraction in social media adapters for logging trait
+     *
      * @param string $message
      * @param integer $locationInCode timestamp to find in code
      */
@@ -131,6 +138,8 @@ abstract class SocialMediaAdapter implements SocialMediaAdapterInterface
     }
 
     /**
+     * Abstraction in social media adapters for logging trait
+     *
      * @param string $message
      * @param integer $locationInCode timestamp to find in code
      */
