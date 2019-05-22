@@ -150,7 +150,7 @@ class TumblrAdapter extends SocialMediaAdapter
         // search for users
         foreach (explode(',', $options->tumblrBlogNames) as $blogName) {
             $blogName = trim($blogName);
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->cacheIdentifier);
+            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $blogName));
             if ($feeds && $feeds->count() > 0) {
                 $feed = $feeds->getFirst();
                 if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
@@ -169,7 +169,7 @@ class TumblrAdapter extends SocialMediaAdapter
 
             try {
                 $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($this->cacheIdentifier);
+                $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $blogName));
 
                 $posts = $this->getPosts($blogName, $options);
                 $feed->setResult($posts);

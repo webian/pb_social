@@ -148,7 +148,7 @@ class PinterestAdapter extends SocialMediaAdapter
 
         foreach (explode(',', $options->username) as $searchId) {
             $searchId = trim($searchId);
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->cacheIdentifier);
+            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
 
             if ($feeds && $feeds->count() > 0) {
                 $feed = $feeds->getFirst();
@@ -170,7 +170,7 @@ class PinterestAdapter extends SocialMediaAdapter
 
             try {
                 $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($this->cacheIdentifier);
+                $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
                 $feed->setResult($this->getPosts($boardname));
 
                 // save to DB and return current feed

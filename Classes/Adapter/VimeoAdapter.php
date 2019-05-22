@@ -147,7 +147,7 @@ class VimeoAdapter extends SocialMediaAdapter
         foreach ($searchTerms as $searchString) {
 
             $searchString = trim($searchString);
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->cacheIdentifier);
+            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchString));
             if ($feeds && $feeds->count() > 0) {
                 $feed = $feeds->getFirst();
                 /**
@@ -169,7 +169,7 @@ class VimeoAdapter extends SocialMediaAdapter
 
             try {
                 $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($searchString);
+                $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchString));
                 $feed->setResult($this->getPosts($searchString, $fields, $options));
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);

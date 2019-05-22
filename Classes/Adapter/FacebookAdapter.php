@@ -8,7 +8,6 @@ require $extensionPath . 'facebook/src/Facebook/autoload.php';
 use Facebook\Facebook;
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 
 /***************************************************************
@@ -142,7 +141,7 @@ class FacebookAdapter extends SocialMediaAdapter
             $searchId = trim($searchId);
             $posts = null;
 
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->cacheIdentifier);
+            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
 
             try {
                 $posts = $this->getPosts($searchId, $options->feedRequestLimit, $options->settings['facebookEdge']);
@@ -175,7 +174,7 @@ class FacebookAdapter extends SocialMediaAdapter
             //insert new feed
             if ($posts !== null) {
                 $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($this->cacheIdentifier);
+                $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
                 $feed->setResult($posts);
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);

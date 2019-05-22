@@ -189,7 +189,7 @@ class InstagramAdapter extends SocialMediaAdapter
             foreach (explode(',', $options->instagramSearchIds) as $searchId) {
                 $searchId = trim($searchId);
                 if ($searchId != ""){
-                    $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->cacheIdentifier);
+                    $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
                     if ($feeds && $feeds->count() > 0) {
                         $feed = $feeds->getFirst();
                         /**
@@ -220,7 +220,7 @@ class InstagramAdapter extends SocialMediaAdapter
                             $this->logAdapterWarning('warning: ' . json_encode($userPosts->meta),1558435728);
                         }
                         $feed = new Item(self::TYPE);
-                        $feed->setCacheIdentifier($this->cacheIdentifier);
+                        $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
                         $feed->setResult(json_encode($userPosts));
 
                         // save to DB and return current feed
@@ -237,7 +237,7 @@ class InstagramAdapter extends SocialMediaAdapter
             $searchId = trim($searchId);
             $searchId = ltrim($searchId, '#'); //strip hastags
             if ($searchId != "") {
-                $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->cacheIdentifier);
+                $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
 
                 if ($feeds && $feeds->count() > 0) {
                     $feed = $feeds->getFirst();
@@ -264,7 +264,7 @@ class InstagramAdapter extends SocialMediaAdapter
                         $this->logAdapterWarning('warning: ' . json_encode($tagPosts->meta),1558435756);
                     }
                     $feed = new Item(self::TYPE);
-                    $feed->setCacheIdentifier($this->cacheIdentifier);
+                    $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
                     $feed->setResult(json_encode($tagPosts));
                     // save to DB and return current feed
                     $this->itemRepository->saveFeed($feed);

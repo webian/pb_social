@@ -123,13 +123,11 @@ class ImgurAdapter extends SocialMediaAdapter
     {
         $options = $this->options;
         $result = array();
-        /*
-        * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
-        */
+
         // search for users
         foreach (explode(',', $options->imgSearchUsers) as $searchId) {
             $searchId = trim($searchId);
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->cacheIdentifier);
+            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
             if ($feeds && $feeds->count() > 0) {
                 $feed = $feeds->getFirst();
 
@@ -150,7 +148,7 @@ class ImgurAdapter extends SocialMediaAdapter
             try {
                 $posts = json_encode($this->api->account($searchId)->images($page = 0));
                 $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($this->cacheIdentifier);
+                $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
                 $feed->setResult($posts);
 
                 // save to DB and return current feed
@@ -164,7 +162,7 @@ class ImgurAdapter extends SocialMediaAdapter
         // search for tags
         foreach (explode(',', $options->imgSearchTags) as $searchId) {
             $searchId = trim($searchId);
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->cacheIdentifier);
+            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
             if ($feeds && $feeds->count() > 0) {
                 $feed = $feeds->getFirst();
                 /**
@@ -187,7 +185,7 @@ class ImgurAdapter extends SocialMediaAdapter
             try {
                 $posts = json_encode($this->api->gallery()->search($searchId));
                 $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($this->cacheIdentifier);
+                $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
                 $feed->setResult($posts);
 
                 // save to DB and return current feed

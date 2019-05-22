@@ -80,6 +80,22 @@ abstract class SocialMediaAdapter implements SocialMediaAdapterInterface
 
     abstract public function getFeedItemsFromApiRequest($result, $options);
 
+    /*
+     * item must be written, cache identifier may be added by a value, but must be unique in this foreach.
+     * so cache identifier is unique for page/plugin/tab - but in this tab a comma separated string of search ids is not unique -
+     * it would repeat first one - and ignore following search ids.
+     * solution: $cacheIdentifierForListItem = $this->cacheIdentifier . "_" . $searchId
+     *
+     *      $this->cacheIdentifier // unique for page.uid and tt_content.uid and flexform-option of network
+     *      . "_" .
+     *      $searchId // unique in (page.uid/tt_content.uid/flexform-option of network) and list item of search id
+     *
+     * Why do we write do database? Because we want to trigger cache, thats all.
+     */
+    protected function composeCacheIdentifierForListItem($cacheIdentifier, $listItem){
+        return $cacheIdentifier ."_". sha1($listItem);
+    }
+
     /**
      * trims text to a space then adds ellipses if desired
      * @param string $input text to trim

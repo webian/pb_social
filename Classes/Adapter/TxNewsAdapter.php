@@ -130,12 +130,9 @@ class TxNewsAdapter extends SocialMediaAdapter
 
         $this->detailPageUid = $options->newsDetailPageUid;
         $newsCategories = GeneralUtility::trimExplode(',', $options->newsCategories);
-        /*
-         * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
-         */
         foreach ($newsCategories as $newsCategory) {
             $newsCategory = trim($newsCategory);
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->cacheIdentifier);
+            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $newsCategory));
             $this->newsDemand->setCategories(array($newsCategory));
             if(!empty($newsCategory)) $this->newsDemand->setCategoryConjunction('or');
             if ($feeds && $feeds->count() > 0) {
@@ -157,7 +154,7 @@ class TxNewsAdapter extends SocialMediaAdapter
 
             try {
                 $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($this->cacheIdentifier);
+                $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $newsCategory));
                 $demanded = $this->newsRepository->findDemanded($this->newsDemand)->toArray();
                 $mapped = empty($demanded) ? array() : $this->demandedNewsToString($demanded, $options->useHttps);
                 $feed->setResult($mapped);

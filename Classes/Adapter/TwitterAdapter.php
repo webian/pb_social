@@ -147,9 +147,7 @@ class TwitterAdapter extends SocialMediaAdapter
         $options = $this->options;
         $result = array();
         $apiMethod = '';
-        /*
-         * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
-         */
+
         // because of the amount of data twitter is sending, the database can only carry 20 tweets.
         // 20 Tweets = ~86000 Character
         $apiParameters = array();
@@ -168,7 +166,7 @@ class TwitterAdapter extends SocialMediaAdapter
 
             foreach (explode(',', $options->twitterSearchFieldValues) as $searchValue) {
                 $searchValue = trim($searchValue);
-                $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->cacheIdentifier);
+                $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchValue));
 
 
                 if ($feeds && $feeds->count() > 0) {
@@ -190,7 +188,7 @@ class TwitterAdapter extends SocialMediaAdapter
                 try {
                     $tweets = $this->getPosts($apiParameters, $options, $searchValue);
                     $feed = new Item(self::TYPE);
-                    $feed->setCacheIdentifier($this->cacheIdentifier);
+                    $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchValue));
                     $feed->setResult($tweets);
 
                     // save to DB and return current feed
@@ -233,7 +231,7 @@ class TwitterAdapter extends SocialMediaAdapter
                 try {
                     $tweets = $this->getPosts($apiParameters, $options, $searchValue);
                     $feed = new Item(self::TYPE);
-                    $feed->setCacheIdentifier($searchValue);
+                    $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchValue));
                     $feed->setResult($tweets);
 
                     // save to DB and return current feed

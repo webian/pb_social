@@ -171,11 +171,9 @@ class LinkedInAdapter extends SocialMediaAdapter
         foreach (explode(',', $options->companyIds) as $searchId) {
 
             $searchId = trim($searchId);
-            /*
-            * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
-            */
+
             if ($searchId != ""){
-                $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->cacheIdentifier);
+                $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
 
                 if ($feeds && $feeds->count() > 0) {
                     $feed = $feeds->getFirst();
@@ -202,7 +200,7 @@ class LinkedInAdapter extends SocialMediaAdapter
                     # api call
                     $companyUpdates = $this->api->get('companies/' . $searchId .'/updates?format=json' . $filters);
                     $feed = new Item(self::TYPE);
-                    $feed->setCacheIdentifier($this->cacheIdentifier);
+                    $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
                     $feed->setResult(json_encode($companyUpdates));
 
                     // save to DB and return current feed
