@@ -79,8 +79,6 @@
             </trans-unit>
 
 
-
-
             <trans-unit id="flexform.tab.linkedin.caption">
                 <source>LinkedIn</source>
                 <target state="translated">LinkedIn</target>
@@ -91,7 +89,7 @@
             </trans-unit>
             <trans-unit id="flexform.tab.linkedin.companyIds">
                 <source>LinkedIn company ID. You need to be administrator of the given company page(s)!</source>
-                <target state="translated">LinkedIn Unternehmens-ID. Sie müssen Administrator der LinkedIn-Unternehmensseite(n) sein!</target>
+                <target>LinkedIn Unternehmens-ID. Sie müssen Administrator der LinkedIn-Unternehmensseite(n) sein!</target>
             </trans-unit>
 
             <trans-unit id="flexform.tab.linkedin.linkedinFilterChoice">
@@ -102,8 +100,6 @@
                 <source>None</source>
                 <target state="translated">None</target>
             </trans-unit>
-
-
 
             <trans-unit id="flexform.tab.linkedin.jobPostings">
                 <source>Show job postings</source>
@@ -116,6 +112,11 @@
             <trans-unit id="flexform.tab.linkedin.statusUpdates">
                 <source>Show status updates</source>
                 <target state="translated">Status-Updates anzeigen</target>
+            </trans-unit>
+
+            <trans-unit id="flexform.tab.facebook.facebookPluginKeyfieldEnabled">
+                <source>Use individual credentials instead of global extension configuration</source>
+                <target>Eigene Schlüssel für dieses Plugin anstatt der globalen Schlüssel in der Extension Konfiguration</target>
             </trans-unit>
 
             <trans-unit id="flexform.tab.pinterest.caption">
@@ -134,26 +135,9 @@
                 <source>Show pins of a specific Pinterest board of a user (needs username input at the upper field)</source>
                 <target state="translated">Pins von einer Pinnwand eines Users anzeigen (das Feld des Nutzernamens muss ausgefüllt sein)</target>
             </trans-unit>
-
-            <trans-unit id="flexform.tab.tumblr.caption">
-                <source>Tumblr</source>
-                <target state="translated">Tumblr</target>
-            </trans-unit>
-            <trans-unit id="flexform.tab.tumblr.active">
-                <source>Active</source>
-                <target state="translated">Ausgabe aktiviert</target>
-            </trans-unit>
-            <trans-unit id="flexform.tab.tumblr.searchID">
-                <source>Tumblr blog names. For your own Dashboard use "MYDASHBOARD" as value. Use commas to show more than one blog</source>
-                <target state="translated">Tumblr Blognamen, die angezeigt werden sollen. Für das eigene Dashboard "MYDASHBOARD" eingeben. Verwenden Sie Kommas, um mehrere Blogs anzuzeigen</target>
-            </trans-unit>
-            <trans-unit id="flexform.tab.tumblr.hashTag">
-                <source>Search the above-mentioned Tumblr blog names for a specific hashtag</source>
-                <target state="translated">Die obengenannten Tumblr Blogs nach einem bestimmten Hashtag durchsuchen</target>
-            </trans-unit>
-            <trans-unit id="flexform.tab.tumblr.showOnlyImages">
-                <source>Show only posts with images</source>
-                <target state="translated">Nur Posts anzeigen, die Bilder beinhalten</target>
+            <trans-unit id="flexform.tab.pinterest.pinterestPluginKeyfieldEnabled">
+                <source>Use individual credentials instead of global extension configuration</source>
+                <target>Eigene Schlüssel für dieses Plugin anstatt der globalen Schlüssel in der Extension Konfiguration</target>
             </trans-unit>
 
             <trans-unit id="flexform.tab.twitter.caption">
@@ -192,6 +176,11 @@
                 <source>Include images with https</source>
                 <target state="translated">Einbinden der Bilder URLs mit https</target>
             </trans-unit>
+            <trans-unit id="flexform.tab.twitter.twitterPluginKeyfieldEnabled">
+                <source>Use individual credentials instead of global extension configuration</source>
+                <target>Eigene Schlüssel für dieses Plugin anstatt der globalen Schlüssel in der Extension Konfiguration</target>
+            </trans-unit>
+
 
             <trans-unit id="socialfeed_wizard.title">
                 <source>Social Media Streams</source>
@@ -259,6 +248,11 @@
                 <target state="translated">Bewertung</target>
             </trans-unit>
 
+            <trans-unit id="flexform.tab.youtube.youtubePluginKeyfieldEnabled">
+                <source>Use individual credentials instead of global extension configuration</source>
+                <target>Eigene Schlüssel für dieses Plugin anstatt der globalen Schlüssel in der Extension Konfiguration</target>
+            </trans-unit>
+
             <trans-unit id="flexform.tab.vimeo.caption">
                 <source>Vimeo</source>
                 <target state="translated">Vimeo</target>
@@ -270,6 +264,37 @@
             <trans-unit id="flexform.tab.vimeo.channel">
                 <source>Channel ID to display. Show all your videos with "me".</source>
                 <target state="translated">Channel ID, die angezeigt werden soll. Alle eigenen Videos können durch Eingabe von "me" ausgegeben werden.</target>
+            </trans-unit>
+
+            <trans-unit id="flexform.tab.vimeo.vimeoPluginKeyfieldEnabled">
+                <source>Use individual credentials instead of global extension configuration</source>
+                <target>Eigene Schlüssel für dieses Plugin anstatt der globalen Schlüssel in der Extension Konfiguration</target>
+            </trans-unit>
+
+            <trans-unit id="flexform.tab.tumblr.caption">
+                <source>Tumblr</source>
+                <target state="translated">Tumblr</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.tumblr.active">
+                <source>Active</source>
+                <target state="translated">Ausgabe aktiviert</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.tumblr.searchID">
+                <source>Tumblr blog names. For your own Dashboard use "MYDASHBOARD" as value. Use commas to show more than one blog</source>
+                <target state="translated">Tumblr Blognamen, die angezeigt werden sollen. Für das eigene Dashboard "MYDASHBOARD" eingeben. Verwenden Sie Kommas, um mehrere Blogs anzuzeigen</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.tumblr.hashTag">
+                <source>Search the above-mentioned Tumblr blog names for a specific hashtag</source>
+                <target state="translated">Die obengenannten Tumblr Blogs nach einem bestimmten Hashtag durchsuchen</target>
+            </trans-unit>
+            <trans-unit id="flexform.tab.tumblr.showOnlyImages">
+                <source>Show only posts with images</source>
+                <target state="translated">Nur Posts anzeigen, die Bilder beinhalten</target>
+            </trans-unit>
+
+            <trans-unit id="flexform.tab.tumblr.tumblrPluginKeyfieldEnabled">
+                <source>Use individual credentials instead of global extension configuration</source>
+                <target>Eigene Schlüssel für dieses Plugin anstatt der globalen Schlüssel in der Extension Konfiguration</target>
             </trans-unit>
 
             <trans-unit id="flexform.tab.imgur.caption">

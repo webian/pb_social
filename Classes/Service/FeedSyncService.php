@@ -188,7 +188,7 @@ class FeedSyncService extends AbstractBaseService
     ){
 
         $message = "";
-        //facebook credentials - from extension manager globally, or from plugin overridden
+        //credentials - from extension manager globally, or from plugin overridden
         $config_clientId =
             ($flexformOptions->settings['instagramPluginKeyfieldEnabled'] === '1')
                 ?
@@ -276,13 +276,32 @@ class FeedSyncService extends AbstractBaseService
         $isVerbose = false
     ){
         $message = "";
-        # check api key #
 
-        #todo override
-        $config_clientId = $this->extConf['socialfeed.']['linkedin.']['client.']['key'];
-        $config_clientSecret = $this->extConf['socialfeed.']['linkedin.']['client.']['secret'];
-        $config_clientCallback = $this->extConf['socialfeed.']['linkedin.']['client.']['callback_url'];
-        $config_access_code = $this->extConf['socialfeed.']['linkedin.']['access_token'];
+        //credentials - from extension manager globally, or from plugin overridden
+        $config_clientId = ($flexformOptions->settings['linkedinPluginKeyfieldEnabled'] === '1')
+            ?
+            $flexformOptions->settings['linkedinClientKey']
+            :
+            $this->extConf['socialfeed.']['linkedin.']['client.']['key'];
+
+        $config_clientSecret = ($flexformOptions->settings['linkedinPluginKeyfieldEnabled'] === '1')
+            ?
+            $flexformOptions->settings['linkedinClientSecret']
+            :
+            $this->extConf['socialfeed.']['linkedin.']['client.']['secret'];
+
+        $config_clientCallback = ($flexformOptions->settings['linkedinPluginKeyfieldEnabled'] === '1')
+            ?
+            $flexformOptions->settings['linkedinClientCallbackUrl']
+            :
+            $this->extConf['socialfeed.']['linkedin.']['client.']['callback_url'];
+
+        $config_access_code = ($flexformOptions->settings['linkedinPluginKeyfieldEnabled'] === '1')
+            ?
+            $flexformOptions->settings['linkedinAccessToken']
+            :
+            $this->extConf['socialfeed.']['linkedin.']['access_token'];
+
         $flexformOptions->companyIds = $flexformOptions->settings['linkedinCompanyIds'];
         $flexformOptions->linkedinFilterChoice = $flexformOptions->settings['linkedinFilterChoice'];
 
@@ -332,11 +351,25 @@ class FeedSyncService extends AbstractBaseService
         $isVerbose = false
     ){
         $message = "";
-        # check api key #
-        #todo override
-        $config_appId = $this->extConf['socialfeed.']['pinterest.']['app.']['id'];
-        $config_appSecret = $this->extConf['socialfeed.']['pinterest.']['app.']['secret'];
-        $config_accessCode = $this->extConf['socialfeed.']['pinterest.']['app.']['code'];
+        //credentials - from extension manager globally, or from plugin overridden
+        $config_appId = ($flexformOptions->settings['pinterestPluginKeyfieldEnabled'] === '1')
+            ?
+            $flexformOptions->settings['pinterestAppId']
+            :
+            $this->extConf['socialfeed.']['pinterest.']['app.']['id'];
+
+        $config_appSecret = ($flexformOptions->settings['pinterestPluginKeyfieldEnabled'] === '1')
+            ?
+            $flexformOptions->settings['pinterestAppSsecret']
+            :
+            $this->extConf['socialfeed.']['pinterest.']['app.']['secret'];
+
+        $config_accessCode = ($flexformOptions->settings['pinterestPluginKeyfieldEnabled'] === '1')
+            ?
+            $flexformOptions->settings['pinterestAppCode']
+            :
+            $this->extConf['socialfeed.']['pinterest.']['app.']['code'];
+
         $flexformOptions->pinterest_username = $flexformOptions->settings['username'];
         $flexformOptions->pinterest_boardname = $flexformOptions->settings['boardname'];
 
@@ -392,12 +425,29 @@ class FeedSyncService extends AbstractBaseService
     ){
 
         $message = "";
-        # check api key #
-        #todo override
-        $config_consumerKey = $this->extConf['socialfeed.']['twitter.']['consumer.']['key'];
-        $config_consumerSecret = $this->extConf['socialfeed.']['twitter.']['consumer.']['secret'];
-        $config_accessToken = $this->extConf['socialfeed.']['twitter.']['oauth.']['access.']['token'];
-        $config_accessTokenSecret = $this->extConf['socialfeed.']['twitter.']['oauth.']['access.']['token_secret'];
+        //credentials - from extension manager globally, or from plugin overridden
+        $config_consumerKey = ($flexformOptions->settings['twitterPluginKeyfieldEnabled'] === '1')
+            ?
+            $flexformOptions->settings['twitterConsumerKey']
+            :
+            $this->extConf['socialfeed.']['twitter.']['consumer.']['key'];
+        $config_consumerSecret = ($flexformOptions->settings['twitterPluginKeyfieldEnabled'] === '1')
+            ?
+            $flexformOptions->settings['twitterConsumerSecret']
+            :
+            $this->extConf['socialfeed.']['twitter.']['consumer.']['secret'];
+
+        $config_accessToken = ($flexformOptions->settings['twitterPluginKeyfieldEnabled'] === '1')
+            ?
+            $flexformOptions->settings['twitterOauthAccessToken']
+            :
+            $this->extConf['socialfeed.']['twitter.']['oauth.']['access.']['token'];
+
+        $config_accessTokenSecret = ($flexformOptions->settings['twitterPluginKeyfieldEnabled'] === '1')
+            ?
+            $flexformOptions->settings['twitterOauthAccessTokenSecret']
+            :
+            $this->extConf['socialfeed.']['twitter.']['oauth.']['access.']['token_secret'];
 
         $flexformOptions->twitterSearchFieldValues = $flexformOptions->settings['twitterSearchFieldValues'];
         $flexformOptions->twitterProfilePosts = $flexformOptions->settings['twitterProfilePosts'];
@@ -454,8 +504,13 @@ class FeedSyncService extends AbstractBaseService
         $isVerbose = false
     ){
         $message = "";
-        # check api key #
-        $config_apiKey = $this->extConf['socialfeed.']['youtube.']['apikey'];
+        //credentials - from extension manager globally, or from plugin overridden
+        $config_apiKey = ($flexformOptions->settings['youtubePluginKeyfieldEnabled'] === '1')
+            ?
+            $flexformOptions->settings['youtubeApikey']
+            :
+            $this->extConf['socialfeed.']['youtube.']['apikey'];
+
         $flexformOptions->youtubeSearch = $flexformOptions->settings['youtubeSearch'];
         $flexformOptions->youtubePlaylist = $flexformOptions->settings['youtubePlaylist'];
         $flexformOptions->youtubeChannel = $flexformOptions->settings['youtubeChannel'];
@@ -507,10 +562,24 @@ class FeedSyncService extends AbstractBaseService
         $isVerbose = false
     ){
         $message = "";
-        # check api key #
-        $config_clientIdentifier = $this->extConf['socialfeed.']['vimeo.']['client.']['identifier'];
-        $config_clientSecret = $this->extConf['socialfeed.']['vimeo.']['client.']['secret'];
-        $config_token = $this->extConf['socialfeed.']['vimeo.']['token'];
+        //credentials - from extension manager globally, or from plugin overridden
+        $config_clientIdentifier = ($flexformOptions->settings['vimeoPluginKeyfieldEnabled'] === '1')
+            ?
+            $flexformOptions->settings['vimeoClientIdentifier']
+            :
+            $this->extConf['socialfeed.']['vimeo.']['client.']['identifier'];
+
+        $config_clientSecret = ($flexformOptions->settings['vimeoPluginKeyfieldEnabled'] === '1')
+            ?
+            $flexformOptions->settings['vimeoClientSecret']
+            :
+            $this->extConf['socialfeed.']['vimeo.']['client.']['secret'];
+
+        $config_token =($flexformOptions->settings['vimeoPluginKeyfieldEnabled'] === '1')
+            ?
+            $flexformOptions->settings['vimeoToken']
+            :
+            $this->extConf['socialfeed.']['vimeo.']['token'];
 
         /**
          * todo: vimeo Channel as member of flexformOptions - is not included if somebody enters $flexformOptions->settings (!) - we will change it (AM)
@@ -564,15 +633,35 @@ class FeedSyncService extends AbstractBaseService
         $isVerbose = false
     ){
         $message = "";
-        # check api key #
-        $config_consumerKey = $this->extConf['socialfeed.']['tumblr.']['consumer.']['key'];
-        $config_consumerSecret = $this->extConf['socialfeed.']['tumblr.']['consumer.']['secret'];
-        $config_Token = $this->extConf['socialfeed.']['tumblr.']['token'];
-        $config_TokenSecret = $this->extConf['socialfeed.']['tumblr.']['token_secret'];
+        //credentials - from extension manager globally, or from plugin overridden
+        $config_consumerKey = ($flexformOptions->settings['tumblrPluginKeyfieldEnabled'] === '1')
+            ?
+            $flexformOptions->settings['tumblrConsumerKey']
+            :
+            $this->extConf['socialfeed.']['tumblr.']['consumer.']['key'];
+
+        $config_consumerSecret = ($flexformOptions->settings['tumblrPluginKeyfieldEnabled'] === '1')
+            ?
+            $flexformOptions->settings['tumblrConsumerSecret']
+            :
+            $this->extConf['socialfeed.']['tumblr.']['consumer.']['secret'];
+
+        $config_Token = ($flexformOptions->settings['tumblrPluginKeyfieldEnabled'] === '1')
+            ?
+            $flexformOptions->settings['tumblrToken']
+            :
+            $this->extConf['socialfeed.']['tumblr.']['token'];
+
+        $config_TokenSecret = ($flexformOptions->settings['tumblrPluginKeyfieldEnabled'] === '1')
+            ?
+            $flexformOptions->settings['tumblrTokenSecret']
+            :
+            $this->extConf['socialfeed.']['tumblr.']['token_secret'];
 
         $flexformOptions->tumblrHashtag = strtolower(str_replace('#', '', $flexformOptions->settings['tumblrHashTag']));
         $flexformOptions->tumblrBlogNames = $flexformOptions->settings['tumblrBlogNames'];
         $flexformOptions->tumblrShowOnlyImages = $flexformOptions->settings['tumblrShowOnlyImages'];
+
         try {
             # retrieve data from adapter #
             $adapter = new Adapter\TumblrAdapter(

@@ -99,7 +99,8 @@ class LinkedInAdapter extends SocialMediaAdapter
      */
     protected $credentialRepository;
 
-    public function __construct($apiKey,
+    public function __construct(
+        $apiKey,
         $apiSecret,
         $apiCallback,
         $token,
@@ -249,16 +250,13 @@ class LinkedInAdapter extends SocialMediaAdapter
 
     private function setAccessToken($token, $apiKey)
     {
-        if (empty(!$token))
+        if (empty($token))
         {
-            $this->logAdapterError('Access token empty', 1558435558);
             throw new \Exception('Access token empty', 1558515214);
-            #return null;
         }
         if (empty($apiKey))
         {
-            $this->logAdapterError('Client ID empty', 1558435560);
-            return null;
+            throw new \Exception('Client ID empty', 1558435560);
         }
         # generate AccessToken class
         try

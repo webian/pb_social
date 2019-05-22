@@ -91,8 +91,6 @@
                 <source>None</source>
             </trans-unit>
 
-
-
             <trans-unit id="flexform.tab.linkedin.jobPostings">
                 <source>Show job postings</source>
             </trans-unit>
@@ -101,6 +99,10 @@
             </trans-unit>
             <trans-unit id="flexform.tab.linkedin.statusUpdates">
                 <source>Show status updates</source>
+            </trans-unit>
+
+            <trans-unit id="flexform.tab.linkedin.linkedinPluginKeyfieldEnabled">
+                <source>Use individual credentials instead of global extension configuration</source>
             </trans-unit>
 
             <trans-unit id="flexform.tab.pinterest.caption">
@@ -115,21 +117,8 @@
             <trans-unit id="flexform.tab.pinterest.boardname">
                 <source>Show pins of a specific Pinterest board of a user (needs username input at the upper field)</source>
             </trans-unit>
-
-            <trans-unit id="flexform.tab.tumblr.caption">
-                <source>Tumblr</source>
-            </trans-unit>
-            <trans-unit id="flexform.tab.tumblr.active">
-                <source>Active</source>
-            </trans-unit>
-            <trans-unit id="flexform.tab.tumblr.searchID">
-                <source>Tumblr blog names. For your own Dashboard use "MYDASHBOARD" as value. Use commas to show more than one blog</source>
-            </trans-unit>
-            <trans-unit id="flexform.tab.tumblr.hashTag">
-                <source>Search the above-mentioned Tumblr blog names for a specific hashtag</source>
-            </trans-unit>
-            <trans-unit id="flexform.tab.tumblr.showOnlyImages">
-                <source>Show only posts with images</source>
+            <trans-unit id="flexform.tab.pinterest.pinterestPluginKeyfieldEnabled">
+                <source>Use individual credentials instead of global extension configuration</source>
             </trans-unit>
 
             <trans-unit id="flexform.tab.twitter.caption">
@@ -159,6 +148,10 @@
             <trans-unit id="flexform.tab.twitter.https">
                 <source>Include images with https</source>
             </trans-unit>
+            <trans-unit id="flexform.tab.twitter.twitterPluginKeyfieldEnabled">
+                <source>Use individual credentials instead of global extension configuration</source>
+            </trans-unit>
+
 
             <trans-unit id="socialfeed_wizard.title">
                 <source>Social Media Streams</source>
@@ -210,6 +203,11 @@
                 <source>rating</source>
             </trans-unit>
 
+            <trans-unit id="flexform.tab.youtube.youtubePluginKeyfieldEnabled">
+                <source>Use individual credentials instead of global extension configuration</source>
+            </trans-unit>
+
+
             <trans-unit id="flexform.tab.vimeo.caption">
                 <source>Vimeo</source>
             </trans-unit>
@@ -218,6 +216,30 @@
             </trans-unit>
             <trans-unit id="flexform.tab.vimeo.channel">
                 <source>Channel ID to display. Show all your videos with "me".</source>
+            </trans-unit>
+
+            <trans-unit id="flexform.tab.vimeo.vimeoPluginKeyfieldEnabled">
+                <source>Use individual credentials instead of global extension configuration</source>
+            </trans-unit>
+
+            <trans-unit id="flexform.tab.tumblr.caption">
+                <source>Tumblr</source>
+            </trans-unit>
+            <trans-unit id="flexform.tab.tumblr.active">
+                <source>Active</source>
+            </trans-unit>
+            <trans-unit id="flexform.tab.tumblr.searchID">
+                <source>Tumblr blog names. For your own Dashboard use "MYDASHBOARD" as value. Use commas to show more than one blog</source>
+            </trans-unit>
+            <trans-unit id="flexform.tab.tumblr.hashTag">
+                <source>Search the above-mentioned Tumblr blog names for a specific hashtag</source>
+            </trans-unit>
+            <trans-unit id="flexform.tab.tumblr.showOnlyImages">
+                <source>Show only posts with images</source>
+            </trans-unit>
+
+            <trans-unit id="flexform.tab.tumblr.tumblrPluginKeyfieldEnabled">
+                <source>Use individual credentials instead of global extension configuration</source>
             </trans-unit>
 
             <trans-unit id="flexform.tab.imgur.caption">

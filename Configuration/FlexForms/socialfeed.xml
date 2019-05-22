@@ -287,6 +287,54 @@
                             </config>
                         </TCEforms>
                     </settings.linkedinFilterChoice>
+                    
+                    <settings.linkedinPluginKeyfieldEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.linkedin.linkedinPluginKeyfieldEnabled</label>
+                            <onChange>reload</onChange>
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.linkedinPluginKeyfieldEnabled>
+                    <settings.linkedinClientKey>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:linkedin.client.key</label>
+                            <displayCond>FIELD:settings.linkedinPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.linkedinClientKey>
+                    <settings.linkedinClientSecret>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:linkedin.client.secret</label>
+                            <displayCond>FIELD:settings.linkedinPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.linkedinClientSecret>
+                    <settings.linkedinClientCallbackUrl>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:linkedin.client.callback_url</label>
+                            <displayCond>FIELD:settings.linkedinPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.linkedinClientCallbackUrl>
+                    <settings.linkedinAccessToken>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:linkedin.access_token</label>
+                            <displayCond>FIELD:settings.linkedinPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.linkedinAccessToken>
+
+                    
                 </el>
             </ROOT>
         </display_linkedin>
@@ -321,6 +369,44 @@
                             </config>
                         </TCEforms>
                     </settings.boardname>
+
+                    <settings.pinterestPluginKeyfieldEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.pinterest.pinterestPluginKeyfieldEnabled</label>
+                            <onChange>reload</onChange>
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.pinterestPluginKeyfieldEnabled>
+                    <settings.pinterestAppId>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:pinterest.app.id</label>
+                            <displayCond>FIELD:settings.pinterestPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.pinterestAppId>
+                     <settings.pinterestAppSsecret>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:pinterest.app.secret</label>
+                            <displayCond>FIELD:settings.pinterestPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.pinterestAppSsecret>
+                     <settings.pinterestAppCode>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:pinterest.app.code</label>
+                            <displayCond>FIELD:settings.pinterestPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.pinterestAppCode>
+
                 </el>
             </ROOT>
         </display_pinterest>
@@ -397,6 +483,52 @@
                             </config>
                         </TCEforms>
                     </settings.twitterHTTPS>
+
+                    <settings.twitterPluginKeyfieldEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.twitter.twitterPluginKeyfieldEnabled</label>
+                            <onChange>reload</onChange>
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.twitterPluginKeyfieldEnabled>
+                    <settings.twitterConsumerKey>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:twitter.consumer.key</label>
+                            <displayCond>FIELD:settings.twitterPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.twitterConsumerKey>
+                    <settings.twitterConsumerSecret>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:twitter.consumer.secret</label>
+                            <displayCond>FIELD:settings.twitterPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.twitterConsumerSecret>
+                    <settings.twitterOauthAccessToken>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:twitter.oauth.access.token</label>
+                            <displayCond>FIELD:settings.twitterPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.twitterOauthAccessToken>
+                    <settings.twitterOauthAccessTokenSecret>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:twitter.oauth.access.token_secret</label>
+                            <displayCond>FIELD:settings.twitterPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.twitterOauthAccessTokenSecret>
                 </el>
             </ROOT>
         </display_twitter>
@@ -492,6 +624,26 @@
                             </config>
                         </TCEforms>
                     </settings.youtubeOrder>
+
+                    <settings.youtubePluginKeyfieldEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.youtube.youtubePluginKeyfieldEnabled</label>
+                            <onChange>reload</onChange>
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.youtubePluginKeyfieldEnabled>
+                    <settings.youtubeApikey>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:youtube.apikey</label>
+                            <displayCond>FIELD:settings.youtubePluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.youtubeApikey>
+                    
                 </el>
             </ROOT>
         </display_youtube>
@@ -519,6 +671,44 @@
                             </config>
                         </TCEforms>
                     </settings.vimeoChannel>
+
+                    <settings.vimeoPluginKeyfieldEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.vimeo.vimeoPluginKeyfieldEnabled</label>
+                            <onChange>reload</onChange>
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.vimeoPluginKeyfieldEnabled>
+                    <settings.vimeoClientIdentifier>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:vimeo.client.identifier</label>
+                            <displayCond>FIELD:settings.vimeoPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.vimeoClientIdentifier>
+                    <settings.vimeoClientSecret>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:vimeo.client.secret</label>
+                            <displayCond>FIELD:settings.vimeoPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.vimeoClientSecret>
+                    <settings.vimeoToken>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:vimeo.token</label>
+                            <displayCond>FIELD:settings.vimeoPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.vimeoToken>
+
                 </el>
             </ROOT>
         </display_vimeo>
@@ -562,6 +752,53 @@
                             </config>
                         </TCEforms>
                     </settings.tumblrHashTag>
+
+                    <settings.tumblrPluginKeyfieldEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.tumblr.tumblrPluginKeyfieldEnabled</label>
+                            <onChange>reload</onChange>
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.tumblrPluginKeyfieldEnabled>
+                    <settings.tumblrConsumerKey>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:tumblr.consumer.key</label>
+                            <displayCond>FIELD:settings.tumblrPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.tumblrConsumerKey>
+                    <settings.tumblrConsumerSecret>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:tumblr.consumer.secret</label>
+                            <displayCond>FIELD:settings.tumblrPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.tumblrConsumerSecret>
+                    <settings.tumblrToken>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:tumblr.token</label>
+                            <displayCond>FIELD:settings.tumblrPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.tumblrToken>
+                    <settings.tumblrTokenSecret>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:tumblr.token_secret</label>
+                            <displayCond>FIELD:settings.tumblrPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.tumblrTokenSecret>
+
                 </el>
             </ROOT>
         </display_tumblr>
