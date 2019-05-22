@@ -34,16 +34,15 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 {
 
     const TYPE_FACEBOOK = 'facebook';
-    const TYPE_IMGUR = 'imgur';
     const TYPE_INSTAGRAM = 'instagram';
     const TYPE_LINKEDIN = 'linkedin';
     const TYPE_PINTEREST = 'pinterest';
     const TYPE_TWITTER = 'twitter';
-    const TYPE_TUMBLR = 'tumblr';
     const TYPE_YOUTUBE = 'youtube';
-    const TYPE_TX_NEWS = 'tx_news';
     const TYPE_VIMEO = 'vimeo';
-    const TYPE_DUMMY = 'dummy';
+    const TYPE_TUMBLR = 'tumblr';
+    const TYPE_IMGUR = 'imgur';
+    const TYPE_TX_NEWS = 'tx_news';
 
     const EXTKEY = 'pb_social';
 

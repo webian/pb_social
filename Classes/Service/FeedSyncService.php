@@ -776,10 +776,11 @@ class FeedSyncService extends AbstractBaseService
         $isVerbose = false
     ){
 
-
+        $message = "";
         $flexformOptions->newsCategories = $flexformOptions->settings['newsCategories'];
         $flexformOptions->newsDetailPageUid =$flexformOptions->settings['newsDetailPageUid'];
         if ($flexformOptions->settings['useHttpsLinks']) $flexformOptions->useHttps = true;
+
         try {
             # retrieve data from adapter #
             $adapter = new Adapter\TxNewsAdapter(
@@ -792,7 +793,7 @@ class FeedSyncService extends AbstractBaseService
 
             );
 
-            $this->doRequestAndSetContentToCache(
+            $message = $this->doRequestAndSetContentToCache(
                 $adapter,
                 $flexformOptions,
                 $socialNetworkTypeString,

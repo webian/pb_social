@@ -66,12 +66,6 @@ class TxNewsAdapter extends SocialMediaAdapter
     protected $newsRepository;
     public $newsDemand;
 
-    /**
-     * TxNewsAdapter constructor.
-     * @param NewsDemand $newsDemand
-     * @param ItemRepository $itemRepository
-     * @param $options
-     */
     public function __construct(
         $newsDemand,
         $itemRepository,
