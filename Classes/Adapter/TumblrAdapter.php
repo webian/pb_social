@@ -10,8 +10,8 @@ use Tumblr\API\Client;
  *
  *  Copyright notice
  *
- *  (c) 2016 Ramon Mohi <rm@plusb.de>, plusB
- *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
+ *  (c) 2016 Ramon Mohi <rm@plusb.de>, plus B
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -83,9 +83,19 @@ class TumblrAdapter extends SocialMediaAdapter
 
     private $api;
 
-    public function __construct($apiId, $apiSecret, $token, $tokenSecret, $itemRepository, $options)
+    public function __construct(
+        $apiId,
+        $apiSecret,
+        $token,
+        $tokenSecret,
+        $itemRepository,
+        $options,
+        $ttContentUid,
+        $ttContentPid,
+        $cacheIdentifier
+    )
     {
-        parent::__construct($itemRepository);
+        parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
 
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
@@ -96,7 +106,9 @@ class TumblrAdapter extends SocialMediaAdapter
                     'tokenSecret' => $tokenSecret,
                     'options' => $options
                 )) === false)
-        {return $this;}
+        {
+            throw new \Exception( self::TYPE . ' ' . $this->validationMessage, 1558521506);
+        }
         /* validated */
 
 
@@ -134,13 +146,11 @@ class TumblrAdapter extends SocialMediaAdapter
     {
         $options = $this->options;
         $result = array();
-        /**
-         * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to bee free, so... change!
-         * todo: try to get rid of duplicate code
-         */
+
         // search for users
         foreach (explode(',', $options->tumblrBlogNames) as $blogName) {
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $blogName);
+            $blogName = trim($blogName);
+            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $blogName));
             if ($feeds && $feeds->count() > 0) {
                 $feed = $feeds->getFirst();
                 if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
@@ -150,7 +160,7 @@ class TumblrAdapter extends SocialMediaAdapter
                         $feed->setResult($posts);
                         $this->itemRepository->updateFeed($feed);
                     } catch (\Exception $e) {
-                        $this->logError("feeds can't be updated - " . $e->getMessage());
+                        throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1558435601);
                     }
                 }
                 $result[] = $feed;
@@ -159,7 +169,7 @@ class TumblrAdapter extends SocialMediaAdapter
 
             try {
                 $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($blogName);
+                $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $blogName));
 
                 $posts = $this->getPosts($blogName, $options);
                 $feed->setResult($posts);
@@ -168,7 +178,7 @@ class TumblrAdapter extends SocialMediaAdapter
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
             } catch (\Exception $e) {
-                $this->logError('initial load for feed failed - ' . $e->getMessage());
+                throw new \Exception('initial load for feed failed' . $e->getMessage(), 1558435608);
             }
         }
 

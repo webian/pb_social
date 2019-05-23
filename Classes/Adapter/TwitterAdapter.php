@@ -12,8 +12,8 @@ use PlusB\PbSocial\Domain\Model\Item;
  *
  *  Copyright notice
  *
- *  (c) 2016 Ramon Mohi <rm@plusb.de>, plusB
- *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
+ *  (c) 2016 Ramon Mohi <rm@plusb.de>, plus B
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -85,13 +85,20 @@ class TwitterAdapter extends SocialMediaAdapter
 
     //private $api_url = 'statuses/user_timeline';
 
-    public function __construct($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret, $itemRepository, $options)
+    public function __construct(
+        $consumerKey,
+        $consumerSecret,
+        $accessToken,
+        $accessTokenSecret,
+        $itemRepository,
+        $options,
+        $ttContentUid,
+        $ttContentPid,
+        $cacheIdentifier
+    )
     {
-        parent::__construct($itemRepository);
-        /**
-         * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to bee free, so... change!
-         * todo: try to get rid of duplicate code
-         */
+        parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
+
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
                 array(
@@ -101,7 +108,9 @@ class TwitterAdapter extends SocialMediaAdapter
                     'accessTokenSecret' => $accessTokenSecret,
                     'options' => $options
                 )) === false)
-        {return $this;}
+        {
+            throw new \Exception( self::TYPE . ' ' . $this->validationMessage, 1558520359);
+        }
         /* validated */
 
         $this->api =  new TwitterOAuth($this->consumerKey, $this->consumerSecret, $this->accessToken, $this->accessTokenSecret);
@@ -138,9 +147,7 @@ class TwitterAdapter extends SocialMediaAdapter
         $options = $this->options;
         $result = array();
         $apiMethod = '';
-        /*
-         * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
-         */
+
         // because of the amount of data twitter is sending, the database can only carry 20 tweets.
         // 20 Tweets = ~86000 Character
         $apiParameters = array();
@@ -159,7 +166,7 @@ class TwitterAdapter extends SocialMediaAdapter
 
             foreach (explode(',', $options->twitterSearchFieldValues) as $searchValue) {
                 $searchValue = trim($searchValue);
-                $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchValue);
+                $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchValue));
 
 
                 if ($feeds && $feeds->count() > 0) {
@@ -171,7 +178,7 @@ class TwitterAdapter extends SocialMediaAdapter
                             $feed->setResult($tweets);
                             $this->itemRepository->updateFeed($feed);
                         } catch (\Exception $e) {
-                            $this->logError("feeds can't be updated - " . $e->getMessage());
+                            throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1558435620);
                         }
                     }
                     $result[] = $feed;
@@ -181,14 +188,14 @@ class TwitterAdapter extends SocialMediaAdapter
                 try {
                     $tweets = $this->getPosts($apiParameters, $options, $searchValue);
                     $feed = new Item(self::TYPE);
-                    $feed->setCacheIdentifier($searchValue);
+                    $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchValue));
                     $feed->setResult($tweets);
 
                     // save to DB and return current feed
                     $this->itemRepository->saveFeed($feed);
                     $result[] = $feed;
                 } catch (\Exception $e) {
-                    $this->logError('initial load for feed failed - ' . $e->getMessage());
+                    throw new \Exception('initial load for feed failed. ' . $e->getMessage(), 1558435624);
                 }
             }
         }
@@ -214,7 +221,7 @@ class TwitterAdapter extends SocialMediaAdapter
                             $feed->setResult($tweets);
                             $this->itemRepository->updateFeed($feed);
                         } catch (\Exception $e) {
-                            $this->logError("feeds can't be updated - " . $e->getMessage());
+                            throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1558435632);
                         }
                     }
                     $result[] = $feed;
@@ -224,14 +231,14 @@ class TwitterAdapter extends SocialMediaAdapter
                 try {
                     $tweets = $this->getPosts($apiParameters, $options, $searchValue);
                     $feed = new Item(self::TYPE);
-                    $feed->setCacheIdentifier($searchValue);
+                    $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchValue));
                     $feed->setResult($tweets);
 
                     // save to DB and return current feed
                     $this->itemRepository->saveFeed($feed);
                     $result[] = $feed;
                 } catch (\Exception $e) {
-                    $this->logError('initial load for feed failed - ' . $e->getMessage());
+                    throw new \Exception('initial load for feed failed ' . $e->getMessage(), 1558435639);
                 }
             }
         }
@@ -253,7 +260,7 @@ class TwitterAdapter extends SocialMediaAdapter
                 }
 
                 if (empty($twitterResult)) {
-                    $this->logError("status empty");
+                    $this->logAdapterError("status empty", 1558435615);
                     break;
                 }
                 $rawFeeds[self::TYPE . '_' . $twt_feed->getCacheIdentifier() . '_raw'] = $twt_feed->getResult();

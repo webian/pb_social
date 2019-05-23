@@ -13,8 +13,8 @@ use PlusB\PbSocial\Domain\Model\Item;
  *
  *  Copyright notice
  *
- *  (c) 2016 Ramon Mohi <rm@plusb.de>, plusB
- *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
+ *  (c) 2016 Ramon Mohi <rm@plusb.de>, plus B
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -79,9 +79,19 @@ class PinterestAdapter extends SocialMediaAdapter
         $this->options = $options;
     }
 
-    public function __construct($appId, $appSecret, $accessCode, $itemRepository, $credentialRepository, $options)
+    public function __construct(
+        $appId,
+        $appSecret,
+        $accessCode,
+        $itemRepository,
+        $credentialRepository,
+        $options,
+        $ttContentUid,
+        $ttContentPid,
+        $cacheIdentifier
+    )
     {
-        parent::__construct($itemRepository);
+        parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
         /**
          * todo: quick fix - but we'd better add a layer for adapter in between, here after "return $this" instance is not completed but existing (AM)
          */
@@ -93,15 +103,14 @@ class PinterestAdapter extends SocialMediaAdapter
                     'accessCode' => $accessCode,
                     'options' => $options
                 )) === false)
-        {return $this;}
+        {
+            throw new \Exception( self::TYPE . ' ' . $this->validationMessage, 1558515175);
+        }
+
         /* validated */
-
         $this->api = new Pinterest\Pinterest($this->appId, $this->appSecret);
-
         $this->credentialRepository = $credentialRepository;
-
         $code = $this->extractCode($this->accessCode);
-
         $this->getAccessToken($code);
     }
 
@@ -120,9 +129,9 @@ class PinterestAdapter extends SocialMediaAdapter
         $this->setOptions($parameter['options']);
 
         if (empty($this->appId) || empty($this->appSecret) ||  empty($this->accessCode)) {
-            $this->validationMessage = self::TYPE . ' credentials not set';
+            $this->validationMessage = self::TYPE . ' credentials not set: '. (empty($this->appId)?'appId ':''). (empty($this->appSecret)?'appSecret ':''). (empty($this->accessCode)?'accessCode ':'');
         } elseif (empty($this->options->pinterest_username) || empty($this->options->pinterest_username)) {
-            $this->validationMessage = self::TYPE . ' username or boardname not defined';
+            $this->validationMessage = self::TYPE . ' username or board name not defined in flexform settings';
         } else {
             $this->isValid = true;
         }
@@ -136,18 +145,15 @@ class PinterestAdapter extends SocialMediaAdapter
         $result = array();
 
         $boardname = $options->pinterest_username . '/' . $options->pinterest_boardname;
-        /*
-        * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
-        */
+
         foreach (explode(',', $options->username) as $searchId) {
             $searchId = trim($searchId);
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchId);
+            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
 
             if ($feeds && $feeds->count() > 0) {
                 $feed = $feeds->getFirst();
                 /**
                  * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to bee free, so... change!
-                 * todo: try to get rid of duplicate code
                  */
                 if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
                     try {
@@ -155,7 +161,7 @@ class PinterestAdapter extends SocialMediaAdapter
                         $feed->setResult($this->getPosts($boardname));
                         $this->itemRepository->updateFeed($feed);
                     } catch (\Exception $e) {
-                        $this->logError("feeds can't be updated - " . $e->getMessage());
+                        throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1558435591);
                     }
                 }
                 $result[] = $feed;
@@ -164,14 +170,14 @@ class PinterestAdapter extends SocialMediaAdapter
 
             try {
                 $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($searchId);
+                $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
                 $feed->setResult($this->getPosts($boardname));
 
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
             } catch (\Exception $e) {
-                $this->logError('initial load for feed failed - ' . $e->getMessage());
+                throw new \Exception('initial load for feed failed' . $e->getMessage(), 1558435595);
             }
         }
 
@@ -252,7 +258,8 @@ class PinterestAdapter extends SocialMediaAdapter
                     $this->credentialRepository->saveCredential($credential);
                 }
             } else {
-                $this->logError('access code expired. Please provide new code in pb_social extension configuration.');
+                $this->logAdapterError('access code expired. Please provide new code in pb_social extension configuration.',
+                    1558435580);
                 return null;
             }
         }
@@ -264,8 +271,7 @@ class PinterestAdapter extends SocialMediaAdapter
             $this->api->request->get('me');
         } catch (\Exception $e) {
             $this->credentialRepository->deleteCredential($credential);
-            $this->logError('exception: ' . $e->getMessage());
-            $this->logWarning(': Please provide new access code');
+            throw new \Exception('exception: ' . $e->getMessage(), 1558435586);
         }
     }
 

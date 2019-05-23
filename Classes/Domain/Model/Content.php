@@ -6,7 +6,7 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  *
  *  Copyright notice
  *
- *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *

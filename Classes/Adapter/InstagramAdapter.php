@@ -16,8 +16,8 @@ use PlusB\PbSocial\Domain\Model\Item;
  *
  *  Copyright notice
  *
- *  (c) 2016 Ramon Mohi <rm@plusb.de>, plusB
- *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
+ *  (c) 2016 Ramon Mohi <rm@plusb.de>, plus B
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -86,9 +86,6 @@ class InstagramAdapter extends SocialMediaAdapter
         $this->token = $token;
     }
 
-
-
-
     /**
      * @param mixed $options
      */
@@ -106,17 +103,26 @@ class InstagramAdapter extends SocialMediaAdapter
      * @param $code
      * @param $token
      * @param $itemRepository
-     * @param $credentialRepository
      * @param $options
+     * @param $ttContentUid
+     * @param $ttContentPid
+     * @param $cacheIdentifier
      * @throws \MetzWeb\Instagram\InstagramException
      */
-    public function __construct($apiKey, $apiSecret, $apiCallback, $code, $token, $itemRepository, $credentialRepository, $options)
+    public function __construct(
+        $apiKey,
+        $apiSecret,
+        $apiCallback,
+        $code,
+        $token,
+        $itemRepository,
+        $options,
+        $ttContentUid,
+        $ttContentPid,
+        $cacheIdentifier)
     {
-        parent::__construct($itemRepository);
+        parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
 
-        /**
-         * todo: quick fix - but we'd better add a layer for adapter in between, here after "return $this" instance is not completed but existing (AM)
-         */
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
                 array(
@@ -127,11 +133,12 @@ class InstagramAdapter extends SocialMediaAdapter
                     'token' => $token,
                     'options' => $options
                 )) === false)
-        {return $this;}
+        {
+            throw new \Exception(self::TYPE . ' ' . $this->validationMessage,  1558515732);
+        }
         /* validated */
 
         $this->api =  new Instagram(array('apiKey' => $this->apiKey, 'apiSecret' => $this->apiSecret, 'apiCallback' => $this->apiCallback));
-
         $this->api->setAccessToken($this->token);
     }
 
@@ -151,9 +158,18 @@ class InstagramAdapter extends SocialMediaAdapter
         $this->setOptions($parameter['options']);
 
         if (empty($this->apiKey) || empty($this->apiSecret) ||  empty($this->apiCallback)||  empty($this->code)||  empty($this->token)) {
-            $this->validationMessage = self::TYPE . ': credentials not set';
+            $this->validationMessage = 'credentials not set: '
+                . (empty($this->apiKey)?'apiKey ':'')
+                . (empty($this->apiSecret)?'apiSecret ':'')
+                . (empty($this->apiCallback)?'apiCallback ':'')
+                . (empty($this->code)?'code ':'')
+                . (empty($this->token)?'token ':'')
+            ;
         } elseif (empty($this->options->instagramSearchIds) && empty($this->options->instagramHashTags)) {
-            $this->validationMessage = self::TYPE . ': no search term defined';
+            $this->validationMessage = 'no search term defined: '
+                . (empty($this->instagramSearchIds)?'instagramSearchIds ':'')
+                . (empty($this->instagramHashTags)?'instagramHashTags ':'')
+            ;
         } else {
             $this->isValid = true;
         }
@@ -168,32 +184,29 @@ class InstagramAdapter extends SocialMediaAdapter
 
         // If search ID is given and hashtag is given and filter is checked, only show posts with given hashtag
         $filterByHastags = $options->instagramPostFilter && $options->instagramSearchIds && $options->instagramHashTags;
-        /*
-         * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
-        */
+
         if (!$filterByHastags) {
             foreach (explode(',', $options->instagramSearchIds) as $searchId) {
                 $searchId = trim($searchId);
                 if ($searchId != ""){
-                    $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchId);
+                    $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
                     if ($feeds && $feeds->count() > 0) {
                         $feed = $feeds->getFirst();
                         /**
-                         * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to bee free, so... change!
-                         * todo: try to get rid of duplicate code
+                         * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to bee free...
                          */
                         if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
                             try {
                                 $userPosts = $this->api->getUserMedia($searchId, $options->feedRequestLimit);
                                 if ($userPosts->meta->code >= 400) {
-                                    $this->logWarning('error: ' . json_encode($userPosts->meta));
+                                    $this->logAdapterWarning('warning: ' . json_encode($userPosts->meta),1558435723);
                                     continue;
                                 }
                                 $feed->setDate(new \DateTime('now'));
                                 $feed->setResult(json_encode($userPosts));
                                 $this->itemRepository->updateFeed($feed);
                             } catch (\Exception $e) {
-                                $this->logError("feeds can't be updated - " . $e->getMessage());
+                                throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1558515755);
                                 continue;
                             }
                         }
@@ -204,17 +217,17 @@ class InstagramAdapter extends SocialMediaAdapter
                     try {
                         $userPosts = $this->api->getUserMedia($searchId, $options->feedRequestLimit);
                         if ($userPosts->meta->code >= 400) {
-                            $this->logWarning('error: ' . json_encode($userPosts->meta));
+                            $this->logAdapterWarning('warning: ' . json_encode($userPosts->meta),1558435728);
                         }
                         $feed = new Item(self::TYPE);
-                        $feed->setCacheIdentifier($searchId);
+                        $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
                         $feed->setResult(json_encode($userPosts));
 
                         // save to DB and return current feed
                         $this->itemRepository->saveFeed($feed);
                         $result[] = $feed;
                     } catch (\Exception $e) {
-                        $this->logError('initial load for feed failed - ' . $e->getMessage());
+                        throw new \Exception('initial load for feed failed. ' . $e->getMessage(), 1558515800);
                     }
                 }
             }
@@ -224,7 +237,7 @@ class InstagramAdapter extends SocialMediaAdapter
             $searchId = trim($searchId);
             $searchId = ltrim($searchId, '#'); //strip hastags
             if ($searchId != "") {
-                $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchId);
+                $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
 
                 if ($feeds && $feeds->count() > 0) {
                     $feed = $feeds->getFirst();
@@ -232,13 +245,13 @@ class InstagramAdapter extends SocialMediaAdapter
                         try {
                             $tagPosts = $this->api->getTagMedia($searchId, $options->feedRequestLimit);
                             if ($tagPosts->meta->code >= 400) {
-                                $this->logWarning('error: ' . json_encode($tagPosts->meta));
+                                $this->logAdapterWarning('warning: ' . json_encode($tagPosts->meta),1558435751);
                             }
                             $feed->setDate(new \DateTime('now'));
                             $feed->setResult(json_encode($tagPosts));
                             $this->itemRepository->updateFeed($feed);
                         } catch (\Exception $e) {
-                            $this->logError("feeds can't be updated - " . $e->getMessage());
+                            throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1558515771);
                         }
                     }
                     $result[] = $feed;
@@ -248,16 +261,16 @@ class InstagramAdapter extends SocialMediaAdapter
                 try {
                     $tagPosts = $this->api->getTagMedia($searchId, $options->feedRequestLimit);
                     if ($tagPosts->meta->code >= 400) {
-                        $this->logWarning('error: ' . json_encode($tagPosts->meta));
+                        $this->logAdapterWarning('warning: ' . json_encode($tagPosts->meta),1558435756);
                     }
                     $feed = new Item(self::TYPE);
-                    $feed->setCacheIdentifier($searchId);
+                    $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
                     $feed->setResult(json_encode($tagPosts));
                     // save to DB and return current feed
                     $this->itemRepository->saveFeed($feed);
                     $result[] = $feed;
                 } catch (\Exception $e) {
-                    $this->logError('initial load for feed failed - ' . $e->getMessage());
+                    throw new \Exception('initial load for feed failed. ' . $e->getMessage(), 1558515784);
                 }
             }
         }

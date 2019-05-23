@@ -2,15 +2,14 @@
 namespace PlusB\PbSocial\Command;
 
 use PlusB\PbSocial\Domain\Model\Content;
-use PlusB\PbSocial\Domain\Repository\ContentRepository;
 
 
 /***************************************************************
  *
  *  Copyright notice
  *
- *  (c) 2014 Mikolaj Jedrzejewski <mj@plusb.de>, plusB
- *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
+ *  (c) 2014 Mikolaj Jedrzejewski <mj@plusb.de>, plus B
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -34,16 +33,15 @@ use PlusB\PbSocial\Domain\Repository\ContentRepository;
 class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandController
 {
     const TYPE_FACEBOOK = 'facebook';
-    const TYPE_IMGUR = 'imgur';
     const TYPE_INSTAGRAM = 'instagram';
     const TYPE_LINKEDIN = 'linkedin';
     const TYPE_PINTEREST = 'pinterest';
     const TYPE_TWITTER = 'twitter';
-    const TYPE_TUMBLR = 'tumblr';
     const TYPE_YOUTUBE = 'youtube';
-    const TYPE_TX_NEWS = 'tx_news';
     const TYPE_VIMEO = 'vimeo';
-    const TYPE_DUMMY = 'dummy';
+    const TYPE_TUMBLR = 'tumblr';
+    const TYPE_IMGUR = 'imgur';
+    const TYPE_TX_NEWS = 'tx_news';
 
     const EXTKEY = 'pb_social';
 
@@ -137,7 +135,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
      */
     public function setSysLogWarnings($sysLogWarnings)
     {
-        $this->sysLogWarnings .= ", ". $sysLogWarnings;
+        $this->sysLogWarnings .= $sysLogWarnings;
     }
 
     /**
@@ -214,6 +212,10 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
 
     /**
      * initializing
+     *
+     * @param string $verbose
+     * @param string $silent
+     * @param string $callnetwork
      */
     private function initializeUpdateFeedDataCommand($verbose, $silent, $callnetwork) {
 
@@ -238,26 +240,12 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
             $this->setVerbose(false);
         }
 
-        if($this->isVerbose() === true){
-            $this->outputConsoleInfo("entering verbose output");
-        }
-
         $this->setCallnetwork($callnetwork);
-        if($this->getCallnetwork() !== 'all'){
-            $this->outputConsoleInfo("just calling one network: {$this->getCallnetwork()}");
-        }
 
         # Initialize logger
         $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
-
-        // get extConf (will be different in Version 9)
-        $this->extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::EXTKEY]);
     }
 
-    /**
-     * @var array
-     */
-    private $extConf = array();
 
     /**
      * @return array
@@ -288,7 +276,8 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
      *
      * @param bool $verbose Enter verbose output
      * @param bool $silent Silent mode outputs nothing, but logs still into general typo3 log file
-     * @param string $callnetwork - just call one network - default is all
+     * @param string $callnetwork - just call one network - default is all, according to flexform settings
+     * @return string message
      */
     public function updateFeedDataCommand($verbose = false, $silent = false, $callnetwork = 'all')
     {
@@ -299,6 +288,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
          * @var $xmlStr Content
          */
         $xml_settings = $this->contentRepository->findFlexforms("list", "pbsocial_socialfeed")->toArray();
+        $message = "";
 
         # Convert flexform settings into usable array structure #
         if (!empty($xml_settings)) {
@@ -309,144 +299,52 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
                 $flexformSettings = $this->flexformService->convertFlexFormContentToArray($xmlStr->getPiFlexform());
                 $flexformSettings = $flexformSettings['settings'];
 
-                $this->setSysLogWarnings("Flexform on Plugin Uid ".$xmlStr->getUid() ." on Page Uid ". $xmlStr->getPid() . "says: ");
-
-                /* starting procedural list of requrests */
+                /* starting procedural list of requests */
                 if ($flexformSettings['facebookEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_FACEBOOK)) {
-
-                    $this->outputLogInformation(
-                        $this->feedSyncService->syncFeed(self::TYPE_FACEBOOK, $flexformSettings, $xmlStr->getUid(), $this->isVerbose())
-                    );
-
+                    $message .= $this->feedSyncService->syncFeed(self::TYPE_FACEBOOK, $flexformSettings, $xmlStr->getUid(),
+                        $xmlStr->getPid(), $this->isVerbose());
                 }
-
-                if ($flexformSettings['imgurEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_IMGUR)) {
-
-                    $this->outputLogInformation(
-                        $this->feedSyncService->syncFeed(self::TYPE_IMGUR, $flexformSettings, $xmlStr->getUid(), $this->isVerbose())
-                    );
-
-                }
-
                 if ($flexformSettings['instagramEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_INSTAGRAM)) {
-
-                    $this->outputLogInformation(
-                        $this->feedSyncService->syncFeed(self::TYPE_INSTAGRAM, $flexformSettings, $xmlStr->getUid(), $this->isVerbose())
-                    );
-
+                    $message .= $this->feedSyncService->syncFeed(self::TYPE_INSTAGRAM, $flexformSettings, $xmlStr->getUid(),
+                        $xmlStr->getPid(), $this->isVerbose());
                 }
-
                 if ($flexformSettings['linkedinEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_LINKEDIN)) {
-
-                    $this->outputLogInformation(
-                        $this->feedSyncService->syncFeed(self::TYPE_LINKEDIN, $flexformSettings, $xmlStr->getUid(), $this->isVerbose())
-                    );
-
+                    $message .= $this->feedSyncService->syncFeed(self::TYPE_LINKEDIN, $flexformSettings, $xmlStr->getUid(),
+                        $xmlStr->getPid(), $this->isVerbose());
                 }
-
                 if ($flexformSettings['pinterestEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_PINTEREST)) {
-
-                    $this->outputLogInformation(
-                        $this->feedSyncService->syncFeed(self::TYPE_PINTEREST, $flexformSettings, $xmlStr->getUid(), $this->isVerbose())
-                    );
+                    $message .= $this->feedSyncService->syncFeed(self::TYPE_PINTEREST, $flexformSettings, $xmlStr->getUid(),
+                        $xmlStr->getPid(), $this->isVerbose());
                 }
-
-                if ($flexformSettings['tumblrEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_TUMBLR)) {
-
-                    $this->outputLogInformation(
-                        $this->feedSyncService->syncFeed(self::TYPE_TUMBLR, $flexformSettings, $xmlStr->getUid(), $this->isVerbose())
-                    );
-
-                }
-
                 if ($flexformSettings['twitterEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_TWITTER)) {
-
-                    $this->outputLogInformation(
-                        $this->feedSyncService->syncFeed(self::TYPE_TWITTER, $flexformSettings, $xmlStr->getUid(), $this->isVerbose())
-                    );
-
+                    $message .= $this->feedSyncService->syncFeed(self::TYPE_TWITTER, $flexformSettings, $xmlStr->getUid(),
+                        $xmlStr->getPid(), $this->isVerbose());
                 }
-
                 if ($flexformSettings['youtubeEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_YOUTUBE)) {
-
-                    $this->outputLogInformation(
-                        $this->feedSyncService->syncFeed(self::TYPE_YOUTUBE, $flexformSettings, $xmlStr->getUid(), $this->isVerbose())
-                    );
-
+                    $message .= $this->feedSyncService->syncFeed(self::TYPE_YOUTUBE, $flexformSettings, $xmlStr->getUid(),
+                        $xmlStr->getPid(), $this->isVerbose());
                 }
-
                 if ($flexformSettings['vimeoEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_VIMEO)) {
-
-                    $this->outputLogInformation(
-                        $this->feedSyncService->syncFeed(self::TYPE_VIMEO, $flexformSettings, $xmlStr->getUid(), $this->isVerbose())
-                    );
+                    $message .= $this->feedSyncService->syncFeed(self::TYPE_VIMEO, $flexformSettings, $xmlStr->getUid(),
+                        $xmlStr->getPid(), $this->isVerbose());
                 }
-
+                if ($flexformSettings['tumblrEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_TUMBLR)) {
+                    $message .= $this->feedSyncService->syncFeed(self::TYPE_TUMBLR, $flexformSettings, $xmlStr->getUid(),
+                        $xmlStr->getPid(), $this->isVerbose());
+                }
+                if ($flexformSettings['imgurEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_IMGUR)) {
+                    $message .= $this->feedSyncService->syncFeed(self::TYPE_IMGUR, $flexformSettings, $xmlStr->getUid(),
+                        $xmlStr->getPid(), $this->isVerbose());
+                }
                 if ($flexformSettings['newsEnabled'] === '1' && ($this->getCallnetwork() === 'all' || $this->getCallnetwork() === self::TYPE_TX_NEWS)) {
-
-                    $this->outputLogInformation(
-                        $this->feedSyncService->syncFeed(self::TYPE_TX_NEWS, $flexformSettings, $xmlStr->getUid(), $this->isVerbose())
-                    );
-
+                    $message .= $this->feedSyncService->syncFeed(self::TYPE_TX_NEWS, $flexformSettings, $xmlStr->getUid(),
+                        $xmlStr->getPid(), $this->isVerbose());
                 }
 
-                $this->outputSysLog();
-            }
-        }
+            }//foreach
+        }//if
+        return "\e[1;33;40m".$message ."\e[0m\n";
     }
 
-    /**
-     * @param $message object
-     */
-    /**
-     * @param $messageObject object of message->isSuccessfull and message->message
-     */
-    private function outputLogInformation($messageObject){
-        if($messageObject->isSuccessfull === true){
-            $this->outputLogInfo($messageObject->message);
-        }else{
-            $this->outputLogWarning($messageObject->message);
-            $this->collectSyslogWarnings($messageObject->message);
-        }
-        $this->outputConsoleInfo($messageObject->message);
 
-    }
-
-    private function collectSyslogWarnings($message){
-        $this->setIsSyslogWarning(true);
-        $this->setSysLogWarnings($message);
-    }
-
-    private function outputSysLog(){
-        if($this->isSyslogWarning() === true){
-            $this->scheduler->log($this->getSysLogWarnings(), 1, "scheduler pb_social");
-            $this->resetSysLogWarnings();
-        }
-    }
-
-    /**
-     * Output in Logfile
-     * @param $message string
-     */
-    private function outputLogInfo($message){
-        $this->logger->info($message);
-    }
-
-    /**
-     * Output in Logfile
-     * @param $message string
-     */
-    private function outputLogWarning($message){
-        $this->logger->warning($message);
-    }
-
-    /**
-     * Output in command line console
-     * @param $message
-     */
-    private function outputConsoleInfo($message){
-        if($this->isSilent() !== true){
-            $this->outputFormatted($message);
-        }
-    }
 }

@@ -16,8 +16,8 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  *
  *  Copyright notice
  *
- *  (c) 2016 Ramon Mohi <rm@plusb.de>, plusB
- *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
+ *  (c) 2016 Ramon Mohi <rm@plusb.de>, plus B
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -66,26 +66,26 @@ class TxNewsAdapter extends SocialMediaAdapter
     protected $newsRepository;
     public $newsDemand;
 
-    /**
-     * TxNewsAdapter constructor.
-     * @param NewsDemand $newsDemand
-     * @param ItemRepository $itemRepository
-     * @param $options
-     */
-    public function __construct($newsDemand, $itemRepository, $options)
+    public function __construct(
+        $newsDemand,
+        $itemRepository,
+        $options,
+        $ttContentUid,
+        $ttContentPid,
+        $cacheIdentifier
+    )
     {
-        parent::__construct($itemRepository);
+        parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
 
-        /**
-         * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to bee free, so... change!
-         * todo: try to get rid of duplicate code
-         */
+
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
                 array(
                     'options' => $options
                 )) === false)
-        {return $this;}
+        {
+            throw new \Exception( self::TYPE . ' ' . $this->validationMessage, 1558515175);
+        }
         /* validated */
 
         $this->cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
@@ -124,12 +124,9 @@ class TxNewsAdapter extends SocialMediaAdapter
 
         $this->detailPageUid = $options->newsDetailPageUid;
         $newsCategories = GeneralUtility::trimExplode(',', $options->newsCategories);
-        /*
-         * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
-         */
         foreach ($newsCategories as $newsCategory) {
-            $searchString = trim($newsCategory);
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchString);
+            $newsCategory = trim($newsCategory);
+            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $newsCategory));
             $this->newsDemand->setCategories(array($newsCategory));
             if(!empty($newsCategory)) $this->newsDemand->setCategoryConjunction('or');
             if ($feeds && $feeds->count() > 0) {
@@ -143,7 +140,7 @@ class TxNewsAdapter extends SocialMediaAdapter
                         $this->itemRepository->updateFeed($feed);
                         $result[] = $feed;
                     } catch (\Exception $e) {
-                        $this->logError("feeds can't be updated " . $e->getMessage());
+                        throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1558435645);
                     }
                 }
                 continue;
@@ -151,7 +148,7 @@ class TxNewsAdapter extends SocialMediaAdapter
 
             try {
                 $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($searchString);
+                $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $newsCategory));
                 $demanded = $this->newsRepository->findDemanded($this->newsDemand)->toArray();
                 $mapped = empty($demanded) ? array() : $this->demandedNewsToString($demanded, $options->useHttps);
                 $feed->setResult($mapped);
@@ -159,7 +156,7 @@ class TxNewsAdapter extends SocialMediaAdapter
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
             } catch (\Exception $e) {
-                $this->logError('initial load for ' . self::TYPE . ' feeds failed. ' . $e->getMessage());
+                throw new \Exception('initial load for ' . self::TYPE . ' feeds failed. ' . $e->getMessage(), 1558435651);
             }
         }
 

@@ -14,8 +14,8 @@ use PlusB\PbSocial\Domain\Model\Item;
  *
  *  Copyright notice
  *
- *  (c) 2016 Ramon Mohi <rm@plusb.de>, plusB
- *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
+ *  (c) 2016 Ramon Mohi <rm@plusb.de>, plus B
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -73,12 +73,18 @@ class FacebookAdapter extends SocialMediaAdapter
         $this->options = $options;
     }
 
-    public function __construct($apiId, $apiSecret, $itemRepository, $options)
+    public function __construct(
+        $apiId,
+        $apiSecret,
+        $itemRepository,
+        $options,
+        $ttContentUid,
+        $ttContentPid,
+        $cacheIdentifier
+    )
     {
-        parent::__construct($itemRepository);
-        /**
-         * todo: quickfix - but we better add a layer for adapter inbetween, here after "return $this" intance is not completet but existend (AM)
-         */
+        parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
+
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
             array(
@@ -86,14 +92,14 @@ class FacebookAdapter extends SocialMediaAdapter
                 'apiSecret' => $apiSecret,
                 'options' => $options
             )) === false)
-        {return $this;}
-        /* partly validated, but not valid object, open task */
+        {
+            throw new \Exception( self::TYPE . ' ' . $this->validationMessage, 1558515175);
+        }
+        /* validated */
 
         $this->api = new Facebook(['app_id' => $this->apiId,'app_secret' => $this->apiSecret,'default_graph_version' => self::api_version]);
-
         $this->access_token =  $this->api->getApp()->getAccessToken();
         $this->api->setDefaultAccessToken($this->access_token);
-
     }
 
     /**
@@ -109,9 +115,9 @@ class FacebookAdapter extends SocialMediaAdapter
         $this->setOptions($parameter['options']);
 
         if (empty($this->apiId) || empty($this->apiSecret)) {
-            $this->validationMessage = ' credentials not set';
+            $this->validationMessage = 'credentials not set: ' . (empty($this->apiId)?'apiId ':''). (empty($this->apiSecret)?'apiSecret ':'');
         } elseif (empty($this->options->settings['facebookSearchIds'])) {
-            $this->validationMessage = ' no search term defined';
+            $this->validationMessage = 'no search term defined ("Facebook search IDs" in flexform settings) ';
         } else {
             $this->isValid = true;
         }
@@ -127,7 +133,7 @@ class FacebookAdapter extends SocialMediaAdapter
 
         $facebookSearchIds = $options->settings['facebookSearchIds'];
         if (empty($facebookSearchIds)) {
-            $this->logWarning('- no search term defined');
+            $this->logAdapterWarning('no search term defined', 1558435713);
             return null;
         }
 
@@ -135,17 +141,13 @@ class FacebookAdapter extends SocialMediaAdapter
             $searchId = trim($searchId);
             $posts = null;
 
-            /*
-             * todo: invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
-             */
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchId);
+            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
 
             try {
                 $posts = $this->getPosts($searchId, $options->feedRequestLimit, $options->settings['facebookEdge']);
-
             }
             catch (\Exception $e) {
-                $this->logError("feeds can't be requested - " . $e->getMessage());
+                throw new \Exception($e->getMessage(), 1558515175);
             }
 
             if ($feeds && $feeds->count() > 0) {
@@ -172,7 +174,7 @@ class FacebookAdapter extends SocialMediaAdapter
             //insert new feed
             if ($posts !== null) {
                 $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($searchId);
+                $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
                 $feed->setResult($posts);
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
@@ -202,6 +204,7 @@ class FacebookAdapter extends SocialMediaAdapter
                     if (property_exists($rawFeed, 'picture')) {
                         $feed->setImage(urldecode($rawFeed->picture));
                     }
+
                     // ouput link to facebook post instead of article
                     if ($options->settings['facebookLinktopost']) {
                         $feed->setLink('https://facebook.com/' . $rawFeed->id);
@@ -236,9 +239,6 @@ class FacebookAdapter extends SocialMediaAdapter
 
         $endpoint = '/' . $searchId . '/' . $request;
 
-        //limit
-        $limit = $limit;
-
         //params
             //set default parameter list in case s.b messes up with TypoScript
             $faceBookRequestParameter =
@@ -246,20 +246,6 @@ class FacebookAdapter extends SocialMediaAdapter
                
                 created_time,
                 full_picture';
-
-            /*, Private developed API Keys are NO LONGER ALLOWED TO FETCH COMMENTS AND REACTIONS
-
-                comments.summary(total_count).limit(0).as(comments),
-
-                reactions.summary(total_count).limit(0).as(reactions),
-                reactions.type(NONE).summary(total_count).limit(0).as(none),
-                reactions.type(LIKE).summary(total_count).limit(0).as(like),
-                reactions.type(LOVE).summary(total_count).limit(0).as(love),
-                reactions.type(WOW).summary(total_count).limit(0).as(wow),
-                reactions.type(HAHA).summary(total_count).limit(0).as(haha),
-                reactions.type(SAD).summary(total_count).limit(0).as(sad),
-                reactions.type(ANGRY).summary(total_count).limit(0).as(angry),
-                reactions.type(THANKFUL).summary(total_count).limit(0).as(thankful)';*/
 
             //overwritten by Typoscript
             if(isset($this->options->settings['facebook']['requestParameterList']) && is_string($this->options->settings['facebook']['requestParameterList'])){
@@ -281,14 +267,13 @@ class FacebookAdapter extends SocialMediaAdapter
                 $endpoint,
                 $params
             );
+
         } catch (\Facebook\Exceptions\FacebookSDKException $e) {
-            $this->logWarning('request failed: ' . $e->getMessage());
-            return null;
+            throw new \Exception($e->getMessage(), 1558515214);
         }
 
         if (empty(json_decode($resp->getBody())->data) || json_encode($resp->getBody()->data) == null) {
-            $this->logWarning('no posts found for ' . $searchId);
-            return null;
+            throw new \Exception( 'no posts found for ' . $searchId, 1558515218);
         }
 
         return $resp->getBody();

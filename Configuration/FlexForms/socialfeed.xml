@@ -13,7 +13,7 @@
                 <el>
                     <settings.refreshTimeInMin>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.general.updatingFeeds</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.general.updatingFeeds</label>
                             <config>
                                 <type>input</type>
                             </config>
@@ -21,7 +21,7 @@
                     </settings.refreshTimeInMin>
                     <settings.feedRequestLimit>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.general.requestLimit</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.general.requestLimit</label>
                             <config>
                                 <type>input</type>
                             </config>
@@ -29,7 +29,7 @@
                     </settings.feedRequestLimit>
                     <settings.onlyWithPicture>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.general.showOnlyImages</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.general.showOnlyImages</label>
                             <config>
                                 <type>check</type>
                             </config>
@@ -37,51 +37,27 @@
                     </settings.onlyWithPicture>
                     <settings.textTrimLength>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.general.trimText</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.general.trimText</label>
                             <config>
                                 <type>input</type>
                                 <default>130</default>
                             </config>
                         </TCEforms>
                     </settings.textTrimLength>
-                    <!--<settings.asynchRequest>-->
-                        <!--<TCEforms>-->
-                            <!--<label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.general.asynchRequest</label>-->
-                            <!--<config>-->
-                                <!--<type>check</type>-->
-                            <!--</config>-->
-                        <!--</TCEforms>-->
-                    <!--</settings.asynchRequest>-->
-                    <!--<settings.asynchLimit>-->
-                        <!--<TCEforms>-->
-                            <!--<label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.general.asynchLimit</label>-->
-                            <!--<config>-->
-                                <!--<type>input</type>-->
-                            <!--</config>-->
-                        <!--</TCEforms>-->
-                    <!--</settings.asynchLimit>-->
-                    <!--<settings.asynchShow>-->
-                        <!--<TCEforms>-->
-                            <!--<label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.general.asynchShow</label>-->
-                            <!--<config>-->
-                                <!--<type>input</type>-->
-                            <!--</config>-->
-                        <!--</TCEforms>-->
-                    <!--</settings.asynchShow>-->
                 </el>
             </ROOT>
         </sDEF>
         <display_facebook>
             <ROOT>
                 <TCEforms>
-                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.facebook.caption</sheetTitle>
+                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.facebook.caption</sheetTitle>
                 </TCEforms>
                 <type>array</type>
                 <el>
                     <settings.facebookEnabled>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.facebook.active</label>
-                            <!--<onChange>reload</onChange>-->
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.facebook.active</label>
+
                             <config>
                                 <type>check</type>
                             </config>
@@ -89,8 +65,8 @@
                     </settings.facebookEnabled>
                     <settings.facebookFullPicture>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.facebook.fullpicture</label>
-                            <!--<onChange>reload</onChange>-->
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.facebook.fullpicture</label>
+
                             <config>
                                 <type>check</type>
                             </config>
@@ -98,8 +74,7 @@
                     </settings.facebookFullPicture>
                     <settings.facebookSearchIds>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.facebook.searchID</label>
-                            <!--<displayCond>FIELD:settings.facebookEnabled:=:1</displayCond>-->
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.facebook.searchID</label>
                             <config>
                                 <type>input</type>
                             </config>
@@ -107,7 +82,7 @@
                     </settings.facebookSearchIds>
                     <settings.facebookEdge>
                         <TCEforms>
-                        <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.facebook.edge</label>
+                        <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.facebook.edge</label>
                         <config>
                           <type>radio</type>
                           <items type="array">
@@ -119,15 +94,6 @@
                               <numIndex index="0">Posts</numIndex>
                               <numIndex index="1">posts</numIndex>
                             </numIndex>
-                            <!-- not tested <numIndex index="3" type="array">
-                              <numIndex index="0">Tagged</numIndex>
-                              <numIndex index="1">tagged</numIndex>
-                            </numIndex>
-                            <numIndex index="3" type="array">
-                              <numIndex index="0">Promotable posts</numIndex>
-                              <numIndex index="1">promotable_posts</numIndex>
-                            </numIndex> -->
-
                           </items>
                           <default>feed</default>
                         </config>
@@ -135,110 +101,153 @@
                     </settings.facebookEdge>
                     <settings.facebookLinktopost>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.facebook.linktopost</label>
-                            <!--<onChange>reload</onChange>-->
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.facebook.linktopost</label>
+
                             <config>
                                 <type>check</type>
                             </config>
                         </TCEforms>
                     </settings.facebookLinktopost>
+
+                    <settings.facebookPluginKeyfieldEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.facebook.facebookPluginKeyfieldEnabled</label>
+                            <onChange>reload</onChange>
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.facebookPluginKeyfieldEnabled>
+                    <settings.facebookApiId>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:facebook.api.id</label>
+                            <displayCond>FIELD:settings.facebookPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.facebookApiId>
+                    <settings.facebookApiSecret>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:facebook.api.secret</label>
+                            <displayCond>FIELD:settings.facebookPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.facebookApiSecret>
                 </el>
             </ROOT>
         </display_facebook>
-        <display_imgur>
-            <ROOT>
-                <TCEforms>
-                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.imgur.caption</sheetTitle>
-                </TCEforms>
-                <type>array</type>
-                <el>
-                    <settings.imgurEnabled>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.imgur.active</label>
-                            <!--<onChange>reload</onChange>-->
-                            <config>
-                                <type>check</type>
-                            </config>
-                        </TCEforms>
-                    </settings.imgurEnabled>
-                    <!--<settings.imgurUsers>-->
-                        <!--<TCEforms>-->
-                            <!--<label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.imgur.User</label>-->
-                            <!--&lt;!&ndash;<displayCond>FIELD:settings.instagramEnabled:=:1</displayCond>&ndash;&gt;-->
-                            <!--<config>-->
-                                <!--<type>input</type>-->
-                            <!--</config>-->
-                        <!--</TCEforms>-->
-                    <!--</settings.imgurUsers>-->
-                    <settings.imgurTags>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.imgur.tag</label>
-                            <!--<displayCond>FIELD:settings.instagramEnabled:=:1</displayCond>-->
-                            <config>
-                                <type>input</type>
-                            </config>
-                        </TCEforms>
-                    </settings.imgurTags>
-                </el>
-            </ROOT>
-        </display_imgur>
         <display_instagram>
             <ROOT>
-                <TCEforms>
-                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.instagram.caption</sheetTitle>
-                </TCEforms>
-                <type>array</type>
-                <el>
-                    <settings.instagramEnabled>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.instagram.active</label>
-                            <!--<onChange>reload</onChange>-->
-                            <config>
-                                <type>check</type>
-                            </config>
-                        </TCEforms>
-                    </settings.instagramEnabled>
-                    <settings.instagramSearchIds>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.instagram.searchID</label>
-                            <!--<displayCond>FIELD:settings.instagramEnabled:=:1</displayCond>-->
-                            <config>
-                                <type>input</type>
-                            </config>
-                        </TCEforms>
-                    </settings.instagramSearchIds>
-                    <settings.instagramHashTag>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.instagram.hashtag</label>
-                            <!--<displayCond>FIELD:settings.instagramEnabled:=:1</displayCond>-->
-                            <config>
-                                <type>input</type>
-                            </config>
-                        </TCEforms>
-                    </settings.instagramHashTag>
-                    <settings.instagramPostFilter>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.instagram.postfilter</label>
-                            <!--<onChange>reload</onChange>-->
-                            <config>
-                                <type>check</type>
-                            </config>
-                        </TCEforms>
-                    </settings.instagramPostFilter>
-                </el>
-            </ROOT>
+            <TCEforms>
+                <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.instagram.caption</sheetTitle>
+            </TCEforms>
+            <type>array</type>
+            <el>
+                <settings.instagramEnabled>
+                    <TCEforms>
+                        <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.instagram.active</label>
+
+                        <config>
+                            <type>check</type>
+                        </config>
+                    </TCEforms>
+                </settings.instagramEnabled>
+                <settings.instagramSearchIds>
+                    <TCEforms>
+                        <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.instagram.searchID</label>
+                        <config>
+                            <type>input</type>
+                        </config>
+                    </TCEforms>
+                </settings.instagramSearchIds>
+                <settings.instagramHashTag>
+                    <TCEforms>
+                        <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.instagram.hashtag</label>
+                        <config>
+                            <type>input</type>
+                        </config>
+                    </TCEforms>
+                </settings.instagramHashTag>
+                <settings.instagramPostFilter>
+                    <TCEforms>
+                        <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.instagram.postfilter</label>
+                        <config>
+                            <type>check</type>
+                        </config>
+                    </TCEforms>
+                </settings.instagramPostFilter>
+
+                <settings.instagramPluginKeyfieldEnabled>
+                    <TCEforms>
+                        <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.instagram.instagramPluginKeyfieldEnabled</label>
+                        <onChange>reload</onChange>
+                        <config>
+                            <type>check</type>
+                        </config>
+                    </TCEforms>
+                </settings.instagramPluginKeyfieldEnabled>
+                <settings.instagramClientId>
+                    <TCEforms>
+                        <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:instagram.client.id</label>
+                        <displayCond>FIELD:settings.instagramPluginKeyfieldEnabled:=:1</displayCond>
+                        <config>
+                            <type>input</type>
+                        </config>
+                    </TCEforms>
+                </settings.instagramClientId>
+                <settings.instagramClientSecret>
+                    <TCEforms>
+                        <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:instagram.client.secret</label>
+                        <displayCond>FIELD:settings.instagramPluginKeyfieldEnabled:=:1</displayCond>
+                        <config>
+                            <type>input</type>
+                        </config>
+                    </TCEforms>
+                </settings.instagramClientSecret>
+                 <settings.instagramClientCallback>
+                    <TCEforms>
+                        <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:instagram.client.callback</label>
+                        <displayCond>FIELD:settings.instagramPluginKeyfieldEnabled:=:1</displayCond>
+                        <config>
+                            <type>input</type>
+                        </config>
+                    </TCEforms>
+                </settings.instagramClientCallback>
+                <settings.instagramClientAccess_code>
+                    <TCEforms>
+                        <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:instagram.client.access_code</label>
+                        <displayCond>FIELD:settings.instagramPluginKeyfieldEnabled:=:1</displayCond>
+                        <config>
+                            <type>input</type>
+                        </config>
+                    </TCEforms>
+                </settings.instagramClientAccess_code>
+                <settings.instagramClientAaccess_token>
+                    <TCEforms>
+                        <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:instagram.client.access_token</label>
+                        <displayCond>FIELD:settings.instagramPluginKeyfieldEnabled:=:1</displayCond>
+                        <config>
+                            <type>input</type>
+                        </config>
+                    </TCEforms>
+                </settings.instagramClientAaccess_token>
+            </el>
+        </ROOT>
         </display_instagram>
         <display_linkedin>
             <ROOT>
                 <TCEforms>
-                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.linkedin.caption</sheetTitle>
+                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.linkedin.caption</sheetTitle>
                 </TCEforms>
                 <type>array</type>
                 <el>
                     <settings.linkedinEnabled>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.linkedin.active</label>
-                            <!--<onChange>reload</onChange>-->
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.linkedin.active</label>
+
                             <config>
                                 <type>check</type>
                             </config>
@@ -246,55 +255,99 @@
                     </settings.linkedinEnabled>
                     <settings.linkedinCompanyIds>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.linkedin.companyIds</label>
-                            <!--<displayCond>FIELD:settings.instagramEnabled:=:1</displayCond>-->
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.linkedin.companyIds</label>
                             <config>
                                 <type>input</type>
                             </config>
                         </TCEforms>
                     </settings.linkedinCompanyIds>
-
-
                     <settings.linkedinFilterChoice>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.linkedin.linkedinFilterChoice</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.linkedin.linkedinFilterChoice</label>
                             <config>
                                 <type>radio</type>
                                 <items type="array">
                                     <numIndex index="0" type="array">
-                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.linkedin.linkedinFilterChoiceNone</numIndex>
+                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.linkedin.linkedinFilterChoiceNone</numIndex>
                                         <numIndex index="1"></numIndex>
                                     </numIndex>
                                     <numIndex index="1" type="array">
-                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.linkedin.jobPostings</numIndex>
+                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.linkedin.jobPostings</numIndex>
                                         <numIndex index="1">job-posting</numIndex>
                                     </numIndex>
                                     <numIndex index="2" type="array">
-                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.linkedin.newProducts</numIndex>
+                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.linkedin.newProducts</numIndex>
                                         <numIndex index="1">new-product</numIndex>
                                     </numIndex>
                                     <numIndex index="3" type="array">
-                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.linkedin.statusUpdates</numIndex>
+                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.linkedin.statusUpdates</numIndex>
                                         <numIndex index="1">status-update</numIndex>
                                     </numIndex>
                                 </items>
                             </config>
                         </TCEforms>
                     </settings.linkedinFilterChoice>
+                    
+                    <settings.linkedinPluginKeyfieldEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.linkedin.linkedinPluginKeyfieldEnabled</label>
+                            <onChange>reload</onChange>
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.linkedinPluginKeyfieldEnabled>
+                    <settings.linkedinClientKey>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:linkedin.client.key</label>
+                            <displayCond>FIELD:settings.linkedinPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.linkedinClientKey>
+                    <settings.linkedinClientSecret>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:linkedin.client.secret</label>
+                            <displayCond>FIELD:settings.linkedinPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.linkedinClientSecret>
+                    <settings.linkedinClientCallbackUrl>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:linkedin.client.callback_url</label>
+                            <displayCond>FIELD:settings.linkedinPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.linkedinClientCallbackUrl>
+                    <settings.linkedinAccessToken>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:linkedin.access_token</label>
+                            <displayCond>FIELD:settings.linkedinPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.linkedinAccessToken>
+
+                    
                 </el>
             </ROOT>
         </display_linkedin>
         <display_pinterest>
             <ROOT>
                 <TCEforms>
-                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.pinterest.caption</sheetTitle>
+                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.pinterest.caption</sheetTitle>
                 </TCEforms>
                 <type>array</type>
                 <el>
                     <settings.pinterestEnabled>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.pinterest.active</label>
-                            <!--<onChange>reload</onChange>-->
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.pinterest.active</label>
                             <config>
                                 <type>check</type>
                             </config>
@@ -302,8 +355,7 @@
                     </settings.pinterestEnabled>
                     <settings.username>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.pinterest.username</label>
-                            <!--<displayCond>FIELD:settings.instagramEnabled:=:1</displayCond>-->
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.pinterest.username</label>
                             <config>
                                 <type>input</type>
                             </config>
@@ -311,73 +363,64 @@
                     </settings.username>
                     <settings.boardname>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.pinterest.boardname</label>
-                            <!--<displayCond>FIELD:settings.instagramEnabled:=:1</displayCond>-->
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.pinterest.boardname</label>
                             <config>
                                 <type>input</type>
                             </config>
                         </TCEforms>
                     </settings.boardname>
+
+                    <settings.pinterestPluginKeyfieldEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.pinterest.pinterestPluginKeyfieldEnabled</label>
+                            <onChange>reload</onChange>
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.pinterestPluginKeyfieldEnabled>
+                    <settings.pinterestAppId>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:pinterest.app.id</label>
+                            <displayCond>FIELD:settings.pinterestPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.pinterestAppId>
+                     <settings.pinterestAppSsecret>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:pinterest.app.secret</label>
+                            <displayCond>FIELD:settings.pinterestPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.pinterestAppSsecret>
+                     <settings.pinterestAppCode>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:pinterest.app.code</label>
+                            <displayCond>FIELD:settings.pinterestPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.pinterestAppCode>
+
                 </el>
             </ROOT>
         </display_pinterest>
-        <display_tumblr>
-            <ROOT>
-                <TCEforms>
-                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.tumblr.caption</sheetTitle>
-                </TCEforms>
-                <type>array</type>
-                <el>
-                    <settings.tumblrEnabled>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.tumblr.active</label>
-                            <!--<onChange>reload</onChange>-->
-                            <config>
-                                <type>check</type>
-                            </config>
-                        </TCEforms>
-                    </settings.tumblrEnabled>
-                    <settings.tumblrShowOnlyImages>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.tumblr.showOnlyImages</label>
-                            <!--<onChange>reload</onChange>-->
-                            <config>
-                                <type>check</type>
-                            </config>
-                        </TCEforms>
-                    </settings.tumblrShowOnlyImages>
-                    <settings.tumblrBlogNames>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.tumblr.searchID</label>
-                            <!--<displayCond>FIELD:settings.tumblrEnabled:=:1</displayCond>-->
-                            <config>
-                                <type>input</type>
-                            </config>
-                        </TCEforms>
-                    </settings.tumblrBlogNames>
-                    <settings.tumblrHashTag>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.tumblr.hashTag</label>
-                            <!--<displayCond>FIELD:settings.tumblrEnabled:=:1</displayCond>-->
-                            <config>
-                                <type>input</type>
-                            </config>
-                        </TCEforms>
-                    </settings.tumblrHashTag>
-                </el>
-            </ROOT>
-        </display_tumblr>
         <display_twitter>
             <ROOT>
                 <TCEforms>
-                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.caption</sheetTitle>
+                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.twitter.caption</sheetTitle>
                 </TCEforms>
                 <type>array</type>
                 <el>
                     <settings.twitterEnabled>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.active</label>
-                            <!--<onChange>reload</onChange>-->
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.twitter.active</label>
+
                             <config>
                                 <type>check</type>
                             </config>
@@ -385,8 +428,8 @@
                     </settings.twitterEnabled>
                     <settings.twitterHideRetweets>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.hideRetweets</label>
-                            <!--<onChange>reload</onChange>-->
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.twitter.hideRetweets</label>
+
                             <config>
                                 <type>check</type>
                             </config>
@@ -394,7 +437,7 @@
                     </settings.twitterHideRetweets>
                     <settings.twitterShowOnlyImages>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.showOnlyImages</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.twitter.showOnlyImages</label>
                             <config>
                                 <type>check</type>
                             </config>
@@ -402,7 +445,7 @@
                     </settings.twitterShowOnlyImages>
                     <settings.twitterSearchFieldValues>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.searchID</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.twitter.searchID</label>
                             <config>
                                 <type>input</type>
                             </config>
@@ -410,7 +453,7 @@
                     </settings.twitterSearchFieldValues>
                     <settings.twitterProfilePosts>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.profilePosts</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.twitter.profilePosts</label>
                             <config>
                                 <type>input</type>
                             </config>
@@ -418,7 +461,7 @@
                     </settings.twitterProfilePosts>
                     <settings.twitterLanguage>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.language</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.twitter.language</label>
                             <config>
                                 <type>input</type>
                             </config>
@@ -426,7 +469,7 @@
                     </settings.twitterLanguage>
                     <settings.twitterGeoCode>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.geocode</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.twitter.geocode</label>
                             <config>
                                 <type>input</type>
                             </config>
@@ -434,25 +477,71 @@
                     </settings.twitterGeoCode>
                     <settings.twitterHTTPS>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.twitter.https</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.twitter.https</label>
                             <config>
                                 <type>check</type>
                             </config>
                         </TCEforms>
                     </settings.twitterHTTPS>
+
+                    <settings.twitterPluginKeyfieldEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.twitter.twitterPluginKeyfieldEnabled</label>
+                            <onChange>reload</onChange>
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.twitterPluginKeyfieldEnabled>
+                    <settings.twitterConsumerKey>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:twitter.consumer.key</label>
+                            <displayCond>FIELD:settings.twitterPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.twitterConsumerKey>
+                    <settings.twitterConsumerSecret>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:twitter.consumer.secret</label>
+                            <displayCond>FIELD:settings.twitterPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.twitterConsumerSecret>
+                    <settings.twitterOauthAccessToken>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:twitter.oauth.access.token</label>
+                            <displayCond>FIELD:settings.twitterPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.twitterOauthAccessToken>
+                    <settings.twitterOauthAccessTokenSecret>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:twitter.oauth.access.token_secret</label>
+                            <displayCond>FIELD:settings.twitterPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.twitterOauthAccessTokenSecret>
                 </el>
             </ROOT>
         </display_twitter>
         <display_youtube>
             <ROOT>
                 <TCEforms>
-                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.caption</sheetTitle>
+                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.youtube.caption</sheetTitle>
                 </TCEforms>
                 <type>array</type>
                 <el>
                     <settings.youtubeEnabled>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.active</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.youtube.active</label>
                             <config>
                                 <type>check</type>
                             </config>
@@ -460,7 +549,7 @@
                     </settings.youtubeEnabled>
                     <settings.youtubeSearch>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.searchword</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.youtube.searchword</label>
                             <config>
                                 <type>input</type>
                             </config>
@@ -468,7 +557,7 @@
                     </settings.youtubeSearch>
                     <settings.youtubePlaylist>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.playlist</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.youtube.playlist</label>
                             <config>
                                 <type>input</type>
                             </config>
@@ -476,7 +565,7 @@
                     </settings.youtubePlaylist>
                     <settings.youtubeChannel>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.channel</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.youtube.channel</label>
                             <config>
                                 <type>input</type>
                             </config>
@@ -484,7 +573,7 @@
                     </settings.youtubeChannel>
                     <settings.youtubeLanguage>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.lang</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.youtube.lang</label>
                             <config>
                                 <type>input</type>
                             </config>
@@ -492,7 +581,7 @@
                     </settings.youtubeLanguage>
                     <settings.youtubeType>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.type</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.youtube.type</label>
                             <config>
                                 <type>input</type>
                             </config>
@@ -500,32 +589,32 @@
                     </settings.youtubeType>
                     <settings.youtubeOrder>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.order</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.youtube.order</label>
                             <config>
                                 <type>select</type>
                                 <items type="array">
                                     <numIndex index="0" type="array">
-                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.order.relevance</numIndex>
+                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.youtube.order.relevance</numIndex>
                                         <numIndex index="1">relevance</numIndex>
                                     </numIndex>
                                     <numIndex index="1" type="array">
-                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.order.date</numIndex>
+                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.youtube.order.date</numIndex>
                                         <numIndex index="1">date</numIndex>
                                     </numIndex>
                                     <numIndex index="2" type="array">
-                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.order.viewCount</numIndex>
+                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.youtube.order.viewCount</numIndex>
                                         <numIndex index="1">viewCount</numIndex>
                                     </numIndex>
                                     <numIndex index="3" type="array">
-                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.order.videoCount</numIndex>
+                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.youtube.order.videoCount</numIndex>
                                         <numIndex index="1">videoCount</numIndex>
                                     </numIndex>
                                     <numIndex index="4" type="array">
-                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.order.title</numIndex>
+                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.youtube.order.title</numIndex>
                                         <numIndex index="1">title</numIndex>
                                     </numIndex>
                                     <numIndex index="5" type="array">
-                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.youtube.order.rating</numIndex>
+                                        <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.youtube.order.rating</numIndex>
                                         <numIndex index="1">rating</numIndex>
                                     </numIndex>
                                 </items>
@@ -535,20 +624,39 @@
                             </config>
                         </TCEforms>
                     </settings.youtubeOrder>
+
+                    <settings.youtubePluginKeyfieldEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.youtube.youtubePluginKeyfieldEnabled</label>
+                            <onChange>reload</onChange>
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.youtubePluginKeyfieldEnabled>
+                    <settings.youtubeApikey>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:youtube.apikey</label>
+                            <displayCond>FIELD:settings.youtubePluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.youtubeApikey>
+                    
                 </el>
             </ROOT>
         </display_youtube>
         <display_vimeo>
             <ROOT>
                 <TCEforms>
-                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.vimeo.caption</sheetTitle>
+                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.vimeo.caption</sheetTitle>
                 </TCEforms>
                 <type>array</type>
                 <el>
                     <settings.vimeoEnabled>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.vimeo.active</label>
-                           <!--  &lt;!&ndash;<onChange>reload</onChange>&ndash;&gt; -->
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.vimeo.active</label>
                             <config>
                                 <type>check</type>
                             </config>
@@ -557,41 +665,207 @@
                     
                     <settings.vimeoChannel>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.vimeo.channel</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.vimeo.channel</label>
                             <config>
                                 <type>input</type>
                             </config>
                         </TCEforms>
                     </settings.vimeoChannel>
-                    <!-- <settings.vimeoUrl>
+
+                    <settings.vimeoPluginKeyfieldEnabled>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.vimeo.url</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.vimeo.vimeoPluginKeyfieldEnabled</label>
+                            <onChange>reload</onChange>
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.vimeoPluginKeyfieldEnabled>
+                    <settings.vimeoClientIdentifier>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:vimeo.client.identifier</label>
+                            <displayCond>FIELD:settings.vimeoPluginKeyfieldEnabled:=:1</displayCond>
                             <config>
                                 <type>input</type>
                             </config>
                         </TCEforms>
-                    </settings.vimeoUrl> -->
-                    <!-- <settings.vimeoFilter>
+                    </settings.vimeoClientIdentifier>
+                    <settings.vimeoClientSecret>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.vimeo.filter</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:vimeo.client.secret</label>
+                            <displayCond>FIELD:settings.vimeoPluginKeyfieldEnabled:=:1</displayCond>
                             <config>
                                 <type>input</type>
                             </config>
                         </TCEforms>
-                    </settings.vimeoFilter> -->
+                    </settings.vimeoClientSecret>
+                    <settings.vimeoToken>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:vimeo.token</label>
+                            <displayCond>FIELD:settings.vimeoPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.vimeoToken>
+
                 </el>
             </ROOT>
         </display_vimeo>
+        <display_tumblr>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.tumblr.caption</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <settings.tumblrEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.tumblr.active</label>
+
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.tumblrEnabled>
+                    <settings.tumblrShowOnlyImages>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.tumblr.showOnlyImages</label>
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.tumblrShowOnlyImages>
+                    <settings.tumblrBlogNames>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.tumblr.searchID</label>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.tumblrBlogNames>
+                    <settings.tumblrHashTag>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.tumblr.hashTag</label>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.tumblrHashTag>
+
+                    <settings.tumblrPluginKeyfieldEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.tumblr.tumblrPluginKeyfieldEnabled</label>
+                            <onChange>reload</onChange>
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.tumblrPluginKeyfieldEnabled>
+                    <settings.tumblrConsumerKey>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:tumblr.consumer.key</label>
+                            <displayCond>FIELD:settings.tumblrPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.tumblrConsumerKey>
+                    <settings.tumblrConsumerSecret>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:tumblr.consumer.secret</label>
+                            <displayCond>FIELD:settings.tumblrPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.tumblrConsumerSecret>
+                    <settings.tumblrToken>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:tumblr.token</label>
+                            <displayCond>FIELD:settings.tumblrPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.tumblrToken>
+                    <settings.tumblrTokenSecret>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:tumblr.token_secret</label>
+                            <displayCond>FIELD:settings.tumblrPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.tumblrTokenSecret>
+
+                </el>
+            </ROOT>
+        </display_tumblr>
+        <display_imgur>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.imgur.caption</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <settings.imgurEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.imgur.active</label>
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.imgurEnabled>
+                    <settings.imgurTags>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.imgur.tag</label>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.imgurTags>
+
+                    <settings.imgurPluginKeyfieldEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.imgur.imgurPluginKeyfieldEnabled</label>
+                            <onChange>reload</onChange>
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.imgurPluginKeyfieldEnabled>
+                    <settings.imgurClientId>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:imgur.client.id</label>
+                            <displayCond>FIELD:settings.imgurPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.imgurClientId>
+                    <settings.imgurClientSecret>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:imgur.client.secret</label>
+                            <displayCond>FIELD:settings.imgurPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.imgurClientSecret>
+                </el>
+            </ROOT>
+        </display_imgur>
         <display_news>
             <ROOT>
                 <TCEforms>
-                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.news.caption</sheetTitle>
+                    <sheetTitle>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.news.caption</sheetTitle>
                 </TCEforms>
                 <type>array</type>
                 <el>
                     <settings.newsEnabled>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.news.active</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.news.active</label>
                             <config>
                                 <type>check</type>
                             </config>
@@ -601,7 +875,7 @@
                     <!-- Category -->
                     <settings.newsCategories>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.news.category</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.news.category</label>
                             <config>
                                 <type>select</type>
                                 <renderMode>tree</renderMode>
@@ -627,16 +901,22 @@
 
                     <settings.newsDetailPageUid>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.news.newsDetailPageUid</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.news.newsDetailPageUid</label>
                             <config>
-                                <type>input</type>
+                                <type>group</type>
+                                <internal_type>db</internal_type>
+                                <allowed>pages</allowed>
+                                <size>1</size>
+                                <maxitems>1</maxitems>
+                                <minitems>0</minitems>
+                                <show_thumbs>1</show_thumbs>
                             </config>
                         </TCEforms>
                     </settings.newsDetailPageUid>
 
                     <settings.useHttpsLinks>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/de.locallang_db.xlf:flexform.tab.news.useHttps</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.news.useHttps</label>
                             <config>
                                 <type>check</type>
                             </config>

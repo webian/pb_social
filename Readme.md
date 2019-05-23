@@ -93,12 +93,57 @@ Just make sure tx_news is installed and running and you have some news to displa
     
     If you need help, please refer [TYPO3 Documentation 'Setting up the cron job'](https://docs.typo3.org/typo3cms/extensions/scheduler/Installation/CronJob/Index.html "TYPO3 Documentation, Setting up the cron job")
     As we understood right, you can use this link (filling your credentials)  
-    <pre>https://api.instagram.com/oauth/authorize/?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=token</pre>
-    
+   
+1. In case of trouble: please check typo3temp/var/logs/typo3_pb_social_*.log or Syslog (SYSTEM/Log in TYPO3 Backend). Please make sure, that you have `$GLOBALS['TYPO3_CONF_VARS']['SYS']['systemLogLevel']` in LocalConfiguration.php set to 0 to see trouble and success. And please do not forget to reset systemLogLevel to a higher value in productive mode.    
 
-##3. How To Migrate
+##3. Hints for some Social Web plattforms
+     
+### facebook
+*    https://developers.facebook.com/apps
+### instagram
+* Instagram code: instagram.client.access_code
+    * Instagram code: Retrieve code with following URL (all characters after "code"):
+     https://api.instagram.com/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=public_content
 
-###3.1 Migration from `1.3.1` to `1.3.4`: Instagram access token
+* Instagram access token: instagram.client.access_token 
+    * Retrieve access token with following URL (all characters after "token"): 
+    https://api.instagram.com/oauth/authorize/?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=token 
+    * Remark: You need to check "Disable implicit OAuth" in instagram manage client web console
+
+### LinkedIn
+*   https://www.linkedin.com/developer/apps
+*   access token: linkedin.access_token
+    * Retrieve code and token with following URLs: Access code (all characters after "code"): https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&scope=rw_company_admin,r_basicprofile
+    * You'll need to activate "rw_company_admin" and "r_basicprofile" scopes first (LinkedIn developer backend).
+    * Please have in mind that the access code is only valid for approxametely 20 seconds. Immediately after generating the code you need to retrieve an access token via:
+     https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&code=GENERATED_CODE&redirect_uri=YOUR_REDIRECT_URI&client_id=YOUR_CLIENT_ID&client_secret=YOUR_CLIENT_SECRET
+     
+### Pinterest
+*   https://developers.pinterest.com/apps/
+*   auth code: pinterest.app.code
+    * https://api.pinterest.com/oauth/?response_type=code&redirect_uri=YOUR_REDIRECT_URI&client_id=YOUR_APP_ID&scope=read_public
+    * all characters after "code"
+         
+### twitter
+*    https://dev.twitter.com/apps/
+
+### Youtube
+*   https://code.google.com/apis/console/
+
+### Vimeo
+*   https://developer.vimeo.com/api
+
+### Tumblr
+*   http://www.tumblr.com/oauth/apps
+
+### imgur 
+*   https://api.imgur.com/
+
+
+
+##4. How To Migrate
+
+###4.1 Migration from `1.3.1` to `1.3.4`: Instagram access token
 * Instagram changed its access token procedure. You seemingly would need a logged in browser session to get the access token. 
 So automatic generation by our code will not longer work. To get it, please log in into your instagram and refer to 
 information of [instagram developer information](http://instagram.com/developer/clients/manage/). But please notice, you would need
@@ -107,7 +152,7 @@ to check "Disable implicit OAuth:" for this time (pleas uncheck after having don
 After having received the access token, fill in this long string into `pb_scoial extension configuration` in tab `"Instagram"` / `"Instagram access token"` and hit "Save". 
 * If you did not already have done this, leaving version 1.3.1: Please do this to all of your pb_scoial - plugins: Open, save it again. We changed flexform in tab "LinkedIn". (If you do not use LinkedIn, nothing have to be done)
 
-##4. Known Issues
+##5. Known Issues
 
 - linkedIn causes some issues, in case a "LinkedIn company ID" does not exist or `Show job postings` and `Show product postings` is activated in plugin settings. 
     * hint: in this case, try to uncheck both `Show job postings` and `Show product postings` in your plugin settings, clear cache of this page and try a reload.
@@ -125,7 +170,7 @@ After having received the access token, fill in this long string into `pb_scoial
 - Scheduler Task should only run each 10-15 minutes due to API restrictions.
 
 
-##5. FAQ
+##6. FAQ
 
 #### Q: How can I get in contact to plus B, in case of suggestions, trouble or need help?
 * Go to [our Website](https://plusb.de/ "our Website plus B in Berlin, Germany")

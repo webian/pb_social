@@ -12,8 +12,8 @@ use PlusB\PbSocial\Domain\Model\Item;
  *
  *  Copyright notice
  *
- *  (c) 2016 Ramon Mohi <rm@plusb.de>, plusB
- *  (c) 2018 Arend Maubach <am@plusb.de>, plusB
+ *  (c) 2016 Ramon Mohi <rm@plusb.de>, plus B
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -68,12 +68,18 @@ class ImgurAdapter extends SocialMediaAdapter
 
     private $api;
 
-    public function __construct($apiId, $apiSecret, $itemRepository, $options)
+    public function __construct(
+        $apiId,
+        $apiSecret,
+        $itemRepository,
+        $options,
+        $ttContentUid,
+        $ttContentPid,
+        $cacheIdentifier
+    )
     {
-        parent::__construct($itemRepository);
-        /**
-         * todo: quick fix - but we'd better add a layer for adapter in between, here after "return $this" instance is not completed but existing (AM)
-         */
+        parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
+
         /* validation - interrupt instanciating if invalid */
         if($this->validateAdapterSettings(
                 array(
@@ -81,11 +87,12 @@ class ImgurAdapter extends SocialMediaAdapter
                     'apiSecret' => $apiSecret,
                     'options' => $options
                 )) === false)
-        {return $this;}
+        {
+            throw new \Exception( self::TYPE . ' ' . $this->validationMessage, 1558521767);
+        }
         /* validated */
 
         $this->api =  new \Imgur($this->apiId, $this->apiSecret);
-
         //TODO: Implement OAuth authentication (to get a user's images etc)
     }
 
@@ -102,7 +109,7 @@ class ImgurAdapter extends SocialMediaAdapter
         $this->setOptions($parameter['options']);
 
         if (empty($this->apiId) || empty($this->apiSecret)) {
-            $this->validationMessage = ' credentials not set';
+            $this->validationMessage  = 'credentials not set: ' . (empty($this->apiId)?'apiId ':''). (empty($this->apiSecret)?'apiSecret ':'');
         } elseif (empty($this->options->imgSearchUsers) && empty($this->options->imgSearchTags)) {
             $this->validationMessage = ' no search term defined';
         } else {
@@ -116,13 +123,11 @@ class ImgurAdapter extends SocialMediaAdapter
     {
         $options = $this->options;
         $result = array();
-        /*
-        * todo: duplicate cache writing, must be erazed here - $searchId is invalid cache identifier OptionService:getCacheIdentifierElementsArray returns valid one (AM)
-        */
+
         // search for users
         foreach (explode(',', $options->imgSearchUsers) as $searchId) {
             $searchId = trim($searchId);
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchId);
+            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
             if ($feeds && $feeds->count() > 0) {
                 $feed = $feeds->getFirst();
 
@@ -133,7 +138,7 @@ class ImgurAdapter extends SocialMediaAdapter
                         $feed->setResult($posts);
                         $this->itemRepository->updateFeed($feed);
                     } catch (\Exception $e) {
-                        $this->logError("feeds can't be updated - " . $e->getMessage());
+                        throw new \Exception("feeds can't be updated. " .  $e->getMessage(),1558521819);
                     }
                 }
                 $result[] = $feed;
@@ -143,26 +148,25 @@ class ImgurAdapter extends SocialMediaAdapter
             try {
                 $posts = json_encode($this->api->account($searchId)->images($page = 0));
                 $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($searchId);
+                $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
                 $feed->setResult($posts);
 
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
             } catch (\Exception $e) {
-                $this->logError('initial load for feed failed - ' . $e->getMessage());
+                throw new \Exception("initial load for feed failed. " .  $e->getMessage(),1558521847);
             }
         }
 
         // search for tags
         foreach (explode(',', $options->imgSearchTags) as $searchId) {
             $searchId = trim($searchId);
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchId);
+            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
             if ($feeds && $feeds->count() > 0) {
                 $feed = $feeds->getFirst();
                 /**
                  * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to bee free, so... change!
-                 * todo: try to get rid of duplicate code
                  */
                 if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
                     try {
@@ -171,7 +175,7 @@ class ImgurAdapter extends SocialMediaAdapter
                         $feed->setResult($posts);
                         $this->itemRepository->updateFeed($feed);
                     } catch (\Exception $e) {
-                        $this->logError("feeds can't be updated - " . $e->getMessage());
+                        throw new \Exception( $e->getMessage(),1558521850);
                     }
                 }
                 $result[] = $feed;
@@ -181,14 +185,14 @@ class ImgurAdapter extends SocialMediaAdapter
             try {
                 $posts = json_encode($this->api->gallery()->search($searchId));
                 $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($searchId);
+                $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
                 $feed->setResult($posts);
 
                 // save to DB and return current feed
                 $this->itemRepository->saveFeed($feed);
                 $result[] = $feed;
             } catch (\Exception $e) {
-                $this->logError('initial load for feed failed - ' . $e->getMessage());
+                throw new \Exception('initial load for feed failed. ' . $e->getMessage(),1558521850);
             }
         }
 

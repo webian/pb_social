@@ -2,11 +2,14 @@
 
 namespace PlusB\PbSocial\Adapter;
 
+use PlusB\PbSocial\Service\LogTrait;
+
 /***************************************************************
  *
  *  Copyright notice
  *
- *  (c) 2016 Ramon Mohi <rm@plusb.de>, plusB
+ *  (c) 2016 Ramon Mohi <rm@plusb.de>, plus B
+ *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -29,31 +32,69 @@ namespace PlusB\PbSocial\Adapter;
 
 abstract class SocialMediaAdapter implements SocialMediaAdapterInterface
 {
+    use LogTrait;
 
     const TYPE = 'socialMediaAdapter';
     const EXTKEY = 'pb_social';
 
+    /**
+     * @var string $type name of social network
+     */
     public $type;
-    protected $logger;
-    public $itemRepository;
-
-    public function __construct($itemRepository)
-    {
-        /** @var $logger \TYPO3\CMS\Core\Log\Logger */
-        $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
-
-        $this->itemRepository = $itemRepository;
-
-        $this->type = static::TYPE;
-    }
 
     /**
-     * todo: quick fix - but we'd better add a layer for adapter in between, here after "return $this" instance is not completed but existing (AM)
+     * @var object $itemRepository object reference
      */
+    public $itemRepository;
+
+    /**
+     * @var object $cacheIdentifier object reference
+     */
+    protected $cacheIdentifier;
+
+    /**
+     * @var integer uid of plugin for logging information
+     */
+    protected $ttContentUid;
+    /**
+     * @var integer page uid of plugin for logging information
+     */
+    protected $ttContentPid;
+
+    public function __construct(
+        $itemRepository,
+        $cacheIdentifier,
+        $ttContentUid,
+        $ttContentPid
+    )
+    {
+        $this->type = static::TYPE; //set default, adapter plays its game
+        $this->itemRepository = $itemRepository;
+        $this->cacheIdentifier = $cacheIdentifier;
+        $this->ttContentUid = $ttContentUid;
+        $this->ttContentPid = $ttContentPid;
+    }
+
     abstract public function validateAdapterSettings($parameter);
     abstract public function getResultFromApi();
 
     abstract public function getFeedItemsFromApiRequest($result, $options);
+
+    /*
+     * item must be written, cache identifier may be added by a value, but must be unique in this foreach.
+     * so cache identifier is unique for page/plugin/tab - but in this tab a comma separated string of search ids is not unique -
+     * it would repeat first one - and ignore following search ids.
+     * solution: $cacheIdentifierForListItem = $this->cacheIdentifier . "_" . $searchId
+     *
+     *      $this->cacheIdentifier // unique for page.uid and tt_content.uid and flexform-option of network
+     *      . "_" .
+     *      $searchId // unique in (page.uid/tt_content.uid/flexform-option of network) and list item of search id
+     *
+     * Why do we write do database? Because we want to trigger cache, thats all.
+     */
+    protected function composeCacheIdentifierForListItem($cacheIdentifier, $listItem){
+        return $cacheIdentifier ."_". sha1($listItem);
+    }
 
     /**
      * trims text to a space then adds ellipses if desired
@@ -91,14 +132,6 @@ abstract class SocialMediaAdapter implements SocialMediaAdapterInterface
         return $trimmed_text;
     }
 
-    public function cmp($a, $b)
-    {
-        if ($a == $b) {
-            return 0;
-        }
-        return ($a->getTimeStampTicks() > $b->getTimeStampTicks()) ? -1 : 1;
-    }
-
     public function check_end($str, $ends)
     {
         foreach ($ends as $try) {
@@ -109,16 +142,25 @@ abstract class SocialMediaAdapter implements SocialMediaAdapterInterface
         return false;
     }
 
-    public function logError($message)
+    /**
+     * Abstraction in social media adapters for logging trait
+     *
+     * @param string $message
+     * @param integer $locationInCode timestamp to find in code
+     */
+    public function logAdapterError($message, $locationInCode)
     {
-        if(isset($GLOBALS["BE_USER"])){
-            $GLOBALS['BE_USER']->writelog($type = 4, $action = 0,  $error = 1, $details_nr = 1558354848, $details = $this->type . ": " . $message, $data = []);
-        }
-        $this->logger->error($this->type . " " . $message);
+        $this->logError($message, $this->ttContentUid, $this->ttContentPid, $this->type, $locationInCode);
     }
 
-    public function logWarning($message)
+    /**
+     * Abstraction in social media adapters for logging trait
+     *
+     * @param string $message
+     * @param integer $locationInCode timestamp to find in code
+     */
+    public function logAdapterWarning($message, $locationInCode)
     {
-        $this->logger->warning($this->type . " " . $message);
+        $this->logWarning($message, $this->ttContentUid, $this->ttContentPid, $this->type, $locationInCode);
     }
 }

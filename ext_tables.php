@@ -8,7 +8,8 @@ if (!defined('TYPO3_MODE')) {
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'PlusB.PbSocial',
     'Socialfeed',
-    'SocialFeed'
+    'SocialFeed',
+    'EXT:pb_social/Resources/Public/Icons/Extension.svg'
 );
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('pb_social', 'Configuration/TypoScript', 'Social Media Stream');

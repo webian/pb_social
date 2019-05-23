@@ -5,7 +5,7 @@ namespace PlusB\PbSocial\Domain\Model;
  *
  *  Copyright notice
  *
- *  (c) 2014 Mikolaj Jedrzejewski <mj@plusb.de>, plusB
+ *  (c) 2014 Mikolaj Jedrzejewski <mj@plusb.de>, plus B
  *
  *  All rights reserved
  *
