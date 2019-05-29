@@ -3,6 +3,13 @@
 	<file source-language="en" datatype="plaintext" original="messages" date="2019-05-17T13:19:00Z" product-name="pb_social">
 		<header/>
         <body>
+            <trans-unit id="tx_pbsocial_domain_model_credential">
+                <source>PbSocial Credentials (auto generated)</source>
+            </trans-unit>
+            <trans-unit id="tx_pbsocial_domain_model_item">
+                <source>PbSocial Items (auto generated)</source>
+            </trans-unit>
+
             <trans-unit id="flexform.tab.general.caption">
                 <source>General Settings</source>
             </trans-unit>

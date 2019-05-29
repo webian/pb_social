@@ -13,6 +13,7 @@ return [
         'dividers2tabs' => true,
 
         'hideTable' => true,
+        'adminOnly' => 1,
 
         'versioningWS' => 2,
         'versioning_followPages' => true,
@@ -27,7 +28,10 @@ return [
             'endtime' => 'endtime',
         ),
         'searchFields' => 'type,cacheidentifier,date,result,',
-        'iconfile' => 'EXT:pb_social/Resources/Public/Icons/tx_pbsocial_domain_model_item.gif'
+        'typeicon_classes' => [
+            'default' => 'pbsocial_socialfeed'
+        ],
+
     ],
 
     'interface' => [

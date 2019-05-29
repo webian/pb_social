@@ -13,6 +13,7 @@ return [
         'dividers2tabs' => true,
 
         'hideTable' => true,
+        'adminOnly' => 1,
 
         'versioningWS' => 2,
         'versioning_followPages' => true,
@@ -27,7 +28,9 @@ return [
             'endtime' => 'endtime',
         ),
         'searchFields' => 'type,appId,expiration_date,access_token,valid',
-        'iconfile' => 'EXT:pb_social/Resources/Public/Icons/tx_pbsocial_domain_model_credential.gif'
+        'typeicon_classes' => [
+            'default' => 'pbsocial_socialfeed'
+        ],
     ),
     'interface' => array(
         'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, type, appId, expiration_date, access_token, valid',
