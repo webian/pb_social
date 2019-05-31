@@ -3,7 +3,7 @@
 namespace PlusB\PbSocial\Adapter;
 
 $extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/';
-require $extensionPath . 'twitteroauth/autoload.php';
+@include 'phar://' .  $extensionPath . 'twitteroauth.phar/autoload.php';
 use Abraham\TwitterOAuth\TwitterOAuth;
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;

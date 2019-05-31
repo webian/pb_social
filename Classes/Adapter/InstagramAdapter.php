@@ -3,11 +3,9 @@
 namespace PlusB\PbSocial\Adapter;
 
 $extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/';
-require $extensionPath . 'instagram/src/Instagram.php';
-
+@include 'phar://' .  $extensionPath . 'instagram.phar/src/Instagram.php';
 
 use MetzWeb\Instagram\Instagram;
-use PlusB\PbSocial\Domain\Model\Credential;
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
 
