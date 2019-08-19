@@ -3,14 +3,11 @@
 namespace PlusB\PbSocial\Adapter;
 
 $extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/';
-require $extensionPath . 'instagram/src/Instagram.php';
-
+@include 'phar://' .  $extensionPath . 'instagram.phar/src/Instagram.php';
 
 use MetzWeb\Instagram\Instagram;
-use PlusB\PbSocial\Domain\Model\Credential;
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
-
 
 /***************************************************************
  *
@@ -190,7 +187,8 @@ class InstagramAdapter extends SocialMediaAdapter
                 $searchId = trim($searchId);
                 if ($searchId != ""){
                     $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
-                    if ($feeds && $feeds->count() > 0) {
+
+                    if ($feeds && $feeds->count() > 0 && $feeds->getFirst()->getResult() != null) {
                         $feed = $feeds->getFirst();
                         /**
                          * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to bee free...
@@ -199,25 +197,25 @@ class InstagramAdapter extends SocialMediaAdapter
                             try {
                                 $userPosts = $this->api->getUserMedia($searchId, $options->feedRequestLimit);
                                 if ($userPosts->meta->code >= 400) {
-                                    $this->logAdapterWarning('warning: ' . json_encode($userPosts->meta),1558435723);
-                                    continue;
+                                    throw new \Exception('warning: ' . json_encode($userPosts->meta),1558435723);
                                 }
                                 $feed->setDate(new \DateTime('now'));
                                 $feed->setResult(json_encode($userPosts));
                                 $this->itemRepository->updateFeed($feed);
                             } catch (\Exception $e) {
                                 throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1558515755);
-                                continue;
                             }
                         }
                         $result[] = $feed;
                         continue;
                     }
-
                     try {
                         $userPosts = $this->api->getUserMedia($searchId, $options->feedRequestLimit);
-                        if ($userPosts->meta->code >= 400) {
-                            $this->logAdapterWarning('warning: ' . json_encode($userPosts->meta),1558435728);
+
+                        if($userPosts === null){
+                            throw new \Exception('user posts empty, this user does not exist (app may be in sandbox mode) ',1559556559);
+                        }elseif ($userPosts->meta->code >= 400) {
+                            throw new \Exception('warning: ' . json_encode($userPosts->meta),1558435728);
                         }
                         $feed = new Item(self::TYPE);
                         $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
@@ -245,7 +243,7 @@ class InstagramAdapter extends SocialMediaAdapter
                         try {
                             $tagPosts = $this->api->getTagMedia($searchId, $options->feedRequestLimit);
                             if ($tagPosts->meta->code >= 400) {
-                                $this->logAdapterWarning('warning: ' . json_encode($tagPosts->meta),1558435751);
+                                throw new \Exception('warning: ' . json_encode($tagPosts->meta),1558435751);
                             }
                             $feed->setDate(new \DateTime('now'));
                             $feed->setResult(json_encode($tagPosts));
@@ -261,7 +259,7 @@ class InstagramAdapter extends SocialMediaAdapter
                 try {
                     $tagPosts = $this->api->getTagMedia($searchId, $options->feedRequestLimit);
                     if ($tagPosts->meta->code >= 400) {
-                        $this->logAdapterWarning('warning: ' . json_encode($tagPosts->meta),1558435756);
+                        throw new \Exception('warning: ' . json_encode($tagPosts->meta),1558435756);
                     }
                     $feed = new Item(self::TYPE);
                     $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));

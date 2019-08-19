@@ -3,7 +3,7 @@
 namespace PlusB\PbSocial\Adapter;
 
 $extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/';
-require_once $extensionPath . 'pinterest/autoload.php';
+@include 'phar://' .  $extensionPath . 'pinterest.phar/autoload.php';
 use DirkGroenen\Pinterest;
 use PlusB\PbSocial\Domain\Model\Credential;
 use PlusB\PbSocial\Domain\Model\Feed;

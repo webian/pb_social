@@ -33,6 +33,11 @@ plugin.tx_pbsocial {
 			# Hint: you as well can add a parameter by using "addToList()" in TypoScript Setup e.g.: plugin.tx_pbsocial.settings.facebook.requestParameterList := addToList(status_type)
 			requestParameterList = {$plugin.tx_pbsocial.settings.facebook.requestParameterList}
 		}
+		# if you include tx_news items into your feed, you have two images: a small icon like any feed of this extension top left corner of teaser square `txnewsIconPath`
+		# and the background image `txnewsDummyImage`. You can use any file path you want, eg /typo3conf/ext/pb_social/Resources/Public/Icons/typo3.png
+		txnewsIconPath = {$plugin.tx_pbsocial.settings.txnewsIconPath}
+		txnewsDummyImage = {$plugin.tx_pbsocial.settings.txnewsDummyImage}
+		txnewsCropBodytextTeaser = {$plugin.tx_pbsocial.settings.txnewsCropBodytextTeaser}
     }
 }
 
