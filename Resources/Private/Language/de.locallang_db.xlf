@@ -7,6 +7,11 @@
                 <source>General Settings</source>
                 <target state="translated">Grundlegende Einstellungen</target>
             </trans-unit>
+
+            <trans-unit id="flexform.tab.general.sysLogThisPlugin">
+                <source>Turn on TYPO3 Backend logging (sys_log) for this plugin</source>
+                <target>Protokoll für dieses Plugin einschalten (sys_log) </target>
+            </trans-unit>
             <trans-unit id="flexform.tab.general.updatingFeeds">
                 <source>Feed update interval (in minutes)</source>
                 <target state="translated">Wie oft sollen die Feeds aktualisiert werden? (in Minuten)</target>

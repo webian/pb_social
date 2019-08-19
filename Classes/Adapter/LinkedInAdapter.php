@@ -264,8 +264,7 @@ class LinkedInAdapter extends SocialMediaAdapter
         }
         catch (\Exception $e)
         {
-            $this->logAdapterError('failed to setup AccessToken' . $e->getMessage(), 1558435565);
-            return null;
+            throw new \Exception('failed to setup AccessToken' . $e->getMessage(), 1558435565);
         }
         # get access token from database #
         $credentials = $this->credentialRepository->findByTypeAndAppId(self::TYPE, $apiKey);

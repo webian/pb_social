@@ -11,6 +11,15 @@
                 </TCEforms>
                 <type>array</type>
                 <el>
+                    <settings.sysLogThisPlugin>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.general.sysLogThisPlugin</label>
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </settings.sysLogThisPlugin>
+
                     <settings.refreshTimeInMin>
                         <TCEforms>
                             <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.general.updatingFeeds</label>
