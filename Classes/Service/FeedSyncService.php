@@ -164,7 +164,8 @@ class FeedSyncService extends AbstractBaseService
         catch( \Exception $e ) {
             // if you get here, something went terribly wrong.
             // also, object is undefined because the object was not created
-            $message = $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString, $e->getCode());
+            $message = $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString,
+                $e->getCode(),intval ($flexformOptions->settings['sysLogThisPlugin']));
         }
 
         return $message ."\n";
@@ -254,7 +255,8 @@ class FeedSyncService extends AbstractBaseService
         catch( \Exception $e ) {
             // if you get here, something went terribly wrong.
             // also, object is undefined because the object was not created
-            $message = $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString, $e->getCode());
+            $message = $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString,
+                $e->getCode(),intval ($flexformOptions->settings['sysLogThisPlugin']));
         }
 
         return $message ."\n";
@@ -304,7 +306,7 @@ class FeedSyncService extends AbstractBaseService
 
         $flexformOptions->companyIds = $flexformOptions->settings['linkedinCompanyIds'];
         $flexformOptions->linkedinFilterChoice = $flexformOptions->settings['linkedinFilterChoice'];
-
+        
         try{
             # retrieve data from adapter #
             $adapter = new Adapter\LinkedInAdapter(
@@ -330,7 +332,8 @@ class FeedSyncService extends AbstractBaseService
         }catch( \Exception $e ) {
             // if you get here, something went terribly wrong.
             // also, object is undefined because the object was not created
-            $message = $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString, $e->getCode());
+            $message = $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString,
+                $e->getCode(),intval ($flexformOptions->settings['sysLogThisPlugin']));
         }
         return $message ."\n";
     }
@@ -402,7 +405,8 @@ class FeedSyncService extends AbstractBaseService
         catch( \Exception $e ) {
             // if you get here, something went terribly wrong.
             // also, object is undefined because the object was not created
-            $message = $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString, $e->getCode());
+            $message = $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString,
+                $e->getCode(),intval ($flexformOptions->settings['sysLogThisPlugin']));
         }
 
         return $message ."\n";
@@ -482,7 +486,8 @@ class FeedSyncService extends AbstractBaseService
         catch( \Exception $e ) {
             // if you get here, something went terribly wrong.
             // also, object is undefined because the object was not created
-            $message = $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString, $e->getCode());
+            $message = $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString,
+                $e->getCode(),intval ($flexformOptions->settings['sysLogThisPlugin']));
         }
 
         return $message ."\n";
@@ -540,7 +545,8 @@ class FeedSyncService extends AbstractBaseService
         catch( \Exception $e ) {
             // if you get here, something went terribly wrong.
             // also, object is undefined because the object was not created
-            $message = $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString, $e->getCode());
+            $message = $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString,
+                $e->getCode(),intval ($flexformOptions->settings['sysLogThisPlugin']));
         }
 
         return $message ."\n";
@@ -611,7 +617,8 @@ class FeedSyncService extends AbstractBaseService
         catch( \Exception $e ) {
             // if you get here, something went terribly wrong.
             // also, object is undefined because the object was not created
-            $message = $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString, $e->getCode());
+            $message = $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString,
+                $e->getCode(),intval ($flexformOptions->settings['sysLogThisPlugin']));
         }
 
         return $message ."\n";
@@ -688,7 +695,8 @@ class FeedSyncService extends AbstractBaseService
         catch( \Exception $e ) {
             // if you get here, something went terribly wrong.
             // also, object is undefined because the object was not created
-            $message = $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString, $e->getCode());
+            $message = $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString,
+                $e->getCode(),intval ($flexformOptions->settings['sysLogThisPlugin']));
         }
 
         return $message ."\n";
@@ -754,7 +762,8 @@ class FeedSyncService extends AbstractBaseService
         catch( \Exception $e ) {
             // if you get here, something went terribly wrong.
             // also, object is undefined because the object was not created
-            $message = $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString, $e->getCode());
+            $message = $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString,
+                $e->getCode(),intval ($flexformOptions->settings['sysLogThisPlugin']));
         }
 
         return $message ."\n";
@@ -805,7 +814,8 @@ class FeedSyncService extends AbstractBaseService
         catch( \Exception $e ) {
             // if you get here, something went terribly wrong.
             // also, object is undefined because the object was not created
-            $message = $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString, $e->getCode());
+            $message = $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString,
+                $e->getCode(),intval ($flexformOptions->settings['sysLogThisPlugin']));
         }
 
         return $message ."\n";
@@ -845,7 +855,8 @@ class FeedSyncService extends AbstractBaseService
                 $ttContentUid, $ttContentPid, $socialNetworkTypeString, 1558441967);
 
         } catch (\Exception $e) {
-            $message =  $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString, $e->getCode() );
+            $message =  $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString,
+                $e->getCode(),intval ($flexformOptions->settings['sysLogThisPlugin']) );
         }
         return $message;
     }

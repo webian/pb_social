@@ -148,17 +148,6 @@ abstract class SocialMediaAdapter implements SocialMediaAdapterInterface
      * @param string $message
      * @param integer $locationInCode timestamp to find in code
      */
-    public function logAdapterError($message, $locationInCode)
-    {
-        $this->logError($message, $this->ttContentUid, $this->ttContentPid, $this->type, $locationInCode);
-    }
-
-    /**
-     * Abstraction in social media adapters for logging trait
-     *
-     * @param string $message
-     * @param integer $locationInCode timestamp to find in code
-     */
     public function logAdapterWarning($message, $locationInCode)
     {
         $this->logWarning($message, $this->ttContentUid, $this->ttContentPid, $this->type, $locationInCode);

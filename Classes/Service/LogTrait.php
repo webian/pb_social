@@ -69,17 +69,20 @@ trait LogTrait
      * @param integer $ttContentPid actual uid of page, plugin is located
      * @param string $type Name of social media network
      * @param integer $locationInCode timestamp to find in code
+     * @param integer $sysLogThisPlugin
      * @return string message
      */
-    public function logError($message, $ttContentUid, $ttContentPid, $type, $locationInCode)
+    public function logError($message, $ttContentUid, $ttContentPid, $type, $locationInCode, $sysLogThisPlugin)
     {
         $this->initializeTrait();
-        if(isset($GLOBALS["BE_USER"])){
+        //write log to sys_log
+        if(isset($GLOBALS["BE_USER"]) && $sysLogThisPlugin === 1){
             $GLOBALS['BE_USER']->writelog(
                 $syslog_type = 4, $syslog_action = 0, $syslog_error = 1, $syslog_details_nr = $locationInCode,
                 $syslog_details = $this->initializeMessage($message, $ttContentUid, $ttContentPid, $type, $locationInCode),
                 $syslog_data = []);
         }
+        //write log to file according to log level
         $this->logger->error($return = $this->initializeMessage($message, $ttContentUid, $ttContentPid, $type, $locationInCode));
         return $return;
     }
@@ -95,6 +98,7 @@ trait LogTrait
     public function logWarning($message, $ttContentUid, $ttContentPid, $type, $locationInCode)
     {
         $this->initializeTrait();
+        //write log to file according to log level
         $this->logger->warning($return = $this->initializeMessage($message, $ttContentUid, $ttContentPid, $type, $locationInCode));
         return $return;
     }
@@ -112,6 +116,7 @@ trait LogTrait
     public function logInfo($message, $ttContentUid, $ttContentPid, $type, $locationInCode)
     {
         $this->initializeTrait();
+        //write log to file according to log level
         $this->logger->info($return = $this->initializeMessage($return = $message, $ttContentUid, $ttContentPid, $type, $locationInCode));
         return $return;
     }

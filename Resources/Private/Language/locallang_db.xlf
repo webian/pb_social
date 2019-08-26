@@ -13,6 +13,10 @@
             <trans-unit id="flexform.tab.general.caption">
                 <source>General Settings</source>
             </trans-unit>
+
+            <trans-unit id="flexform.tab.general.sysLogThisPlugin">
+                <source>Turn on TYPO3 Backend logging (sys_log) for this plugin</source>
+            </trans-unit>
             <trans-unit id="flexform.tab.general.updatingFeeds">
                 <source>Feed update interval (in minutes)</source>
             </trans-unit>

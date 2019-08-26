@@ -260,7 +260,7 @@ class TwitterAdapter extends SocialMediaAdapter
                 }
 
                 if (empty($twitterResult)) {
-                    $this->logAdapterError("status empty", 1558435615);
+                    throw new \Exception( "status empty", 1558435615);
                     break;
                 }
                 $rawFeeds[self::TYPE . '_' . $twt_feed->getCacheIdentifier() . '_raw'] = $twt_feed->getResult();
