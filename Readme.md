@@ -1,9 +1,9 @@
-#TYPO3 Extension `pb_social`
+#TYPO3 Extension plusb/pb_social
 
 > Social media stream enables you to get posts from social media networks into your TYPO3 system.
 > Currently supported social media networks are: Facebook, Imgur, Instagram, LinkedIn, Pinterest, Tumblr, Twitter, YouTube, Vimeo and TYPO3 Extension tx_news
 
-With this extension we decided to fill a gap of social media integration in TYPO3. Our goal is it to provide an easy and time-saving way of integrating and interacting with common social media platforms. As you know nothing is perfect but we will give our best to make this extension as comfortable as you need it. For this we need your feedback, so if you need anything or have something to say, don't hesitate to contact us. Simply write an email to <hello@plusb.de>.
+With this extension we decided to fill a gap of social media integration in TYPO3. Our goal is to provide an easy and time-saving way of integrating and interacting with common social media platforms. Nothing is perfect (as you know) but we will give our best to make this extension as comfortable as you need it. For that we need your feedback, so if you need anything or would just like to comment on, don't hesitate to contact us. Simply write an email to <hello@plusb.de>.
 
 > Please visit our homepage [plusb.de](https://www.plusb.de/log/social-media-streams-pb_social/ "find more at our home page")
 
@@ -197,8 +197,8 @@ So automatic generation by our code will not longer work. To get it, please log 
 information of [instagram developer information](http://instagram.com/developer/clients/manage/). But please notice, you would need
 to check "Disable implicit OAuth:" for this time (please uncheck after having done successfully). 
 
-After having received the access token, fill in this long string into `pb_scoial extension configuration` in tab `"Instagram"` / `"Instagram access token"` and hit "Save". 
-* If you did not already have done this, leaving version 1.3.1: Please do this to all of your pb_scoial - plugins: Open, save it again. We changed flexform in tab "LinkedIn". (If you do not use LinkedIn, nothing has to be done)
+After having received the access token, fill in this long string into `pb_social extension configuration` in tab `"Instagram"` / `"Instagram access token"` and hit "Save". 
+* If you did not already have done this, leaving version 1.3.1: Please do this to all of your pb_social - plugins: Open, save it again. We changed flexform in tab "LinkedIn". (If you do not use LinkedIn, nothing has to be done)
 
 ##5. Known Issues
 
@@ -261,14 +261,14 @@ After having received the access token, fill in this long string into `pb_scoial
 * Check if some kind of Adblock is running
 * Check TYPO3 System log in Backend 
 * Check log file (/typo3temp/log/typo3.log)
-											
+		   
 * Database table "tx_pbsocial_domain_model_item" ... check the date field of your feed.
 
 #### Q: Feeds not refreshing fast enough?
 * check the flexform at the general tab. Is the "refresh time in minutes" correct set? (minimal value 10min)
 * check update interval in your scheduler task. Both values are "working together".
-											   
-										 
+			  
+		   
 
 #### Q: Strange php errors?
 * check if curl is enabled on your server
@@ -284,4 +284,3 @@ so you'll now have to invite users to your sandbox in order to get their posts. 
 #### Q: My page doesn't even redirect! What is my redirect uri?
 * The redirect uri is just an obligatory value you must provide to be able to authenticate via OAuth. Simply type in the base url of the page you use the plugin for your business homepage. 
 The APIs just needs an url they can send the access code to, so just provide any url you like in the respective developer console.
-
