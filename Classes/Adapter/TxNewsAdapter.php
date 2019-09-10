@@ -10,6 +10,7 @@ use PlusB\PbSocial\Domain\Repository\ItemRepository;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /***************************************************************
@@ -199,7 +200,6 @@ class TxNewsAdapter extends SocialMediaAdapter
         /** @var \GeorgRinger\News\Domain\Model\News $news */
         foreach ($demanded as $news)
         {
-
             $img_link = '';
             if ($news->getMedia()->count() > 0)
             {
@@ -211,6 +211,11 @@ class TxNewsAdapter extends SocialMediaAdapter
                 'name' => $news->getTitle(),
                 'image' => $img_link,
                 'link' => $this->detailPageUid,
+                'body' => $news->getBodytext(),
+                'teaser' => $news->getTeaser(),
+                'title' => $news->getTitle(),
+                'author' => $news->getAuthor(),
+                'dateTime' => $news->getDatetime()->getTimestamp(),
                 'crdate' => $news->getCrdate()->getTimestamp()
             );
 

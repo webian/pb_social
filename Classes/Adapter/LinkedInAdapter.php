@@ -3,9 +3,11 @@
 namespace PlusB\PbSocial\Adapter;
 
 $extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/';
-require_once $extensionPath . 'linkedin/src/Client.php'; # Include provider library
-// ... please, add composer autoloader first
-include_once $extensionPath . 'linkedin' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+//require_once $extensionPath . 'linkedin/src/Client.php'; # Include provider library
+//// ... please, add composer autoloader first
+//include_once $extensionPath . 'linkedin' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+@include 'phar://' .  $extensionPath . 'linkedin.phar/vendor/autoload.php';
+
 
 use LinkedIn\AccessToken;
 use LinkedIn\Client;
@@ -264,8 +266,7 @@ class LinkedInAdapter extends SocialMediaAdapter
         }
         catch (\Exception $e)
         {
-            $this->logAdapterError('failed to setup AccessToken' . $e->getMessage(), 1558435565);
-            return null;
+            throw new \Exception('failed to setup AccessToken' . $e->getMessage(), 1558435565);
         }
         # get access token from database #
         $credentials = $this->credentialRepository->findByTypeAndAppId(self::TYPE, $apiKey);

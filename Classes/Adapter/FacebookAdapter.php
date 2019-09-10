@@ -5,10 +5,10 @@ namespace PlusB\PbSocial\Adapter;
 $extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/';
 require $extensionPath . 'facebook/src/Facebook/autoload.php';
 
+
 use Facebook\Facebook;
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
-
 
 /***************************************************************
  *
@@ -147,7 +147,7 @@ class FacebookAdapter extends SocialMediaAdapter
                 $posts = $this->getPosts($searchId, $options->feedRequestLimit, $options->settings['facebookEdge']);
             }
             catch (\Exception $e) {
-                throw new \Exception($e->getMessage(), 1558515175);
+                throw new \Exception($e->getMessage(), 1559547942);
             }
 
             if ($feeds && $feeds->count() > 0) {

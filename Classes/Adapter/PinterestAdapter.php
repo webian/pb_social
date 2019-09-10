@@ -3,7 +3,7 @@
 namespace PlusB\PbSocial\Adapter;
 
 $extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/';
-require_once $extensionPath . 'pinterest/autoload.php';
+@include 'phar://' .  $extensionPath . 'pinterest.phar/autoload.php';
 use DirkGroenen\Pinterest;
 use PlusB\PbSocial\Domain\Model\Credential;
 use PlusB\PbSocial\Domain\Model\Feed;
@@ -258,7 +258,7 @@ class PinterestAdapter extends SocialMediaAdapter
                     $this->credentialRepository->saveCredential($credential);
                 }
             } else {
-                $this->logAdapterError('access code expired. Please provide new code in pb_social extension configuration.',
+                throw new \Exception('access code expired. Please provide new code in pb_social extension configuration.',
                     1558435580);
                 return null;
             }
