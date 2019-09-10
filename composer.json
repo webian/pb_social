@@ -1,8 +1,8 @@
 {
   "name": "plusb/pb_social",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "type": "typo3-cms-extension",
-  "description": "Social Media Streams",
+  "description": "Social Media Streams, Social media stream enables you to get posts from social media networks into your TYPO3 system. Currently supported social media networks are: Facebook, Imgur, Instagram, LinkedIn, Pinterest, Tumblr, Twitter, YouTube, Vimeo and TYPO3 Extension tx_news",
   "homepage": "https://www.plusb.de",
   "license": [
     "GPL-2.0-or-later"
@@ -26,7 +26,7 @@
   ],
   "authors": [
     {
-      "name": "Mikolaj Jedrzejewski, Ramon Mohi, Kai Lorenz, Robert Becker, Arend Maubach",
+      "name": "plus B: Mikolaj Jedrzejewski, Robert Becker, Arend Maubach, Patricia Bartel, Ramon Mohi, Kai Lorenz",
       "role": "Developer",
       "homepage": "https://www.plusb.de"
     }

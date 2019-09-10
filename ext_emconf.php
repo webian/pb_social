@@ -12,21 +12,20 @@
 
 $EM_CONF[$_EXTKEY] = array (
 	'title' => 'Social Media Streams',
-	'description' => '',
-	'category' => 'plugin',
-	'author' => 'Mikolaj Jedrzejewski - plus B, Ramon Mohi - plus B, Kai Lorenz - plus B, Robert Becker - plus B,  Arend Maubach - plus B',
+	'description' => 'Social media stream enables you to get posts from social media networks into your TYPO3 system. Currently supported social media networks are: Facebook, Imgur, Instagram, LinkedIn, Pinterest, Tumblr, Twitter, YouTube, Vimeo and TYPO3 Extension tx_news',
+	'category' => 'Frontend Plugins',
+	'author' => 'plus B: Mikolaj Jedrzejewski, Robert Becker, Arend Maubach, Patricia Bartel, Ramon Mohi, Kai Lorenz',
 	'author_email' => 'info@plusb.de',
 	'state' => 'stable',
 	'uploadfolder' => false,
 	'createDirs' => '',
 	'clearCacheOnLoad' => 0,
-	'version' => '1.4.0',
+	'version' => '1.4.1',
 	'constraints' => 
 	array (
 		'depends' => 
 		array (
-			'typo3' => '7.6.0-9.5.99',
-			'php' => '5.6.0-7.2.99',
+			'TYPO3' => '7.6.0-9.5.99',
 			'extbase' => '',
 			'fluid' => '',
 		),
