@@ -85,6 +85,25 @@ Just make sure tx_news is installed and running and you have some news to displa
        
 1. In case of trouble: please check typo3temp/var/logs/typo3_pb_social_*.log or Syslog (SYSTEM/Log in TYPO3 Backend). Please make sure, that you have `$GLOBALS['TYPO3_CONF_VARS']['SYS']['systemLogLevel']` in LocalConfiguration.php set to 0 to see trouble and success. And please do not forget to reset systemLogLevel to a higher value in productive mode.    
 
+###2.4 Annotations about flexform settings
+
+In tab "General Settings", you see several "global" instructions for the actual plugin scope:
+
+* Turn on TYPO3 Backend logging (sys_log) for this plugin
+Logging is written to typo3temp/var/logs/typo3_pb_social_{year-week}.log every week new file accoding to your TYPO3 configuration 'SYS' 'systemLogLevel'. But for users who use multiple plugins in one installation wanted to have an option to stop writing issues to sys-log in backend, not to overflow it. If you check this checkbox every issue of activated social media network this plugin are written to sys-log in backend. 
+
+* Feed update interval (in minutes) 
+This integer represents minutes for earliest possible update by page-reload or scheduler work.
+
+* Request limit for posts (small amount -> fast response) 
+An integer for a maximal amount of items you call from social media network apis of this plugin. 
+
+* Show only posts with pictures 
+If you want to leave out social media posts, which have no image, you uses this checkbox. 
+
+* Trim text after reaching this letter limit 
+Here you can crop post descriptions in your plugin teaser. 
+
 ##3. Hints for social media networks
      
 ### facebook
