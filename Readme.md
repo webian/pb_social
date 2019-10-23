@@ -163,13 +163,19 @@ After a few days (2 hours was my fastest try) they will give you the grants you 
 
 ### instagram
 * Instagram code: instagram.client.access_code
-    * Instagram code: Retrieve code with the following URL (all characters after "code"):
-     https://api.instagram.com/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=public_content
+    * Instagram Code: Retrieve code with the following URL (all characters after "code"):
+    
+      https://api.instagram.com/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=public_content
+     
+     * In sandbox mode use this URL instead:
+     
+       https://api.instagram.com/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code
 
 * Instagram access token: instagram.client.access_token 
     * Retrieve access token with the following URL (all characters after "token"): 
-    https://api.instagram.com/oauth/authorize/?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=token 
-    * Remark: You need to check "Disable implicit OAuth" in instagram to manage the client web console
+    
+      https://api.instagram.com/oauth/authorize/?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=token 
+    * Remark: The checkbox "Disable implicit OAuth" in the instagram developer options backend should not be set 
 
 ### LinkedIn
 *   https://www.linkedin.com/developer/apps
