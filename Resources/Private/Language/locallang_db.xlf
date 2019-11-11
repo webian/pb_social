@@ -48,15 +48,25 @@
             <trans-unit id="flexform.tab.facebook.active">
                 <source>Active</source>
             </trans-unit>
-            <trans-unit id="flexform.tab.facebook.searchID">
-                <source>Facebook search IDs. Use commas to show more than one ID</source>
+            <trans-unit id="flexform.tab.facebook.facebookPageID">
+                <source>Facebook facebookPageID. (Enter one, only)</source>
             </trans-unit>
+
             <trans-unit id="flexform.tab.facebook.edge">
-                <source>Facebook edge (feed shows everything incl. tagged posts and links, posts filters only posts)</source>
+                <source>Facebook edge</source>
             </trans-unit>
-            <trans-unit id="flexform.tab.facebook.linktopost">
-                <source>Link to the facebook post (post id) instead of article (humand readable link)</source>
+            <trans-unit id="flexform.tab.facebook.edge.feed">
+                <source>Feed (default): The feed of posts (including status updates) and links published by this page, or by others on this page.</source>
             </trans-unit>
+            <trans-unit id="flexform.tab.facebook.edge.posts">
+                <source>Posts: Shows only the posts that were published by this page.</source>
+            </trans-unit>
+            <trans-unit id="flexform.tab.facebook.edge.tagged">
+                <source>Tagged: Shows all public posts in which the page has been tagged.</source>
+            </trans-unit>
+
+
+
             <trans-unit id="flexform.tab.facebook.fullpicture">
                 <source>Load full sized picture</source>
             </trans-unit>

@@ -27,7 +27,7 @@ plugin.tx_pbsocial {
 		facebook {
 			# Only use in case you know, what you are doing.
 			# Comma separated List for Facebook request. Please consider change in Partials\Feed\Provider-facebook.html as well!
-			# Important: "id", "link" and "message" are always prepended in this list (so do not repeat).
+			# Important: "id" and "message" are always prepended in this list (so do not repeat).
 			# To pull out your own parameter according to https://developers.facebook.com/docs/workplace/integrations/custom-integrations/reference/,
 			# please fill in Resources/Private/Partials/Feed/Provider-facebook.html as well, always prepending "feed.raw": {feed.raw.my_facebook_parameter_i_desire}
 			# Hint: you as well can add a parameter by using "addToList()" in TypoScript Setup e.g.: plugin.tx_pbsocial.settings.facebook.requestParameterList := addToList(status_type)

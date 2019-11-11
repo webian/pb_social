@@ -81,14 +81,14 @@
                             </config>
                         </TCEforms>
                     </settings.facebookFullPicture>
-                    <settings.facebookSearchIds>
+                    <settings.facebookPageID>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.facebook.searchID</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.facebook.facebookPageID</label>
                             <config>
                                 <type>input</type>
                             </config>
                         </TCEforms>
-                    </settings.facebookSearchIds>
+                    </settings.facebookPageID>
                     <settings.facebookEdge>
                         <TCEforms>
                         <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.facebook.edge</label>
@@ -96,28 +96,22 @@
                           <type>radio</type>
                           <items type="array">
                             <numIndex index="0" type="array">
-                              <numIndex index="0">Feed</numIndex>
+                              <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.facebook.edge.feed</numIndex>
                               <numIndex index="1">feed</numIndex>
                             </numIndex>
                             <numIndex index="1" type="array">
-                              <numIndex index="0">Posts</numIndex>
+                              <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.facebook.edge.posts</numIndex>
                               <numIndex index="1">posts</numIndex>
                             </numIndex>
+                              <numIndex index="2" type="array">
+                                  <numIndex index="0">LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.facebook.edge.tagged</numIndex>
+                                  <numIndex index="1">tagged</numIndex>
+                              </numIndex>
                           </items>
                           <default>feed</default>
                         </config>
                         </TCEforms>
                     </settings.facebookEdge>
-                    <settings.facebookLinktopost>
-                        <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.facebook.linktopost</label>
-
-                            <config>
-                                <type>check</type>
-                            </config>
-                        </TCEforms>
-                    </settings.facebookLinktopost>
-
                     <settings.facebookPluginKeyfieldEnabled>
                         <TCEforms>
                             <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:flexform.tab.facebook.facebookPluginKeyfieldEnabled</label>
@@ -145,6 +139,16 @@
                             </config>
                         </TCEforms>
                     </settings.facebookApiSecret>
+                    <settings.facebookPageAccessToken>
+                        <TCEforms>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:facebook.api.facebookPageAccessToken</label>
+                            <displayCond>FIELD:settings.facebookPluginKeyfieldEnabled:=:1</displayCond>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.facebookPageAccessToken>
+
                 </el>
             </ROOT>
         </display_facebook>

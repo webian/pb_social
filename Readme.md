@@ -108,13 +108,16 @@ Here you can crop post descriptions in your plugin teaser.
      
 ### facebook
 * https://developers.facebook.com/apps
-* pb_social uses Facebook SDK for PHP v5.0.0 - this one goes along with facebook Api v3.2 (not v3.3)
+* pb_social uses Facebook SDK for PHP v5.7.0 - this one goes along with facebook Api v5.0
 
 #### You will need a so called "app review"
-1. Please register an account at developers.facebook.com and register your pb_social extension as app. 
+1. Please register an account at developers.facebook.com and register your pb_social extension as app.
+
+1. {...}
+
+1. You will receive an 'app id' and 'app secret' in developer page, and you can immediately use it.    
 1. Please file a request for access rights under menu "App Review". 
-1. Please choose (email, default) **Page Public Content Access**
-(*manage_pages* does not fit, because Facebook SDK for PHP does not come up with an *active access token*)
+1. Please choose (email, default) **manage_pages**. 
 
 1. You will need a TYPO3 Backend for the app review team to be able to consider you as a good guy. They will need access to your pb_social Plugin settings. Please provide a TYPO3 BE url, BE user and a password for facebook app review team. 
 
@@ -122,21 +125,17 @@ Here you can crop post descriptions in your plugin teaser.
 		
 1. Please tell them this one in the text box: 
 
-> For example, the Facebook Search ID get('/Typo3campBerlin/feed') or get('/Typo3campBerlin/post') and the reactions are queried at regular intervals. This data does not originate from our page, but is retrieved from facebook using the Search Id. 
+> For example, feed items of my Facebook page ID get('/{fill in your page id}/feed') are queried at regular intervals. 
 >
-> The following data is queried: id,link,message,picture.
+> The following data are queried: id,message,picture,created_time,full_picture of our posts on page. 
 
 > The Typo3 Administrator includes the TYPO3 extension pb_social https://extensions.typo3.org/extension/pb_social/. 
-Then he registers this extension as an app in developers.facebook.com and adds the facebook app id and the facebook app secret to TYPO3. 
-Then he names a Facebook search id like for example "Typo3campBerlin" and chooses if the posts or feeds should be loaded. 
-On the front page of his website the items from "Typo3campBerlin" are displayed: id,link,message,picture. 
+Then he registers this extension as an app in developers.facebook.com and adds the facebook app id and the facebook app secret to TYPO3.  
+On the front page of website the feed items from our facebook page are displayed: id,message,picture. 
 > 
-> A login to Facebook does not take place, only an access-token is generated. 
-> 
-> This Typo3 extension pb_social has > 12.000 downloads: https://extensions.typo3.org/extension/pb_social/ 
+> A login to Facebook does not take place, only an page-access-token is used. 
 
 * Instead of writing a story, you could try to just provide url, BE user and password
-
 
 After a few days (2 hours was my fastest try) they will give you the grants you need - so...
 
@@ -144,26 +143,22 @@ After a few days (2 hours was my fastest try) they will give you the grants you 
 
 #### Can I use my own facebook parameter list?
 
-* First: Yes, but please know, what you are doing. 
-* In your TypoScript Contants you can configure `plugin.tx_pbsocial.settings.facebook.requestParameterList`. 
-* You can add a parameter by using "addToList()" in TypoScript Setup e.g.: `plugin.tx_pbsocial.settings.facebook.requestParameterList := addToList(status_type)`.
+* First: Yes, but please know, what you are doing. Defaults are tested, and good. 
+* In your TypoScript constants you can configure `plugin.tx_pbsocial.settings.facebook.requestParameterList`. 
+* You can add (but don't need to) a parameter by using "addToList()" in TypoScript Setup e.g.: `plugin.tx_pbsocial.settings.facebook.requestParameterList := addToList(status_type)`.
     * If TypoScript appending methods do not work for you, copy the default string and append your parameters after this string by clearly comma separation. (But `addToList()` above is coolest way to do it).
-
-            picture,comments.summary(total_count).limit(0).as(comments),created_time,full_picture,reactions.summary(total_count).limit(0).as(reactions),reactions.type(NONE).summary(total_count).limit(0).as(none),reactions.type(LIKE).summary(total_count).limit(0).as(like),reactions.type(LOVE).summary(total_count).limit(0).as(love),reactions.type(WOW).summary(total_count).limit(0).as(wow),reactions.type(HAHA).summary(total_count).limit(0).as(haha),reactions.type(SAD).summary(total_count).limit(0).as(sad),reactions.type(ANGRY).summary(total_count).limit(0).as(angry),reactions.type(THANKFUL).summary(total_count).limit(0).as(thankful)
-
-* If you use "comments" and "reactions", you will have to request for "user_likes" in https://developers.facebook.com/apps "App Review" (see above). 
-
-* Important: "id", "link" and "message" are always prepended in list (so do not repeat) and you will not find it in the TypoScript Constant string above. It is prepended in php.
-* To pull up your own parameter according to https://developers.facebook.com/docs/workplace/integrations/custom-integrations/reference/
-* Please consider to change the extension fluid template Partials\Feed\Provider-facebook.html as well! Your request parameter is only shown if you note it down there:
-    * to show values always prepend `"feed.raw"`: `{feed.raw.my_facebook_parameter_i_desire}`
-    	* e.g. `{feed.raw.status_type}`
+    * If you use "comments" and "reactions", you will have to request for "user_likes" in https://developers.facebook.com/apps "App Review" (see above). 
+    * Important: "id" and "message" are always prepended in list (so do not repeat) and you will not find it in the TypoScript Constant string above. It is prepended in php.
+    * To pull up your own parameter according to https://developers.facebook.com/docs/workplace/integrations/custom-integrations/reference/
+    * Please consider to change the extension fluid template Partials\Feed\Provider-facebook.html as well! Your request parameter is only shown if you note it down there:
+        * to show values always prepend `"feed.raw"`: `{feed.raw.my_facebook_parameter_i_desire}`
+    	    * e.g. `{feed.raw.status_type}`
     * To change a fluid template, please copy it to your own configuration area, so it won't get overwritten after an update: Read quickly [Extending an Extbase extension](https://docs.typo3.org/typo3cms/ExtbaseGuide/Extbase/ExtendExtbaseExtension.html, "how to do it")
 
 
 ### instagram
 * Instagram code: instagram.client.access_code
-    * Instagram Code: Retrieve code with the following URL (all characters after "code"):
+    * Instagram code: Retrieve code with the following URL (all characters after "code"):
     
       https://api.instagram.com/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=public_content
      

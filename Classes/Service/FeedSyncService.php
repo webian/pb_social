@@ -139,11 +139,19 @@ class FeedSyncService extends AbstractBaseService
                 :
                 $this->extConf['socialfeed.']['facebook.']['api.']['secret'];
 
+        $configPageAccessToken =
+            ($flexformOptions->settings['facebookPluginKeyfieldEnabled'] === '1')
+                ?
+                $flexformOptions->settings['facebookPageAccessToken']
+                :
+                $this->extConf['socialfeed.']['facebook.']['api.']['pageaccesstoken'];
+
         try {
             //adapter
             $adapter = new Adapter\FacebookAdapter(
                 $config_apiId,
                 $config_apiSecret,
+                $configPageAccessToken,
                 $this->itemRepository,
                 $flexformOptions,
                 $ttContentUid,

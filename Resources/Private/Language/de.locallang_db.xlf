@@ -37,18 +37,27 @@
                 <source>Active</source>
                 <target state="translated">Ausgabe aktiviert</target>
             </trans-unit>
-            <trans-unit id="flexform.tab.facebook.searchID">
-                <source>Facebook search IDs. Use commas to show more than one ID</source>
-                <target state="translated">Facebook IDs der Seiten. Verwenden Sie Kommas, um mehrere Seiten anzuzeigen</target>
+            <trans-unit id="flexform.tab.facebook.facebookPageID">
+                <source>Facebook facebookPageID. (Enter one, only)</source>
+                <target>Facebock Seiten ID (facebookPageID). Bitte nur eine ID eintragen.</target>
             </trans-unit>
-             <trans-unit id="flexform.tab.facebook.edge">
-                <source>Facebook edge (feed shows everything incl. tagged posts and links, posts filters only posts)</source>
-                <target state="translated">Facebook edge (feed zeigt alles an inkl. getaggte Beiträge und Links, posts zeigt nur die eigenen Beiträge)</target>
+
+
+
+            <trans-unit id="flexform.tab.facebook.edge">
+                <source>Facebook edge</source>
+                <target state="translated">Facebook edge</target>
             </trans-unit>
-            <trans-unit id="flexform.tab.facebook.linktopost">
-                <source>Link to the facebook post (post id) instead of article (humand readable link)</source>
-                <target state="translated">Verlinkung auf den facebook post (post id), anstatt auf den Artikel (humand readable link)</target>
+            <trans-unit id="flexform.tab.facebook.edge.feed">
+                <source>Feed: Der Beitrags-Feed (einschließlich Status-Updates) und von dieser Seite oder anderen Personen auf dieser Seite veröffentlichte Links.</source>
             </trans-unit>
+            <trans-unit id="flexform.tab.facebook.edge.posts">
+                <source>Posts: Zeigt nur die Beiträge an, die von dieser Seite veröffentlicht wurden.</source>
+            </trans-unit>
+            <trans-unit id="flexform.tab.facebook.edge.tagged">
+                <source>Tagged: Zeigt alle öffentlichen Beiträge an, in denen die Seite markiert wurde.</source>
+            </trans-unit>
+
             <trans-unit id="flexform.tab.facebook.fullpicture">
                 <source>Load full sized picture</source>
                 <target state="translated">Bilder in voller Größe laden</target>

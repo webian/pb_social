@@ -36,6 +36,10 @@
                 <source>app secret</source>
                 <target>app secret</target>
             </trans-unit>
+            <trans-unit id="facebook.api.facebookPageAccessToken">
+                <source>'Never' expiring Facebook long lived page access token</source>
+                <target>'Unbegrenzter', langlebiger Facebook Seiten-Zugriffsschlüssel</target>
+            </trans-unit>
 
             <trans-unit id="instagram">
                 <source>Instagram</source>

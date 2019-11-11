@@ -40,6 +40,8 @@ socialfeed{
     facebook.api.id=
     # cat=facebook/facebook/0020; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:facebook.api.secret
     facebook.api.secret=
+    # cat=facebook/facebook/0010; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:facebook.api.pageaccesstoken
+    facebook.api.pageaccesstoken=
 
     # cat=instagram/instagram/0010; type=string; label=LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:instagram.client.id
     instagram.client.id=

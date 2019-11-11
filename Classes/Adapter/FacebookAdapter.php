@@ -15,7 +15,8 @@ use PlusB\PbSocial\Domain\Model\Item;
  *  Copyright notice
  *
  *  (c) 2016 Ramon Mohi <rm@plusb.de>, plus B
- *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
+ *  (c) 2019 Arend Maubach <am@plusb.de>, plus B
+ *  (c) 2019 Sergej Junker <sj@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -40,17 +41,15 @@ class FacebookAdapter extends SocialMediaAdapter
 
     const TYPE = 'facebook';
 
-    const api_url = 'https://graph.facebook.com', api_version = "v3.2";
+    const api_url = 'https://graph.facebook.com', api_version = "v5.0";
 
     private $api;
 
-    private $access_token;
-
     public $isValid = false, $validationMessage = "";
-    private $apiId, $apiSecret, $options;
+    private $apiId, $apiSecret, $pageAccessToken, $options;
 
     /**
-     * @param mixed $apiId
+     * @param string $apiId
      */
     public function setApiId($apiId)
     {
@@ -58,11 +57,19 @@ class FacebookAdapter extends SocialMediaAdapter
     }
 
     /**
-     * @param mixed $apiSecret
+     * @param string $apiSecret
      */
     public function setApiSecret($apiSecret)
     {
         $this->apiSecret = $apiSecret;
+    }
+
+    /**
+     * @param string $pageAccessToken
+     */
+    public function setPageAccessToken($pageAccessToken)
+    {
+        $this->pageAccessToken = $pageAccessToken;
     }
 
     /**
@@ -76,6 +83,7 @@ class FacebookAdapter extends SocialMediaAdapter
     public function __construct(
         $apiId,
         $apiSecret,
+        $pageAccessToken,
         $itemRepository,
         $options,
         $ttContentUid,
@@ -90,6 +98,7 @@ class FacebookAdapter extends SocialMediaAdapter
             array(
                 'apiId' => $apiId,
                 'apiSecret' => $apiSecret,
+                'pageAccessToken' => $pageAccessToken,
                 'options' => $options
             )) === false)
         {
@@ -98,8 +107,8 @@ class FacebookAdapter extends SocialMediaAdapter
         /* validated */
 
         $this->api = new Facebook(['app_id' => $this->apiId,'app_secret' => $this->apiSecret,'default_graph_version' => self::api_version]);
-        $this->access_token =  $this->api->getApp()->getAccessToken();
-        $this->api->setDefaultAccessToken($this->access_token);
+        //$this->access_token =  $this->api->getApp()->getAccessToken();
+        $this->api->setDefaultAccessToken($pageAccessToken);
     }
 
     /**
@@ -112,16 +121,18 @@ class FacebookAdapter extends SocialMediaAdapter
     {
         $this->setApiId($parameter['apiId']);
         $this->setApiSecret($parameter['apiSecret']);
+        $this->setPageAccessToken($parameter['pageAccessToken']);
         $this->setOptions($parameter['options']);
 
         if (empty($this->apiId) || empty($this->apiSecret)) {
-            $this->validationMessage = 'credentials not set: ' . (empty($this->apiId)?'apiId ':''). (empty($this->apiSecret)?'apiSecret ':'');
-        } elseif (empty($this->options->settings['facebookSearchIds'])) {
-            $this->validationMessage = 'no search term defined ("Facebook search IDs" in flexform settings) ';
+            $this->validationMessage = 'credentials not set: ' . (empty($this->apiId)?'apiId ':''). (empty($this->apiSecret)?'apiSecret ':''). (empty($this->pageAccessToken)?'pageAccessToken ':'');
+        } elseif (empty($this->options->settings['facebookPageID'])) {
+            $this->validationMessage = 'no facebookPageID ("Facebook facebookPageID" in flexform settings) ';
+        } elseif (strstr($this->options->settings['facebookPageID'],',')) {
+            $this->validationMessage = 'facebookPageID contains "," - please use only one facebook Page ID("Facebook facebookPageID" in flexform settings) ';
         } else {
             $this->isValid = true;
         }
-
         return $this->isValid;
     }
 
@@ -131,56 +142,54 @@ class FacebookAdapter extends SocialMediaAdapter
         $result = array();
         $feed = null;
 
-        $facebookSearchIds = $options->settings['facebookSearchIds'];
-        if (empty($facebookSearchIds)) {
-            $this->logAdapterWarning('no search term defined', 1558435713);
+        $facebookPageID = $options->settings['facebookPageID']?:null;
+        $facebookPageID = trim($facebookPageID);
+        $facebookEdge = $options->settings['facebookEdge']?:null;
+
+
+        if (empty($facebookPageID)) {
+            $this->logAdapterWarning('no facebookPageID', 1573467383);
+            return null;
+        } elseif (strstr($facebookPageID,',')){
+            $this->logAdapterWarning('facebookPageID contains "," - please use only one facebook Page ID', 1573467387);
             return null;
         }
 
-        foreach (explode(',', $facebookSearchIds) as $searchId) {
-            $searchId = trim($searchId);
-            $posts = null;
+        $posts = null;
+        $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $facebookPageID.$facebookEdge));
+        try {
+            $posts = $this->getPosts($facebookPageID, $options->feedRequestLimit, $facebookEdge);
+        }
+        catch (\Exception $e) {
+            throw new \Exception($e->getMessage(), 1559547942);
+        }
 
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
+        if ($feeds && $feeds->count() > 0) {
+            $feed = $feeds->getFirst();
+            /**
+             * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to be free, so... change by conf
+             */
+            if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
 
-            try {
-                $posts = $this->getPosts($searchId, $options->feedRequestLimit, $options->settings['facebookEdge']);
-            }
-            catch (\Exception $e) {
-                throw new \Exception($e->getMessage(), 1559547942);
-            }
-
-            if ($feeds && $feeds->count() > 0) {
-                $feed = $feeds->getFirst();
-                /**
-                 * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to be free, so... change by conf
-                 */
-                if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
-
-                    //update feed
-                    if ($posts !== null) {
-                        $feed->setDate(new \DateTime('now'));
-                        $feed->setResult($posts);
-                        $this->itemRepository->updateFeed($feed);
-                    }
-
+                //update feed
+                if ($posts !== null) {
+                    $feed->setDate(new \DateTime('now'));
+                    $feed->setResult($posts);
+                    $this->itemRepository->updateFeed($feed);
                 }
-                $result[] = $feed;
 
-                //after having updated, roll over in foreach
-                continue;
-            }
-
-            //insert new feed
-            if ($posts !== null) {
-                $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
-                $feed->setResult($posts);
-                // save to DB and return current feed
-                $this->itemRepository->saveFeed($feed);
-                $result[] = $feed;
             }
         }
+
+        //insert new feed
+        if ($posts !== null) {
+            $feed = new Item(self::TYPE);
+            $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $facebookPageID.$facebookEdge));
+            $feed->setResult($posts);
+            // save to DB and return current feed
+            $this->itemRepository->saveFeed($feed);
+        }
+        $result[] = $feed;
 
         return $this->getFeedItemsFromApiRequest($result, $options);
     }
@@ -205,12 +214,7 @@ class FacebookAdapter extends SocialMediaAdapter
                         $feed->setImage(urldecode($rawFeed->picture));
                     }
 
-                    // ouput link to facebook post instead of article
-                    if ($options->settings['facebookLinktopost']) {
-                        $feed->setLink('https://facebook.com/' . $rawFeed->id);
-                    } else {
-                        $feed->setLink($rawFeed->link);
-                    }
+                    $feed->setLink('https://facebook.com/' . $rawFeed->id);
                     $d = new \DateTime($rawFeed->created_time);
                     $feed->setTimeStampTicks($d->getTimestamp());
 
@@ -224,20 +228,21 @@ class FacebookAdapter extends SocialMediaAdapter
 
     /** Make API request via Facebook sdk function
      *
-     * @param string $searchId
+     * @param string $facebookPageID
      * @param int $limit
      * @return string
      */
-    public function getPosts($searchId, $limit, $edge)
+    public function getPosts($facebookPageID, $limit, $edge)
     {
         //endpoint
             switch ($edge){
                 case 'feed': $request = 'feed'; break;
                 case 'posts': $request = 'posts'; break;
+                case 'tagged ': $request = 'tagged '; break;
                 default: $request = 'feed';
             }
 
-        $endpoint = '/' . $searchId . '/' . $request;
+        $endpoint = '/' . $facebookPageID . '/' . $request;
 
         //params
             //set default parameter list in case s.b messes up with TypoScript
@@ -252,8 +257,8 @@ class FacebookAdapter extends SocialMediaAdapter
                 $faceBookRequestParameter =  $this->options->settings['facebook']['requestParameterList'];
             }
 
-            //always prepending id, link and message
-            $faceBookRequestParameter = 'id,link,message,' . $faceBookRequestParameter;
+            //always prepending id and message
+            $faceBookRequestParameter = 'id,message,' . $faceBookRequestParameter;
 
         $params = [
             'fields' => $faceBookRequestParameter,
@@ -261,6 +266,7 @@ class FacebookAdapter extends SocialMediaAdapter
         ];
 
         try {
+
             /** @var \Facebook\FacebookResponse $resp */
             $resp = $this->api->sendRequest(
                 'GET',
@@ -268,12 +274,13 @@ class FacebookAdapter extends SocialMediaAdapter
                 $params
             );
 
+
         } catch (\Facebook\Exceptions\FacebookSDKException $e) {
             throw new \Exception($e->getMessage(), 1558515214);
         }
 
         if (empty(json_decode($resp->getBody())->data) || json_encode($resp->getBody()->data) == null) {
-            throw new \Exception( 'no posts found for ' . $searchId, 1558515218);
+            throw new \Exception( 'no posts found for ' . $facebookPageID, 1558515218);
         }
 
         return $resp->getBody();
