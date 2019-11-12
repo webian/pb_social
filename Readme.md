@@ -113,11 +113,25 @@ Here you can crop post descriptions in your plugin teaser.
 #### You will need a so called "app review"
 1. Please register an account at developers.facebook.com and register your pb_social extension as app.
 
-1. {...}
+1. You will need a Facebook Page of your own. Make a note of the Page-ID, which you will need for the extension.
 
-1. You will receive an 'app id' and 'app secret' in developer page, and you can immediately use it.    
-1. Please file a request for access rights under menu "App Review". 
-1. Please choose (email, default) **manage_pages**. 
+2. You will need to create an App on developers.facebook.com. In most cases, you would need to ask for the proper rights/permissions to make API calls. However, if you are only using the App for pb_social and you are using it in development mode, you won’t need to worry about permissions. Image 2 shows where to find what mode you are currently in. Make a note of the App ID and App Secret. You will need to enter these into the extension.
+
+3. The next steps will be a bit more complicated - but useful: First, navigate to [Developers Facebook Tools](https://developers.facebook.com/tools/explorer/?classic=0, "Facebook Tools").
+On the right side of your screen select the App and select **Get Page Access Token** in the **User or Page** section. A popup will appear. Navigate through the steps, checking all of the checkboxes, etc.
+The main screen will subsequently change, updating the Key in the Access Token field. Now copy this Key to your clipboard and navigate to [Developers Facebook Tools Accesstoken Debugger](https://developers.facebook.com/tools/debug/accesstoken/, "Accesstoken Debugger"). Paste the copied Key into the given field. 
+Clicking the Debug button will reveal Information about the Key you entered. You will see that the Key will expire in just under an hour.
+You will, however, need a *longer-lasting* Key for pb_social. To solve this problem, click the button named **Extend Access Token** at the bottom of your screen.
+Clicking the button will reveal a new Key. Click the **Debug** button next to it and copy the new Key. This key will last about 2 months.
+You can now *navigate back* to [Developers Facebook Tools](https://developers.facebook.com/tools/explorer/?classic=0, "Facebook Tools")
+Now choose the *User Token option* under **User or Page* and paste the new Key into the **Access Token** field. 
+In the API-Explorer bar enter the Page-ID from Step 1 as follows: **{YOUR-PAGE-ID-FROM-STEP-ONE}/**
+Click Submit on the top right of your screen. This API call will change the expiration of your Key from 2 months to **Expires: Never**.
+Make sure this is the case by entering the Key on [Developers Facebook Tools Accesstoken Debugger](https://developers.facebook.com/tools/debug/accesstoken/, "Accesstoken Debugger") 
+You now have a Key that won’t ever expire. Who knows what the implications are for Facebook. Enter your Key into the **Page Access Token** field in your TYPO3 pb_social extension plugin or extension configuration.
+
+1. Follow up: Copy 'app id' and 'app secret' in app details of https://developers.facebook.com/apps, enter those into pb_social extension, and you can immediately use it as facebook developer mode and see an example in TYPO3 front end.    
+1. To move over to production mode of your facebook app: Please file a request for access rights under menu "App Review" using following steps: Please navigate to *App Review". As access rights, please choose **manage_pages**. 
 
 1. You will need a TYPO3 Backend for the app review team to be able to consider you as a good guy. They will need access to your pb_social Plugin settings. Please provide a TYPO3 BE url, BE user and a password for facebook app review team. 
 
