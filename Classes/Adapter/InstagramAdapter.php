@@ -14,7 +14,7 @@ use PlusB\PbSocial\Domain\Model\Item;
  *  Copyright notice
  *
  *  (c) 2016 Ramon Mohi <rm@plusb.de>, plus B
- *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
+ *  (c) 2019 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -40,7 +40,7 @@ class InstagramAdapter extends SocialMediaAdapter
 
     const TYPE = 'instagram';
 
-    public $isValid = false, $validationMessage = "";
+    private $api;
     private $apiKey, $apiSecret, $apiCallback, $code, $token, $options;
 
     /**
@@ -90,7 +90,6 @@ class InstagramAdapter extends SocialMediaAdapter
     {
         $this->options = $options;
     }
-    private $api;
 
     /**
      * InstagramAdapter constructor.
@@ -121,7 +120,7 @@ class InstagramAdapter extends SocialMediaAdapter
         parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
 
         /* validation - interrupt instanciating if invalid */
-        if($this->validateAdapterSettings(
+        if($validation = $this->validateAdapterSettings(
                 array(
                     'apiKey' => $apiKey,
                     'apiSecret' => $apiSecret,
@@ -129,9 +128,9 @@ class InstagramAdapter extends SocialMediaAdapter
                     'code' => $code,
                     'token' => $token,
                     'options' => $options
-                )) === false)
+                ))['isValid'] === false)
         {
-            throw new \Exception(self::TYPE . ' ' . $this->validationMessage,  1558515732);
+            throw new \Exception( self::TYPE . ' ' . $validation["message"], 1573551217);
         }
         /* validated */
 
@@ -145,8 +144,11 @@ class InstagramAdapter extends SocialMediaAdapter
      * @param $parameter
      * @return bool
      */
-    public function validateAdapterSettings($parameter)
+    public function validateAdapterSettings($parameter) : array
     {
+        $isValid = false;
+        $validationMessage = "";
+
         $this->setApiKey($parameter['apiKey']);
         $this->setApiSecret($parameter['apiSecret']);
         $this->setApiCallback($parameter['apiCallback']);
@@ -155,7 +157,7 @@ class InstagramAdapter extends SocialMediaAdapter
         $this->setOptions($parameter['options']);
 
         if (empty($this->apiKey) || empty($this->apiSecret) ||  empty($this->apiCallback)||  empty($this->code)||  empty($this->token)) {
-            $this->validationMessage = 'credentials not set: '
+            $validationMessage = 'credentials not set: '
                 . (empty($this->apiKey)?'apiKey ':'')
                 . (empty($this->apiSecret)?'apiSecret ':'')
                 . (empty($this->apiCallback)?'apiCallback ':'')
@@ -163,18 +165,24 @@ class InstagramAdapter extends SocialMediaAdapter
                 . (empty($this->token)?'token ':'')
             ;
         } elseif (empty($this->options->instagramSearchIds) && empty($this->options->instagramHashTags)) {
-            $this->validationMessage = 'no search term defined: '
+            $validationMessage = 'no search term defined: '
                 . (empty($this->instagramSearchIds)?'instagramSearchIds ':'')
                 . (empty($this->instagramHashTags)?'instagramHashTags ':'')
             ;
         } else {
-            $this->isValid = true;
+            $isValid = true;
         }
 
-        return $this->isValid;
+        return ["isValid" => $isValid, "message" => $validationMessage];
     }
 
-    public function getResultFromApi()
+    /**
+     * loops over search id from flexform, reads records form PlusB\PbSocial\Domain\Model\Item(),
+     * updates them, writes new one if expired or invalid, calls composeFeedArrayFromItemArrayForFrontEndView
+     *
+     * @return array array of 'rawFeeds' => $rawFeeds, 'feedItems' => $feedArray []PlusB\PbSocial\Domain\Model\Feed
+     */
+    public function getResultFromApi() : array
     {
         $options = $this->options;
         $result = array();
@@ -183,109 +191,166 @@ class InstagramAdapter extends SocialMediaAdapter
         $filterByHastags = $options->instagramPostFilter && $options->instagramSearchIds && $options->instagramHashTags;
 
         if (!$filterByHastags) {
+            /***************
+             * loop a CRUD over list of search ids (Create Read Update Delete, no Delete...)
+             ***************/
             foreach (explode(',', $options->instagramSearchIds) as $searchId) {
                 $searchId = trim($searchId);
+                $apiContent = null;
+
                 if ($searchId != ""){
-                    $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
+                    //defining
+                    $searchId = trim($searchId);
+                    $apiContent = null;
 
-                    if ($feeds && $feeds->count() > 0 && $feeds->getFirst()->getResult() != null) {
-                        $feed = $feeds->getFirst();
-                        /**
-                         * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to bee free...
-                         */
-                        if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
-                            try {
-                                $userPosts = $this->api->getUserMedia($searchId, $options->feedRequestLimit);
-                                if ($userPosts->meta->code >= 400) {
-                                    throw new \Exception('warning: ' . json_encode($userPosts->meta),1558435723);
+                    $itemIdentifier = $this->composeItemIdentifierForListItem($this->cacheIdentifier , $searchId); //new for every foreach round up
+                    //looking for items in model (C *R* UD) - not in cache
+                    /**
+                     * @var $item Item
+                     */
+                    $item = $this->itemRepository->findByTypeAndItemIdentifier(self::TYPE, $itemIdentifier);
+
+                    //if dev mod, or time is up OR there are simply no items in database, then you will need a new api request
+                    if (
+                        // found nothing in item model
+                        ($item === null)
+                        ||
+                        //dev Mode is on or time from flexform was up
+                        ($options->devMod || $this->isFlexformRefreshTimeUp($item->getDate()->getTimestamp(), $options->refreshTimeInMin))
+                    ) {
+                        try {
+                            //make a request on api
+                            $apiContent = $this->api->getUserMedia($searchId, $options->feedRequestLimit);
+
+                            //if apiContent from api call have some content and I already have it in database model items: update item in model (CR *U* D)
+                            if ($apiContent !== null && ($item !== null) ) {
+                                if ($apiContent->meta->code >= 400) {
+                                    throw new \Exception('warning: ' . json_encode($apiContent->meta),1558435723);
                                 }
-                                $feed->setDate(new \DateTime('now'));
-                                $feed->setResult(json_encode($userPosts));
-                                $this->itemRepository->updateFeed($feed);
-                            } catch (\Exception $e) {
-                                throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1558515755);
+                                $item->setDate(new \DateTime('now'));
+                                $item->setResult(json_encode($apiContent));
+                                $this->itemRepository->updateItem($item);
+
+                                //taking item to result
+                                $result[] = $item;
+                                //if api content it there and item is empty, you write new item to model in database (*C* RUD)
+                            }elseif($apiContent !== null) {
+                                //insert new item
+                                $item = new Item(self::TYPE);
+                                $item->setItemIdentifier($itemIdentifier);
+                                $item->setResult(json_encode($apiContent));
+                                // save to DB and return current item
+                                $this->itemRepository->saveItem($item);
+                                //taking item to result
+                                $result[] = $item;
+                            }elseif ($apiContent === null){
+                                throw new \Exception('user posts empty, this user does not exist (app may be in sandbox mode) ',1559556559);
+                            }elseif ($apiContent->meta->code >= 400) {
+                                throw new \Exception('warning: ' . json_encode($apiContent->meta),1558435728);
                             }
-                        }
-                        $result[] = $feed;
-                        continue;
-                    }
-                    try {
-                        $userPosts = $this->api->getUserMedia($searchId, $options->feedRequestLimit);
 
-                        if($userPosts === null){
-                            throw new \Exception('user posts empty, this user does not exist (app may be in sandbox mode) ',1559556559);
-                        }elseif ($userPosts->meta->code >= 400) {
-                            throw new \Exception('warning: ' . json_encode($userPosts->meta),1558435728);
                         }
-                        $feed = new Item(self::TYPE);
-                        $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
-                        $feed->setResult(json_encode($userPosts));
-
-                        // save to DB and return current feed
-                        $this->itemRepository->saveFeed($feed);
-                        $result[] = $feed;
-                    } catch (\Exception $e) {
-                        throw new \Exception('initial load for feed failed. ' . $e->getMessage(), 1558515800);
+                        catch (\Exception $e) {
+                                throw new \Exception($e->getMessage(), 1573562359);
+                            }
+                    } else {
+                        $result[] = $item;
                     }
                 }
             }
         }
 
+        /***************
+         * loop a CRUD over list of search ids (Create Read Update Delete, no Delete...)
+         ***************/
         foreach (explode(',', $options->instagramHashTags) as $searchId) {
             $searchId = trim($searchId);
             $searchId = ltrim($searchId, '#'); //strip hastags
+
             if ($searchId != "") {
-                $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
+                $apiContent = null;
 
-                if ($feeds && $feeds->count() > 0) {
-                    $feed = $feeds->getFirst();
-                    if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
-                        try {
-                            $tagPosts = $this->api->getTagMedia($searchId, $options->feedRequestLimit);
-                            if ($tagPosts->meta->code >= 400) {
-                                throw new \Exception('warning: ' . json_encode($tagPosts->meta),1558435751);
+                $itemIdentifier = $this->composeItemIdentifierForListItem($this->cacheIdentifier,
+                    $searchId); //new for every foreach round up
+                //looking for items in model (C *R* UD) - not in cache
+                /**
+                 * @var $item Item
+                 */
+                $item = $this->itemRepository->findByTypeAndItemIdentifier(self::TYPE, $itemIdentifier);
+
+                //if dev mod, or time is up OR there are simply no items in database, then you will need a new api request
+                if (
+                    // found nothing in item model
+                    ($item === null)
+                    ||
+                    //dev Mode is on or time from flexform was up
+                    ($options->devMod || $this->isFlexformRefreshTimeUp($item->getDate()->getTimestamp(),
+                            $options->refreshTimeInMin))
+                ) {
+                    try {
+                        //make a request on api
+                        $apiContent = $this->api->getTagMedia($searchId, $options->feedRequestLimit);
+                        //if apiContent from api call have some content and I already have it in database model items: update item in model (CR *U* D)
+                        if ($apiContent !== null && ($item !== null)) {
+                            if ($apiContent->meta->code >= 400) {
+                                throw new \Exception('warning: ' . json_encode($apiContent->meta), 1558435751);
                             }
-                            $feed->setDate(new \DateTime('now'));
-                            $feed->setResult(json_encode($tagPosts));
-                            $this->itemRepository->updateFeed($feed);
-                        } catch (\Exception $e) {
-                            throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1558515771);
+
+                            $item->setDate(new \DateTime('now'));
+                            $item->setResult(json_encode($apiContent));
+                            $this->itemRepository->updateItem($item);
+
+                            //taking item to result
+                            $result[] = $item;
+                            //if api content it there and item is empty, you write new item to model in database (*C* RUD)
+                        } elseif ($apiContent !== null) {
+                            //insert new item
+                            $item = new Item(self::TYPE);
+                            $item->setItemIdentifier($itemIdentifier);
+                            $item->setResult(json_encode($apiContent));
+                            // save to DB and return current item
+                            $this->itemRepository->saveItem($item);
+                            //taking item to result
+                            $result[] = $item;
                         }
+
+                    } catch (\Exception $e) {
+                        throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1573552290);
                     }
-                    $result[] = $feed;
-                    continue;
                 }
 
-                try {
-                    $tagPosts = $this->api->getTagMedia($searchId, $options->feedRequestLimit);
-                    if ($tagPosts->meta->code >= 400) {
-                        throw new \Exception('warning: ' . json_encode($tagPosts->meta),1558435756);
-                    }
-                    $feed = new Item(self::TYPE);
-                    $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
-                    $feed->setResult(json_encode($tagPosts));
-                    // save to DB and return current feed
-                    $this->itemRepository->saveFeed($feed);
-                    $result[] = $feed;
-                } catch (\Exception $e) {
-                    throw new \Exception('initial load for feed failed. ' . $e->getMessage(), 1558515784);
-                }
             }
         }
 
-        return $this->getFeedItemsFromApiRequest($result, $options);
+        return $this->composeFeedArrayFromItemArrayForFrontEndView($result, $options);
     }
 
-    public function getFeedItemsFromApiRequest($result, $options)
+    /**
+     * takes up result from api getResultFromApi() (even it was from database or fresh from api, whatever), maps array of
+     * PlusB\PbSocial\Domain\Model\Item() to array of PlusB\PbSocial\Domain\Model\Feed() for front end to show.
+     *
+     * @param $result array of items PlusB\PbSocial\Domain\Model\Item
+     * @param $options object all seetings from flexform and typoscript
+     * @return array of 'rawFeeds' => $rawFeeds, 'feedItems' => $feedArray []PlusB\PbSocial\Domain\Model\Feed
+     */
+    public function composeFeedArrayFromItemArrayForFrontEndView($result, $options) : array
     {
+        /*
+          $result => array(2 items)
+            0 => PlusB\PbSocial\Domain\Model\Item
+            1 => PlusB\PbSocial\Domain\Model\Item
+        */
+
         $rawFeeds = array();
-        $feedItems = array();
+        $feedArray = array(); //[]PlusB\PbSocial\Domain\Model\Feed
 
         if (!empty($result)) {
-            foreach ($result as $ig_feed) {
-                $rawFeeds[self::TYPE . '_' . $ig_feed->getCacheIdentifier() . '_raw'] = $ig_feed->getResult();
-                if (is_array($ig_feed->getResult()->data)) {
-                    foreach ($ig_feed->getResult()->data as $rawFeed) {
+            foreach ($result as $item) {
+
+                $rawFeeds[self::TYPE . '_' . $item->getItemIdentifier() . '_raw'] = $item->getResult();
+
+                if (is_array($item->getResult()->data)) {
+                    foreach ($item->getResult()->data as $rawFeed) {
                         if ($options->onlyWithPicture && empty($rawFeed->images->standard_resolution->url)) {
                             continue;
                         }
@@ -295,12 +360,12 @@ class InstagramAdapter extends SocialMediaAdapter
                         $feed->setImage($rawFeed->images->standard_resolution->url);
                         $feed->setLink($rawFeed->link);
                         $feed->setTimeStampTicks($rawFeed->created_time);
-                        $feedItems[] = $feed;
+                        $feedArray[] = $feed;
                     }
                 }
             }
         }
 
-        return array('rawFeeds' => $rawFeeds, 'feedItems' => $feedItems);
+        return $this->setCacheContentData($rawFeeds, $feedArray);
     }
 }

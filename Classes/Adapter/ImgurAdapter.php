@@ -13,7 +13,7 @@ use PlusB\PbSocial\Domain\Model\Item;
  *  Copyright notice
  *
  *  (c) 2016 Ramon Mohi <rm@plusb.de>, plus B
- *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
+ *  (c) 2019 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -39,7 +39,6 @@ class ImgurAdapter extends SocialMediaAdapter
 
     const TYPE = 'imgur';
 
-    public $isValid = false, $validationMessage = "";
     private $apiId, $apiSecret, $options;
 
     /**
@@ -81,14 +80,14 @@ class ImgurAdapter extends SocialMediaAdapter
         parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
 
         /* validation - interrupt instanciating if invalid */
-        if($this->validateAdapterSettings(
+        if($validation = $this->validateAdapterSettings(
                 array(
                     'apiId' => $apiId,
                     'apiSecret' => $apiSecret,
                     'options' => $options
-                )) === false)
+                ))['isValid'] === false)
         {
-            throw new \Exception( self::TYPE . ' ' . $this->validationMessage, 1558521767);
+            throw new \Exception( self::TYPE . ' ' . $validation["message"], 1558521767);
         }
         /* validated */
 
@@ -102,130 +101,210 @@ class ImgurAdapter extends SocialMediaAdapter
      * @param $parameter
      * @return bool
      */
-    public function validateAdapterSettings($parameter)
+    public function validateAdapterSettings($parameter) : array
     {
+        $isValid = false;
+        $validationMessage = "";
+
         $this->setApiId($parameter['apiId']);
         $this->setApiSecret($parameter['apiSecret']);
         $this->setOptions($parameter['options']);
 
         if (empty($this->apiId) || empty($this->apiSecret)) {
-            $this->validationMessage  = 'credentials not set: ' . (empty($this->apiId)?'apiId ':''). (empty($this->apiSecret)?'apiSecret ':'');
+            $validationMessage  = 'credentials not set: ' . (empty($this->apiId)?'apiId ':''). (empty($this->apiSecret)?'apiSecret ':'');
         } elseif (empty($this->options->imgSearchUsers) && empty($this->options->imgSearchTags)) {
-            $this->validationMessage = ' no search term defined';
+            $validationMessage = ' no search term defined';
         } else {
-            $this->isValid = true;
+            $isValid = true;
         }
 
-        return $this->isValid;
+        return ["isValid" => $isValid, "message" => $validationMessage];
     }
 
-    public function getResultFromApi()
+    /**
+     * loops over search id from flexform, reads records form PlusB\PbSocial\Domain\Model\Item(),
+     * updates them, writes new one if expired or invalid, calls composeFeedArrayFromItemArrayForFrontEndView
+     *
+     * @return array array of 'rawFeeds' => $rawFeeds, 'feedItems' => $feedArray []PlusB\PbSocial\Domain\Model\Feed
+     */
+    public function getResultFromApi() : array
     {
         $options = $this->options;
         $result = array();
 
-        // search for users
+        /***************
+         * loop a CRUD over list of search ids (Create Read Update Delete, no Delete...)
+         ***************/
         foreach (explode(',', $options->imgSearchUsers) as $searchId) {
-            $searchId = trim($searchId);
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
-            if ($feeds && $feeds->count() > 0) {
-                $feed = $feeds->getFirst();
 
-                if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
-                    try {
-                        $posts = json_encode($this->api->account($searchId)->images());
-                        $feed->setDate(new \DateTime('now'));
-                        $feed->setResult($posts);
-                        $this->itemRepository->updateFeed($feed);
-                    } catch (\Exception $e) {
-                        throw new \Exception("feeds can't be updated. " .  $e->getMessage(),1558521819);
+            //defining
+            $searchId = trim($searchId);
+            $apiContent = null;
+
+            $itemIdentifier = $this->composeItemIdentifierForListItem($this->cacheIdentifier , $searchId); //new for every foreach round up
+            //looking for items in model (C *R* UD) - not in cache
+            /**
+             * @var $item Item
+             */
+            $item = $this->itemRepository->findByTypeAndItemIdentifier(self::TYPE, $itemIdentifier);
+
+            //if dev mod, or time is up OR there are simply no items in database, then you will need a new api request
+            if (
+                // found nothing in item model
+                ($item === null)
+                ||
+                //dev Mode is on or time from flexform was up
+                ($options->devMod || $this->isFlexformRefreshTimeUp($item->getDate()->getTimestamp(), $options->refreshTimeInMin))
+            ) {
+                try {
+                    //make a request on api
+                    $apiContent = json_encode($this->api->account($searchId)->images());
+                    // $apiContent like this: {"data":[{"id":"167276393322010_22579494909213 .... "message":"Thank you 3pc ....
+
+                    //if apiContent from api call have some content and I already have it in database model items: update item in model (CR *U* D)
+                    if ($apiContent !== null && ($item !== null) ) {
+
+                        $item->setDate(new \DateTime('now'));
+                        //apiContent from api call included in item-model and updated in database
+                        $item->setResult($apiContent);
+                        $this->itemRepository->updateItem($item);
+
+                        //taking item to result
+                        $result[] = $item;
+
+                        //if api content it there and item is empty, you write new item to model in database (*C* RUD)
+                    }elseif($apiContent !== null) {
+                        //insert new item
+                        $item = new Item(self::TYPE);
+                        $item->setItemIdentifier($itemIdentifier);
+                        $item->setResult($apiContent);
+                        // save to DB and return current item
+                        $this->itemRepository->saveItem($item);
+                        //taking item to result
+                        $result[] = $item;
+
                     }
                 }
-                $result[] = $feed;
-                continue;
-            }
-
-            try {
-                $posts = json_encode($this->api->account($searchId)->images($page = 0));
-                $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
-                $feed->setResult($posts);
-
-                // save to DB and return current feed
-                $this->itemRepository->saveFeed($feed);
-                $result[] = $feed;
-            } catch (\Exception $e) {
-                throw new \Exception("initial load for feed failed. " .  $e->getMessage(),1558521847);
+                catch (\Exception $e) {
+                    throw new \Exception($e->getMessage(), 1558521819);
+                }
+            } else {
+                $result[] = $item;
             }
         }
 
+
+        /***************
+         * loop a CRUD over list of search ids (Create Read Update Delete, no Delete...)
+         ***************/
         // search for tags
         foreach (explode(',', $options->imgSearchTags) as $searchId) {
+            //defining
             $searchId = trim($searchId);
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
-            if ($feeds && $feeds->count() > 0) {
-                $feed = $feeds->getFirst();
-                /**
-                 * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to bee free, so... change!
-                 */
-                if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
-                    try {
-                        $posts = json_encode($this->api->gallery()->search($searchId));
-                        $feed->setDate(new \DateTime('now'));
-                        $feed->setResult($posts);
-                        $this->itemRepository->updateFeed($feed);
-                    } catch (\Exception $e) {
-                        throw new \Exception( $e->getMessage(),1558521850);
+
+            $itemIdentifier = $this->composeItemIdentifierForListItem($this->cacheIdentifier , $searchId); //new for every foreach round up
+            //looking for items in model (C *R* UD) - not in cache
+            /**
+             * @var $item Item
+             */
+            $item = $this->itemRepository->findByTypeAndItemIdentifier(self::TYPE, $itemIdentifier);
+
+            //if dev mod, or time is up OR there are simply no items in database, then you will need a new api request
+            if (
+                // found nothing in item model
+                ($item === null)
+                ||
+                //dev Mode is on or time from flexform was up
+                ($options->devMod || $this->isFlexformRefreshTimeUp($item->getDate()->getTimestamp(), $options->refreshTimeInMin))
+            ) {
+                try {
+                    //make a request on api
+                    $apiContent = json_encode($this->api->gallery()->search($searchId));
+
+                    // $apiContent like this: {"data":[{"id":"167276393322010_22579494909213 .... "message":"Thank you 3pc ....
+
+                    //if apiContent from api call have some content and I already have it in database model items: update item in model (CR *U* D)
+                    if ($apiContent !== null && ($item !== null) ) {
+
+                        $item->setDate(new \DateTime('now'));
+                        //apiContent from api call included in item-model and updated in database
+                        $item->setResult($apiContent);
+                        $this->itemRepository->updateFeed($item);
+                        //taking item to result
+                        $result[] = $item;
+
+                        //if api content it there and item is empty, you write new item to model in database (*C* RUD)
+
+                    }elseif($apiContent !== null) {
+                        //insert new item
+                        $item = new Item(self::TYPE);
+                        $item->setItemIdentifier($itemIdentifier);
+                        $item->setResult($apiContent);
+                        // save to DB and return current item
+                        $this->itemRepository->saveItem($item);
+                        //taking item to result
+                        $result[] = $item;
+
                     }
                 }
-                $result[] = $feed;
-                continue;
-            }
-
-            try {
-                $posts = json_encode($this->api->gallery()->search($searchId));
-                $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
-                $feed->setResult($posts);
-
-                // save to DB and return current feed
-                $this->itemRepository->saveFeed($feed);
-                $result[] = $feed;
-            } catch (\Exception $e) {
-                throw new \Exception('initial load for feed failed. ' . $e->getMessage(),1558521850);
+                catch (\Exception $e) {
+                    throw new \Exception($e->getMessage(), 1558521819);
+                }
+            } else {
+                $result[] = $item;
             }
         }
 
-        return $this->getFeedItemsFromApiRequest($result, $options);
+        return $this->composeFeedArrayFromItemArrayForFrontEndView($result, $options);
     }
 
-    public function getFeedItemsFromApiRequest($result, $options)
+    /**
+     * takes up result from api getResultFromApi() (even it was from database or fresh from api, whatever), maps array of
+     * PlusB\PbSocial\Domain\Model\Item() to array of PlusB\PbSocial\Domain\Model\Feed() for front end to show.
+     *
+     * @param $result array of items PlusB\PbSocial\Domain\Model\Item
+     * @param $options object all seetings from flexform and typoscript
+     * @return array of 'rawFeeds' => $rawFeeds, 'feedItems' => $feedArray []PlusB\PbSocial\Domain\Model\Feed
+     */
+    public function composeFeedArrayFromItemArrayForFrontEndView($result, $options) : array
     {
+        /*
+          $result => array(2 items)
+            0 => PlusB\PbSocial\Domain\Model\Item
+            1 => PlusB\PbSocial\Domain\Model\Item
+        */
+
         $rawFeeds = array();
-        $feedItems = array();
+        $feedArray = array(); //[]PlusB\PbSocial\Domain\Model\Feed
+
+
+
 
         $endingArray = array('.gif', '.jpg', '.png');
         if (!empty($result)) {
-            foreach ($result as $im_feed) {
-                $rawFeeds[self::TYPE . '_' . $im_feed->getCacheIdentifier() . '_raw'] = $im_feed->getResult();
+            foreach ($result as $item) {
+
+                $rawFeeds[self::TYPE . '_' . $item->getItemIdentifier() . '_raw'] = $item->getResult();
                 $i = 0;
-                foreach ($im_feed->getResult()->data as $rawFeed) {
-                    if (is_object($rawFeed) && ($i < $options->feedRequestLimit)) {
-                        if ($this->check_end($rawFeed->link, $endingArray)) {
+                foreach ($item->getResult()->data as $imgurData) {
+
+                    if (is_object($imgurData) && ($i < $options->feedRequestLimit)) {
+
+                        if ($this->check_end($imgurData->link, $endingArray)) {
                             $i++;
-                            $feed = new Feed(self::TYPE, $rawFeed);
-                            $feed->setId($rawFeed->id);
-                            $feed->setImage($rawFeed->link);
-                            $feed->setText($this->trim_text($rawFeed->title, $options->textTrimLength, true));
-                            $feed->setLink('http://imgur.com/gallery/' . $rawFeed->id);
-                            $feed->setTimeStampTicks($rawFeed->datetime);
-                            $feedItems[] = $feed;
+                            $feed = new Feed(self::TYPE, $imgurData);
+                            $feed->setId($imgurData->id);
+                            $feed->setImage($imgurData->link);
+                            $feed->setText($this->trim_text($imgurData->title, $options->textTrimLength, true));
+                            $feed->setLink('http://imgur.com/gallery/' . $imgurData->id);
+                            $feed->setTimeStampTicks($imgurData->datetime);
+                            $feedArray[] = $feed;
                         }
                     }
                 }
             }
         }
 
-        return array('rawFeeds' => $rawFeeds, 'feedItems' => $feedItems);
+        return $this->setCacheContentData($rawFeeds, $feedArray);
     }
 }

@@ -27,7 +27,7 @@ return [
             'starttime' => 'starttime',
             'endtime' => 'endtime',
         ),
-        'searchFields' => 'type,cacheidentifier,date,result,',
+        'searchFields' => 'type,item_identifier,date,result,',
         'typeicon_classes' => [
             'default' => 'pbsocial_socialfeed'
         ],
@@ -35,10 +35,10 @@ return [
     ],
 
     'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, type, cacheidentifier, date, result',
+        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, type, item_identifier, date, result',
     ],
     'types' => [
-        '1' => ['showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, type, cacheidentifier, date, result, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime']
+        '1' => ['showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, type, item_identifier, date, result, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime']
     ],
     'palettes' => array(
         '1' => array('showitem' => ''),
@@ -135,9 +135,9 @@ return [
                 'eval' => 'trim'
             ),
         ),
-        'cache_identifier' => array(
+        'item_identifier' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:tx_pbsocial_domain_model_item.cache_identifier',
+            'label' => 'LLL:EXT:pb_social/Resources/Private/Language/locallang_db.xlf:tx_pbsocial_domain_model_item.item_identifier',
             'config' => array(
                 'type' => 'input',
                 'size' => 30,

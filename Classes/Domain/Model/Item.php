@@ -6,6 +6,7 @@ namespace PlusB\PbSocial\Domain\Model;
  *  Copyright notice
  *
  *  (c) 2014 Mikolaj Jedrzejewski <mj@plusb.de>, plus B
+ *  (c) 2019 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -52,11 +53,11 @@ class Item extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $type = '';
 
     /**
-     * cacheIdentifier
+     * itemIdentifier
      *
      * @var string
      */
-    protected $cacheIdentifier = '';
+    protected $itemIdentifier = '';
 
     /**
      * date
@@ -94,24 +95,24 @@ class Item extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * Returns the cacheIdentifier
+     * Returns the itemIdentifier
      *
-     * @return string $cacheIdentifier
+     * @return string $itemIdentifier
      */
-    public function getCacheIdentifier()
+    public function getItemIdentifier()
     {
-        return $this->cacheIdentifier;
+        return $this->itemIdentifier;
     }
 
     /**
      * Sets the cacheIdentifier
      *
-     * @param string $cacheIdentifier
+     * @param string $itemIdentifier
      * @return void
      */
-    public function setCacheIdentifier($cacheIdentifier)
+    public function setItemIdentifier($itemIdentifier)
     {
-        $this->cacheIdentifier = $cacheIdentifier;
+        $this->itemIdentifier = $itemIdentifier;
     }
 
     /**

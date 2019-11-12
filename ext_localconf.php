@@ -39,20 +39,6 @@ call_user_func(function () {
                 );
         }
 
-        /**
-         * register cache
-         */
-        // Register cache frontend for proxy class generation
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['pb_social_cache'] = array(
-            'groups' => array(
-                'system'
-            ),
-            'options' => array(
-                'defaultLifetime' => 3600,
-            )
-        );
-
-
     /**
      * Setting up logging
      */
@@ -108,4 +94,20 @@ call_user_func(function () {
                 )
             )
         );
+
+    /**
+     * register cache
+     */
+    // Register cache frontend for proxy class generation
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['pb_social_cache'] = array(
+        'groups' => array(
+            'system'
+        ),
+        'options' => array(
+            'defaultLifetime' => 3600,
+        )
+    );
+
+    // register Clear Cache Menu hook
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions']['clearPbSocialCache'] = \PlusB\PbSocial\Backend\ClearCacheCommand::class;
 });

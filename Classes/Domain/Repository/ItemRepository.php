@@ -1,14 +1,14 @@
 <?php
 namespace PlusB\PbSocial\Domain\Repository;
-
 #require_once \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/tumblr/vendor/autoload.php';
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /***************************************************************
  *
  *  Copyright notice
  *
  *  (c) 2014 Mikolaj Jedrzejewski <mj@plusb.de>, plus B
- *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
+ *  (c) 2019 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -34,41 +34,42 @@ namespace PlusB\PbSocial\Domain\Repository;
  */
 class ItemRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
+
     /**
      * @param string $type
-     * @param string $cacheIdentifier
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @param string $itemIdentifier
+     * @return object|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    public function findByTypeAndCacheIdentifier($type, $cacheIdentifier)
+    public function findByTypeAndItemIdentifier($type, $itemIdentifier)
     {
         $query = $this->createQuery();
         $query->matching(
             $query->logicalAnd(
                 array(
                     $query->like('type', $type),
-                    $query->equals('cacheIdentifier', $cacheIdentifier
+                    $query->equals('itemIdentifier', $itemIdentifier
                     )
                 )
             )
         );
-        return $query->execute();
+        return $query->execute()->getFirst();
     }
 
     /**
-     * @param $feed
+     * @param $item
      */
-    public function saveFeed($feed)
+    public function saveItem($item)
     {
-        $this->add($feed);
+        $this->add($item);
         $this->persistenceManager->persistAll();
     }
 
     /**
-     * @param $feed
+     * @param $item
      */
-    public function updateFeed($feed)
+    public function updateItem($item)
     {
-        $this->update($feed);
+        $this->update($item);
         $this->persistenceManager->persistAll();
     }
 }

@@ -17,7 +17,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  *  Copyright notice
  *
  *  (c) 2016 Ramon Mohi <rm@plusb.de>, plus B
- *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
+ *  (c) 2019 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -45,7 +45,6 @@ class TxNewsAdapter extends SocialMediaAdapter
 
     protected $cObj;
     protected $detailPageUid;
-    public $isValid = false, $validationMessage = "";
     private $options;
 
     /**
@@ -79,12 +78,12 @@ class TxNewsAdapter extends SocialMediaAdapter
 
 
         /* validation - interrupt instanciating if invalid */
-        if($this->validateAdapterSettings(
+        if($validation = $this->validateAdapterSettings(
                 array(
                     'options' => $options
-                )) === false)
+                ))['isValid'] === false)
         {
-            throw new \Exception( self::TYPE . ' ' . $this->validationMessage, 1558515175);
+            throw new \Exception( self::TYPE . ' ' . $validation["message"], 1573564624);
         }
         /* validated */
 
@@ -101,76 +100,129 @@ class TxNewsAdapter extends SocialMediaAdapter
      * @param $parameter
      * @return bool
      */
-    public function validateAdapterSettings($parameter)
+    public function validateAdapterSettings($parameter) : array
     {
+        $isValid = false;
+        $validationMessage = "";
+
         $this->setOptions($parameter['options']);
 
         if(!ExtensionManagementUtility::isLoaded('news')){
-            $this->validationMessage = self::TYPE . ' extension not loaded.';
+            $validationMessage = self::TYPE . ' extension not loaded.';
         }else{
             if (empty($this->options->newsCategories)) {
-                $this->validationMessage = self::TYPE . ': no news category defined, will output all available news';
+                $validationMessage = self::TYPE . ': no news category defined, will output all available news';
             }
-            $this->isValid = true;
+            $isValid = true;
         }
 
-        return $this->isValid;
+        return ["isValid" => $isValid, "message" => $validationMessage];
     }
 
-    public function getResultFromApi()
+    /**
+     * loops over search id from flexform, reads records form PlusB\PbSocial\Domain\Model\Item(),
+     * updates them, writes new one if expired or invalid, calls composeFeedArrayFromItemArrayForFrontEndView
+     *
+     * @return array array of 'rawFeeds' => $rawFeeds, 'feedItems' => $feedArray []PlusB\PbSocial\Domain\Model\Feed
+     */
+    public function getResultFromApi() : array
     {
         $options = $this->options;
         $result = array();
 
         $this->detailPageUid = $options->newsDetailPageUid;
         $newsCategories = GeneralUtility::trimExplode(',', $options->newsCategories);
+
+        /***************
+         * loop a CRUD over list of search ids (Create Read Update Delete, no Delete...)
+         ***************/
         foreach ($newsCategories as $newsCategory) {
             $newsCategory = trim($newsCategory);
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $newsCategory));
             $this->newsDemand->setCategories(array($newsCategory));
-            if(!empty($newsCategory)) $this->newsDemand->setCategoryConjunction('or');
-            if ($feeds && $feeds->count() > 0) {
-                $feed = $feeds->getFirst();
-                if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
-                    try {
-                        $feed->setDate(new \DateTime('now'));
-                        $demanded = $this->newsRepository->findDemanded($this->newsDemand)->toArray();
-                        $mapped = empty($demanded) ? array() : $this->demandedNewsToString($demanded, $options->useHttps);
-                        $feed->setResult($mapped);
-                        $this->itemRepository->updateFeed($feed);
-                        $result[] = $feed;
-                    } catch (\Exception $e) {
-                        throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1558435645);
+            $apiContent = null;
+
+            $itemIdentifier = $this->composeItemIdentifierForListItem($this->cacheIdentifier , $newsCategory); //new for every foreach round up
+            //looking for items in model (C *R* UD) - not in cache
+            /**
+             * @var $item Item
+             */
+            $item = $this->itemRepository->findByTypeAndItemIdentifier(self::TYPE, $itemIdentifier);
+
+            //if dev mod, or time is up OR there are simply no items in database, then you will need a new api request
+            if (
+                // found nothing in item model
+                ($item === null)
+                ||
+                //dev Mode is on or time from flexform was up
+                ($options->devMod || $this->isFlexformRefreshTimeUp($item->getDate()->getTimestamp(), $options->refreshTimeInMin))
+            ) {
+                try {
+                    //make a request on api
+                    if(!empty($newsCategory)){
+                        $this->newsDemand->setCategoryConjunction('or');
+                    }
+                    $demanded = $this->newsRepository->findDemanded($this->newsDemand)->toArray();
+                    $apiContent = empty($demanded) ? array() : $this->demandedNewsToString($demanded, $options->useHttps);
+
+                    //if apiContent from api call have some content and I already have it in database model items: update item in model (CR *U* D)
+                    if ($apiContent !== null && ($item !== null) ) {
+
+                        $item->setDate(new \DateTime('now'));
+                        //apiContent from api call included in item-model and updated in database
+                        $item->setResult($apiContent);
+                        $this->itemRepository->updateItem($item);
+
+                        //taking item to result
+                        $result[] = $item;
+
+                        //if api content it there and item is empty, you write new item to model in database (*C* RUD)
+                    }elseif($apiContent !== null) {
+                        //insert new item
+                        $item = new Item(self::TYPE);
+                        $item->setItemIdentifier($itemIdentifier);
+                        $item->setResult($apiContent);
+                        // save to DB and return current item
+                        $this->itemRepository->saveItem($item);
+                        //taking item to result
+                        $result[] = $item;
+
                     }
                 }
-                continue;
+                catch (\Exception $e) {
+                    throw new \Exception($e->getMessage(), 1559547942);
+                }
+            } else {
+                $result[] = $item;
             }
 
-            try {
-                $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $newsCategory));
-                $demanded = $this->newsRepository->findDemanded($this->newsDemand)->toArray();
-                $mapped = empty($demanded) ? array() : $this->demandedNewsToString($demanded, $options->useHttps);
-                $feed->setResult($mapped);
-                // save to DB and return current feed
-                $this->itemRepository->saveFeed($feed);
-                $result[] = $feed;
-            } catch (\Exception $e) {
-                throw new \Exception('initial load for ' . self::TYPE . ' feeds failed. ' . $e->getMessage(), 1558435651);
-            }
         }
 
-        return $this->getFeedItemsFromApiRequest($result, $options);
+        return $this->composeFeedArrayFromItemArrayForFrontEndView($result, $options);
+
     }
 
-    public function getFeedItemsFromApiRequest($result, $options)
+    /**
+     * takes up result from api getResultFromApi() (even it was from database or fresh from api, whatever), maps array of
+     * PlusB\PbSocial\Domain\Model\Item() to array of PlusB\PbSocial\Domain\Model\Feed() for front end to show.
+     *
+     * @param $result array of items PlusB\PbSocial\Domain\Model\Item
+     * @param $options object all seetings from flexform and typoscript
+     * @return array of 'rawFeeds' => $rawFeeds, 'feedItems' => $feedArray []PlusB\PbSocial\Domain\Model\Feed
+     */
+    public function composeFeedArrayFromItemArrayForFrontEndView($result, $options) : array
     {
+        /*
+          $result => array(2 items)
+            0 => PlusB\PbSocial\Domain\Model\Item
+            1 => PlusB\PbSocial\Domain\Model\Item
+        */
+
         $rawFeeds = array();
-        $feedItems = array();
+        $feedArray = array(); //[]PlusB\PbSocial\Domain\Model\Feed
 
         if (!empty($result)) {
             foreach ($result as $news_feed) {
-                $rawFeeds[self::TYPE . '_' . $news_feed->getCacheIdentifier() . '_raw'] = $news_feed->getResult();
+                $rawFeeds[self::TYPE . '_' . $news_feed->getItemIdentifier() . '_raw'] = $news_feed->getResult();
                 # traverse each single news item
                 $i = 0;
                 foreach ($news_feed->getResult() as $rawFeed) {
@@ -183,14 +235,14 @@ class TxNewsAdapter extends SocialMediaAdapter
                         $feed->setImage($rawFeed->image);
                         $feed->setLink($rawFeed->link);
                         $feed->setTimeStampTicks($rawFeed->crdate);
-                        $feedItems[] = $feed;
+                        $feedArray[] = $feed;
                         $i++;
                     }
                 }
             }
         }
 
-        return array('rawFeeds' => $rawFeeds, 'feedItems' => $feedItems);
+        return $this->setCacheContentData($rawFeeds, $feedArray);
     }
 
     private function demandedNewsToString($demanded, $useHttps = false)

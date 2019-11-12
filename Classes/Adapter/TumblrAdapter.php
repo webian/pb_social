@@ -14,7 +14,7 @@ use Tumblr\API\Client;
  *  Copyright notice
  *
  *  (c) 2016 Ramon Mohi <rm@plusb.de>, plus B
- *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
+ *  (c) 2019 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -40,8 +40,6 @@ class TumblrAdapter extends SocialMediaAdapter
 
     const TYPE = 'tumblr';
 
-
-    public $isValid = false, $validationMessage = "";
     private $apiId, $apiSecret, $token, $tokenSecret, $options;
 
     /**
@@ -101,16 +99,16 @@ class TumblrAdapter extends SocialMediaAdapter
         parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
 
         /* validation - interrupt instanciating if invalid */
-        if($this->validateAdapterSettings(
+        if($validation = $this->validateAdapterSettings(
                 array(
                     'apiId' => $apiId,
                     'apiSecret' => $apiSecret,
                     'token' => $token,
                     'tokenSecret' => $tokenSecret,
                     'options' => $options
-                )) === false)
+                ))['isValid'] === false)
         {
-            throw new \Exception( self::TYPE . ' ' . $this->validationMessage, 1558521506);
+            throw new \Exception( self::TYPE . ' ' . $validation["message"], 1573563427);
         }
         /* validated */
 
@@ -125,8 +123,11 @@ class TumblrAdapter extends SocialMediaAdapter
      * @param $parameter
      * @return bool
      */
-    public function validateAdapterSettings($parameter)
+    public function validateAdapterSettings($parameter) : array
     {
+        $isValid = false;
+        $validationMessage = "";
+
         $this->setApiId($parameter['apiId']);
         $this->setApiSecret($parameter['apiSecret']);
         $this->setToken($parameter['token']);
@@ -134,68 +135,115 @@ class TumblrAdapter extends SocialMediaAdapter
         $this->setOptions($parameter['options']);
 
         if (empty($this->apiId) || empty($this->apiSecret) ||  empty($this->token)||  empty($this->tokenSecret)) {
-            $this->validationMessage = self::TYPE . ' credentials not set';
+            $validationMessage = self::TYPE . ' credentials not set';
         } elseif (empty($this->options->tumblrBlogNames) ) {
-            $this->validationMessage = self::TYPE . ' - no blog names for search term defined';
+            $validationMessage = self::TYPE . ' - no blog names for search term defined';
         } else {
-            $this->isValid = true;
+            $isValid = true;
         }
 
-        return $this->isValid;
+        return ["isValid" => $isValid, "message" => $validationMessage];
     }
 
 
-    public function getResultFromApi()
+    /**
+     * loops over search id from flexform, reads records form PlusB\PbSocial\Domain\Model\Item(),
+     * updates them, writes new one if expired or invalid, calls composeFeedArrayFromItemArrayForFrontEndView
+     *
+     * @return array array of 'rawFeeds' => $rawFeeds, 'feedItems' => $feedArray []PlusB\PbSocial\Domain\Model\Feed
+     */
+    public function getResultFromApi() : array
     {
         $options = $this->options;
         $result = array();
 
         // search for users
+        /***************
+         * loop a CRUD over list of search ids (Create Read Update Delete, no Delete...)
+         ***************/
         foreach (explode(',', $options->tumblrBlogNames) as $blogName) {
             $blogName = trim($blogName);
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $blogName));
-            if ($feeds && $feeds->count() > 0) {
-                $feed = $feeds->getFirst();
-                if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
-                    try {
-                        $posts = $this->getPosts($blogName, $options);
-                        $feed->setDate(new \DateTime('now'));
-                        $feed->setResult($posts);
-                        $this->itemRepository->updateFeed($feed);
-                    } catch (\Exception $e) {
-                        throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1558435601);
+            $apiContent = null;
+
+            $itemIdentifier = $this->composeItemIdentifierForListItem($this->cacheIdentifier , $blogName); //new for every foreach round up
+            //looking for items in model (C *R* UD) - not in cache
+            /**
+             * @var $item Item
+             */
+            $item = $this->itemRepository->findByTypeAndItemIdentifier(self::TYPE, $itemIdentifier);
+
+            //if dev mod, or time is up OR there are simply no items in database, then you will need a new api request
+            if (
+                // found nothing in item model
+                ($item === null)
+                ||
+                //dev Mode is on or time from flexform was up
+                ($options->devMod || $this->isFlexformRefreshTimeUp($item->getDate()->getTimestamp(), $options->refreshTimeInMin))
+            ) {
+                try {
+
+                    //make a request on api
+                    $apiContent = $this->callApi($blogName, $options);
+                    // $apiContent like this: {"data":[{"id":"167276393322010_22579494909213 .... "message":"Thank you 3pc ....
+
+                    //if apiContent from api call have some content and I already have it in database model items: update item in model (CR *U* D)
+                    if ($apiContent !== null && ($item !== null) ) {
+
+                        $item->setDate(new \DateTime('now'));
+                        //apiContent from api call included in item-model and updated in database
+                        $item->setResult($apiContent);
+                        $this->itemRepository->updateItem($item);
+
+                        //taking item to result
+                        $result[] = $item;
+
+                        //if api content it there and item is empty, you write new item to model in database (*C* RUD)
+                    }elseif($apiContent !== null) {
+                        //insert new item
+                        $item = new Item(self::TYPE);
+                        $item->setItemIdentifier($itemIdentifier);
+                        $item->setResult($apiContent);
+                        // save to DB and return current item
+                        $this->itemRepository->saveItem($item);
+                        //taking item to result
+                        $result[] = $item;
+
                     }
+                }catch (\Exception $e) {
+                    throw new \Exception($e->getMessage(), 1573563729);
                 }
-                $result[] = $feed;
-                continue;
+            } else {
+                $result[] = $item;
             }
 
-            try {
-                $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $blogName));
-
-                $posts = $this->getPosts($blogName, $options);
-                $feed->setResult($posts);
-
-                // save to DB and return current feed
-                $this->itemRepository->saveFeed($feed);
-                $result[] = $feed;
-            } catch (\Exception $e) {
-                throw new \Exception('initial load for feed failed' . $e->getMessage(), 1558435608);
-            }
         }
 
-        return $this->getFeedItemsFromApiRequest($result, $options);
+        return $this->composeFeedArrayFromItemArrayForFrontEndView($result, $options);
     }
 
-    public function getFeedItemsFromApiRequest($result, $options)
+
+    /**
+     * takes up result from api getResultFromApi() (even it was from database or fresh from api, whatever), maps array of
+     * PlusB\PbSocial\Domain\Model\Item() to array of PlusB\PbSocial\Domain\Model\Feed() for front end to show.
+     *
+     * @param $result array of items PlusB\PbSocial\Domain\Model\Item
+     * @param $options object all seetings from flexform and typoscript
+     * @return array of 'rawFeeds' => $rawFeeds, 'feedItems' => $feedArray []PlusB\PbSocial\Domain\Model\Feed
+     */
+    public function composeFeedArrayFromItemArrayForFrontEndView($result, $options) : array
     {
+        /*
+          $result => array(2 items)
+            0 => PlusB\PbSocial\Domain\Model\Item
+            1 => PlusB\PbSocial\Domain\Model\Item
+        */
+
         $rawFeeds = array();
-        $feedItems = array();
+        $feedArray = array(); //[]PlusB\PbSocial\Domain\Model\Feed
 
         if (!empty($result)) {
             foreach ($result as $tblr_feed) {
-                $rawFeeds[self::TYPE . '_' . $tblr_feed->getCacheIdentifier() . '_raw'] = $tblr_feed->getResult();
+                $rawFeeds[self::TYPE . '_' . $tblr_feed->getItemIdentifier() . '_raw'] = $tblr_feed->getResult();
                 foreach ($tblr_feed->getResult()->posts as $rawFeed) {
                     if ($options->onlyWithPicture && empty($rawFeed->photos[0]->original_size->url)) {
                         continue;
@@ -222,15 +270,15 @@ class TumblrAdapter extends SocialMediaAdapter
                     }
                     $feed->setLink($rawFeed->post_url);
                     $feed->setTimeStampTicks($rawFeed->timestamp);
-                    $feedItems[] = $feed;
+                    $feedArray[] = $feed;
                 }
             }
         }
 
-        return array('rawFeeds' => $rawFeeds, 'feedItems' => $feedItems);
+        return $this->setCacheContentData($rawFeeds, $feedArray);
     }
 
-    public function getPosts($blogName, $options)
+    public function callApi($blogName, $options)
     {
         $posts = '';
 

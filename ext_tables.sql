@@ -7,7 +7,7 @@ CREATE TABLE tx_pbsocial_domain_model_item (
 	pid int(11) DEFAULT '0' NOT NULL,
 
 	type varchar(255) DEFAULT '' NOT NULL,
-	cache_identifier varchar(255) DEFAULT '' NOT NULL,
+	item_identifier varchar(255) DEFAULT '' NOT NULL,
 	date int(11) DEFAULT '0' NOT NULL,
 	result mediumtext NOT NULL,
 

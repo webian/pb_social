@@ -13,7 +13,7 @@ use PlusB\PbSocial\Domain\Model\Item;
  *  Copyright notice
  *
  *  (c) 2016 Ramon Mohi <rm@plusb.de>, plus B
- *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
+ *  (c) 2019 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -38,7 +38,7 @@ class TwitterAdapter extends SocialMediaAdapter
 {
 
     const TYPE = 'twitter';
-    public $isValid = false, $validationMessage = "";
+
     private $consumerKey, $consumerSecret, $accessToken, $accessTokenSecret, $options;
 
     /**
@@ -100,16 +100,16 @@ class TwitterAdapter extends SocialMediaAdapter
         parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
 
         /* validation - interrupt instanciating if invalid */
-        if($this->validateAdapterSettings(
+        if($validation = $this->validateAdapterSettings(
                 array(
                     'consumerKey' => $consumerKey,
                     'consumerSecret' => $consumerSecret,
                     'accessToken' => $accessToken,
                     'accessTokenSecret' => $accessTokenSecret,
                     'options' => $options
-                )) === false)
+                ))['isValid'] === false)
         {
-            throw new \Exception( self::TYPE . ' ' . $this->validationMessage, 1558520359);
+            throw new \Exception( self::TYPE . ' ' . $validation["message"], 1558515175);
         }
         /* validated */
 
@@ -123,8 +123,11 @@ class TwitterAdapter extends SocialMediaAdapter
      * @param $parameter
      * @return bool
      */
-    public function validateAdapterSettings($parameter)
+    public function validateAdapterSettings($parameter) : array
     {
+        $isValid = false;
+        $validationMessage = "";
+
         $this->setConsumerKey($parameter['consumerKey']);
         $this->setConsumerSecret($parameter['consumerSecret']);
         $this->setAccessToken($parameter['accessToken']);
@@ -132,17 +135,23 @@ class TwitterAdapter extends SocialMediaAdapter
         $this->setOptions($parameter['options']);
 
         if (empty($this->consumerKey) || empty($this->consumerSecret) ||  empty($this->accessToken)||  empty($this->accessTokenSecret)) {
-            $this->validationMessage = self::TYPE . ' credentials not set';
+            $validationMessage = self::TYPE . ' credentials not set';
         } elseif (empty($this->options->twitterSearchFieldValues)  && empty($this->options->twitterProfilePosts) ) {
-            $this->validationMessage = self::TYPE . ' no search term defined';
+            $validationMessage = self::TYPE . ' no search term defined';
         } else {
-            $this->isValid = true;
+            $isValid = true;
         }
 
-        return $this->isValid;
+        return ["isValid" => $isValid, "message" => $validationMessage];
     }
 
-    public function getResultFromApi()
+    /**
+     * loops over search id from flexform, reads records form PlusB\PbSocial\Domain\Model\Item(),
+     * updates them, writes new one if expired or invalid, calls composeFeedArrayFromItemArrayForFrontEndView
+     *
+     * @return array array of 'rawFeeds' => $rawFeeds, 'feedItems' => $feedArray []PlusB\PbSocial\Domain\Model\Feed
+     */
+    public function getResultFromApi() : array
     {
         $options = $this->options;
         $result = array();
@@ -164,41 +173,66 @@ class TwitterAdapter extends SocialMediaAdapter
         if ($options->twitterSearchFieldValues) {
             $this->api_url = 'search/tweets';
 
+            /***************
+             * loop a CRUD over list of search ids (Create Read Update Delete, no Delete...)
+             ***************/
             foreach (explode(',', $options->twitterSearchFieldValues) as $searchValue) {
                 $searchValue = trim($searchValue);
-                $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchValue));
+                $apiContent = null;
 
+                $itemIdentifier = $this->composeItemIdentifierForListItem($this->cacheIdentifier, $searchValue); //new for every foreach round up
+                //looking for items in model (C *R* UD) - not in cache
+                /**
+                 * @var $item Item
+                 */
+                $item = $this->itemRepository->findByTypeAndItemIdentifier(self::TYPE, $itemIdentifier);
 
-                if ($feeds && $feeds->count() > 0) {
-                    $feed = $feeds->getFirst();
-                    if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
-                        try {
-                            $tweets = $this->getPosts($apiParameters, $options, $searchValue);
-                            $feed->setDate(new \DateTime('now'));
-                            $feed->setResult($tweets);
-                            $this->itemRepository->updateFeed($feed);
-                        } catch (\Exception $e) {
-                            throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1558435620);
+                //if dev mod, or time is up OR there are simply no items in database, then you will need a new api request
+                if (
+                    // found nothing in item model
+                    ($item === null)
+                    ||
+                    //dev Mode is on or time from flexform was up
+                    ($options->devMod || $this->isFlexformRefreshTimeUp($item->getDate()->getTimestamp(),
+                            $options->refreshTimeInMin))
+                ) {
+                    try {
+                        //make a request on api
+                        $apiContent = $this->callApi($apiParameters, $options, $searchValue);
+
+                        //if apiContent from api call have some content and I already have it in database model items: update item in model (CR *U* D)
+                        if ($apiContent !== null && ($item !== null)) {
+
+                            $item->setDate(new \DateTime('now'));
+                            //apiContent from api call included in item-model and updated in database
+                            $item->setResult($apiContent);
+                            $this->itemRepository->updateItem($item);
+
+                            //taking item to result
+                            $result[] = $item;
+
+                            //if api content it there and item is empty, you write new item to model in database (*C* RUD)
+                        } elseif ($apiContent !== null) {
+                            //insert new item
+                            $item = new Item(self::TYPE);
+                            $item->setItemIdentifier($itemIdentifier);
+                            $item->setResult($apiContent);
+                            // save to DB and return current item
+                            $this->itemRepository->saveItem($item);
+                            //taking item to result
+                            $result[] = $item;
+
                         }
+                    } catch (\Exception $e) {
+                        throw new \Exception($e->getMessage(), 1573564188);
                     }
-                    $result[] = $feed;
-                    continue;
+                } else {
+                    $result[] = $item;
                 }
 
-                try {
-                    $tweets = $this->getPosts($apiParameters, $options, $searchValue);
-                    $feed = new Item(self::TYPE);
-                    $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchValue));
-                    $feed->setResult($tweets);
-
-                    // save to DB and return current feed
-                    $this->itemRepository->saveFeed($feed);
-                    $result[] = $feed;
-                } catch (\Exception $e) {
-                    throw new \Exception('initial load for feed failed. ' . $e->getMessage(), 1558435624);
-                }
             }
         }
+
 
         if ($options->twitterProfilePosts) {
             $this->api_url = 'statuses/user_timeline';
@@ -206,50 +240,85 @@ class TwitterAdapter extends SocialMediaAdapter
             foreach (explode(',', $options->twitterProfilePosts) as $searchValue) {
                 $searchValue = trim($searchValue);
                 $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $searchValue);
-
                 //https://dev.twitter.com/rest/reference/get/search/tweets
                 //include_entities=false => The entities node will be disincluded when set to false.
-
                 $apiParameters['screen_name'] = $searchValue;
 
-                if ($feeds && $feeds->count() > 0) {
-                    $feed = $feeds->getFirst();
-                    if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
-                        try {
-                            $tweets = $this->getPosts($apiParameters, $options, $searchValue);
-                            $feed->setDate(new \DateTime('now'));
-                            $feed->setResult($tweets);
-                            $this->itemRepository->updateFeed($feed);
-                        } catch (\Exception $e) {
-                            throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1558435632);
+                $itemIdentifier = $this->composeItemIdentifierForListItem($this->cacheIdentifier, $searchValue); //new for every foreach round up
+                //looking for items in model (C *R* UD) - not in cache
+                /**
+                 * @var $item Item
+                 */
+                $item = $this->itemRepository->findByTypeAndItemIdentifier(self::TYPE, $itemIdentifier);
+
+                //if dev mod, or time is up OR there are simply no items in database, then you will need a new api request
+                if (
+                    // found nothing in item model
+                    ($item === null)
+                    ||
+                    //dev Mode is on or time from flexform was up
+                    ($options->devMod || $this->isFlexformRefreshTimeUp($item->getDate()->getTimestamp(),
+                            $options->refreshTimeInMin))
+                ) {
+                    try {
+                        //make a request on api
+                        $apiContent = $this->callApi($apiParameters, $options, $searchValue);
+
+                        //if apiContent from api call have some content and I already have it in database model items: update item in model (CR *U* D)
+                        if ($apiContent !== null && ($item !== null)) {
+
+                            $item->setDate(new \DateTime('now'));
+                            //apiContent from api call included in item-model and updated in database
+                            $item->setResult($apiContent);
+                            $this->itemRepository->updateItem($item);
+
+                            //taking item to result
+                            $result[] = $item;
+
+                            //if api content it there and item is empty, you write new item to model in database (*C* RUD)
+                        } elseif ($apiContent !== null) {
+                            //insert new item
+                            $item = new Item(self::TYPE);
+                            $item->setItemIdentifier($itemIdentifier);
+                            $item->setResult($apiContent);
+                            // save to DB and return current item
+                            $this->itemRepository->saveItem($item);
+                            //taking item to result
+                            $result[] = $item;
+
                         }
+                    } catch (\Exception $e) {
+                        throw new \Exception($e->getMessage(), 1573564188);
                     }
-                    $result[] = $feed;
-                    continue;
+                } else {
+                    $result[] = $item;
                 }
 
-                try {
-                    $tweets = $this->getPosts($apiParameters, $options, $searchValue);
-                    $feed = new Item(self::TYPE);
-                    $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchValue));
-                    $feed->setResult($tweets);
 
-                    // save to DB and return current feed
-                    $this->itemRepository->saveFeed($feed);
-                    $result[] = $feed;
-                } catch (\Exception $e) {
-                    throw new \Exception('initial load for feed failed ' . $e->getMessage(), 1558435639);
-                }
             }
         }
 
-        return $this->getFeedItemsFromApiRequest($result, $options);
+        return $this->composeFeedArrayFromItemArrayForFrontEndView($result, $options);
     }
 
-    public function getFeedItemsFromApiRequest($result, $options)
+    /**
+     * takes up result from api getResultFromApi() (even it was from database or fresh from api, whatever), maps array of
+     * PlusB\PbSocial\Domain\Model\Item() to array of PlusB\PbSocial\Domain\Model\Feed() for front end to show.
+     *
+     * @param $result array of items PlusB\PbSocial\Domain\Model\Item
+     * @param $options object all seetings from flexform and typoscript
+     * @return array of 'rawFeeds' => $rawFeeds, 'feedItems' => $feedArray []PlusB\PbSocial\Domain\Model\Feed
+     */
+    public function composeFeedArrayFromItemArrayForFrontEndView($result, $options) : array
     {
+        /*
+          $result => array(2 items)
+            0 => PlusB\PbSocial\Domain\Model\Item
+            1 => PlusB\PbSocial\Domain\Model\Item
+        */
+
         $rawFeeds = array();
-        $feedItems = array();
+        $feedArray = array(); //[]PlusB\PbSocial\Domain\Model\Feed
 
         if (!empty($result)) {
             foreach ($result as $twt_feed) {
@@ -263,7 +332,7 @@ class TwitterAdapter extends SocialMediaAdapter
                     throw new \Exception( "status empty", 1558435615);
                     break;
                 }
-                $rawFeeds[self::TYPE . '_' . $twt_feed->getCacheIdentifier() . '_raw'] = $twt_feed->getResult();
+                $rawFeeds[self::TYPE . '_' . $twt_feed->getItemIdentifier() . '_raw'] = $twt_feed->getResult();
                 foreach ($twitterResult as $rawFeed) {
                     if ($options->twitterShowOnlyImages && null == $rawFeed->entities->media) {
                         continue;
@@ -288,15 +357,15 @@ class TwitterAdapter extends SocialMediaAdapter
                     }
                     $dateTime = new \DateTime($rawFeed->created_at);
                     $feed->setTimeStampTicks($dateTime->getTimestamp());
-                    $feedItems[] = $feed;
+                    $feedArray[] = $feed;
                 }
             }
         }
 
-        return array('rawFeeds' => $rawFeeds, 'feedItems' => $feedItems);
+        return $this->setCacheContentData($rawFeeds, $feedArray);
     }
 
-    public function getPosts($apiParameters, $options, $searchValue)
+    public function callApi($apiParameters, $options, $searchValue)
     {
         $requestParameters = $apiParameters;
         $include_entities = false;

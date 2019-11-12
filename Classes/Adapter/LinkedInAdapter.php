@@ -20,7 +20,7 @@ use PlusB\PbSocial\Domain\Model\Item;
  *  Copyright notice
  *
  *  (c) 2018 Ramon Mohi <rm@plusb.de>, plus B
- *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
+ *  (c) 2019 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -48,7 +48,6 @@ class LinkedInAdapter extends SocialMediaAdapter
     const EXTKEY = 'pb_social';
     const linkedin_company_post_uri = "https://www.linkedin.com/feed/update/urn:li:activity:";
 
-    public $isValid = false, $validationMessage = "";
     private $apiKey, $apiSecret, $apiCallback, $token, $options;
 
     /**
@@ -116,20 +115,21 @@ class LinkedInAdapter extends SocialMediaAdapter
         parent::__construct($itemRepository,  $cacheIdentifier, $ttContentUid, $ttContentPid);
 
         /* validation - interrupt instanciating if invalid */
-        if($this->validateAdapterSettings(
+        if($validation = $this->validateAdapterSettings(
                 array(
                     'apiKey' => $apiKey,
                     'apiSecret' => $apiSecret,
                     'apiCallback' => $apiCallback,
                     'token' => $token,
                     'options' => $options
-                )) === false)
+                ))['isValid'] === false)
         {
-            throw new \Exception( self::TYPE . ' ' . $this->validationMessage, 1558608221);
+            throw new \Exception( self::TYPE . ' ' . $validation["message"], 1573552578);
         }
         /* validated */
 
         $this->api =  new Client($this->apiKey,$this->apiSecret);
+        #$this->api->setApiRoot('https://api.linkedin.com/v2/');
         $this->credentialRepository = $credentialRepository;
         // get access token from database
         $this->setAccessToken($this->token, $this->apiKey);
@@ -141,8 +141,11 @@ class LinkedInAdapter extends SocialMediaAdapter
      * @param $parameter
      * @return bool
      */
-    public function validateAdapterSettings($parameter)
+    public function validateAdapterSettings($parameter) : array
     {
+        $isValid = false;
+        $validationMessage = "";
+
         $this->setApiKey($parameter['apiKey']);
         $this->setApiSecret($parameter['apiSecret']);
         $this->setApiCallback($parameter['apiCallback']);
@@ -150,17 +153,23 @@ class LinkedInAdapter extends SocialMediaAdapter
         $this->setOptions($parameter['options']);
 
         if (empty($this->apiKey) || empty($this->apiSecret) ||  empty($this->token) ||  empty($this->apiCallback)) {
-            $this->validationMessage = self::TYPE . ' credentials not set ' . (empty($this->apiKey)?'apiKey ':''). (empty($this->apiSecret)?'apiSecret ':''). (empty($this->token)?'token ':''). (empty($this->apiCallback)?'apiCallback ':'');
+            $validationMessage = self::TYPE . ' credentials not set ' . (empty($this->apiKey)?'apiKey ':''). (empty($this->apiSecret)?'apiSecret ':''). (empty($this->token)?'token ':''). (empty($this->apiCallback)?'apiCallback ':'');
         } elseif (empty($this->options->companyIds)) {
-            $this->validationMessage = self::TYPE . ' no search term defined ' . (empty($this->companyIds)?'companyIds ':'');
+            $validationMessage = self::TYPE . ' no search term defined ' . (empty($this->companyIds)?'companyIds ':'');
         } else {
-            $this->isValid = true;
+            $isValid = true;
         }
 
-        return $this->isValid;
+        return ["isValid" => $isValid, "message" => $validationMessage];
     }
 
-    public function getResultFromApi()
+    /**
+     * loops over search id from flexform, reads records form PlusB\PbSocial\Domain\Model\Item(),
+     * updates them, writes new one if expired or invalid, calls composeFeedArrayFromItemArrayForFrontEndView
+     *
+     * @return array array of 'rawFeeds' => $rawFeeds, 'feedItems' => $feedArray []PlusB\PbSocial\Domain\Model\Feed
+     */
+    public function getResultFromApi() : array
     {
         $options = $this->options;
         $result = array();
@@ -170,61 +179,96 @@ class LinkedInAdapter extends SocialMediaAdapter
 
         # get company updates
         # additional filters for job postings, new products and status updates may be applied
+
+        /***************
+         * loop a CRUD over list of search ids (Create Read Update Delete, no Delete...)
+         ***************/
         foreach (explode(',', $options->companyIds) as $searchId) {
 
             $searchId = trim($searchId);
 
             if ($searchId != ""){
-                $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
+                //defining
+                $searchId = trim($searchId);
+                $apiContent = null;
 
-                if ($feeds && $feeds->count() > 0) {
-                    $feed = $feeds->getFirst();
-                    /**
-                     * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to bee free, so... change!
-                     */
-                    if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
-                        try {
-                            # api call
-                            $companyUpdates = $this->api->get('companies/' . $searchId .'/updates?format=json' . $filters); # filters is empty ("") if no filters are applied..
-                            $feed->setDate(new \DateTime('now'));
-                            $feed->setResult(json_encode($companyUpdates));
-                            $this->itemRepository->updateFeed($feed);
-                        } catch (\Exception $e) {
-                            throw new \Exception( "feeds cannot be updated  - " . $e->getMessage(), 1558608253);
-                            continue;
+                $itemIdentifier = $this->composeItemIdentifierForListItem($this->cacheIdentifier , $searchId); //new for every foreach round up
+                //looking for items in model (C *R* UD) - not in cache
+                /**
+                 * @var $item Item
+                 */
+                $item = $this->itemRepository->findByTypeAndItemIdentifier(self::TYPE, $itemIdentifier);
+
+                //if dev mod, or time is up OR there are simply no items in database, then you will need a new api request
+                if (
+                    // found nothing in item model
+                    ($item === null)
+                    ||
+                    //dev Mode is on or time from flexform was up
+                    ($options->devMod || $this->isFlexformRefreshTimeUp($item->getDate()->getTimestamp(), $options->refreshTimeInMin))
+                ) {
+                    try {
+                        //make a request on api
+                        $apiContent = $this->api->get('companies/' . $searchId .'/updates?format=json' . $filters); # filters is empty ("") if no filters are applied..
+                        //if apiContent from api call have some content and I already have it in database model items: update item in model (CR *U* D)
+                        if ($apiContent !== null && ($item !== null) ) {
+
+                            $item->setDate(new \DateTime('now'));
+                            //apiContent from api call included in item-model and updated in database
+                            $item->setResult(json_encode($apiContent));
+                            $this->itemRepository->updateItem($item);
+
+                            //taking item to result
+                            $result[] = $item;
+
+                            //if api content it there and item is empty, you write new item to model in database (*C* RUD)
+                        }elseif($apiContent !== null) {
+                            //insert new item
+                            $item = new Item(self::TYPE);
+                            $item->setItemIdentifier($itemIdentifier);
+                            $item->setResult($apiContent);
+                            // save to DB and return current item
+                            $this->itemRepository->saveItem($item);
+                            //taking item to result
+                            $result[] = $item;
+
                         }
                     }
-                    $result[] = $feed;
-                    continue;
+                    catch (\Exception $e) {
+                        throw new \Exception($e->getMessage(), 1559547942);
+                    }
+                } else {
+                    $result[] = $item;
                 }
 
-                try {
-                    # api call
-                    $companyUpdates = $this->api->get('companies/' . $searchId .'/updates?format=json' . $filters);
-                    $feed = new Item(self::TYPE);
-                    $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
-                    $feed->setResult(json_encode($companyUpdates));
-
-                    // save to DB and return current feed
-                    $this->itemRepository->saveFeed($feed);
-                    $result[] = $feed;
-                } catch (\Exception $e) {
-                    throw new \Exception("get_updates failed. " . $e->getMessage(), 1558516424);
-                }
             }
         }
 
-        return $this->getFeedItemsFromApiRequest($result, $options);
+            return $this->composeFeedArrayFromItemArrayForFrontEndView($result, $options);
     }
 
-    public function getFeedItemsFromApiRequest($result, $options)
+    /**
+     * takes up result from api getResultFromApi() (even it was from database or fresh from api, whatever), maps array of
+     * PlusB\PbSocial\Domain\Model\Item() to array of PlusB\PbSocial\Domain\Model\Feed() for front end to show.
+     *
+     * @param $result array of items PlusB\PbSocial\Domain\Model\Item
+     * @param $options object all seetings from flexform and typoscript
+     * @return array of 'rawFeeds' => $rawFeeds, 'feedItems' => $feedArray []PlusB\PbSocial\Domain\Model\Feed
+     */
+    public function composeFeedArrayFromItemArrayForFrontEndView($result, $options) : array
     {
+        /*
+          $result => array(2 items)
+            0 => PlusB\PbSocial\Domain\Model\Item
+            1 => PlusB\PbSocial\Domain\Model\Item
+        */
+
         $rawFeeds = array();
-        $feedItems = array();
+        $feedArray = array(); //[]PlusB\PbSocial\Domain\Model\Feed
 
         if (!empty($result)) {
             foreach ($result as $linkedin_feed) {
-                $rawFeeds[self::TYPE . '_' . $linkedin_feed->getCacheIdentifier() . '_raw'] = $linkedin_feed->getResult();
+                $rawFeeds[self::TYPE . '_' . $linkedin_feed->getItemIdentifier() . '_raw'] = $linkedin_feed->getResult();
                 $i = 0;
                 if (is_array($linkedin_feed->getResult()->values)) {
                     foreach ($linkedin_feed->getResult()->values as $rawFeed) {
@@ -237,7 +281,7 @@ class LinkedInAdapter extends SocialMediaAdapter
                             $link = self::linkedin_company_post_uri . array_reverse(explode('-', $rawFeed->updateKey))[0];
                             $feed->setLink($link);
                             $feed->setTimeStampTicks($rawFeed->timestamp);
-                            $feedItems[] = $feed;
+                            $feedArray[] = $feed;
                             $i++;
                         }
                     }
@@ -245,7 +289,7 @@ class LinkedInAdapter extends SocialMediaAdapter
             }
         }
 
-        return array('rawFeeds' => $rawFeeds, 'feedItems' => $feedItems);
+        return $this->setCacheContentData($rawFeeds, $feedArray);
     }
 
     private function setAccessToken($token, $apiKey)

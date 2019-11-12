@@ -3,13 +3,14 @@
 namespace PlusB\PbSocial\Adapter;
 
 use PlusB\PbSocial\Service\LogTrait;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /***************************************************************
  *
  *  Copyright notice
  *
  *  (c) 2016 Ramon Mohi <rm@plusb.de>, plus B
- *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
+ *  (c) 2019 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -35,6 +36,7 @@ abstract class SocialMediaAdapter implements SocialMediaAdapterInterface
     use LogTrait;
 
     const TYPE = 'socialMediaAdapter';
+    const REFRESH_TIME_MINUTES = 60, REFRESH_TIME_SECONDS = 1, REFRESH_TIME_HOURS = 60*60;
     const EXTKEY = 'pb_social';
 
     /**
@@ -75,16 +77,37 @@ abstract class SocialMediaAdapter implements SocialMediaAdapterInterface
         $this->ttContentPid = $ttContentPid;
     }
 
-    abstract public function validateAdapterSettings($parameter);
-    abstract public function getResultFromApi();
+    abstract public function validateAdapterSettings($parameter) : array;
+    abstract public function getResultFromApi() : array;
+    abstract public function composeFeedArrayFromItemArrayForFrontEndView($result, $options) : array;
 
-    abstract public function getFeedItemsFromApiRequest($result, $options);
+    /*
+     * setting this must be on one place, to be able to have it all in similar form in caching framework
+     *
+          return => array(1 item)
+                0 => array(2 items)
+                    rawFeeds => array
+                    feedItems => array (of PlusB\PbSocial\Domain\Model\Feed)
+                        0 => PlusB\PbSocial\Domain\Model\Feed
+                        1 => PlusB\PbSocial\Domain\Model\Feed
+                        2 => PlusB\PbSocial\Domain\Model\Feed
+     *
+     * @param $rawFeeds
+     * @param $feedArray
+     * @return array of 'rawFeeds' => $rawFeeds, 'feedItems' => $feedArray []PlusB\PbSocial\Domain\Model\Feed
+     */
+    protected function setCacheContentData($rawFeeds, $feedArray){
+        return [
+            'rawFeeds' => $rawFeeds,
+            'feedArray' => $feedArray
+        ];
+    }
 
     /*
      * item must be written, cache identifier may be added by a value, but must be unique in this foreach.
-     * so cache identifier is unique for page/plugin/tab - but in this tab a comma separated string of search ids is not unique -
+     * so item identifier is unique for page/plugin/tab - but in this tab a comma separated string of search ids is not unique -
      * it would repeat first one - and ignore following search ids.
-     * solution: $cacheIdentifierForListItem = $this->cacheIdentifier . "_" . $searchId
+     * solution: composeItemIdentifierForListItem -- $this->cacheIdentifier . "_" . $searchId
      *
      *      $this->cacheIdentifier // unique for page.uid and tt_content.uid and flexform-option of network
      *      . "_" .
@@ -92,8 +115,14 @@ abstract class SocialMediaAdapter implements SocialMediaAdapterInterface
      *
      * Why do we write do database? Because we want to trigger cache, thats all.
      */
-    protected function composeCacheIdentifierForListItem($cacheIdentifier, $listItem){
+    protected function composeItemIdentifierForListItem($cacheIdentifier, $listItem){
+        DebuggerUtility::var_dump(get_defined_vars(), __CLASS__.__METHOD__);
         return $cacheIdentifier ."_". sha1($listItem);
+    }
+
+    protected function isFlexformRefreshTimeUp($timestampRecord, $refreshTime)
+    {
+        return ($timestampRecord + $refreshTime * self::REFRESH_TIME_MINUTES) < time();
     }
 
     /**

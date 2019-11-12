@@ -1,6 +1,9 @@
 <?php
 namespace PlusB\PbSocial\Controller;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+
 /***************************************************************
  *
  *  Copyright notice
@@ -83,6 +86,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
      */
     public function showSocialFeedAction()
     {
+
         # Get feeds #
         $feeds = array();
 
@@ -93,7 +97,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
             foreach ($result['rawFeeds'] as $rfid => $rf) {
                 $this->view->assign($rfid, $rf);
             }
-            foreach ($result['feedItems'] as $feed) {
+            foreach ($result['feedArray'] as $feed) {
                 $feeds[] = $feed;
             }
         }
@@ -135,6 +139,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
                 $this->configurationManager->getContentObject()->data['pid'],
                 $results
             );
+
         }
 
         if ($flexformAndTyposcriptSettings['imgurEnabled'] === '1') {
@@ -247,4 +252,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         }
         return false;
     }
+
+
+
 }

@@ -14,7 +14,7 @@ use PlusB\PbSocial\Domain\Model\Item;
  *  Copyright notice
  *
  *  (c) 2016 Ramon Mohi <rm@plusb.de>, plus B
- *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
+ *  (c) 2019 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -41,10 +41,8 @@ class PinterestAdapter extends SocialMediaAdapter
     const TYPE = 'pinterest';
 
     private $api;
-
     private $credentialRepository;
 
-    public $isValid = false, $validationMessage = "";
     private $appId, $appSecret, $accessCode, $options;
 
     /**
@@ -96,15 +94,15 @@ class PinterestAdapter extends SocialMediaAdapter
          * todo: quick fix - but we'd better add a layer for adapter in between, here after "return $this" instance is not completed but existing (AM)
          */
         /* validation - interrupt instanciating if invalid */
-        if($this->validateAdapterSettings(
+        if($validation = $this->validateAdapterSettings(
                 array(
                     'appId' => $appId,
                     'appSecret' => $appSecret,
                     'accessCode' => $accessCode,
                     'options' => $options
-                )) === false)
+                ))['isValid'] === false)
         {
-            throw new \Exception( self::TYPE . ' ' . $this->validationMessage, 1558515175);
+            throw new \Exception( self::TYPE . ' ' . $validation["message"], 1573562733);
         }
 
         /* validated */
@@ -121,77 +119,123 @@ class PinterestAdapter extends SocialMediaAdapter
      * @param $parameter
      * @return bool
      */
-    public function validateAdapterSettings($parameter)
+    public function validateAdapterSettings($parameter) : array
     {
+        $isValid = false;
+        $validationMessage = "";
+
         $this->setAppId($parameter['appId']);
         $this->setAppSecret($parameter['appSecret']);
         $this->setAccessCode($parameter['accessCode']);
         $this->setOptions($parameter['options']);
 
         if (empty($this->appId) || empty($this->appSecret) ||  empty($this->accessCode)) {
-            $this->validationMessage = self::TYPE . ' credentials not set: '. (empty($this->appId)?'appId ':''). (empty($this->appSecret)?'appSecret ':''). (empty($this->accessCode)?'accessCode ':'');
+            $validationMessage = self::TYPE . ' credentials not set: '. (empty($this->appId)?'appId ':''). (empty($this->appSecret)?'appSecret ':''). (empty($this->accessCode)?'accessCode ':'');
         } elseif (empty($this->options->pinterest_username) || empty($this->options->pinterest_username)) {
-            $this->validationMessage = self::TYPE . ' username or board name not defined in flexform settings';
+            $validationMessage = self::TYPE . ' username or board name not defined in flexform settings';
         } else {
-            $this->isValid = true;
+            $isValid = true;
         }
 
-        return $this->isValid;
+        return ["isValid" => $isValid, "message" => $validationMessage];
     }
 
-    public function getResultFromApi()
+    /**
+     * loops over search id from flexform, reads records form PlusB\PbSocial\Domain\Model\Item(),
+     * updates them, writes new one if expired or invalid, calls composeFeedArrayFromItemArrayForFrontEndView
+     *
+     * @return array array of 'rawFeeds' => $rawFeeds, 'feedItems' => $feedArray []PlusB\PbSocial\Domain\Model\Feed
+     */
+    public function getResultFromApi() : array
     {
         $options = $this->options;
         $result = array();
 
         $boardname = $options->pinterest_username . '/' . $options->pinterest_boardname;
 
+        /***************
+         * loop a CRUD over list of search ids (Create Read Update Delete, no Delete...)
+         ***************/
         foreach (explode(',', $options->username) as $searchId) {
             $searchId = trim($searchId);
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
+            $apiContent = null;
 
-            if ($feeds && $feeds->count() > 0) {
-                $feed = $feeds->getFirst();
-                /**
-                 * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to bee free, so... change!
-                 */
-                if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
-                    try {
-                        $feed->setDate(new \DateTime('now'));
-                        $feed->setResult($this->getPosts($boardname));
-                        $this->itemRepository->updateFeed($feed);
-                    } catch (\Exception $e) {
-                        throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1558435591);
+            $itemIdentifier = $this->composeItemIdentifierForListItem($this->cacheIdentifier , $searchId); //new for every foreach round up
+            //looking for items in model (C *R* UD) - not in cache
+            /**
+             * @var $item Item
+             */
+            $item = $this->itemRepository->findByTypeAndItemIdentifier(self::TYPE, $itemIdentifier);
+
+            //if dev mod, or time is up OR there are simply no items in database, then you will need a new api request
+            if (
+                // found nothing in item model
+                ($item === null)
+                ||
+                //dev Mode is on or time from flexform was up
+                ($options->devMod || $this->isFlexformRefreshTimeUp($item->getDate()->getTimestamp(), $options->refreshTimeInMin))
+            ) {
+                try {
+                    //make a request on api
+                    $apiContent = $this->callApi($boardname);
+                    // $apiContent like this: {"data":[{"id":"167276393322010_22579494909213 .... "message":"Thank you 3pc ....
+
+                    //if apiContent from api call have some content and I already have it in database model items: update item in model (CR *U* D)
+                    if ($apiContent !== null && ($item !== null)) {
+
+                        $item->setDate(new \DateTime('now'));
+                        //apiContent from api call included in item-model and updated in database
+                        $item->setResult($apiContent);
+                        $this->itemRepository->updateItem($item);
+
+                        //taking item to result
+                        $result[] = $item;
+
+                        //if api content it there and item is empty, you write new item to model in database (*C* RUD)
+                    } elseif ($apiContent !== null) {
+                        //insert new item
+                        $item = new Item(self::TYPE);
+                        $item->setItemIdentifier($itemIdentifier);
+                        $item->setResult($apiContent);
+                        // save to DB and return current item
+                        $this->itemRepository->saveItem($item);
+                        //taking item to result
+                        $result[] = $item;
+
                     }
+                }catch (\Exception $e) {
+                    throw new \Exception($e->getMessage(), 1573563245);
                 }
-                $result[] = $feed;
-                continue;
-            }
-
-            try {
-                $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchId));
-                $feed->setResult($this->getPosts($boardname));
-
-                // save to DB and return current feed
-                $this->itemRepository->saveFeed($feed);
-                $result[] = $feed;
-            } catch (\Exception $e) {
-                throw new \Exception('initial load for feed failed' . $e->getMessage(), 1558435595);
+            } else {
+                $result[] = $item;
             }
         }
 
-        return $this->getFeedItemsFromApiRequest($result, $options);
+        return $this->composeFeedArrayFromItemArrayForFrontEndView($result, $options);
     }
 
-    public function getFeedItemsFromApiRequest($result, $options)
+    /**
+     * takes up result from api getResultFromApi() (even it was from database or fresh from api, whatever), maps array of
+     * PlusB\PbSocial\Domain\Model\Item() to array of PlusB\PbSocial\Domain\Model\Feed() for front end to show.
+     *
+     * @param $result array of items PlusB\PbSocial\Domain\Model\Item
+     * @param $options object all seetings from flexform and typoscript
+     * @return array of 'rawFeeds' => $rawFeeds, 'feedItems' => $feedArray []PlusB\PbSocial\Domain\Model\Feed
+     */
+    public function composeFeedArrayFromItemArrayForFrontEndView($result, $options) : array
     {
+        /*
+          $result => array(2 items)
+            0 => PlusB\PbSocial\Domain\Model\Item
+            1 => PlusB\PbSocial\Domain\Model\Item
+        */
+
         $rawFeeds = array();
-        $feedItems = array();
+        $feedArray = array(); //[]PlusB\PbSocial\Domain\Model\Feed
 
         if (!empty($result)) {
             foreach ($result as $pin_feed) {
-                $rawFeeds[self::TYPE . '_' . $pin_feed->getCacheIdentifier() . '_raw'] = $pin_feed->getResult();
+                $rawFeeds[self::TYPE . '_' . $pin_feed->getItemIdentifier() . '_raw'] = $pin_feed->getResult();
                 $i = 0;
                 foreach ($pin_feed->getResult()->data as $pin) {
                     if ($pin->image && ($i < $options->feedRequestLimit)) {
@@ -203,16 +247,16 @@ class PinterestAdapter extends SocialMediaAdapter
                         $feed->setLink($link);
                         $d = new \DateTime($pin->created_at);
                         $feed->setTimeStampTicks($d->getTimestamp());
-                        $feedItems[] = $feed;
+                        $feedArray[] = $feed;
                     }
                 }
             }
         }
 
-        return array('rawFeeds' => $rawFeeds, 'feedItems' => $feedItems);
+        return $this->setCacheContentData($rawFeeds, $feedArray);
     }
 
-    public function getPosts($boardname)
+    public function callApi($boardname)
     {
         $fields = array(
             'fields' => 'id,link,counts,note,created_at,image[small],url'

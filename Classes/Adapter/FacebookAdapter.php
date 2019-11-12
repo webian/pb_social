@@ -40,12 +40,11 @@ class FacebookAdapter extends SocialMediaAdapter
 {
 
     const TYPE = 'facebook';
-
-    const api_url = 'https://graph.facebook.com', api_version = "v5.0";
+    const API_VERSION = "v5.0";
 
     private $api;
 
-    public $isValid = false, $validationMessage = "";
+    public $isValid = false;
     private $apiId, $apiSecret, $pageAccessToken, $options;
 
     /**
@@ -94,19 +93,19 @@ class FacebookAdapter extends SocialMediaAdapter
         parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
 
         /* validation - interrupt instanciating if invalid */
-        if($this->validateAdapterSettings(
+        if($validation = $this->validateAdapterSettings(
             array(
                 'apiId' => $apiId,
                 'apiSecret' => $apiSecret,
                 'pageAccessToken' => $pageAccessToken,
                 'options' => $options
-            )) === false)
+            ))['isValid'] === false)
         {
-            throw new \Exception( self::TYPE . ' ' . $this->validationMessage, 1558515175);
+            throw new \Exception( self::TYPE . ' ' . $validation["message"], 1558515175);
         }
         /* validated */
 
-        $this->api = new Facebook(['app_id' => $this->apiId,'app_secret' => $this->apiSecret,'default_graph_version' => self::api_version]);
+        $this->api = new Facebook(['app_id' => $this->apiId,'app_secret' => $this->apiSecret,'default_graph_version' => self::API_VERSION]);
         //$this->access_token =  $this->api->getApp()->getAccessToken();
         $this->api->setDefaultAccessToken($pageAccessToken);
     }
@@ -115,39 +114,50 @@ class FacebookAdapter extends SocialMediaAdapter
      * validates constructor input parameters in an individual way just for the adapter
      *
      * @param $parameter
-     * @return bool
+     * @return array
      */
-    public function validateAdapterSettings($parameter)
+    public function validateAdapterSettings($parameter) : array
     {
+        $isValid = false;
+        $validationMessage = "";
+
         $this->setApiId($parameter['apiId']);
         $this->setApiSecret($parameter['apiSecret']);
         $this->setPageAccessToken($parameter['pageAccessToken']);
         $this->setOptions($parameter['options']);
 
         if (empty($this->apiId) || empty($this->apiSecret)) {
-            $this->validationMessage = 'credentials not set: ' . (empty($this->apiId)?'apiId ':''). (empty($this->apiSecret)?'apiSecret ':''). (empty($this->pageAccessToken)?'pageAccessToken ':'');
+            $validationMessage = 'credentials not set: ' . (empty($this->apiId)?'apiId ':''). (empty($this->apiSecret)?'apiSecret ':''). (empty($this->pageAccessToken)?'pageAccessToken ':'');
         } elseif (empty($this->options->settings['facebookPageID'])) {
-            $this->validationMessage = 'no facebookPageID ("Facebook facebookPageID" in flexform settings) ';
+            $validationMessage = 'no facebookPageID ("Facebook facebookPageID" in flexform settings) ';
         } elseif (strstr($this->options->settings['facebookPageID'],',')) {
-            $this->validationMessage = 'facebookPageID contains "," - please use only one facebook Page ID("Facebook facebookPageID" in flexform settings) ';
+            $validationMessage = 'facebookPageID contains "," - please use only one facebook Page ID("Facebook facebookPageID" in flexform settings) ';
         } else {
-            $this->isValid = true;
+            $isValid = true;
         }
-        return $this->isValid;
+
+        return ["isValid" => $isValid, "message" => $validationMessage];
     }
 
-    public function getResultFromApi()
+    /**
+     * loops over search id from flexform, reads records form PlusB\PbSocial\Domain\Model\Item(),
+     * updates them, writes new one if expired or invalid, calls composeFeedArrayFromItemArrayForFrontEndView
+     *
+     * @return array array of 'rawFeeds' => $rawFeeds, 'feedItems' => $feedArray []PlusB\PbSocial\Domain\Model\Feed
+     */
+    public function getResultFromApi() : array
     {
         $options = $this->options;
         $result = array();
-        $feed = null;
+        $item = null;
 
         $facebookPageID = $options->settings['facebookPageID']?:null;
         $facebookPageID = trim($facebookPageID);
         $facebookEdge = $options->settings['facebookEdge']?:null;
-
+        $apiContent = null;
 
         if (empty($facebookPageID)) {
+            //log a warning, return null
             $this->logAdapterWarning('no facebookPageID', 1573467383);
             return null;
         } elseif (strstr($facebookPageID,',')){
@@ -155,110 +165,100 @@ class FacebookAdapter extends SocialMediaAdapter
             return null;
         }
 
-        $posts = null;
-        $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $facebookPageID.$facebookEdge));
-        try {
-            $posts = $this->getPosts($facebookPageID, $options->feedRequestLimit, $facebookEdge);
-        }
-        catch (\Exception $e) {
-            throw new \Exception($e->getMessage(), 1559547942);
-        }
-
-        if ($feeds && $feeds->count() > 0) {
-            $feed = $feeds->getFirst();
+        /* **************
+         *  CRUD Create Read Update Delete, no Delete...)
+         ************** */
+            $itemIdentifier = $this->composeItemIdentifierForListItem($this->cacheIdentifier , $facebookPageID); //new for every foreach round up
+            //looking for items in model (C *R* UD) - not in cache
             /**
-             * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to be free, so... change by conf
+             * @var $item Item
              */
-            if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
+            $item = $this->itemRepository->findByTypeAndItemIdentifier(self::TYPE, $itemIdentifier);
 
-                //update feed
-                if ($posts !== null) {
-                    $feed->setDate(new \DateTime('now'));
-                    $feed->setResult($posts);
-                    $this->itemRepository->updateFeed($feed);
-                }
+            //if dev mod, or time is up OR there are simply no items in database, then you will need a new api request
+            if (
+                // found nothing in item model
+                ($item === null)
+                ||
+                //dev Mode is on or time from flexform was up
+                ($options->devMod || $this->isFlexformRefreshTimeUp($item->getDate()->getTimestamp(), $options->refreshTimeInMin))
+            ) {
+                try {
+                    //make a request on api
+                    $apiContent = $this->callApiContentFromFacebook($facebookPageID, $options->feedRequestLimit, $facebookEdge);
+                    // $apiContent like this: {"data":[{"id":"167276393322010_22579494909213 .... "message":"Thank you 3pc ....
 
-            }
-        }
+                    //if apiContent from api call have some content and I already have it in database model items: update item in model (CR *U* D)
+                    if ($apiContent !== null && ($item !== null) ) {
 
-        //insert new feed
-        if ($posts !== null) {
-            $feed = new Item(self::TYPE);
-            $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $facebookPageID.$facebookEdge));
-            $feed->setResult($posts);
-            // save to DB and return current feed
-            $this->itemRepository->saveFeed($feed);
-        }
-        $result[] = $feed;
+                        $item->setDate(new \DateTime('now'));
+                        //apiContent from api call included in item-model and updated in database
+                        $item->setResult($apiContent);
+                        $this->itemRepository->updateItem($item);
 
-        return $this->getFeedItemsFromApiRequest($result, $options);
-    }
+                        //taking item to result
+                        $result[] = $item;
 
-    public function getFeedItemsFromApiRequest($result, $options)
-    {
-        $rawFeeds = array();
-        $feedItems = array();
+                        //if api content it there and item is empty, you write new item to model in database (*C* RUD)
+                    }elseif($apiContent !== null) {
+                        //insert new item
+                        $item = new Item(self::TYPE);
+                        $item->setItemIdentifier($itemIdentifier);
+                        $item->setResult($apiContent);
+                        // save to DB and return current item
+                        $this->itemRepository->saveItem($item);
+                        //taking item to result
+                        $result[] = $item;
 
-        //this can probably go in SocialMediaAdapter
-        if (!empty($result)) {
-            foreach ($result as $fb_feed) {
-                $rawFeeds[self::TYPE . '_' . $fb_feed->getCacheIdentifier() . '_raw'] = $fb_feed->getResult();
-                foreach ($fb_feed->getResult()->data as $rawFeed) {
-                    if ($options->onlyWithPicture && (empty($rawFeed->picture) || empty($rawFeed->full_picture))) {
-                        continue;
                     }
-                    $feed = new Feed(self::TYPE, $rawFeed);
-                    $feed->setId($rawFeed->id);
-                    $feed->setText($this->trim_text($rawFeed->message, $options->textTrimLength, true));
-                    if (property_exists($rawFeed, 'picture')) {
-                        $feed->setImage(urldecode($rawFeed->picture));
-                    }
-
-                    $feed->setLink('https://facebook.com/' . $rawFeed->id);
-                    $d = new \DateTime($rawFeed->created_time);
-                    $feed->setTimeStampTicks($d->getTimestamp());
-
-                    $feedItems[] = $feed;
                 }
+                catch (\Exception $e) {
+                    throw new \Exception($e->getMessage(), 1573562350);
+                }
+            } else {
+                $result[] = $item;
             }
-        }
 
-        return array('rawFeeds' => $rawFeeds, 'feedItems' => $feedItems);
+
+
+        return $this->composeFeedArrayFromItemArrayForFrontEndView($result, $options);
     }
 
     /** Make API request via Facebook sdk function
      *
      * @param string $facebookPageID
      * @param int $limit
-     * @return string
+     * @param string $edge endpoint of facebook
+     * @return string  A Json String that starts with {"data":[{"id":"
+     *
      */
-    public function getPosts($facebookPageID, $limit, $edge)
+    public function callApiContentFromFacebook($facebookPageID, $limit, $edge)
     {
         //endpoint
-            switch ($edge){
-                case 'feed': $request = 'feed'; break;
-                case 'posts': $request = 'posts'; break;
-                case 'tagged ': $request = 'tagged '; break;
+        switch ($edge){
+            case 'feed': $request = 'feed'; break;
+            case 'posts': $request = 'posts'; break;
+            case 'tagged ': $request = 'tagged '; break;
                 default: $request = 'feed';
             }
 
         $endpoint = '/' . $facebookPageID . '/' . $request;
 
         //params
-            //set default parameter list in case s.b messes up with TypoScript
-            $faceBookRequestParameter =
-                'picture,
+        //set default parameter list in case s.b messes up with TypoScript
+        $faceBookRequestParameter =
+            'picture,
                
                 created_time,
                 full_picture';
 
-            //overwritten by Typoscript
-            if(isset($this->options->settings['facebook']['requestParameterList']) && is_string($this->options->settings['facebook']['requestParameterList'])){
-                $faceBookRequestParameter =  $this->options->settings['facebook']['requestParameterList'];
-            }
+        //overwritten by Typoscript
+        if(isset($this->options->settings['facebook']['requestParameterList']) && is_string($this->options->settings['facebook']['requestParameterList'])){
+            $faceBookRequestParameter =  $this->options->settings['facebook']['requestParameterList'];
+        }
 
-            //always prepending id and message
-            $faceBookRequestParameter = 'id,message,' . $faceBookRequestParameter;
+        //always prepending id and message
+        $faceBookRequestParameter = 'id,message,' . $faceBookRequestParameter;
 
         $params = [
             'fields' => $faceBookRequestParameter,
@@ -266,9 +266,8 @@ class FacebookAdapter extends SocialMediaAdapter
         ];
 
         try {
-
-            /** @var \Facebook\FacebookResponse $resp */
-            $resp = $this->api->sendRequest(
+            /** @var \Facebook\FacebookResponse $facebookResponse */
+            $facebookResponse = $this->api->sendRequest(
                 'GET',
                 $endpoint,
                 $params
@@ -279,10 +278,59 @@ class FacebookAdapter extends SocialMediaAdapter
             throw new \Exception($e->getMessage(), 1558515214);
         }
 
-        if (empty(json_decode($resp->getBody())->data) || json_encode($resp->getBody()->data) == null) {
-            throw new \Exception( 'no posts found for ' . $facebookPageID, 1558515218);
+        if (empty(json_decode($facebookResponse->getBody())->data) || json_encode($facebookResponse->getBody()->data) == null) {
+            throw new \Exception( 'no posts found for facebook page id: ' . $facebookPageID, 1558515218);
         }
 
-        return $resp->getBody();
+        return $facebookResponse->getBody();
+    }
+
+    /**
+     * takes up result from api getResultFromApi() (even it was from database or fresh from api, whatever), maps array of
+     * PlusB\PbSocial\Domain\Model\Item() to array of PlusB\PbSocial\Domain\Model\Feed() for front end to show.
+     *
+     * @param $result array of items PlusB\PbSocial\Domain\Model\Item
+     * @param $options object all seetings from flexform and typoscript
+     * @return array of 'rawFeeds' => $rawFeeds, 'feedItems' => $feedArray []PlusB\PbSocial\Domain\Model\Feed
+     */
+    public function composeFeedArrayFromItemArrayForFrontEndView($result, $options) : array
+    {
+        /*
+          $result => array(2 items)
+            0 => PlusB\PbSocial\Domain\Model\Item
+            1 => PlusB\PbSocial\Domain\Model\Item
+        */
+
+        $rawFeeds = array();
+        $feedArray = array(); //[]PlusB\PbSocial\Domain\Model\Feed
+
+
+        if (!empty($result)) {
+            foreach ($result as $item) {
+
+                $rawFeeds[self::TYPE . '_' . $item->getItemIdentifier() . '_raw'] = $item->getResult();
+
+                foreach ($item->getResult()->data as $facebookData) {
+                    if ($options->onlyWithPicture && (empty($facebookData->picture) || empty($facebookData->full_picture))) {
+                        continue;
+                    }
+                    $feed = new Feed(self::TYPE, $facebookData);
+                    $feed->setId($facebookData->id);
+                    $feed->setText($this->trim_text($facebookData->message, $options->textTrimLength, true));
+                    if (property_exists($facebookData, 'picture')) {
+                        $feed->setImage(urldecode($facebookData->picture));
+                    }
+
+                    $feed->setLink('https://facebook.com/' . $facebookData->id);
+
+                    $date = new \DateTime($facebookData->created_time);
+                    $feed->setTimeStampTicks($date->getTimestamp());
+
+                    $feedArray[] = $feed;
+                }
+            }
+        }
+
+        return $this->setCacheContentData($rawFeeds, $feedArray);
     }
 }

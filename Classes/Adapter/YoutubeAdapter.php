@@ -10,7 +10,7 @@ use PlusB\PbSocial\Domain\Model\Item;
  *  Copyright notice
  *
  *  (c) 2016 Ramon Mohi <rm@plusb.de>, plus B
- *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
+ *  (c) 2019 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -79,13 +79,13 @@ class YoutubeAdapter extends SocialMediaAdapter
         parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
 
         /* validation - interrupt instanciating if invalid */
-        if($this->validateAdapterSettings(
+        if($validation = $this->validateAdapterSettings(
                 array(
                     'appKey' => $appKey,
                     'options' => $options
-                )) === false)
+                ))['isValid'] === false)
         {
-            throw new \Exception( self::TYPE . ' ' . $this->validationMessage, 1558521003);
+            throw new \Exception( self::TYPE . ' ' . $validation["message"], 1573565268);
         }
         /* validated */
     }
@@ -96,23 +96,32 @@ class YoutubeAdapter extends SocialMediaAdapter
      * @param $parameter
      * @return bool
      */
-    public function validateAdapterSettings($parameter)
+    public function validateAdapterSettings($parameter) : array
     {
+        $isValid = false;
+        $validationMessage = "";
+
         $this->setAppKey($parameter['appKey']);
         $this->setOptions($parameter['options']);
 
         if (empty($this->appKey)) {
-            $this->validationMessage = self::TYPE . ' credentials not set';
+            $validationMessage = self::TYPE . ' credentials not set';
         } elseif (empty($this->options->youtubeSearch)  && empty($this->options->youtubePlaylist) && empty($this->options->youtubeChannel) ) {
-            $this->validationMessage = self::TYPE . ' no search term defined';
+            $validationMessage = self::TYPE . ' no search term defined';
         } else {
-            $this->isValid = true;
+            $isValid = true;
         }
 
-        return $this->isValid;
+        return ["isValid" => $isValid, "message" => $validationMessage];
     }
 
-    public function getResultFromApi()
+    /**
+     * loops over search id from flexform, reads records form PlusB\PbSocial\Domain\Model\Item(),
+     * updates them, writes new one if expired or invalid, calls composeFeedArrayFromItemArrayForFrontEndView
+     *
+     * @return array array of 'rawFeeds' => $rawFeeds, 'feedItems' => $feedArray []PlusB\PbSocial\Domain\Model\Feed
+     */
+    public function getResultFromApi() : array
     {
         $options = $this->options;
         $result = array();
@@ -141,51 +150,91 @@ class YoutubeAdapter extends SocialMediaAdapter
             $searchTerms = explode(',', $options->youtubeChannel);
         }
 
+        /***************
+         * loop a CRUD over list of search ids (Create Read Update Delete, no Delete...)
+         ***************/
         foreach ($searchTerms as $searchString) {
             $searchString = trim(urlencode($searchString));
-            $feeds = $this->itemRepository->findByTypeAndCacheIdentifier(self::TYPE, $this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchString));
-            if ($feeds && $feeds->count() > 0) {
-                $feed = $feeds->getFirst();
-                /**
-                 * todo: (AM) "$options->refreshTimeInMin * 60) < time()" locks it to a certain cache lifetime - users want to bee free, so... change!
-                 * todo: try to get rid of duplicate code
-                 */
-                if ($options->devMod || ($feed->getDate()->getTimestamp() + $options->refreshTimeInMin * 60) < time()) {
-                    try {
-                        $feed->setDate(new \DateTime('now'));
-                        $feed->setResult($this->getPosts($searchString, $fields, $options));
-                        $this->itemRepository->updateFeed($feed);
-                        $result[] = $feed;
-                    } catch (\Exception $e) {
-                        throw new \Exception("feeds can't be updated. " . $e->getMessage(), 1558435668);
+
+            $apiContent = null;
+
+            $itemIdentifier = $this->composeItemIdentifierForListItem($this->cacheIdentifier , $searchString); //new for every foreach round up
+            //looking for items in model (C *R* UD) - not in cache
+            /**
+             * @var $item Item
+             */
+            $item = $this->itemRepository->findByTypeAndItemIdentifier(self::TYPE, $itemIdentifier);
+
+            //if dev mod, or time is up OR there are simply no items in database, then you will need a new api request
+            if (
+                // found nothing in item model
+                ($item === null)
+                ||
+                //dev Mode is on or time from flexform was up
+                ($options->devMod || $this->isFlexformRefreshTimeUp($item->getDate()->getTimestamp(), $options->refreshTimeInMin))
+            ) {
+                try {
+                    //make a request on api
+                    $apiContent = $this->callApi($searchString, $fields, $options);
+
+                    //if apiContent from api call have some content and I already have it in database model items: update item in model (CR *U* D)
+                    if ($apiContent !== null && ($item !== null) ) {
+
+                        $item->setDate(new \DateTime('now'));
+                        //apiContent from api call included in item-model and updated in database
+                        $item->setResult($apiContent);
+                        $this->itemRepository->updateItem($item);
+
+                        //taking item to result
+                        $result[] = $item;
+
+                        //if api content it there and item is empty, you write new item to model in database (*C* RUD)
+                    }elseif($apiContent !== null) {
+                        //insert new item
+                        $item = new Item(self::TYPE);
+                        $item->setItemIdentifier($itemIdentifier);
+                        $item->setResult($apiContent);
+                        // save to DB and return current item
+                        $this->itemRepository->saveItem($item);
+                        //taking item to result
+                        $result[] = $item;
+
                     }
                 }
-                continue;
+                catch (\Exception $e) {
+                    throw new \Exception($e->getMessage(), 1559547942);
+                }
+            } else {
+                $result[] = $item;
             }
 
-            try {
-                $feed = new Item(self::TYPE);
-                $feed->setCacheIdentifier($this->composeCacheIdentifierForListItem($this->cacheIdentifier , $searchString));
-                $feed->setResult($this->getPosts($searchString, $fields, $options));
-                // save to DB and return current feed
-                $this->itemRepository->saveFeed($feed);
-                $result[] = $feed;
-            } catch (\Exception $e) {
-                throw new \Exception('initial load for feed failed. ' . $e->getMessage(), 1558435673);
-            }
         }
 
-        return $this->getFeedItemsFromApiRequest($result, $options);
+        return $this->composeFeedArrayFromItemArrayForFrontEndView($result, $options);
     }
 
-    public function getFeedItemsFromApiRequest($result, $options)
+    /**
+     * takes up result from api getResultFromApi() (even it was from database or fresh from api, whatever), maps array of
+     * PlusB\PbSocial\Domain\Model\Item() to array of PlusB\PbSocial\Domain\Model\Feed() for front end to show.
+     *
+     * @param $result array of items PlusB\PbSocial\Domain\Model\Item
+     * @param $options object all seetings from flexform and typoscript
+     * @return array of 'rawFeeds' => $rawFeeds, 'feedItems' => $feedArray []PlusB\PbSocial\Domain\Model\Feed
+     */
+    public function composeFeedArrayFromItemArrayForFrontEndView($result, $options) : array
     {
+        /*
+          $result => array(2 items)
+            0 => PlusB\PbSocial\Domain\Model\Item
+            1 => PlusB\PbSocial\Domain\Model\Item
+        */
+
         $rawFeeds = array();
-        $feedItems = array();
+        $feedArray = array(); //[]PlusB\PbSocial\Domain\Model\Feed
 
         if (!empty($result)) {
             foreach ($result as $yt_feed) {
-                $rawFeeds[self::TYPE . '_' . $yt_feed->getCacheIdentifier() . '_raw'] = $yt_feed->getResult();
+                $rawFeeds[self::TYPE . '_' . $yt_feed->getItemIdentifier() . '_raw'] = $yt_feed->getResult();
                 foreach ($yt_feed->getResult()->items as $rawFeed) {
                     $feed = new Feed(self::TYPE, $rawFeed);
                     if ($options->youtubePlaylist) {
@@ -199,12 +248,12 @@ class YoutubeAdapter extends SocialMediaAdapter
                     $feed->setLink(self::YT_LINK . $id);
                     $d = new \DateTime($rawFeed->snippet->publishedAt);
                     $feed->setTimeStampTicks($d->getTimestamp());
-                    $feedItems[] = $feed;
+                    $feedArray[] = $feed;
                 }
             }
         }
 
-        return array('rawFeeds' => $rawFeeds, 'feedItems' => $feedItems);
+        return $this->setCacheContentData($rawFeeds, $feedArray);
     }
 
     /**
@@ -213,7 +262,7 @@ class YoutubeAdapter extends SocialMediaAdapter
      * @return mixed
      * @throws \Exception
      */
-    public function getPosts($searchString, $fields, $options)
+    public function callApi($searchString, $fields, $options)
     {
         $headers = array('Content-Type: application/json');
 

@@ -4,13 +4,14 @@ namespace PlusB\PbSocial\Service;
 
 use PlusB\PbSocial\Adapter;
 use PlusB\PbSocial\Service\Base\AbstractBaseService;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 
 /***************************************************************
  *
  *  Copyright notice
  *
- *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
+ *  (c) 2019 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -104,6 +105,7 @@ class FeedSyncService extends AbstractBaseService
                 break;
         }
 
+        DebuggerUtility::var_dump(get_defined_vars(), __CLASS__.__METHOD__);
         return $message;
     }
 
@@ -175,7 +177,6 @@ class FeedSyncService extends AbstractBaseService
             $message = $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString,
                 $e->getCode(),intval ($flexformOptions->settings['sysLogThisPlugin']));
         }
-
         return $message ."\n";
     }
 
@@ -266,7 +267,7 @@ class FeedSyncService extends AbstractBaseService
             $message = $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString,
                 $e->getCode(),intval ($flexformOptions->settings['sysLogThisPlugin']));
         }
-
+        DebuggerUtility::var_dump(get_defined_vars(), __CLASS__.__METHOD__);
         return $message ."\n";
     }
 
@@ -773,7 +774,6 @@ class FeedSyncService extends AbstractBaseService
             $message = $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString,
                 $e->getCode(),intval ($flexformOptions->settings['sysLogThisPlugin']));
         }
-
         return $message ."\n";
     }
 
@@ -852,7 +852,12 @@ class FeedSyncService extends AbstractBaseService
         $message = "";
         try {
 
+            //calling adapter by parameter at getResultFromApi()
             $content = $adapterObj->getResultFromApi();
+
+            /*
+             * content value please see \PlusB\PbSocial\Adapter\SocialMediaAdapter::setCacheContentData
+             */
 
             //writing to cache
             $this->cacheService->setCacheContent(

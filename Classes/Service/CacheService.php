@@ -4,12 +4,13 @@ namespace PlusB\PbSocial\Service;
 
 use PlusB\PbSocial\Service\Base\AbstractBaseService;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /***************************************************************
  *
  *  Copyright notice
  *
- *  (c) 2018 Arend Maubach <am@plusb.de>, plus B
+ *  (c) 2019 Arend Maubach <am@plusb.de>, plus B
  *
  *  All rights reserved
  *
@@ -216,6 +217,7 @@ class CacheService extends AbstractBaseService
 
             //if there is not already a cache, try to get a api sync and get a filled cache, but it only gets this requested network type
             if($this->cache->has($cacheIdentifier) === false){
+                DebuggerUtility::var_dump($this->cache->has($cacheIdentifier),  __CLASS__.__METHOD__ . "this->cache->has(cacheIdentifier) " . $this->cache->has($cacheIdentifier));
                 $this->feedSyncService->syncFeed(
                     $socialNetworkTypeString,
                     $flexformAndTyposcriptSettings,
@@ -224,16 +226,30 @@ class CacheService extends AbstractBaseService
                     $isVerbose = false
                 );
             }
+            //here cache exists, no matter what (or exception)
 
+            //it reads content from cache
             if($content = $this->cache->get($cacheIdentifier)){
                 $results[] = $content;
             }
-
-            return $results;
         } catch (\Exception $e) {
             $this->logWarning($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString, $e->getCode());
-            return $results;
         }
+
+        DebuggerUtility::var_dump(get_defined_vars(), __CLASS__.__METHOD__);
+
+        /**
+         * results => array(1 item)
+                0 => array(2 items)
+                    rawFeeds => array
+                    feedItems => array (of PlusB\PbSocial\Domain\Model\Feed)
+                        0 => PlusB\PbSocial\Domain\Model\Feed
+                        1 => PlusB\PbSocial\Domain\Model\Feed
+                        2 => PlusB\PbSocial\Domain\Model\Feed
+         *
+         * array of return value of \PlusB\PbSocial\Adapter\SocialMediaAdapter::setCacheContentData
+         */
+        return $results;
     }
 
     /**
@@ -242,7 +258,7 @@ class CacheService extends AbstractBaseService
      * @param string $socialNetworkTypeString
      * @param array $settings
      * @param integer $ttContentUid uid of plugin, for logging purpose - and for registering in cache identifier
-     * @param $content
+     * @param $content  'rawFeeds' => $rawFeeds, 'feedItems' => $feedArray PlusB\PbSocial\Domain\Model\Feed
      */
     public function setCacheContent(
         $socialNetworkTypeString,
@@ -252,10 +268,12 @@ class CacheService extends AbstractBaseService
     ){
         $cacheIdentifier = $this->calculateCacheIdentifier($socialNetworkTypeString, $settings, $ttContentUid);
 
+        DebuggerUtility::var_dump(get_defined_vars(), "setting cache");
+
         $this->cache->set(
             $cacheIdentifier,
             $data = $content,
-            $tags = [self::EXTKEY],
+            $tags = [self::EXTKEY, self::EXTKEY ."_". $socialNetworkTypeString ."_". $ttContentUid],
             $lifetime = $this->getCacheLifetime()
         );
     }
