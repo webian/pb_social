@@ -42,7 +42,7 @@
     ]
   },
   "replace": {
-    "pb_social": "self.version",
+    "plusb/pb_social": "self.version",
     "typo3-ter/pb_social": "self.version"
   }
 }
