@@ -36,7 +36,7 @@
                 <source>app secret</source>
                 <target>app secret</target>
             </trans-unit>
-            <trans-unit id="facebook.api.facebookPageAccessToken">
+            <trans-unit id="facebook.api.pageaccesstoken">
                 <source>'Never' expiring Facebook long lived page access token</source>
                 <target>'Unbegrenzter', langlebiger Facebook Seiten-Zugriffsschlüssel</target>
             </trans-unit>
