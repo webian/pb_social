@@ -8,7 +8,7 @@ With this extension we decided to fill a gap of social media integration in TYPO
 > Please visit our homepage [plusb.de](https://www.plusb.de/log/social-media-streams-pb_social/ "find more at our home page")
 
 It can display feeds from social media networks in the way you like it. Maybe you want to get your
-Facebook-Page content? No problem, set your Facebook-Credentials and Facebook-UserId and you're ready to go.
+Facebook-Page content? No problem, set your Facebook-Credentials, file for app review with 'managed-pages' grants only, and you're ready to go.
 The Extension will do all the tricky authentication stuff and leave the relaxed part of making the result pretty to you.
 
 Sometimes you'll need to follow a link to generate access codes for our plugin. 
