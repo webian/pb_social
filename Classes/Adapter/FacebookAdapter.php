@@ -9,6 +9,7 @@ require $extensionPath . 'facebook/src/Facebook/autoload.php';
 use Facebook\Facebook;
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /***************************************************************
  *
@@ -45,7 +46,7 @@ class FacebookAdapter extends SocialMediaAdapter
     private $api;
 
     public $isValid = false;
-    private $apiId, $apiSecret, $pageAccessToken, $options;
+    private $apiId, $apiSecret, $pageAccessToken;
 
     /**
      * @param string $apiId
@@ -71,13 +72,7 @@ class FacebookAdapter extends SocialMediaAdapter
         $this->pageAccessToken = $pageAccessToken;
     }
 
-    /**
-     * @param mixed $options
-     */
-    public function setOptions($options)
-    {
-        $this->options = $options;
-    }
+
 
     public function __construct(
         $apiId,
@@ -92,16 +87,19 @@ class FacebookAdapter extends SocialMediaAdapter
     {
         parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
 
+
         /* validation - interrupt instanciating if invalid */
-        if($validation = $this->validateAdapterSettings(
-            array(
+        if($this->validateAdapterSettings(
+            [
                 'apiId' => $apiId,
                 'apiSecret' => $apiSecret,
                 'pageAccessToken' => $pageAccessToken,
                 'options' => $options
-            ))['isValid'] === false)
+            ]
+            )
+        )
         {
-            throw new \Exception( self::TYPE . ' ' . $validation["message"], 1558515175);
+            throw new \Exception( self::TYPE . ' ' . $this->getValidation("validationMessage"), 1558515175);
         }
         /* validated */
 
@@ -116,7 +114,7 @@ class FacebookAdapter extends SocialMediaAdapter
      * @param $parameter
      * @return array
      */
-    public function validateAdapterSettings($parameter) : array
+    public function validateAdapterSettings($parameter) : bool
     {
         $isValid = false;
         $validationMessage = "";
@@ -126,7 +124,7 @@ class FacebookAdapter extends SocialMediaAdapter
         $this->setPageAccessToken($parameter['pageAccessToken']);
         $this->setOptions($parameter['options']);
 
-        if (empty($this->apiId) || empty($this->apiSecret)) {
+        if (empty($this->apiId) || empty($this->apiSecret) || (empty($this->pageAccessToken))) {
             $validationMessage = 'credentials not set: ' . (empty($this->apiId)?'apiId ':''). (empty($this->apiSecret)?'apiSecret ':''). (empty($this->pageAccessToken)?'pageAccessToken ':'');
         } elseif (empty($this->options->settings['facebookPageID'])) {
             $validationMessage = 'no facebookPageID ("Facebook facebookPageID" in flexform settings) ';
@@ -136,7 +134,8 @@ class FacebookAdapter extends SocialMediaAdapter
             $isValid = true;
         }
 
-        return ["isValid" => $isValid, "message" => $validationMessage];
+        $this->setValidation($isValid, $validationMessage);
+        return $isValid;
     }
 
     /**

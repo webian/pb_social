@@ -48,7 +48,7 @@ class LinkedInAdapter extends SocialMediaAdapter
     const EXTKEY = 'pb_social';
     const linkedin_company_post_uri = "https://www.linkedin.com/feed/update/urn:li:activity:";
 
-    private $apiKey, $apiSecret, $apiCallback, $token, $options;
+    private $apiKey, $apiSecret, $apiCallback, $token;
 
     /**
      * @param mixed $apiKey
@@ -122,9 +122,9 @@ class LinkedInAdapter extends SocialMediaAdapter
                     'apiCallback' => $apiCallback,
                     'token' => $token,
                     'options' => $options
-                ))['isValid'] === false)
+                )))
         {
-            throw new \Exception( self::TYPE . ' ' . $validation["message"], 1573552578);
+            throw new \Exception( self::TYPE . ' ' .$this->getValidation("validationMessage"), 1573552578);
         }
         /* validated */
 
@@ -141,7 +141,7 @@ class LinkedInAdapter extends SocialMediaAdapter
      * @param $parameter
      * @return bool
      */
-    public function validateAdapterSettings($parameter) : array
+    public function validateAdapterSettings($parameter) : bool
     {
         $isValid = false;
         $validationMessage = "";
@@ -160,7 +160,8 @@ class LinkedInAdapter extends SocialMediaAdapter
             $isValid = true;
         }
 
-        return ["isValid" => $isValid, "message" => $validationMessage];
+        $this->setValidation($isValid, $validationMessage);
+        return $isValid;
     }
 
     /**

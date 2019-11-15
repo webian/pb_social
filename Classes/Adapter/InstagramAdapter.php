@@ -41,7 +41,7 @@ class InstagramAdapter extends SocialMediaAdapter
     const TYPE = 'instagram';
 
     private $api;
-    private $apiKey, $apiSecret, $apiCallback, $code, $token, $options;
+    private $apiKey, $apiSecret, $apiCallback, $code, $token;
 
     /**
      * @param mixed $apiKey
@@ -120,17 +120,19 @@ class InstagramAdapter extends SocialMediaAdapter
         parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
 
         /* validation - interrupt instanciating if invalid */
-        if($validation = $this->validateAdapterSettings(
-                array(
+        if($this->validateAdapterSettings(
+                [
                     'apiKey' => $apiKey,
                     'apiSecret' => $apiSecret,
                     'apiCallback' => $apiCallback,
                     'code' => $code,
                     'token' => $token,
                     'options' => $options
-                ))['isValid'] === false)
+                ]
+            )
+        )
         {
-            throw new \Exception( self::TYPE . ' ' . $validation["message"], 1573551217);
+            throw new \Exception( self::TYPE . ' ' . $this->getValidation("validationMessage"), 1573551217);
         }
         /* validated */
 
@@ -144,7 +146,7 @@ class InstagramAdapter extends SocialMediaAdapter
      * @param $parameter
      * @return bool
      */
-    public function validateAdapterSettings($parameter) : array
+    public function validateAdapterSettings($parameter) : bool
     {
         $isValid = false;
         $validationMessage = "";
@@ -173,7 +175,8 @@ class InstagramAdapter extends SocialMediaAdapter
             $isValid = true;
         }
 
-        return ["isValid" => $isValid, "message" => $validationMessage];
+        $this->setValidation($isValid, $validationMessage);
+        return $isValid;
     }
 
     /**

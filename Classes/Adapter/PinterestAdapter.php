@@ -43,7 +43,7 @@ class PinterestAdapter extends SocialMediaAdapter
     private $api;
     private $credentialRepository;
 
-    private $appId, $appSecret, $accessCode, $options;
+    private $appId, $appSecret, $accessCode;
 
     /**
      * @param mixed $appId
@@ -100,9 +100,9 @@ class PinterestAdapter extends SocialMediaAdapter
                     'appSecret' => $appSecret,
                     'accessCode' => $accessCode,
                     'options' => $options
-                ))['isValid'] === false)
+                )))
         {
-            throw new \Exception( self::TYPE . ' ' . $validation["message"], 1573562733);
+            throw new \Exception( self::TYPE . ' ' .$this->getValidation("validationMessage"), 1573562733);
         }
 
         /* validated */
@@ -119,7 +119,7 @@ class PinterestAdapter extends SocialMediaAdapter
      * @param $parameter
      * @return bool
      */
-    public function validateAdapterSettings($parameter) : array
+    public function validateAdapterSettings($parameter) : bool
     {
         $isValid = false;
         $validationMessage = "";
@@ -137,7 +137,8 @@ class PinterestAdapter extends SocialMediaAdapter
             $isValid = true;
         }
 
-        return ["isValid" => $isValid, "message" => $validationMessage];
+        $this->setValidation($isValid, $validationMessage);
+        return $isValid;
     }
 
     /**

@@ -39,7 +39,7 @@ class TwitterAdapter extends SocialMediaAdapter
 
     const TYPE = 'twitter';
 
-    private $consumerKey, $consumerSecret, $accessToken, $accessTokenSecret, $options;
+    private $consumerKey, $consumerSecret, $accessToken, $accessTokenSecret;
 
     /**
      * @param mixed $consumerKey
@@ -107,9 +107,9 @@ class TwitterAdapter extends SocialMediaAdapter
                     'accessToken' => $accessToken,
                     'accessTokenSecret' => $accessTokenSecret,
                     'options' => $options
-                ))['isValid'] === false)
+                )))
         {
-            throw new \Exception( self::TYPE . ' ' . $validation["message"], 1558515175);
+            throw new \Exception( self::TYPE . ' ' .$this->getValidation("validationMessage"), 1558515175);
         }
         /* validated */
 
@@ -123,7 +123,7 @@ class TwitterAdapter extends SocialMediaAdapter
      * @param $parameter
      * @return bool
      */
-    public function validateAdapterSettings($parameter) : array
+    public function validateAdapterSettings($parameter) : bool
     {
         $isValid = false;
         $validationMessage = "";
@@ -142,7 +142,8 @@ class TwitterAdapter extends SocialMediaAdapter
             $isValid = true;
         }
 
-        return ["isValid" => $isValid, "message" => $validationMessage];
+        $this->setValidation($isValid, $validationMessage);
+        return $isValid;
     }
 
     /**

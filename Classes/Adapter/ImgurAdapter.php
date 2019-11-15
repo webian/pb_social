@@ -39,7 +39,7 @@ class ImgurAdapter extends SocialMediaAdapter
 
     const TYPE = 'imgur';
 
-    private $apiId, $apiSecret, $options;
+    private $apiId, $apiSecret;
 
     /**
      * @param mixed $apiId
@@ -80,14 +80,16 @@ class ImgurAdapter extends SocialMediaAdapter
         parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
 
         /* validation - interrupt instanciating if invalid */
-        if($validation = $this->validateAdapterSettings(
-                array(
+        if( $this->validateAdapterSettings(
+                [
                     'apiId' => $apiId,
                     'apiSecret' => $apiSecret,
                     'options' => $options
-                ))['isValid'] === false)
+                ]
+            )
+        )
         {
-            throw new \Exception( self::TYPE . ' ' . $validation["message"], 1558521767);
+            throw new \Exception( self::TYPE . ' ' . $this->getValidation("validationMessage") , 1558521767);
         }
         /* validated */
 
@@ -101,7 +103,7 @@ class ImgurAdapter extends SocialMediaAdapter
      * @param $parameter
      * @return bool
      */
-    public function validateAdapterSettings($parameter) : array
+    public function validateAdapterSettings($parameter) : bool
     {
         $isValid = false;
         $validationMessage = "";
@@ -118,7 +120,8 @@ class ImgurAdapter extends SocialMediaAdapter
             $isValid = true;
         }
 
-        return ["isValid" => $isValid, "message" => $validationMessage];
+        $this->setValidation($isValid, $validationMessage);
+        return $isValid;
     }
 
     /**

@@ -40,7 +40,7 @@ class TumblrAdapter extends SocialMediaAdapter
 
     const TYPE = 'tumblr';
 
-    private $apiId, $apiSecret, $token, $tokenSecret, $options;
+    private $apiId, $apiSecret, $token, $tokenSecret;
 
     /**
      * @param mixed $apiId
@@ -106,9 +106,9 @@ class TumblrAdapter extends SocialMediaAdapter
                     'token' => $token,
                     'tokenSecret' => $tokenSecret,
                     'options' => $options
-                ))['isValid'] === false)
+                )))
         {
-            throw new \Exception( self::TYPE . ' ' . $validation["message"], 1573563427);
+            throw new \Exception( self::TYPE . ' ' . $this->getValidation("validationMessage"), 1573563427);
         }
         /* validated */
 
@@ -123,7 +123,7 @@ class TumblrAdapter extends SocialMediaAdapter
      * @param $parameter
      * @return bool
      */
-    public function validateAdapterSettings($parameter) : array
+    public function validateAdapterSettings($parameter) : bool
     {
         $isValid = false;
         $validationMessage = "";
@@ -142,7 +142,8 @@ class TumblrAdapter extends SocialMediaAdapter
             $isValid = true;
         }
 
-        return ["isValid" => $isValid, "message" => $validationMessage];
+        $this->setValidation($isValid, $validationMessage);
+        return $isValid;
     }
 
 

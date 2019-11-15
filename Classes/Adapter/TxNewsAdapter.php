@@ -45,16 +45,6 @@ class TxNewsAdapter extends SocialMediaAdapter
 
     protected $cObj;
     protected $detailPageUid;
-    private $options;
-
-    /**
-     * @param mixed $options
-     */
-    public function setOptions($options)
-    {
-        $this->options = $options;
-    }
-
 
     /**
      * newsRepository
@@ -81,9 +71,9 @@ class TxNewsAdapter extends SocialMediaAdapter
         if($validation = $this->validateAdapterSettings(
                 array(
                     'options' => $options
-                ))['isValid'] === false)
+                )))
         {
-            throw new \Exception( self::TYPE . ' ' . $validation["message"], 1573564624);
+            throw new \Exception( self::TYPE . ' ' . $this->getValidation("validationMessage"), 1573564624);
         }
         /* validated */
 
@@ -100,7 +90,7 @@ class TxNewsAdapter extends SocialMediaAdapter
      * @param $parameter
      * @return bool
      */
-    public function validateAdapterSettings($parameter) : array
+    public function validateAdapterSettings($parameter) : bool
     {
         $isValid = false;
         $validationMessage = "";
@@ -116,7 +106,8 @@ class TxNewsAdapter extends SocialMediaAdapter
             $isValid = true;
         }
 
-        return ["isValid" => $isValid, "message" => $validationMessage];
+        $this->setValidation($isValid, $validationMessage);
+        return $isValid;
     }
 
     /**

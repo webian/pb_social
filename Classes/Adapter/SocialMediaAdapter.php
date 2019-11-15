@@ -38,7 +38,8 @@ abstract class SocialMediaAdapter implements SocialMediaAdapterInterface
     const TYPE = 'socialMediaAdapter';
     const REFRESH_TIME_MINUTES = 60, REFRESH_TIME_SECONDS = 1, REFRESH_TIME_HOURS = 60*60;
     const EXTKEY = 'pb_social';
-
+    protected $validation = ["isValid" => false, "message" => ""];
+    protected $options;
     /**
      * @var string $type name of social network
      */
@@ -77,9 +78,33 @@ abstract class SocialMediaAdapter implements SocialMediaAdapterInterface
         $this->ttContentPid = $ttContentPid;
     }
 
-    abstract public function validateAdapterSettings($parameter) : array;
+    abstract public function validateAdapterSettings($parameter) : bool;
     abstract public function getResultFromApi() : array;
     abstract public function composeFeedArrayFromItemArrayForFrontEndView($result, $options) : array;
+
+
+    /**
+     * @param bool $isValid
+     * @param string $validationMessage
+     */
+    protected function setValidation(bool $isValid, string $validationMessage)
+    {
+        $this->validation = ["isValid" => $isValid, "validationMessage" => $validationMessage];
+    }
+
+    protected function getValidation(string $key)
+    {
+        return $this->validation[$key];
+    }
+
+    /**
+     * @param mixed $options
+     */
+    public function setOptions($options)
+    {
+        $this->options = $options;
+    }
+
 
     /*
      * setting this must be on one place, to be able to have it all in similar form in caching framework

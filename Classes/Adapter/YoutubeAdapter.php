@@ -47,7 +47,7 @@ class YoutubeAdapter extends SocialMediaAdapter
     const YT_SEARCH_CHANNEL = 'https://www.googleapis.com/youtube/v3/search?channelId=';
 
     public $isValid = false, $validationMessage = "";
-    private $appKey, $options;
+    private $appKey;
 
     /**
      * @param mixed $appKey
@@ -55,14 +55,6 @@ class YoutubeAdapter extends SocialMediaAdapter
     public function setAppKey($appKey)
     {
         $this->appKey = $appKey;
-    }
-
-    /**
-     * @param mixed $options
-     */
-    public function setOptions($options)
-    {
-        $this->options = $options;
     }
 
 
@@ -83,9 +75,9 @@ class YoutubeAdapter extends SocialMediaAdapter
                 array(
                     'appKey' => $appKey,
                     'options' => $options
-                ))['isValid'] === false)
+                )))
         {
-            throw new \Exception( self::TYPE . ' ' . $validation["message"], 1573565268);
+            throw new \Exception( self::TYPE . ' ' . $this->getValidation("validationMessage"), 1573565268);
         }
         /* validated */
     }
@@ -96,7 +88,7 @@ class YoutubeAdapter extends SocialMediaAdapter
      * @param $parameter
      * @return bool
      */
-    public function validateAdapterSettings($parameter) : array
+    public function validateAdapterSettings($parameter) : bool
     {
         $isValid = false;
         $validationMessage = "";
@@ -112,7 +104,8 @@ class YoutubeAdapter extends SocialMediaAdapter
             $isValid = true;
         }
 
-        return ["isValid" => $isValid, "message" => $validationMessage];
+        $this->setValidation($isValid, $validationMessage);
+        return $isValid;
     }
 
     /**

@@ -40,7 +40,7 @@ class VimeoAdapter extends SocialMediaAdapter
 
     const VIMEO_LINK = 'https://player.vimeo.com';
 
-    private $api, $clientIdentifier, $clientSecret, $accessToken, $options;
+    private $api, $clientIdentifier, $clientSecret, $accessToken;
 
     /**
      * @param mixed $clientIdentifier
@@ -97,9 +97,9 @@ class VimeoAdapter extends SocialMediaAdapter
                     'clientSecret' => $clientSecret,
                     'accessToken' => $accessToken,
                     'options' => $options
-                ))['isValid'] === false)
+                )))
         {
-            throw new \Exception( self::TYPE . ' ' . $validation["message"], 1573565000);
+            throw new \Exception( self::TYPE . ' ' . $this->getValidation("validationMessage"), 1573565000);
         }
         /* validated */
 
@@ -112,7 +112,7 @@ class VimeoAdapter extends SocialMediaAdapter
      * @param $parameter
      * @return bool
      */
-    public function validateAdapterSettings($parameter) : array
+    public function validateAdapterSettings($parameter) : bool
     {
         $isValid = false;
         $validationMessage = "";
@@ -130,7 +130,8 @@ class VimeoAdapter extends SocialMediaAdapter
             $isValid = true;
         }
 
-        return ["isValid" => $isValid, "message" => $validationMessage];
+        $this->setValidation($isValid, $validationMessage);
+        return $isValid;
     }
 
     /**

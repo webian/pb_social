@@ -35,7 +35,7 @@ interface SocialMediaAdapterInterface
      * @param $parameter
      * @return array
      */
-    public function validateAdapterSettings($parameter) : array;
+    public function validateAdapterSettings($parameter) : bool;
 
     /*
      * loops over search id from flexform, reads records form PlusB\PbSocial\Domain\Model\Item(),
