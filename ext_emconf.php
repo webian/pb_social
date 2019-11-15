@@ -16,10 +16,11 @@ $EM_CONF[$_EXTKEY] = array (
 	'category' => 'Frontend Plugins',
 	'author' => 'plus B: Mikolaj Jedrzejewski, Robert Becker, Sergej Junker, Arend Maubach, Patricia Bartel, Ramon Mohi, Kai Lorenz',
 	'author_email' => 'info@plusb.de',
+    'author_company' => 'plus B',
 	'state' => 'stable',
 	'uploadfolder' => false,
+    'clearCacheOnLoad' => true,
 	'createDirs' => '',
-	'clearCacheOnLoad' => 0,
 	'version' => '1.5.0',
 	'constraints' => 
 	array (
@@ -36,7 +37,5 @@ $EM_CONF[$_EXTKEY] = array (
 		array (
 		),
 	),
-	'clearcacheonload' => false,
-	'author_company' => NULL,
 );
 

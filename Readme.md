@@ -1,4 +1,4 @@
-#TYPO3 Extension plusb/pb_social
+# TYPO3 Extension plusb/pb_social
 
 > Social media stream enables you to get posts from social media networks into your TYPO3 system.
 > Currently supported social media networks are: Facebook, Imgur, Instagram, LinkedIn, Pinterest, Tumblr, Twitter, YouTube, Vimeo and TYPO3 Extension tx_news
@@ -8,7 +8,7 @@ With this extension we decided to fill a gap of social media integration in TYPO
 > Please visit our homepage [plusb.de](https://www.plusb.de/log/social-media-streams-pb_social/ "find more at our home page")
 
 It can display feeds from social media networks in the way you like it. Maybe you want to get your
-Facebook-Page content? No problem, set your Facebook-Credentials and Facebook-UserId and you're ready to go.
+Facebook-Page content? No problem, set your Facebook-Credentials, file for app review with 'managed-pages' grants only, and you're ready to go.
 The Extension will do all the tricky authentication stuff and leave the relaxed part of making the result pretty to you.
 
 Sometimes you'll need to follow a link to generate access codes for our plugin. 
@@ -19,7 +19,7 @@ If you do not change code, **everything of pb_social extension is stored in your
 The reason why you need to provide these access codes is that most social media networks use OAuth2 authentication.
 Read more about OAuth here: http://oauth.net/articles/authentication/
 
-##1. Features
+## 1. Features
 
 * different configuration and social media networks on each plugin and on different pages
 * [new] different social media network credentials on each plugin, overriding optional Extension Configuration credentials (global) 
@@ -28,8 +28,8 @@ Read more about OAuth here: http://oauth.net/articles/authentication/
 * *tx_news* api access, you can include your own tx_news items in your feeds [learn more about extension *tx_news* of Georg Ringer](https://github.com/georgringer/news)
 * currently supported social media networks: Facebook, Imgur, Instagram, LinkedIn, Pinterest, Tumblr, Twitter, Youtube, Vimeo, tx_news 
 
-##2. Usage
-###2.1. Installation
+## 2. Usage
+### 2.1. Installation
 #### Installation using Composer
   
 Install the extension by using [Composer](https://getcomposer.org/ "Learn more about composer"). 
@@ -40,14 +40,14 @@ The current version has an issue with composer. [View Issue](https://bitbucket.o
 
 Download and install the extension with the extension manager module.
 
-###2.2. Minimal setup
+### 2.2. Minimal setup
 
 1. Include the TypoScript in your root template record or in template record of the page containing a pb_social plugin. 
 1. Go to extension configuration of pb_social in Admin Tools / Extensions / pb_social, click on gear wheel icon.
     * Get some API credentials of a social media network and enter it in extension configuration
 1. Create a plugin of pb_social on a page and set this social media network to "Active" by clicking checkbox, save plugin changes (perhaps you want to insert some further data like a search id or sth. else)
 
-###2.3 Detailed Setup 
+### 2.3 Detailed Setup 
 
 1. Enter all your available social media account data into the respective input fields. If you're new to this or don't have the data, the following links will give you a basic direction where to get these credentials. [developers.facebook.com/apps](developers.facebook.com/apps), 
     [instagram.com/developer/clients/manage/](instagram.com/developer/clients/manage/), 
@@ -85,7 +85,7 @@ Just make sure tx_news is installed and running and you have some news to displa
        
 1. In case of trouble: please check typo3temp/var/logs/typo3_pb_social_*.log or Syslog (SYSTEM/Log in TYPO3 Backend). Please make sure, that you have `$GLOBALS['TYPO3_CONF_VARS']['SYS']['systemLogLevel']` in LocalConfiguration.php set to 0 to see trouble and success. And please do not forget to reset systemLogLevel to a higher value in productive mode.    
 
-###2.4 Annotations about flexform settings
+### 2.4 Annotations about flexform settings
 
 In tab "General Settings", you see several "global" instructions for the actual plugin scope:
 
@@ -104,7 +104,7 @@ If you want to leave out social media posts, which have no image, you uses this 
 * Trim text after reaching this letter limit 
 Here you can crop post descriptions in your plugin teaser. 
 
-##3. Hints for social media networks
+## 3. Hints for social media networks
      
 ### facebook
 * https://developers.facebook.com/apps
@@ -113,11 +113,25 @@ Here you can crop post descriptions in your plugin teaser.
 #### You will need a so called "app review"
 1. Please register an account at developers.facebook.com and register your pb_social extension as app.
 
-1. {...}
+1. You will need a Facebook Page of your own. Make a note of the Page-ID, which you will need for the extension.
 
-1. You will receive an 'app id' and 'app secret' in developer page, and you can immediately use it.    
-1. Please file a request for access rights under menu "App Review". 
-1. Please choose (email, default) **manage_pages**. 
+2. You will need to create an App on developers.facebook.com. In most cases, you would need to ask for the proper rights/permissions to make API calls. However, if you are only using the App for pb_social and you are using it in development mode, you won’t need to worry about permissions. Image 2 shows where to find what mode you are currently in. Make a note of the App ID and App Secret. You will need to enter these into the extension.
+
+3. The next steps will be a bit more complicated - but useful: First, navigate to [Developers Facebook Tools](https://developers.facebook.com/tools/explorer/?classic=0, "Facebook Tools").
+On the right side of your screen select the App and select **Get Page Access Token** in the **User or Page** section. A popup will appear. Navigate through the steps, checking all of the checkboxes, etc.
+The main screen will subsequently change, updating the Key in the Access Token field. Now copy this Key to your clipboard and navigate to [Developers Facebook Tools Accesstoken Debugger](https://developers.facebook.com/tools/debug/accesstoken/, "Accesstoken Debugger"). Paste the copied Key into the given field. 
+Clicking the Debug button will reveal Information about the Key you entered. You will see that the Key will expire in just under an hour.
+You will, however, need a *longer-lasting* Key for pb_social. To solve this problem, click the button named **Extend Access Token** at the bottom of your screen.
+Clicking the button will reveal a new Key. Click the **Debug** button next to it and copy the new Key. This key will last about 2 months.
+You can now *navigate back* to [Developers Facebook Tools](https://developers.facebook.com/tools/explorer/?classic=0, "Facebook Tools")
+Now choose the *User Token option* under **User or Page* and paste the new Key into the **Access Token** field. 
+In the API-Explorer bar enter the Page-ID from Step 1 as follows: **{YOUR-PAGE-ID-FROM-STEP-ONE}/**
+Click Submit on the top right of your screen. This API call will change the expiration of your Key from 2 months to **Expires: Never**.
+Make sure this is the case by entering the Key on [Developers Facebook Tools Accesstoken Debugger](https://developers.facebook.com/tools/debug/accesstoken/, "Accesstoken Debugger") 
+You now have a Key that won’t ever expire. Who knows what the implications are for Facebook. Enter your Key into the **Page Access Token** field in your TYPO3 pb_social extension plugin or extension configuration.
+
+1. Follow up: Copy 'app id' and 'app secret' in app details of https://developers.facebook.com/apps, enter those into pb_social extension, and you can immediately use it as facebook developer mode and see an example in TYPO3 front end.    
+1. To move over to production mode of your facebook app: Please file a request for access rights under menu "App Review" using following steps: Please navigate to *App Review". As access rights, please choose **manage_pages**. 
 
 1. You will need a TYPO3 Backend for the app review team to be able to consider you as a good guy. They will need access to your pb_social Plugin settings. Please provide a TYPO3 BE url, BE user and a password for facebook app review team. 
 
@@ -209,9 +223,9 @@ Tools like postman can be useful for this but are not necessary.
 
 
 
-##4. How To Migrate
+## 4. How To Migrate
 
-###4.1 Migration from `1.3.1` to `1.3.4`: Instagram access token
+### 4.1 Migration from `1.3.1` to `1.3.4`: Instagram access token
 * Instagram changed its access token procedure. You seemingly would need a logged in browser session to get the access token. 
 So automatic generation by our code will not longer work. To get it, please log in into your instagram and refer to 
 information of [instagram developer information](http://instagram.com/developer/clients/manage/). But please notice, you would need
@@ -220,7 +234,7 @@ to check "Disable implicit OAuth:" for this time (please uncheck after having do
 After having received the access token, fill in this long string into `pb_social extension configuration` in tab `"Instagram"` / `"Instagram access token"` and hit "Save". 
 * If you did not already have done this, leaving version 1.3.1: Please do this to all of your pb_social - plugins: Open, save it again. We changed flexform in tab "LinkedIn". (If you do not use LinkedIn, nothing has to be done)
 
-##5. Known Issues
+## 5. Known Issues
 
 - linkedIn causes some issues, in case a "LinkedIn company ID" does not exist or `Show job postings` and `Show product postings` is activated in plugin settings. 
     * hint: in this case, try to uncheck both `Show job postings` and `Show product postings` in your plugin settings, clear cache of this page and try a reload.
@@ -238,7 +252,7 @@ After having received the access token, fill in this long string into `pb_social
 - Scheduler Task should only run each 10-15 minutes due to API restrictions.
 
 
-##6. FAQ
+## 6. FAQ
 
 #### Q: How can I get in contact to plus B, in case of suggestions, trouble or need help?
 * Go to [our Website](https://plusb.de/ "our Website plus B in Berlin, Germany")

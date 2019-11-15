@@ -141,7 +141,7 @@
                     </settings.facebookApiSecret>
                     <settings.facebookPageAccessToken>
                         <TCEforms>
-                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:facebook.api.facebookPageAccessToken</label>
+                            <label>LLL:EXT:pb_social/Resources/Private/Language/locallang_extconf.xlf:facebook.api.pageaccesstoken</label>
                             <displayCond>FIELD:settings.facebookPluginKeyfieldEnabled:=:1</displayCond>
                             <config>
                                 <type>input</type>
