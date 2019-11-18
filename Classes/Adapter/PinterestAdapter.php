@@ -94,13 +94,15 @@ class PinterestAdapter extends SocialMediaAdapter
          * todo: quick fix - but we'd better add a layer for adapter in between, here after "return $this" instance is not completed but existing (AM)
          */
         /* validation - interrupt instanciating if invalid */
-        if($validation = $this->validateAdapterSettings(
-                array(
+        if(!$this->validateAdapterSettings(
+                [
                     'appId' => $appId,
                     'appSecret' => $appSecret,
                     'accessCode' => $accessCode,
                     'options' => $options
-                )))
+                ]
+            )
+        )
         {
             throw new \Exception( self::TYPE . ' ' .$this->getValidation("validationMessage"), 1573562733);
         }

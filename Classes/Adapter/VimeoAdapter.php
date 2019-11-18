@@ -91,13 +91,15 @@ class VimeoAdapter extends SocialMediaAdapter
 
 
         /* validation - interrupt instanciating if invalid */
-        if($validation = $this->validateAdapterSettings(
-                array(
+        if(!$this->validateAdapterSettings(
+                [
                     'clientIdentifier' => $clientIdentifier,
                     'clientSecret' => $clientSecret,
                     'accessToken' => $accessToken,
                     'options' => $options
-                )))
+                ]
+            )
+        )
         {
             throw new \Exception( self::TYPE . ' ' . $this->getValidation("validationMessage"), 1573565000);
         }

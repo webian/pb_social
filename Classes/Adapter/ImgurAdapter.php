@@ -80,7 +80,7 @@ class ImgurAdapter extends SocialMediaAdapter
         parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
 
         /* validation - interrupt instanciating if invalid */
-        if( $this->validateAdapterSettings(
+        if(!$this->validateAdapterSettings(
                 [
                     'apiId' => $apiId,
                     'apiSecret' => $apiSecret,

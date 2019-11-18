@@ -71,11 +71,13 @@ class YoutubeAdapter extends SocialMediaAdapter
         parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
 
         /* validation - interrupt instanciating if invalid */
-        if($validation = $this->validateAdapterSettings(
-                array(
+        if(!$this->validateAdapterSettings(
+                [
                     'appKey' => $appKey,
                     'options' => $options
-                )))
+                ]
+            )
+        )
         {
             throw new \Exception( self::TYPE . ' ' . $this->getValidation("validationMessage"), 1573565268);
         }

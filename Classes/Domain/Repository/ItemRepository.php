@@ -1,7 +1,6 @@
 <?php
 namespace PlusB\PbSocial\Domain\Repository;
-#require_once \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('pb_social') . 'Resources/Private/Libs/tumblr/vendor/autoload.php';
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+
 
 /***************************************************************
  *

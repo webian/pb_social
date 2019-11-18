@@ -9,7 +9,6 @@ require $extensionPath . 'facebook/src/Facebook/autoload.php';
 use Facebook\Facebook;
 use PlusB\PbSocial\Domain\Model\Feed;
 use PlusB\PbSocial\Domain\Model\Item;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /***************************************************************
  *
@@ -67,9 +66,17 @@ class FacebookAdapter extends SocialMediaAdapter
     /**
      * @param string $pageAccessToken
      */
-    public function setPageAccessToken($pageAccessToken)
+    private function setPageAccessToken(string $pageAccessToken)
     {
         $this->pageAccessToken = $pageAccessToken;
+    }
+
+    /**
+     * @return string
+     */
+    private function getPageAccessToken() : string
+    {
+        return $this->pageAccessToken;
     }
 
 
@@ -89,17 +96,17 @@ class FacebookAdapter extends SocialMediaAdapter
 
 
         /* validation - interrupt instanciating if invalid */
-        if($this->validateAdapterSettings(
-            [
-                'apiId' => $apiId,
-                'apiSecret' => $apiSecret,
-                'pageAccessToken' => $pageAccessToken,
-                'options' => $options
-            ]
+        if(!$this->validateAdapterSettings(
+                [
+                    'apiId' => $apiId,
+                    'apiSecret' => $apiSecret,
+                    'pageAccessToken' => $pageAccessToken,
+                    'options' => $options
+                ]
             )
         )
         {
-            throw new \Exception( self::TYPE . ' ' . $this->getValidation("validationMessage"), 1558515175);
+            throw new \Exception( self::TYPE . ' ' . $this->getValidation("validationMessage"), 1574088320);
         }
         /* validated */
 
@@ -112,7 +119,7 @@ class FacebookAdapter extends SocialMediaAdapter
      * validates constructor input parameters in an individual way just for the adapter
      *
      * @param $parameter
-     * @return array
+     * @return bool
      */
     public function validateAdapterSettings($parameter) : bool
     {
@@ -122,12 +129,23 @@ class FacebookAdapter extends SocialMediaAdapter
         $this->setApiId($parameter['apiId']);
         $this->setApiSecret($parameter['apiSecret']);
         $this->setPageAccessToken($parameter['pageAccessToken']);
+        $pageAccessToken = $this->getPageAccessToken();
+
         $this->setOptions($parameter['options']);
 
-        if (empty($this->apiId) || empty($this->apiSecret) || (empty($this->pageAccessToken))) {
-            $validationMessage = 'credentials not set: ' . (empty($this->apiId)?'apiId ':''). (empty($this->apiSecret)?'apiSecret ':''). (empty($this->pageAccessToken)?'pageAccessToken ':'');
-        } elseif (empty($this->options->settings['facebookPageID'])) {
-            $validationMessage = 'no facebookPageID ("Facebook facebookPageID" in flexform settings) ';
+        if (empty($this->apiId)
+            || empty($this->apiSecret)
+            || empty($pageAccessToken)
+            || $pageAccessToken === ''
+            || empty($this->options->settings['facebookPageID'])
+        ) {
+            $validationMessage =
+                'credentials not set: '
+                . (empty($this->apiId)?'apiId, ':'')
+                . (empty($this->apiSecret)?'apiSecret, ':'')
+                . (empty($pageAccessToken)?'pageAccessToken, ':'')
+                . (empty($this->options->settings['facebookPageID'])?'facebookPageID ':'')
+            ;
         } elseif (strstr($this->options->settings['facebookPageID'],',')) {
             $validationMessage = 'facebookPageID contains "," - please use only one facebook Page ID("Facebook facebookPageID" in flexform settings) ';
         } else {

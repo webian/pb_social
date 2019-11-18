@@ -4,7 +4,6 @@ namespace PlusB\PbSocial\Service;
 
 use PlusB\PbSocial\Adapter;
 use PlusB\PbSocial\Service\Base\AbstractBaseService;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 
 /***************************************************************
@@ -104,8 +103,6 @@ class FeedSyncService extends AbstractBaseService
                 $message .= $this->syncNewsFeed($socialNetworkTypeString, $flexformOptions, $ttContentUid, $ttContenPid, $isVerbose);
                 break;
         }
-
-        DebuggerUtility::var_dump(get_defined_vars(), __CLASS__.__METHOD__);
         return $message;
     }
 
@@ -144,9 +141,9 @@ class FeedSyncService extends AbstractBaseService
         $configPageAccessToken =
             ($flexformOptions->settings['facebookPluginKeyfieldEnabled'] === '1')
                 ?
-                $flexformOptions->settings['facebookPageAccessToken']
+                strval($flexformOptions->settings['facebookPageAccessToken'])
                 :
-                $this->extConf['socialfeed.']['facebook.']['api.']['pageaccesstoken'];
+                strval($this->extConf['socialfeed.']['facebook.']['api.']['pageaccesstoken']);
 
         try {
             //adapter
@@ -267,7 +264,6 @@ class FeedSyncService extends AbstractBaseService
             $message = $this->logError($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString,
                 $e->getCode(),intval ($flexformOptions->settings['sysLogThisPlugin']));
         }
-        DebuggerUtility::var_dump(get_defined_vars(), __CLASS__.__METHOD__);
         return $message ."\n";
     }
 

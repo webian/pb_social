@@ -3,7 +3,6 @@
 namespace PlusB\PbSocial\Adapter;
 
 use PlusB\PbSocial\Service\LogTrait;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /***************************************************************
  *
@@ -141,7 +140,6 @@ abstract class SocialMediaAdapter implements SocialMediaAdapterInterface
      * Why do we write do database? Because we want to trigger cache, thats all.
      */
     protected function composeItemIdentifierForListItem($cacheIdentifier, $listItem){
-        DebuggerUtility::var_dump(get_defined_vars(), __CLASS__.__METHOD__);
         return $cacheIdentifier ."_". sha1($listItem);
     }
 

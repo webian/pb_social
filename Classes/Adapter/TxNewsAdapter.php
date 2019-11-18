@@ -68,10 +68,12 @@ class TxNewsAdapter extends SocialMediaAdapter
 
 
         /* validation - interrupt instanciating if invalid */
-        if($validation = $this->validateAdapterSettings(
-                array(
+        if(!$this->validateAdapterSettings(
+                [
                     'options' => $options
-                )))
+                ]
+            )
+        )
         {
             throw new \Exception( self::TYPE . ' ' . $this->getValidation("validationMessage"), 1573564624);
         }

@@ -120,7 +120,7 @@ class InstagramAdapter extends SocialMediaAdapter
         parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
 
         /* validation - interrupt instanciating if invalid */
-        if($this->validateAdapterSettings(
+        if(!$this->validateAdapterSettings(
                 [
                     'apiKey' => $apiKey,
                     'apiSecret' => $apiSecret,

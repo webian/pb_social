@@ -4,7 +4,6 @@ namespace PlusB\PbSocial\Service;
 
 use PlusB\PbSocial\Service\Base\AbstractBaseService;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /***************************************************************
  *
@@ -217,7 +216,6 @@ class CacheService extends AbstractBaseService
 
             //if there is not already a cache, try to get a api sync and get a filled cache, but it only gets this requested network type
             if($this->cache->has($cacheIdentifier) === false){
-                DebuggerUtility::var_dump($this->cache->has($cacheIdentifier),  __CLASS__.__METHOD__ . "this->cache->has(cacheIdentifier) " . $this->cache->has($cacheIdentifier));
                 $this->feedSyncService->syncFeed(
                     $socialNetworkTypeString,
                     $flexformAndTyposcriptSettings,
@@ -235,8 +233,6 @@ class CacheService extends AbstractBaseService
         } catch (\Exception $e) {
             $this->logWarning($e->getMessage(), $ttContentUid, $ttContentPid, $socialNetworkTypeString, $e->getCode());
         }
-
-        DebuggerUtility::var_dump(get_defined_vars(), __CLASS__.__METHOD__);
 
         /**
          * results => array(1 item)
@@ -267,8 +263,6 @@ class CacheService extends AbstractBaseService
         $content
     ){
         $cacheIdentifier = $this->calculateCacheIdentifier($socialNetworkTypeString, $settings, $ttContentUid);
-
-        DebuggerUtility::var_dump(get_defined_vars(), "setting cache");
 
         $this->cache->set(
             $cacheIdentifier,

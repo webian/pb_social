@@ -99,14 +99,16 @@ class TumblrAdapter extends SocialMediaAdapter
         parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
 
         /* validation - interrupt instanciating if invalid */
-        if($validation = $this->validateAdapterSettings(
-                array(
+        if(!$this->validateAdapterSettings(
+               [
                     'apiId' => $apiId,
                     'apiSecret' => $apiSecret,
                     'token' => $token,
                     'tokenSecret' => $tokenSecret,
                     'options' => $options
-                )))
+                ]
+            )
+        )
         {
             throw new \Exception( self::TYPE . ' ' . $this->getValidation("validationMessage"), 1573563427);
         }

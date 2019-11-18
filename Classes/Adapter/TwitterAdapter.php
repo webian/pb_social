@@ -100,7 +100,7 @@ class TwitterAdapter extends SocialMediaAdapter
         parent::__construct($itemRepository, $cacheIdentifier, $ttContentUid, $ttContentPid);
 
         /* validation - interrupt instanciating if invalid */
-        if($validation = $this->validateAdapterSettings(
+        if(!$this->validateAdapterSettings(
                 array(
                     'consumerKey' => $consumerKey,
                     'consumerSecret' => $consumerSecret,
