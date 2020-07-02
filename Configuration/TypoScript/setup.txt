@@ -41,9 +41,9 @@ plugin.tx_pbsocial {
     }
 }
 
-[globalVar = LIT:1 = {$plugin.tx_pbsocial.settings.load-jquery}]
-    page.includeJS.pbjquery = EXT:pb_social/Resources/Public/Js/jquery-3.3.1.min.js
-[END]
+#[globalVar = LIT:1 = {$plugin.tx_pbsocial.settings.load-jquery}]
+#    page.includeJS.pbjquery = EXT:pb_social/Resources/Public/Js/jquery-3.3.1.min.js
+#[END]
 
 
 page.includeCSS.pbsocialcss = EXT:pb_social/Resources/Public/Css/style.css
