@@ -851,6 +851,9 @@ class FeedSyncService extends AbstractBaseService
             //calling adapter by parameter at getResultFromApi()
             $content = $adapterObj->getResultFromApi();
 
+            // !ian: import posts to news
+            \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Webian\\Iansocialimp\\Utility\\Feed\\' . ucfirst($socialNetworkTypeString) . 'Utility')->importToNews($content, $flexformOptions);
+
             /*
              * content value please see \PlusB\PbSocial\Adapter\SocialMediaAdapter::setCacheContentData
              */
