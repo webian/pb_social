@@ -46,8 +46,8 @@ plugin.tx_pbsocial {
 #[END]
 
 
-page.includeCSS.pbsocialcss = EXT:pb_social/Resources/Public/Css/style.css
-page.includeJSFooter.pbsocialjs = EXT:pb_social/Resources/Public/Js/main.js
+#page.includeCSS.pbsocialcss = EXT:pb_social/Resources/Public/Css/style.css
+#page.includeJSFooter.pbsocialjs = EXT:pb_social/Resources/Public/Js/main.js
 
 #copy to be able to use it in extension
 module.tx_pbsocial < plugin.tx_pbsocial
