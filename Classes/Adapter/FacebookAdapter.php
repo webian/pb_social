@@ -275,11 +275,12 @@ class FacebookAdapter extends SocialMediaAdapter
         }
 
         //always prepending id and message
-        $faceBookRequestParameter = 'id,message,' . $faceBookRequestParameter;
+        $faceBookRequestParameter = 'id,message,status_type,permalink_url,from,story,privacy,attachments{description,media,media_type,title,type,subattachments},' . $faceBookRequestParameter;
 
         $params = [
             'fields' => $faceBookRequestParameter,
-            'limit' => $limit
+            'limit' => $limit,
+            'locale' => 'it_IT',
         ];
 
         try {
