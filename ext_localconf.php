@@ -72,14 +72,14 @@ call_user_func(function () {
 
         If "4: fatal error" is set, filewriter is defined for {DEBUG(7)-1-warning(4)=2} CRITICAL = 2 and worse.
          */
-        $loglevel = call_user_func(function ($systemLoglevel) {
-            $systemLoglevel = $systemLoglevel!==""?$systemLoglevel:2;
-            $minimumLogLevel = \TYPO3\CMS\Core\Log\LogLevel::DEBUG - 1 - $systemLoglevel; //{DEBUG(7)-1-warning(2) = 4}
-                return
-                    TYPO3\CMS\Core\Utility\MathUtility::isIntegerInRange($minimumLogLevel,\TYPO3\CMS\Core\Log\LogLevel::EMERGENCY,\TYPO3\CMS\Core\Log\LogLevel::DEBUG)
-                        /* validating it in range of allowed integers */
-                        ?/*return ERROR to INFO*/ $minimumLogLevel: /* or default in case of trouble */ \TYPO3\CMS\Core\Log\LogLevel::WARNING;
-            }, /*input */ $GLOBALS['TYPO3_CONF_VARS']['SYS']['systemLogLevel']);
+//        $loglevel = call_user_func(function ($systemLoglevel) {
+//            $systemLoglevel = $systemLoglevel!==""?$systemLoglevel:2;
+//            $minimumLogLevel = \TYPO3\CMS\Core\Log\LogLevel::DEBUG - 1 - $systemLoglevel; //{DEBUG(7)-1-warning(2) = 4}
+//                return
+//                    TYPO3\CMS\Core\Utility\MathUtility::isIntegerInRange($minimumLogLevel,\TYPO3\CMS\Core\Log\LogLevel::EMERGENCY,\TYPO3\CMS\Core\Log\LogLevel::DEBUG)
+//                        /* validating it in range of allowed integers */
+//                        ?/*return ERROR to INFO*/ $minimumLogLevel: /* or default in case of trouble */ \TYPO3\CMS\Core\Log\LogLevel::WARNING;
+//            }, /*input */ $GLOBALS['TYPO3_CONF_VARS']['SYS']['systemLogLevel']);
 
         /*
          * and using validated loglevel for writer configuration
