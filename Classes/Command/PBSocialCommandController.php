@@ -48,25 +48,25 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
 
     /**
      * @var \PlusB\PbSocial\Service\FeedSyncService
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $feedSyncService;
 
     /**
      * @var \TYPO3\CMS\Core\Cache\CacheManager
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $cacheManager = null;
 
      /**
      * @var \PlusB\PbSocial\Domain\Repository\CredentialRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $credentialRepository;
 
     /**
      * @var \PlusB\PbSocial\Domain\Repository\ContentRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $contentRepository;
 
@@ -74,7 +74,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
      * Reference to a scheduler object, just for having ->log()
      *
      * @var \TYPO3\CMS\Scheduler\Scheduler
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $scheduler;
 
@@ -201,7 +201,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
 
     /**
      * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $configurationManager;
 
@@ -266,7 +266,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
 
     /**
      * @var \TYPO3\CMS\Extbase\Service\FlexFormService
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $flexformService;
 

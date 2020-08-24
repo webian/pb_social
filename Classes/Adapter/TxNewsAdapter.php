@@ -50,7 +50,7 @@ class TxNewsAdapter extends SocialMediaAdapter
      * newsRepository
      *
      * @var \GeorgRinger\News\Domain\Repository\NewsRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $newsRepository;
     public $newsDemand;

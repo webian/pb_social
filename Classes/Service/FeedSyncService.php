@@ -36,19 +36,19 @@ class FeedSyncService extends AbstractBaseService
 
     /**
      * @var \PlusB\PbSocial\Domain\Repository\ItemRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $itemRepository;
 
     /**
      * @var \PlusB\PbSocial\Service\CacheService
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $cacheService;
 
     /**
      * @var \PlusB\PbSocial\Domain\Repository\CredentialRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $credentialRepository;
 

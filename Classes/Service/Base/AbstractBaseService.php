@@ -53,19 +53,19 @@ abstract class AbstractBaseService implements SingletonInterface
 
     /**
      * @var \TYPO3\CMS\Extbase\Mvc\Controller\CommandController
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $commandController;
 
     /**
      * @var \TYPO3\CMS\Core\Log\LogManagerInterface
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $logManager;
 
     /**
      * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $configurationManager;
 

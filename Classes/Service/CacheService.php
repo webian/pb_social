@@ -37,14 +37,14 @@ class CacheService extends AbstractBaseService
 
     /**
      * @var \PlusB\PbSocial\Service\FeedSyncService
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $feedSyncService;
 
 
     /**
      * @var \TYPO3\CMS\Core\Cache\CacheManager
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $cacheManager = null;
 

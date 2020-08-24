@@ -41,7 +41,7 @@ class AjaxController
      * itemRepository
      *
      * @var \PlusB\PbSocial\Domain\Repository\ItemRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $itemRepository = null;
 

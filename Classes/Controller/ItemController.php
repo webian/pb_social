@@ -49,7 +49,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 
     /**
      * @var \PlusB\PbSocial\Service\CacheService
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $cacheService;
 
@@ -57,7 +57,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
      * cacheManager
      *
      * @var \TYPO3\CMS\Core\Cache\CacheManager
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $cacheManager = null;
 
@@ -65,7 +65,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
      * itemRepository
      *
      * @var \PlusB\PbSocial\Domain\Repository\ItemRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $itemRepository = null;
 
@@ -73,7 +73,7 @@ class ItemController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
      * credentialRepository
      *
      * @var \PlusB\PbSocial\Domain\Repository\CredentialRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $credentialRepository = null;
 

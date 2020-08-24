@@ -96,7 +96,7 @@ class LinkedInAdapter extends SocialMediaAdapter
      * credentialRepository
      *
      * @var \PlusB\PbSocial\Domain\Repository\CredentialRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $credentialRepository;
 
