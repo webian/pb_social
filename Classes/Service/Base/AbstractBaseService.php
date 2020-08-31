@@ -4,6 +4,7 @@ namespace PlusB\PbSocial\Service\Base;
 
 use PlusB\PbSocial\Service\LogTrait;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration as ExtensionConfigurationCore;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
@@ -106,7 +107,12 @@ abstract class AbstractBaseService implements SingletonInterface
         $this->tsConfig = $configFull['plugin.']['tx_pbsocial.'];
         $this->settings = $this->tsConfig['settings.'];
 
-        $this->extConf = @unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::EXTKEY]);
+        if (class_exists(ExtensionConfigurationCore::class)) {
+            $this->extConf = GeneralUtility::makeInstance(ExtensionConfigurationCore::class)->get('pb_social');
+        } else {
+            // Fallback for 8LTS
+            $this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['pb_social'], ['allowed_classes' => false]);
+        }
     }
 
     /**
