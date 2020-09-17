@@ -9,13 +9,6 @@ plugin.tx_pbsocial {
 	}
 	persistence {
 		storagePid = {$plugin.tx_pbsocial.persistence.storagePid}
-		classes {
-			PlusB\PbSocial\Domain\Model\Content {
-				mapping {
-					tableName = tt_content
-				}
-			}
-		}
 	}
 	features {
 		# uncomment the following line to enable the new Property Mapper.
