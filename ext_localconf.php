@@ -86,7 +86,7 @@ call_user_func(function () {
          */
         $GLOBALS['TYPO3_CONF_VARS']['LOG']['PlusB']['PbSocial']['writerConfiguration'] = array(
             // configuration for level log entries
-            $loglevel => array(
+            'info' => array(
                 // add a FileWriter
                 'TYPO3\\CMS\\Core\\Log\\Writer\\FileWriter' => array(
                     // configuration for the writer
