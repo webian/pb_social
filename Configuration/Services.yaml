@@ -1,0 +1,13 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  PlusB\PbSocial\:
+    resource: '../Classes/*'
+
+  PlusB\PbSocial\Command\PBSocialCommandController:
+    tags:
+      - name: 'console.command'
+        command: 'pbsocial:updateFeedData'

@@ -3,6 +3,7 @@
 namespace PlusB\PbSocial\Service;
 
 use PlusB\PbSocial\Adapter;
+use PlusB\PbSocial\Domain\Repository\ItemRepository;
 use PlusB\PbSocial\Service\Base\AbstractBaseService;
 
 
@@ -41,6 +42,14 @@ class FeedSyncService extends AbstractBaseService
     protected $itemRepository;
 
     /**
+     * @param ItemRepository $itemRepository
+     */
+    public function injectItemRepository(ItemRepository $itemRepository)
+    {
+        $this->itemRepository = $itemRepository;
+    }
+
+    /**
      * @var \PlusB\PbSocial\Service\CacheService
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
@@ -52,6 +61,13 @@ class FeedSyncService extends AbstractBaseService
      */
     protected $credentialRepository;
 
+    /**
+     * @param CacheService $cacheService
+     */
+    public function injectCacheService(CacheService $cacheService)
+    {
+        $this->cacheService = $cacheService;
+    }
 
     /**
      * @param string $socialNetworkTypeString

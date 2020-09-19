@@ -9,6 +9,7 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /***************************************************************
  *
@@ -53,12 +54,6 @@ abstract class AbstractBaseService implements SingletonInterface
     const TYPE_TX_NEWS = 'tx_news';
 
     /**
-     * @var \TYPO3\CMS\Extbase\Mvc\Controller\CommandController
-     * @TYPO3\CMS\Extbase\Annotation\Inject
-     */
-    protected $commandController;
-
-    /**
      * @var \TYPO3\CMS\Core\Log\LogManagerInterface
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
@@ -100,9 +95,8 @@ abstract class AbstractBaseService implements SingletonInterface
 
     protected function initializeConfiguration()
     {
-        $configFull = $this->configurationManager->getConfiguration(
-            ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT
-        );
+        $configFull = $this->getConfigurationManager()
+            ->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK, 'pb_social');
 
         $this->tsConfig = $configFull['plugin.']['tx_pbsocial.'];
         $this->settings = $this->tsConfig['settings.'];
@@ -168,5 +162,20 @@ abstract class AbstractBaseService implements SingletonInterface
     }
 
 
+    /**
+     * Returns instance of the configuration manager
+     *
+     * @return ConfigurationManagerInterface
+     */
+    protected function getConfigurationManager(): ConfigurationManagerInterface
+    {
+        if ($this->configurationManager !== null) {
+            return $this->configurationManager;
+        }
+
+        $this->configurationManager = GeneralUtility::makeInstance(ObjectManager::class)
+            ->get(ConfigurationManagerInterface::class);
+        return $this->configurationManager;
+    }
     
 }

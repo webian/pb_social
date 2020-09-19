@@ -2,7 +2,14 @@
 namespace PlusB\PbSocial\Command;
 
 use PlusB\PbSocial\Domain\Model\Content;
-
+use PlusB\PbSocial\Domain\Repository\ContentRepository;
+use PlusB\PbSocial\Service\FeedSyncService;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use TYPO3\CMS\Core\Service\FlexFormService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 
 /***************************************************************
  *
@@ -30,7 +37,7 @@ use PlusB\PbSocial\Domain\Model\Content;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandController
+class PBSocialCommandController extends Command
 {
     const TYPE_FACEBOOK = 'facebook';
     const TYPE_INSTAGRAM = 'instagram';
@@ -53,6 +60,14 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
     protected $feedSyncService;
 
     /**
+     * @param FeedSyncService $feedSyncService
+     */
+    public function injectFeedSyncService(FeedSyncService $feedSyncService)
+    {
+        $this->feedSyncService = $feedSyncService;
+    }
+
+    /**
      * @var \TYPO3\CMS\Core\Cache\CacheManager
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
@@ -69,6 +84,14 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $contentRepository;
+
+    /**
+     * @param ContentRepository $contentRepository
+     */
+    public function injectContentRepository(ContentRepository $contentRepository)
+    {
+        $this->contentRepository = $contentRepository;
+    }
 
     /**
      * Reference to a scheduler object, just for having ->log()
@@ -206,6 +229,14 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
     protected $configurationManager;
 
     /**
+     * @param ConfigurationManager $configurationManager
+     */
+    public function injectConfigurationManager(ConfigurationManager $configurationManager)
+    {
+        $this->configurationManager = $configurationManager;
+    }
+
+    /**
      * @var array
      */
     protected $typoscriptSettings = array();
@@ -263,25 +294,25 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
         $this->typoscriptSettings = $typoscriptSettings;
     }
 
-
     /**
-     * @var \TYPO3\CMS\Extbase\Service\FlexFormService
-     * @TYPO3\CMS\Extbase\Annotation\Inject
-     */
-    protected $flexformService;
-
-    /**
-     * Updates database with feeds
-     * Use this in TYPO3 backend scheduler or in command line  ./your-path-to-typo3/cli_dispatch.phpsh extbase pbsocial:updatefeeddata --verbose
+     * Configure the command by defining the name, options and arguments
      *
-     * @param bool $verbose Enter verbose output
-     * @param bool $silent Silent mode outputs nothing, but logs still into general typo3 log file
-     * @param string $callnetwork - just call one network - default is all, according to flexform settings
-     * @return string message
+     * @return void
      */
-    public function updateFeedDataCommand($verbose = false, $silent = false, $callnetwork = 'all')
+    protected function configure()
     {
-        $this->initializeUpdateFeedDataCommand($verbose, $silent, $callnetwork);
+        parent::configure();
+        $this->setDescription('Update social feeds.');
+    }
+
+    /**
+     * Executes the command
+     *
+     * @inheritdoc
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $this->initializeUpdateFeedDataCommand(false, true, 'all');
 
         # Setup database connection and fetch all flexform settings #
         /**
@@ -291,12 +322,13 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
         $message = "";
 
         # Convert flexform settings into usable array structure #
+        $flexformService = GeneralUtility::makeInstance(FlexFormService::class);
         if (!empty($xml_settings)) {
 
             # Update feeds #
             foreach ($xml_settings as $xmlStr) {
                 /* initializing procedural request */
-                $flexformSettings = $this->flexformService->convertFlexFormContentToArray($xmlStr->getPiFlexform());
+                $flexformSettings = $flexformService->convertFlexFormContentToArray($xmlStr->getPiFlexform());
                 $flexformSettings = $flexformSettings['settings'];
 
                 /* starting procedural list of requests */
@@ -343,7 +375,7 @@ class PBSocialCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comman
 
             }//foreach
         }//if
-        return "\e[1;33;40m".$message ."\e[0m\n";
+        return 0;
     }
 
 

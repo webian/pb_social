@@ -3,6 +3,7 @@
 namespace PlusB\PbSocial\Service;
 
 use PlusB\PbSocial\Service\Base\AbstractBaseService;
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 
 /***************************************************************
@@ -52,6 +53,14 @@ class CacheService extends AbstractBaseService
      * @var int
      */
     protected $cacheLifetime = 0;
+
+    /**
+     * @param CacheManager $cacheManager
+     */
+    public function injectCacheManager(CacheManager $cacheManager)
+    {
+        $this->cacheManager = $cacheManager;
+    }
 
     /**
      * @param int $cacheLifetime
