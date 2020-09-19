@@ -176,10 +176,10 @@ class FacebookAdapter extends SocialMediaAdapter
         if (empty($facebookPageID)) {
             //log a warning, return null
             $this->logAdapterWarning('no facebookPageID', 1573467383);
-            return null;
+            return [];
         } elseif (strstr($facebookPageID,',')){
             $this->logAdapterWarning('facebookPageID contains "," - please use only one facebook Page ID', 1573467387);
-            return null;
+            return [];
         }
 
         /* **************
